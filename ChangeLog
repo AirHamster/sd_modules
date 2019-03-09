@@ -1,0 +1,8 @@
+2019-03-9  Ilya Zarubin  <air_hamster@bk.ru>
+[0.0.1]
+	* ChangeLog: 
+	+added ChangeLog
+	+added README.md
+	+added LICENSE
+	+added shell_cmd files
+	
