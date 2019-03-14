@@ -13,8 +13,8 @@ float beta = CONST_beta;  // compute beta
 float GyroMeasDrift = CONST_GMD; // gyroscope measurement drift in rad/s/s (start at 0.0 deg/s/s)
 float zeta = CONST_zeta; // compute zeta, the other free parameter in the Madgwick scheme usually set to a small or zero value
 
-uint8_t Ascale = AFS_2G;     // AFS_2G, AFS_4G, AFS_8G, AFS_16G
-uint8_t Gscale = GFS_250DPS; // GFS_250DPS, GFS_500DPS, GFS_1000DPS, GFS_2000DPS
+uint8_t Ascale = AFS_8G;     // AFS_2G, AFS_4G, AFS_8G, AFS_16G
+uint8_t Gscale = GFS_1000DPS; // GFS_250DPS, GFS_500DPS, GFS_1000DPS, GFS_2000DPS
 uint8_t Mscale = MFS_16BITS; // MFS_14BITS or MFS_16BITS, 14-bit or 16-bit magnetometer resolution
 uint8_t Mmode = 0x06; // Either 8 Hz 0x02) or 100 Hz (0x06) magnetometer data ODR
 float aRes, gRes, mRes;      // scale resolutions per LSB for the sensors
@@ -181,3 +181,26 @@ uint16_t mpu9250_init(void) {
 	chThdSleepMilliseconds(100);
 }
 
+void mpu_read_accel_data(int16_t * destination)
+{
+  uint8_t rawData[6];  // x/y/z accel register data stored here
+  // Read the six raw data registers into data array
+  mpu_read_bytes(&SPID2, 6, ACCEL_XOUT_H, &rawData[0]);
+
+  // Turn the MSB and LSB into a signed 16-bit value
+  destination[0] = ((int16_t)rawData[0] << 8) | rawData[1] ;
+  destination[1] = ((int16_t)rawData[2] << 8) | rawData[3] ;
+  destination[2] = ((int16_t)rawData[4] << 8) | rawData[5] ;
+}
+
+void mpu_read_gyro_data(int16_t * destination)
+{
+  uint8_t rawData[6];  // x/y/z gyro register data stored here
+  // Read the six raw data registers sequentially into data array
+  mpu_read_bytes(&SPID2, 6, GYRO_XOUT_H, &rawData[0]);
+
+  // Turn the MSB and LSB into a signed 16-bit value
+  destination[0] = ((int16_t)rawData[0] << 8) | rawData[1] ;
+  destination[1] = ((int16_t)rawData[2] << 8) | rawData[3] ;
+  destination[2] = ((int16_t)rawData[4] << 8) | rawData[5] ;
+}

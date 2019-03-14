@@ -193,6 +193,10 @@ void mpu_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value);
 uint8_t mpu_read_byte(SPIDriver *SPID, uint8_t reg_addr);
 void mpu_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t reg_addr,
 		uint8_t *rxbuf);
+void mpu_read_accel_data(int16_t * destination);
+void mpu_read_gyro_data(int16_t * destination);
+
+
 /*
 
 
