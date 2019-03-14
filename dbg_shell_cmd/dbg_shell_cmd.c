@@ -1,6 +1,6 @@
-#include "shell_cmds.h"
+#include "dbg_shell_cmd.h"
 
-
+/*
 void cmd_start(BaseSequentialStream *chp, int argc, char *argv[]) {
 
   (void)argv;
@@ -54,3 +54,4 @@ void cmd_info(BaseSequentialStream *chp, int argc, char *argv[]) {
     return;
   }
 }
+*/
