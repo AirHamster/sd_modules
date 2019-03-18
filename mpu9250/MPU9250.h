@@ -232,6 +232,9 @@ void initAK8963(float *destination);
 void writeAK8963Register(uint8_t subAddress, uint8_t data);
 void readAK8963Registers(uint8_t subAddress, uint8_t count, uint8_t* dest);
 uint8_t get_mag_whoami(void);
+uint8_t read_AK8963_register(uint8_t regaddr);
+void read_AK8963_registers(uint8_t regaddr, uint8_t num, uint8_t *buff);
+void write_AK8963_register(uint8_t regaddr, uint8_t data);
 
 /*
 

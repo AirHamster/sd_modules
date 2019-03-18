@@ -169,6 +169,13 @@ uint16_t mpu9250_init(void) {
 	chThdSleepMilliseconds(10);
 	mpu_write_byte(&SPID2, I2C_MST_CTRL, I2C_MST_CLK);
 
+	mpu_write_byte(&SPID2, I2C_SLV0_CTRL, 0);	//step 3 - reset i2c slave reg
+	mpu_write_byte(&SPID2, I2C_SLV0_ADDR, 0x80 | 0x0C);	//step 7 - rnw to 1 and addr of magn
+
+	//Slave 4 used only for writting registers in magnetometr
+	mpu_write_byte(&SPID2, I2C_SLV4_CTRL, 0);	//step 3 - reset i2c slave reg
+	mpu_write_byte(&SPID2, I2C_SLV4_ADDR, 0x0C);	//step 7 - rnw to 0 and addr of magn
+
 	chThdSleepMilliseconds(100);
 	return 0;
 }
@@ -176,14 +183,16 @@ uint16_t mpu9250_init(void) {
 uint8_t get_mag_whoami(void)
 {
 	uint8_t rawData;
-	//readAK8963Registers(WHO_AM_I_AK8963, 1, &rawData);
+	rawData = read_AK8963_register(0x02);
+	/*
 	mpu_write_byte(&SPID2, I2C_SLV0_CTRL, 0);	//step 3 - reset i2c slave reg
 	mpu_write_byte(&SPID2, I2C_SLV0_ADDR, 0x80 | 0x0C);	//step 7 - rnw to 1 and addr of magn
 	mpu_write_byte(&SPID2, I2C_SLV0_REG, 0);	//step 11 - reg addr of WHO_AM_I (0x00)
 	mpu_write_byte(&SPID2, I2C_SLV0_CTRL, I2C_SLV_EN | 1);	//step 15 - slave en to 1 and num of bytes (1)
 	chThdSleepMilliseconds(1);
 	mpu_write_byte(&SPID2, I2C_SLV0_CTRL, 0);	//step 20 - reset i2c slave
-	rawData = mpu_read_byte(&SPID2, EXT_SENS_DATA_00);	//read dyte
+	rawData = mpu_read_byte(&SPID2, EXT_SENS_DATA_00);	//read byte
+	*/
 	return rawData;
 }
 
@@ -192,18 +201,18 @@ void initAK8963(float *destination){
 	// First extract the factory calibration for each magnetometer axis
 	uint8_t rawData[3];  // x/y/z gyro calibration data stored here
 	// TODO: Test this!! Likely doesn't work
-	writeAK8963Register(AK8963_CNTL, 0x00); // Power down magnetometer
+	write_AK8963_register(AK8963_CNTL, 0x00); // Power down magnetometer
 	chThdSleepMilliseconds(10);
-	writeAK8963Register(AK8963_CNTL, 0x0F); // Enter Fuse ROM access mode
+	write_AK8963_register(AK8963_CNTL, 0x0F); // Enter Fuse ROM access mode
 	chThdSleepMilliseconds(10);
 	// Read the x-, y-, and z-axis calibration values
-	readAK8963Registers(AK8963_ASAX, 3, &rawData[0]);
+	read_AK8963_registers(AK8963_ASAX, 3, &rawData[0]);
 
 	// Return x-axis sensitivity adjustment values, etc.
 	destination[0] = (float) (rawData[0] - 128) / 256. + 1.;
 	destination[1] = (float) (rawData[1] - 128) / 256. + 1.;
 	destination[2] = (float) (rawData[2] - 128) / 256. + 1.;
-	writeAK8963Register(AK8963_CNTL, 0x00); // Power down magnetometer
+	write_AK8963_register(AK8963_CNTL, 0x00); // Power down magnetometer
 	chThdSleepMilliseconds(10);
 
 	// Configure the magnetometer for continuous read and highest resolution.
@@ -212,38 +221,41 @@ void initAK8963(float *destination){
 	// 0010 for 8 Hz and 0110 for 100 Hz sample rates.
 
 	// Set magnetometer data resolution and sample ODR
-	writeAK8963Register(AK8963_CNTL, Mscale << 4 | Mmode);
+	write_AK8963_register(AK8963_CNTL, Mscale << 4 | Mmode);
 
 }
 
-/* writes a register to the AK8963 given a register address and data */
-void writeAK8963Register(uint8_t subAddress, uint8_t data){
-  // set slave 0 to the AK8963 and set for write
-	mpu_write_byte(&SPID2, I2C_SLV0_ADDR, AK8963_ADDRESS);
-  // set the register to the desired AK8963 sub address
-	mpu_write_byte(&SPID2, I2C_SLV0_REG,subAddress);
-  // store the data for write
-	mpu_write_byte(&SPID2, I2C_SLV0_DO,data);
-    // enable I2C and send 1 byte
-	mpu_write_byte(&SPID2, I2C_SLV0_CTRL,I2C_SLV0_EN | (uint8_t)1);
-	// read the register and confirm
-	//readAK8963Registers(subAddress,1,_buffer);
-
+uint8_t read_AK8963_register(uint8_t regaddr){
+		uint8_t data;
+		//mpu_write_byte(&SPID2, I2C_SLV0_CTRL, 0);	//step 3 - reset i2c slave reg
+		//mpu_write_byte(&SPID2, I2C_SLV0_ADDR, 0x80 | 0x0C);	//step 7 - rnw to 1 and addr of magn
+		mpu_write_byte(&SPID2, I2C_SLV0_REG, regaddr);	//step 11 - reg addr
+		mpu_write_byte(&SPID2, I2C_SLV0_CTRL, I2C_SLV_EN | 1);	//step 15 - slave en to 1 and num of bytes (1)
+		chThdSleepMilliseconds(1);
+		mpu_write_byte(&SPID2, I2C_SLV0_CTRL, 0);	//step 20 - reset i2c slave
+		data = mpu_read_byte(&SPID2, EXT_SENS_DATA_00);	//read byte
+		return data;
+}
+void read_AK8963_registers(uint8_t regaddr, uint8_t num, uint8_t *buff){
+	//mpu_write_byte(&SPID2, I2C_SLV0_CTRL, 0);	//step 3 - reset i2c slave reg
+		//mpu_write_byte(&SPID2, I2C_SLV0_ADDR, 0x80 | 0x0C);	//step 7 - rnw to 1 and addr of magn
+		mpu_write_byte(&SPID2, I2C_SLV0_REG, regaddr);	//step 11 - reg addr
+		mpu_write_byte(&SPID2, I2C_SLV0_CTRL, I2C_SLV_EN | num);	//step 15 - slave en to 1 and num of bytes (1)
+		chThdSleepMilliseconds(1);
+		mpu_write_byte(&SPID2, I2C_SLV0_CTRL, 0);	//step 20 - reset i2c slave
+		mpu_read_bytes(&SPID2, num, EXT_SENS_DATA_00, buff);	//read byte
 }
 
-/* reads registers from the AK8963 */
-void readAK8963Registers(uint8_t subAddress, uint8_t count, uint8_t* dest){
-
-  // set slave 0 to the AK8963 and set for read
-	mpu_write_byte(&SPID2, I2C_SLV0_ADDR, AK8963_ADDRESS | I2C_READ_FLAG);
-  // set the register to the desired AK8963 sub address
-	mpu_write_byte(&SPID2, I2C_SLV0_REG,subAddress);
-  // enable I2C and request the bytes
-	mpu_write_byte(&SPID2, I2C_SLV0_CTRL,I2C_SLV0_EN | count);
-	chThdSleepMilliseconds(1); // takes some time for these registers to fill
-  // read the bytes off the MPU9250 EXT_SENS_DATA registers
-	mpu_read_bytes(&SPID2, count, EXT_SENS_DATA_00, dest);
-  }
+void write_AK8963_register(uint8_t regaddr, uint8_t data){
+	//mpu_write_byte(&SPID2, I2C_SLV4_CTRL, 0);	//step 3 - reset i2c slave reg
+	//mpu_write_byte(&SPID2, I2C_SLV4_ADDR, 0x0C);	//step 7 - rnw to 0 and addr of magn
+	mpu_write_byte(&SPID2, I2C_SLV4_REG, regaddr);	//step 11 - reg addr
+	mpu_write_byte(&SPID2, I2C_SLV4_DO, data);	//step 11 - data to be written
+	mpu_write_byte(&SPID2, I2C_SLV4_CTRL, I2C_SLV_EN);	//step 15 - slave en to 1 and num of bytes (1)
+	chThdSleepMilliseconds(1);
+	mpu_write_byte(&SPID2, I2C_SLV4_CTRL, 0);	//step 20 - reset i2c slave
+	//mpu_read_bytes(&SPID2, EXT_SENS_DATA_00, buff);	//read byte
+}
 
 void mpu_read_accel_data(int16_t * destination)
 {
@@ -271,9 +283,10 @@ void mpu_read_gyro_data(int16_t * destination)
 
 void mpu_read_mag_data(int16_t * destination)
 {
-  uint8_t rawData[6];  // x/y/z gyro register data stored here
+  uint8_t rawData[7];  // x/y/z gyro register data stored here
   // Read the six raw data registers sequentially into data array
-  readAK8963Registers(AK8963_XOUT_L, 6, &rawData[0]);
+  //seven bytes reading because last reg should be read to unlatch data regs
+  read_AK8963_registers(AK8963_XOUT_L, 7, &rawData[0]);
 
   // Turn the MSB and LSB into a signed 16-bit value
   destination[0] = ((int16_t)rawData[1] << 8) | rawData[0] ;
