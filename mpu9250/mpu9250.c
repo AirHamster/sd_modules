@@ -17,10 +17,6 @@ uint8_t Ascale = AFS_8G;     // AFS_2G, AFS_4G, AFS_8G, AFS_16G
 uint8_t Gscale = GFS_1000DPS; // GFS_250DPS, GFS_500DPS, GFS_1000DPS, GFS_2000DPS
 uint8_t Mscale = MFS_16BITS; // MFS_14BITS or MFS_16BITS, 14-bit or 16-bit magnetometer resolution
 uint8_t Mmode = 0x06; // Either 8 Hz 0x02) or 100 Hz (0x06) magnetometer data ODR
-// Vector to hold integral error for Mahony method
-static float eInt[3] = {0.0f, 0.0f, 0.0f};
-// Vector to hold quaternion
-static float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};
 float aRes, gRes, mRes;      // scale resolutions per LSB for the sensors
 
 void mpu_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value) {
@@ -28,21 +24,17 @@ void mpu_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value) {
 	txbuf[0] = reg_addr;
 	txbuf[1] = value;
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
-	palSetLine(LINE_GREEN_LED); /* LED ON.                          */
 	palClearLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
 	spiSend(SPID, 2, txbuf); /* send request       */
 	spiReleaseBus(SPID); /* Ownership release.               */
 	palSetLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
-
-	palClearLine(LINE_GREEN_LED); /* LED OFF.*/
 }
 
 uint8_t mpu_read_byte(SPIDriver *SPID, uint8_t reg_addr) {
 	uint8_t value;
 	reg_addr |= 0x80;	//0x80 indicates read operation
-	palSetLine(LINE_GREEN_LED); /* LED ON.                          */
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
 	palClearLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
@@ -51,7 +43,6 @@ uint8_t mpu_read_byte(SPIDriver *SPID, uint8_t reg_addr) {
 	spiReleaseBus(SPID); /* Ownership release.               */
 	palSetLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
-	palClearLine(LINE_GREEN_LED); /* LED OFF.*/
 	return value;
 }
 
@@ -59,7 +50,6 @@ void mpu_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t reg_addr,
 		uint8_t *rxbuf) {
 	uint8_t txbuf[num];
 	reg_addr |= 0x80;
-	palSetLine(LINE_GREEN_LED); /* LED ON.                          */
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
 	palClearLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
@@ -68,7 +58,6 @@ void mpu_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t reg_addr,
 	spiReleaseBus(SPID); /* Ownership release.               */
 	palSetLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
-	palClearLine(LINE_GREEN_LED); /* LED OFF.*/
 }
 
 uint16_t mpu9250_init(void) {
@@ -76,7 +65,12 @@ uint16_t mpu9250_init(void) {
 
 
 	tmp = mpu_read_byte(&SPID2, WHO_AM_I_MPU9250);
-	chprintf((BaseSequentialStream*)&SD1, "WHO_AM_I: %x \r\n", tmp);
+	if (tmp == 0x71){
+		chprintf((BaseSequentialStream*)&SD1, "MPU9250 on-line\r\n");
+	}else{
+		chprintf((BaseSequentialStream*)&SD1, "MPU9250 not found\r\n");
+	}
+
 	// wake up device
 	// Clear sleep mode bit (6), enable all sensors
 	mpu_write_byte(&SPID2, PWR_MGMT_1, 0x00);
@@ -175,7 +169,12 @@ uint8_t get_mag_whoami(void)
 }
 
 void initAK8963(float *destination){
-	//chThdSleepMilliseconds(500);
+	uint8_t tmp = get_mag_whoami();
+	if (tmp == 0x48){
+			chprintf((BaseSequentialStream*)&SD1, "Magnetometr on-line\r\n");
+		}else{
+			chprintf((BaseSequentialStream*)&SD1, "Magnetometr not found\r\n");
+		}
 	// First extract the factory calibration for each magnetometer axis
 	uint8_t rawData[3];  // x/y/z gyro calibration data stored here
 	write_AK8963_register(AK8963_CNTL, 0x00); // Power down magnetometer

@@ -1,6 +1,7 @@
 #ifndef MPU9250_H
 #define MPU9250_H
 
+#include <stdlib.h>
 #include "stdint.h"
 #include "math.h"
 #include "ch.h"
