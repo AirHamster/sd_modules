@@ -27,16 +27,11 @@ void mpu_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value) {
 	uint8_t txbuf[2];
 	txbuf[0] = reg_addr;
 	txbuf[1] = value;
-	// spiAcquireBus(&SPID2);              /* Acquire ownership of the bus.    */
+	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
 	palSetLine(LINE_GREEN_LED); /* LED ON.                          */
 	palClearLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
 	spiSend(SPID, 2, txbuf); /* send request       */
-	//spiSelect(&SPID2);                  /* Slave Select assertion.          */
-	//  spiExchange(SPID, 1,
-	// 		txbuf, rxbuf);          /* Atomic transfer operations.      */
-	//  spiUnselect(&SPID2);                /* Slave Select de-assertion.       */
-	//spiReceive(&SPID2, 1, &read_buff);
 	spiReleaseBus(SPID); /* Ownership release.               */
 	palSetLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
@@ -48,19 +43,14 @@ uint8_t mpu_read_byte(SPIDriver *SPID, uint8_t reg_addr) {
 	uint8_t value;
 	reg_addr |= 0x80;	//0x80 indicates read operation
 	palSetLine(LINE_GREEN_LED); /* LED ON.                          */
-
+	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
 	palClearLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
 	spiSend(SPID, 1, &reg_addr); /* send request       */
-	//spiSelect(&SPID2);                  /* Slave Select assertion.          */
-	//spiExchange(SPID, 1,
-	//		txbuf, rxbuf);          /* Atomic transfer operations.      */
-	//spiUnselect(SPID);                /* Slave Select de-assertion.       */
 	spiReceive(SPID, 1, &value);
 	spiReleaseBus(SPID); /* Ownership release.               */
 	palSetLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
-
 	palClearLine(LINE_GREEN_LED); /* LED OFF.*/
 	return value;
 }
@@ -68,16 +58,13 @@ uint8_t mpu_read_byte(SPIDriver *SPID, uint8_t reg_addr) {
 void mpu_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t reg_addr,
 		uint8_t *rxbuf) {
 	uint8_t txbuf[num];
-	//uint8_t i;
 	reg_addr |= 0x80;
 	palSetLine(LINE_GREEN_LED); /* LED ON.                          */
+	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
 	palClearLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
 	spiSend(SPID, 1, &reg_addr); /* send request       */
-	//spiSelect(&SPID2);                  /* Slave Select assertion.          */
 	spiExchange(SPID, num, txbuf, rxbuf); /* Atomic transfer operations.      */
-	//spiUnselect(SPID);                /* Slave Select de-assertion.       */
-	//spiReceive(SPID, 1, value);
 	spiReleaseBus(SPID); /* Ownership release.               */
 	palSetLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
@@ -184,15 +171,6 @@ uint8_t get_mag_whoami(void)
 {
 	uint8_t rawData;
 	rawData = read_AK8963_register(0x02);
-	/*
-	mpu_write_byte(&SPID2, I2C_SLV0_CTRL, 0);	//step 3 - reset i2c slave reg
-	mpu_write_byte(&SPID2, I2C_SLV0_ADDR, 0x80 | 0x0C);	//step 7 - rnw to 1 and addr of magn
-	mpu_write_byte(&SPID2, I2C_SLV0_REG, 0);	//step 11 - reg addr of WHO_AM_I (0x00)
-	mpu_write_byte(&SPID2, I2C_SLV0_CTRL, I2C_SLV_EN | 1);	//step 15 - slave en to 1 and num of bytes (1)
-	chThdSleepMilliseconds(1);
-	mpu_write_byte(&SPID2, I2C_SLV0_CTRL, 0);	//step 20 - reset i2c slave
-	rawData = mpu_read_byte(&SPID2, EXT_SENS_DATA_00);	//read byte
-	*/
 	return rawData;
 }
 
@@ -200,7 +178,6 @@ void initAK8963(float *destination){
 	//chThdSleepMilliseconds(500);
 	// First extract the factory calibration for each magnetometer axis
 	uint8_t rawData[3];  // x/y/z gyro calibration data stored here
-	// TODO: Test this!! Likely doesn't work
 	write_AK8963_register(AK8963_CNTL, 0x00); // Power down magnetometer
 	chThdSleepMilliseconds(10);
 	write_AK8963_register(AK8963_CNTL, 0x0F); // Enter Fuse ROM access mode
@@ -227,8 +204,6 @@ void initAK8963(float *destination){
 
 uint8_t read_AK8963_register(uint8_t regaddr){
 		uint8_t data;
-		//mpu_write_byte(&SPID2, I2C_SLV0_CTRL, 0);	//step 3 - reset i2c slave reg
-		//mpu_write_byte(&SPID2, I2C_SLV0_ADDR, 0x80 | 0x0C);	//step 7 - rnw to 1 and addr of magn
 		mpu_write_byte(&SPID2, I2C_SLV0_REG, regaddr);	//step 11 - reg addr
 		mpu_write_byte(&SPID2, I2C_SLV0_CTRL, I2C_SLV_EN | 1);	//step 15 - slave en to 1 and num of bytes (1)
 		chThdSleepMilliseconds(1);
@@ -237,8 +212,6 @@ uint8_t read_AK8963_register(uint8_t regaddr){
 		return data;
 }
 void read_AK8963_registers(uint8_t regaddr, uint8_t num, uint8_t *buff){
-	//mpu_write_byte(&SPID2, I2C_SLV0_CTRL, 0);	//step 3 - reset i2c slave reg
-		//mpu_write_byte(&SPID2, I2C_SLV0_ADDR, 0x80 | 0x0C);	//step 7 - rnw to 1 and addr of magn
 		mpu_write_byte(&SPID2, I2C_SLV0_REG, regaddr);	//step 11 - reg addr
 		mpu_write_byte(&SPID2, I2C_SLV0_CTRL, I2C_SLV_EN | num);	//step 15 - slave en to 1 and num of bytes (1)
 		chThdSleepMilliseconds(1);
@@ -247,14 +220,11 @@ void read_AK8963_registers(uint8_t regaddr, uint8_t num, uint8_t *buff){
 }
 
 void write_AK8963_register(uint8_t regaddr, uint8_t data){
-	//mpu_write_byte(&SPID2, I2C_SLV4_CTRL, 0);	//step 3 - reset i2c slave reg
-	//mpu_write_byte(&SPID2, I2C_SLV4_ADDR, 0x0C);	//step 7 - rnw to 0 and addr of magn
 	mpu_write_byte(&SPID2, I2C_SLV4_REG, regaddr);	//step 11 - reg addr
 	mpu_write_byte(&SPID2, I2C_SLV4_DO, data);	//step 11 - data to be written
 	mpu_write_byte(&SPID2, I2C_SLV4_CTRL, I2C_SLV_EN);	//step 15 - slave en to 1 and num of bytes (1)
 	chThdSleepMilliseconds(1);
 	mpu_write_byte(&SPID2, I2C_SLV4_CTRL, 0);	//step 20 - reset i2c slave
-	//mpu_read_bytes(&SPID2, EXT_SENS_DATA_00, buff);	//read byte
 }
 
 void mpu_read_accel_data(int16_t * destination)
