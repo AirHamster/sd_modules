@@ -23,6 +23,12 @@ SD_SRC += ./sd_modules/neo-m8/neo-m8.c
 SD_INC += ./sd_modules/neo-m8
 endif
 
+#DIGI XBee modules
+ifeq ($(USE_XBEE_868_MODULE), TRUE)
+SD_SRC += ./sd_modules/xbee/xbee.c
+SD_INC += ./sd_modules/xbee
+endif
+
 # Shared variables
 ALLCSRC += $(SD_SRC)
 ALLINC  += $(SD_INC)

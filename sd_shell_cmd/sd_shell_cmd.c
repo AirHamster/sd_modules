@@ -1,56 +1,54 @@
 #include "sd_shell_cmds.h"
+#include <hal.h>
+#include <shell.h>
+#include <string.h>
+#include <stdlib.h>
+#include "xbee.h"
 
 
-void cmd_start(BaseSequentialStream *chp, int argc, char *argv[]) {
 
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: write\r\n");
-    return;
-  }
+
+static const ShellCommand commands[] = {
+    {"xbee", cmd_xbee},
+    {"attn", cmd_attn},
+    {NULL, NULL}
+};
+
+
+static const ShellConfig shell_cfg1 = {
+    (BaseSequentialStream*) &SHELL_SD,
+	commands
+};
+
+
+
+thread_t *cmd_init(){
+	return chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
+		                 "shell", NORMALPRIO + 1,
+		                  shellThread, (void *)&shell_cfg1);
 }
 
-void cmd_stop(BaseSequentialStream *chp, int argc, char *argv[]) {
-
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: write\r\n");
-    return;
-  }
+void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
+	if (argc >= 1)
+	{
+		if (!strcmp(argv[0], "read")){
+			xbee_read(chp, argc, argv);
+			return;
+		}else if(!strcmp(argv[0], "write")){
+			xbee_write(chp, argc, argv);
+			return;
+		}else if(!strcmp(argv[0], "attn")){
+			xbee_attn(chp, argc, argv);
+		}
+	}else{
+		chprintf(chp, "Usage: xbee read|write|attn <AT command>\n\r");
+	}
 }
 
-void cmd_set_pwm(BaseSequentialStream *chp, int argc, char *argv[]) {
 
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: write\r\n");
-    return;
-  }
+void cmd_attn(BaseSequentialStream* chp, int argc, char* argv[]) {
+	(void)argc, argv;
+	uint8_t stat = palReadLine(LINE_RF_868_SPI_ATTN);
+	chprintf(chp, "ATTN: %d \n\r", stat);
 }
 
-void cmd_gas(BaseSequentialStream *chp, int argc, char *argv[]) {
-
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: write\r\n");
-    return;
-  }
-}
-
-void cmd_welding(BaseSequentialStream *chp, int argc, char *argv[]) {
-
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: write\r\n");
-    return;
-  }
-}
-
-void cmd_info(BaseSequentialStream *chp, int argc, char *argv[]) {
-
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: write\r\n");
-    return;
-  }
-}
