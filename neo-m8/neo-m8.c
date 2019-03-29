@@ -38,7 +38,7 @@ uint8_t neo_read_byte(SPIDriver *SPID, uint8_t reg_addr) {
 	return value;
 }
 
-void neo_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t *rxbuf) {
+void neo_read_bytes(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf) {
 	uint8_t *txbuf[num];
 	memset(txbuf, 0xFF, 100);
 	palSetLine(LINE_GREEN_LED); /* LED ON.                          */
@@ -46,8 +46,36 @@ void neo_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t *rxbuf) {
 	palClearLine(LINE_NEO_CS);
 	chThdSleepMilliseconds(1);
 	spiExchange(SPID, num, txbuf, rxbuf); /* Atomic transfer operations.      */
+	//neo_process_packet();
 	spiReleaseBus(SPID); /* Ownership release.               */
 	palSetLine(LINE_NEO_CS);
 	chThdSleepMilliseconds(1);
 	palClearLine(LINE_GREEN_LED); /* LED OFF.*/
+}
+
+/* Brief: function that finds sequence of 50 0xFF bytes
+ *
+ *	returns offset from first array byte to 0xFF sequence
+ *	returns -1 if no 0xFF sequences found
+ *	returns -2 if found not full part of 0xFF sequence
+ */
+int8_t neo_find_ff(uint8_t *buff, uint8_t num){
+	uint8_t i;
+	uint8_t ff_series = 0;
+	for (i = 1; i < num; i++){
+		if ((buff[i-1] == buff[i]) && (buff[i] == 0xFF)){
+				ff_series++;
+				if (ff_series == 49){
+					return i - 49;	// Return offset
+				}
+		}else{
+			ff_series = 0;
+		}
+	}
+	if (i != 0)
+	{
+		return -2;
+	}else{
+		return -1;
+	}
 }

@@ -16,9 +16,10 @@
 #include "hal.h"
 #include "shell.h"
 #include "chprintf.h"
+#include "minmea.h"
 
 void neo_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value);
 uint8_t neo_read_byte(SPIDriver *SPID, uint8_t reg_addr);
-void neo_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t *rxbuf);
+void neo_read_bytes(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf);
 
 #endif /* SD_MODULES_NEO_M8_NEO_M8_H_ */
