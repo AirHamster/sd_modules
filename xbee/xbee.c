@@ -6,20 +6,28 @@
  */
 #include "xbee.h"
 
-uint8_t process_xbee(void){
-	return 0;
-}
-void xbee_read(BaseSequentialStream* chp, int argc, char* argv[]){
+void xbee_read(BaseSequentialStream* chp, int argc, char* argv){
+	//(void)argv;
 	if (argc == 2){
 		uint8_t len;
-		uint8_t txbuffer[50];
-		char *at = argv[1];
-		uint32_t var = atoi(argv[2]);
-		chprintf(chp, "Reading %s command \n\r", at);
+		char at[3];
+		uint8_t at2[9];
+		memcpy(at, argv, 3);
+		at2[8] = '\0';
+		//chprintf(chp, "Reading %s command \n\r", at);
 		chThdSleepMilliseconds(10);
-		len = xbee_create_at_read_message(argv[2], &txbuffer[0]);
+		len = xbee_create_at_read_message(at, at2);
+	    chprintf((BaseSequentialStream*)&SD1, "SPI %s %d\n\r", at2, len);
+		spiAcquireBus(&SPID1);              // Acquire ownership of the bus.
+		palClearLine(LINE_RF_868_CS);
+		chThdSleepMilliseconds(1);
+		spiSend(&SPID1, 8, at2); // send request
+		//spiExchange(&SPID1, 2, at, rxbuf); // Atomic transfer operations.
+		spiReleaseBus(&SPID1); // Ownership release.
+		palSetLine(LINE_RF_868_CS);
+		//len = xbee_create_at_read_message(argv[2], &txbuffer[0]);
+		//xbee_send(&SPID1, at2, len);
 
-		xbee_send(&SPID1, txbuffer, len);
 	}else{
 		chprintf(chp, "Usage: xbee read <AT command>\n\r \n\r");
 	}
@@ -51,7 +59,7 @@ void xbee_attn(BaseSequentialStream* chp, int argc, char* argv[]){
 
 uint8_t xbee_create_at_read_message(char *at, uint8_t *buffer){
 	uint8_t i = 0;
-	buffer[0] = 0x15;	// Start delimiter
+	buffer[0] = 0x7E;	// Start delimiter
 	buffer[1] = 0x00;	// Length MSB
 	buffer[2] = 0x04;	// Length LSB
 	buffer[3] = 0x08;	// Frame type - AT command
@@ -79,23 +87,16 @@ uint8_t xbee_create_at_write_message(char *at, uint8_t *buffer, uint8_t *data, u
 }
 
 void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len){
-	uint8_t rxbuf[50];
-	uint8_t *b = "kek";
-	rxbuf[1] = 'E';
-	chprintf(IFACE1, "1: %x \n\r", *rxbuf);
 	palSetLine(LINE_RED_LED);
 	spiAcquireBus(SPID);              	/* Acquire ownership of the bus.    */
 	palClearLine(LINE_RF_868_CS);
 	chThdSleepMilliseconds(1);
-	spiExchange(SPID, 8, rxbuf, txbuf); 			/* Atomic transfer operations.      */
+	spiSend(SPID, len, txbuf);
+	//spiExchange(SPID, 8, rxbuf, txbuf); 			/* Atomic transfer operations.      */
 	spiReleaseBus(SPID); 				/* Ownership release.               */
 	palSetLine(LINE_RF_868_CS);
 	chThdSleepMilliseconds(1);
 	palClearLine(LINE_RED_LED);
-}
-
-uint8_t xbee_wait_response(){
-
 }
 
 uint8_t xbee_check_attn(void){
@@ -113,7 +114,7 @@ uint8_t xbee_check_attn(void){
 					spiReleaseBus(&SPID1); // Ownership release.
 					chThdSleepMilliseconds(1);
 					//palClearLine(LINE_GREEN_LED); // LED OFF
-					chprintf(IFACE1, "%x", &rxbuff[i]);
+					chprintf(&SD1, "%x", &rxbuff[i]);
 				}
 				palSetLine(LINE_RF_868_CS);
 				chThdSleepMilliseconds(1);

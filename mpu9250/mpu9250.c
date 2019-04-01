@@ -164,7 +164,7 @@ uint16_t mpu9250_init(void) {
 uint8_t get_mag_whoami(void)
 {
 	uint8_t rawData;
-	rawData = read_AK8963_register(0x02);
+	rawData = read_AK8963_register(0x00);
 	return rawData;
 }
 

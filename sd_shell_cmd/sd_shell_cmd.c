@@ -3,8 +3,8 @@
 #include <shell.h>
 #include <string.h>
 #include <stdlib.h>
-#include "xbee.h"
 
+#include "xbee.h"
 
 
 
@@ -22,17 +22,20 @@ static const ShellConfig shell_cfg1 = {
 
 
 
-thread_t *cmd_init(){
+thread_t *cmd_init(void){
 	return chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
-		                 "shell", NORMALPRIO + 1,
+		                 "shell", NORMALPRIO + 10,
 		                  shellThread, (void *)&shell_cfg1);
 }
 
+
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
+	char p[10];
+	memcpy(p, argv[1], strlen(argv[1]));
 	if (argc >= 1)
 	{
 		if (!strcmp(argv[0], "read")){
-			xbee_read(chp, argc, argv);
+			xbee_read(chp, argc, p);
 			return;
 		}else if(!strcmp(argv[0], "write")){
 			xbee_write(chp, argc, argv);

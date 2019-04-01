@@ -4,15 +4,9 @@
 #include <ch.h>
 #include "hal.h"
 #include "chprintf.h"
-
-#define	START_STRING	"start"
-#define	STOP_STRING		"stop"
-#define	SET_PWM_STRING	"pwm"
-#define	GAS_STRING		"gas"
-#define	WELDING_STRING	"weld"
-
+#include <string.h>
 #define SHELL_SD         SD1
-#define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(4096)
+#define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(4096*2)
 
 thread_t *cmd_init(void);
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]);
