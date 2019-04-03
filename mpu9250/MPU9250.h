@@ -208,15 +208,7 @@ enum Mscale {
 };
 
 
-// parameters for 6 DoF sensor fusion calculations
-#define CONST_PI		3.14159265358979323846f
-#define CONST_GME		CONST_PI * (60.0f / 180.0f)
-#define CONST_beta		sqrt(3.0f / 4.0f) * CONST_GME
-#define CONST_GMD		CONST_PI * (1.0f / 180.0f)
-#define CONST_zeta		sqrt(3.0f / 4.0f) * CONST_GMD
 
-#define Kp 2.0f * 5.0f // these are the free parameters in the Mahony filter and fusion scheme, Kp for proportional feedback, Ki for integral
-#define Ki 0.0f
 
 uint16_t mpu9250_init(void);
 void mpu_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value);
@@ -236,6 +228,7 @@ uint8_t get_mag_whoami(void);
 uint8_t read_AK8963_register(uint8_t regaddr);
 void read_AK8963_registers(uint8_t regaddr, uint8_t num, uint8_t *buff);
 void write_AK8963_register(uint8_t regaddr, uint8_t data);
+void calibrateMPU9250(float * dest1, float * dest2);
 
 /*
 

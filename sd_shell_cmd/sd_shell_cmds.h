@@ -7,7 +7,7 @@
 #include <string.h>
 #define SHELL_SD         SD1
 #define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(4096*2)
-
+#define CHPRINTF_USE_FLOAT
 thread_t *cmd_init(void);
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_attn(BaseSequentialStream* chp, int argc, char* argv[]);
