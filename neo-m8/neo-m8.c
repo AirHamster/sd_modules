@@ -52,7 +52,7 @@ uint8_t neo_read_byte(SPIDriver *SPID, uint8_t reg_addr) {
 
 void neo_read_bytes(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf) {
 	uint8_t *txbuf[num];
-	memset(txbuf, 0xFF, 100);
+	memset(txbuf, 0xFF, num);
 	//palSetLine(LINE_GREEN_LED); /* LED ON.                          */
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
 	palClearLine(LINE_NEO_CS);
@@ -93,23 +93,26 @@ int8_t neo_find_ff(uint8_t *buff, uint8_t num){
 }
 
 void neo_switch_to_ubx(void){
-	uint8_t packet[28];
-	uint8_t len = 28;
-	memset(packet, 0, 28);
+	uint8_t packet[UBX_CFG_PRT_LEN + 8];
+	uint8_t len = UBX_CFG_PRT_LEN + 8;
+	uint16_t crc;
+	memset(packet, 0, UBX_CFG_PRT_LEN + 8);
 	neo_apply_header(packet, UBX_HEADER);
 	neo_apply_class(packet, UBX_CFG_CLASS);
 	neo_apply_id(packet, UBX_CFG_PRT_ID);
-	neo_apply_length(packet, UBX_CFG_PRT_LENGTH);
-	packet[6] = 4;
-	packet[19] = (1 << 0) | (1 << 5);
-	packet[21] = (1 << 0) | (1 << 5);
-	neo_apply_crc(packet, len);
+	neo_apply_length(packet, UBX_CFG_PRT_LEN);
+	packet[UBX_PAYLOAD + 0] = 4;
+	packet[UBX_PAYLOAD + 12] = (1 << 0) | (RTCM3_EN << 5);
+	packet[UBX_PAYLOAD + 14] = (1 << 0) | (RTCM3_EN << 5);
+	crc = neo_calc_crc(packet, len);
+	packet[len-2] = crc >> 8;
+	packet[len-1] = crc & 0xFF;
 	int i;
 	chprintf((BaseSequentialStream*)&SD1, "NMEA OFF: \n\r");
 	for (i = 0; i< len; i++){
 		chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
 	}
-	chprintf((BaseSequentialStream*)&SD1, ":\n\r");
+	chprintf((BaseSequentialStream*)&SD1, "\n\r");
 	neo_write(&SPID2, packet, len);
 }
 
@@ -128,7 +131,8 @@ void neo_apply_length(uint8_t *buffer, uint8_t len){
 	buffer[4] = len;
 	buffer[5] = 0;
 }
-void neo_apply_crc(uint8_t *buffer, uint8_t len){
+
+uint16_t neo_calc_crc(uint8_t *buffer, uint8_t len){
 	uint8_t crc_a = 0;
 	uint8_t crc_b = 0;
 	uint8_t i;
@@ -137,7 +141,55 @@ void neo_apply_crc(uint8_t *buffer, uint8_t len){
 		crc_a = crc_a + buffer[i];
 		crc_b = crc_b + crc_a;
 	}
-	buffer[len - 1] = crc_b;
-	buffer[len - 2] = crc_a;
+	return ((crc_a << 8) | crc_b);
+	//buffer[len - 1] = crc_b;
+	//buffer[len - 2] = crc_a;
 
+}
+void neo_set_pvt_1hz(){
+	uint8_t packet[UBX_CFG_MSG_LEN_SINGLE + 8];
+		uint8_t len = UBX_CFG_MSG_LEN_SINGLE + 8;
+		uint16_t crc;
+		memset(packet, 0, UBX_CFG_MSG_LEN_SINGLE + 8);
+		neo_apply_header(packet, UBX_HEADER);
+		neo_apply_class(packet, UBX_CFG_CLASS);
+		neo_apply_id(packet, UBX_CFG_MSG_ID);
+		neo_apply_length(packet, UBX_CFG_MSG_LEN_SINGLE);
+		packet[UBX_PAYLOAD + 0] = UBX_NAV_CLASS;
+		packet[UBX_PAYLOAD + 1] = UBX_NAV_PVT_ID;
+		packet[UBX_PAYLOAD + 2] = 1;
+		crc = neo_calc_crc(packet, len);
+		packet[len-2] = crc >> 8;
+		packet[len-1] = crc & 0xFF;
+		int i;
+		chprintf((BaseSequentialStream*)&SD1, "PVT_ON: \n\r");
+		for (i = 0; i< len; i++){
+			chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
+		}
+		chprintf((BaseSequentialStream*)&SD1, "\n\r");
+		neo_write(&SPID2, packet, len);
+}
+
+void neo_poll_prt(void){
+	uint8_t packet[0 + 8];
+		uint8_t len = 0 + 8;
+		uint16_t crc;
+		memset(packet, 0, 0 + 8);
+		neo_apply_header(packet, UBX_HEADER);
+		neo_apply_class(packet, UBX_CFG_CLASS);
+		neo_apply_id(packet, UBX_CFG_PRT_ID);
+		neo_apply_length(packet, 0);
+		//packet[UBX_PAYLOAD + 0] = UBX_NAV_CLASS;
+		//packet[UBX_PAYLOAD + 1] = UBX_NAV_PVT_ID;
+		//packet[UBX_PAYLOAD + 2] = 1;
+		crc = neo_calc_crc(packet, len);
+		packet[len-2] = crc >> 8;
+		packet[len-1] = crc & 0xFF;
+		int i;
+		chprintf((BaseSequentialStream*)&SD1, "PVT_ON: \n\r");
+		for (i = 0; i< len; i++){
+			chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
+		}
+		chprintf((BaseSequentialStream*)&SD1, "\n\r");
+		neo_write(&SPID2, packet, len);
 }
