@@ -33,6 +33,8 @@
 #define UBX_NAV_PVT_ID			0x07
 #define UBX_NAV_PVT_LEN			92
 
+#define UBX_CFG_RATE_ID
+#define UBX_CFG_RATE_LEN
 typedef uint8_t		U1;
 typedef uint8_t		RU1_3;
 typedef int8_t		I1;
