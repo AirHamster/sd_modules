@@ -247,10 +247,10 @@ void neo_poll_nav_pvt(void){
 	    		crc = ((pvt_message[i + pack_len-2] << 8) | (pvt_message[i +pack_len-1]));
 	    	//	chprintf((BaseSequentialStream*)&SD1, "i is %d \n\r", i);
 	    		if (crc == neo_calc_crc(&pvt_message[i], pack_len)){
-	    			chprintf((BaseSequentialStream*)&SD1, "CRC is the same \n\r");
+	    			//chprintf((BaseSequentialStream*)&SD1, "CRC is the same \n\r");
 	    			break;
 	    		}else{
-	    			chprintf((BaseSequentialStream*)&SD1, "CRC fault: %x vs %x \n\r", crc, neo_calc_crc(&pvt_message[i], pack_len));
+	    			//chprintf((BaseSequentialStream*)&SD1, "CRC fault: %x vs %x \n\r", crc, neo_calc_crc(&pvt_message[i], pack_len));
 	    			break;
 	    		}
 	    	}

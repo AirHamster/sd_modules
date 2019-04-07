@@ -32,20 +32,7 @@ thread_t *cmd_init(void){
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
 	char p[10];
 	memcpy(p, argv[1], strlen(argv[1]));
-	if (argc >= 1)
-	{
-		if (!strcmp(argv[0], "read")){
-			xbee_read(chp, argc, p);
-			return;
-		}else if(!strcmp(argv[0], "write")){
-			xbee_write(chp, argc, argv);
-			return;
-		}else if(!strcmp(argv[0], "attn")){
-			xbee_attn(chp, argc, argv);
-		}
-	}else{
-		chprintf(chp, "Usage: xbee read|write|attn <AT command>\n\r");
-	}
+	chprintf(chp, "Usage: xbee read|write|attn <AT command>\n\r");
 }
 
 

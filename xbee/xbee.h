@@ -16,11 +16,11 @@
 //#include <mem.h>
 #include <string.h>
 
-void xbee_read(BaseSequentialStream* chp, int argc, char* argv);
+void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff);
 void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]);
-void xbee_send(SPIDriver *SPID, uint8_t *buffer, uint8_t len);
+void xbee_send(SPIDriver *SPID, uint8_t len, uint8_t *txbuf);
 void xbee_attn(BaseSequentialStream* chp, int argc, char* argv[]);
-uint8_t xbee_create_at_read_message(char *at, uint8_t *buffer);
+uint8_t xbee_create_at_read_message(uint8_t *at, uint8_t *buffer);
 uint8_t xbee_create_at_write_message(char *at, uint8_t *buffer, uint8_t *data, uint8_t num);
 uint8_t xbee_calc_CRC(uint8_t *buffer, uint8_t num);
 uint8_t xbee_check_attn(void);

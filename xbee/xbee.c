@@ -6,31 +6,22 @@
  */
 #include "xbee.h"
 
-void xbee_read(BaseSequentialStream* chp, int argc, char* argv){
-	//(void)argv;
-	if (argc == 2){
-		uint8_t len;
-		char at[3];
-		uint8_t at2[9];
-		memcpy(at, argv, 3);
-		at2[8] = '\0';
-		//chprintf(chp, "Reading %s command \n\r", at);
+void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff){
+		uint8_t len, i;
+		uint8_t txbuff[20];
+		memset(txbuff, 0x00, 20);
+		//chprintf((BaseSequentialStream*)&SD1, "Reading %s command \n\r", at_msg);
 		chThdSleepMilliseconds(10);
-		len = xbee_create_at_read_message(at, at2);
-	    chprintf((BaseSequentialStream*)&SD1, "SPI %s %d\n\r", at2, len);
-		spiAcquireBus(&SPID1);              // Acquire ownership of the bus.
-		palClearLine(LINE_RF_868_CS);
-		chThdSleepMilliseconds(1);
-		spiSend(&SPID1, 8, at2); // send request
-		//spiExchange(&SPID1, 2, at, rxbuf); // Atomic transfer operations.
-		spiReleaseBus(&SPID1); // Ownership release.
-		palSetLine(LINE_RF_868_CS);
-		//len = xbee_create_at_read_message(argv[2], &txbuffer[0]);
-		//xbee_send(&SPID1, at2, len);
-
-	}else{
-		chprintf(chp, "Usage: xbee read <AT command>\n\r \n\r");
-	}
+		len = xbee_create_at_read_message(at_msg, txbuff);
+	    chprintf((BaseSequentialStream*)&SD1, "SPI ");
+	    for (i = 0; i < len; i++){
+	    	chprintf((BaseSequentialStream*)&SD1, "%x ", txbuff[i]);
+	    }
+	    chprintf((BaseSequentialStream*)&SD1, "\n\r");
+	    xbee_send(SPID, len, txbuff);
+		chThdSleepMilliseconds(10);
+		xbee_receive(SPID, rxlen, rxbuff);
+		spiReleaseBus(SPID); // Ownership release.
 }
 
 void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]){
@@ -57,7 +48,7 @@ void xbee_attn(BaseSequentialStream* chp, int argc, char* argv[]){
 	}
 }
 
-uint8_t xbee_create_at_read_message(char *at, uint8_t *buffer){
+uint8_t xbee_create_at_read_message(uint8_t *at, uint8_t *buffer){
 	uint8_t i = 0;
 	buffer[0] = 0x7E;	// Start delimiter
 	buffer[1] = 0x00;	// Length MSB
@@ -86,7 +77,19 @@ uint8_t xbee_create_at_write_message(char *at, uint8_t *buffer, uint8_t *data, u
 	return 8 + num;		// Return length of packet
 }
 
-void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len){
+void xbee_receive(SPIDriver *SPID, uint8_t len, uint8_t *rxbuf){
+	uint8_t txbuf[len];
+	memset(txbuf, 0xff, len);
+	spiAcquireBus(SPID);              	/* Acquire ownership of the bus.    */
+	palClearLine(LINE_RF_868_CS);
+	chThdSleepMilliseconds(1);
+	spiExchange(SPID, len, txbuf, rxbuf); // Atomic transfer operations.
+	spiReleaseBus(SPID); 				/* Ownership release.               */
+	palSetLine(LINE_RF_868_CS);
+	chThdSleepMilliseconds(1);
+}
+
+void xbee_send(SPIDriver *SPID, uint8_t len, uint8_t *txbuf){
 	palSetLine(LINE_RED_LED);
 	spiAcquireBus(SPID);              	/* Acquire ownership of the bus.    */
 	palClearLine(LINE_RF_868_CS);
