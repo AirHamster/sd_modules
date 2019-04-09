@@ -137,12 +137,12 @@ void neo_switch_to_ubx(void){
 	crc = neo_calc_crc(packet, len);
 	packet[len-2] = crc >> 8;
 	packet[len-1] = crc & 0xFF;
-	int i;
+	/*int i;
 	chprintf((BaseSequentialStream*)&SD1, "NMEA OFF: \n\r");
 	for (i = 0; i< len; i++){
 		chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
 	}
-	chprintf((BaseSequentialStream*)&SD1, "\n\r");
+	chprintf((BaseSequentialStream*)&SD1, "\n\r");*/
 	neo_write(&SPID2, packet, len);
 }
 
@@ -191,11 +191,11 @@ void neo_set_pvt_1hz(){
 		crc = neo_calc_crc(packet, len);
 		packet[len-2] = crc >> 8;
 		packet[len-1] = crc & 0xFF;
-		int i;
+		/*int i;
 		chprintf((BaseSequentialStream*)&SD1, "PVT_ON: \n\r");
 		for (i = 0; i< len; i++){
 			chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
-		}
+		}*/
 		chprintf((BaseSequentialStream*)&SD1, "\n\r");
 		neo_write(&SPID2, packet, len);
 }

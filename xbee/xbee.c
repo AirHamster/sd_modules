@@ -13,11 +13,11 @@ void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff)
 		//chprintf((BaseSequentialStream*)&SD1, "Reading %s command \n\r", at_msg);
 		chThdSleepMilliseconds(10);
 		len = xbee_create_at_read_message(at_msg, txbuff);
-	    chprintf((BaseSequentialStream*)&SD1, "SPI ");
-	    for (i = 0; i < len; i++){
-	    	chprintf((BaseSequentialStream*)&SD1, "%x ", txbuff[i]);
-	    }
-	    chprintf((BaseSequentialStream*)&SD1, "\n\r");
+	//    chprintf((BaseSequentialStream*)&SD1, "SPI ");
+	 //   for (i = 0; i < len; i++){
+	 //   	chprintf((BaseSequentialStream*)&SD1, "%x ", txbuff[i]);
+	  //  }
+	  //  chprintf((BaseSequentialStream*)&SD1, "\n\r");
 	    xbee_send(SPID, len, txbuff);
 		chThdSleepMilliseconds(10);
 		xbee_receive(SPID, rxlen, rxbuff);
