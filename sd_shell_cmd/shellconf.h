@@ -26,7 +26,7 @@
 /**
  * @brief   Enable shell command history
  */
-#define SHELL_USE_HISTORY           FALSE
+#define SHELL_USE_HISTORY           TRUE
 
 /**
  * @brief   Enable shell command completion
