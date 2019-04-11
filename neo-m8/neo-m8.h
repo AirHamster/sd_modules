@@ -20,10 +20,20 @@
 
 #define RTCM3_EN			0
 
-#define UBX_PAYLOAD			6
+#define UBX_HEADER_LEN			6
 #define CRC_LEN				2
 #define UBX_HEADER			0xB562
 #define UBX_CFG_CLASS		0x06
+#define UBX_ACK_CLASS		0x05
+#define UBX_INF_CLASS		0x04
+#define UBX_RXM_CLASS		0x02
+#define UBX_SEC_CLASS		0x27
+#define UBX_TIM_CLASS		0x0D
+#define UBX_UPD_CLASS		0x09
+#define UBX_AID_CLASS		0x0B
+#define UBX_ESF_CLASS		0x10
+#define UBX_HNR_CLASS		0x28
+#define UBX_MON_CLASS		0x0A
 #define UBX_CFG_PRT_ID		0x00
 #define UBX_CFG_PRT_LEN	20
 
@@ -105,8 +115,11 @@ void neo_apply_header(uint8_t *buffer, uint16_t header);
 void neo_apply_class(uint8_t *buffer, uint8_t class);
 void neo_apply_id(uint8_t *buffer, uint8_t id);
 void neo_apply_length(uint8_t *buffer, uint8_t len);
-uint16_t neo_calc_crc(uint8_t *buffer, uint8_t len);
+uint16_t neo_calc_crc(uint8_t *buffer, uint16_t len);
 
+void neo_process_pvt(uint8_t *message);
+void neo_process_nav(uint8_t *message);
+void neo_poll(void);
 int32_t neo_get_lat(nav_pvt_t *pvt);
 int32_t neo_get_lon(nav_pvt_t *pvt);
 uint8_t neo_get_numsv(nav_pvt_t *pvt);
