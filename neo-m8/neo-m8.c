@@ -141,7 +141,6 @@ void neo_process_nav(uint8_t *message){
 void neo_process_pvt(uint8_t *message){
 	const uint16_t pack_len = (UBX_NAV_PVT_LEN + UBX_HEADER_LEN + CRC_LEN);
 		uint8_t pvt_message[pack_len];
-		uint8_t i, j;
 		uint16_t crc;
 		neo_read_bytes(&SPID2, pack_len - UBX_HEADER_LEN, &pvt_message[UBX_HEADER_LEN]);
 		memcpy(pvt_message, message, UBX_HEADER_LEN);
@@ -153,10 +152,10 @@ void neo_process_pvt(uint8_t *message){
 */
 					crc = ((pvt_message[pack_len-2] << 8) | (pvt_message[pack_len-1]));
 		    		if (crc == neo_calc_crc(pvt_message, pack_len)){
-		    			neo_cp_to_struct(pvt_message, pvt_box);
+		    			neo_cp_to_struct(pvt_message, pvt_box, UBX_NAV_PVT_LEN);
 		    			//chprintf((BaseSequentialStream*)&SD1, "CRC is the same \n\r");
 		    		}else{
-		    			chprintf((BaseSequentialStream*)&SD1, "CRC fault: %x vs %x \n\r", crc, neo_calc_crc(&pvt_message[i], pack_len));
+		    			chprintf((BaseSequentialStream*)&SD1, "CRC fault: %x vs %x \n\r", crc, neo_calc_crc(pvt_message, pack_len));
    		}
 }
 
@@ -257,8 +256,8 @@ void neo_poll(void){
 		}
 	}
 }
-void neo_cp_to_struct(uint8_t *msg, nav_pvt_t *pvt){
-	memcpy(pvt, &msg[6], 92);
+void neo_cp_to_struct(uint8_t *msg, nav_pvt_t *pvt, uint8_t len){
+	memcpy(pvt, &msg[6], len);
 }
 
 

@@ -109,7 +109,7 @@ void neo_set_pvt_1hz(void);
 void neo_poll_prt(void);
 void neo_poll_nav_pvt(void);
 void neo_polling(SPIDriver *SPID, uint8_t class, uint8_t id);
-void neo_cp_to_struct(uint8_t *msg, nav_pvt_t *pvt);
+void neo_cp_to_struct(uint8_t *msg, nav_pvt_t *pvt, uint8_t len);
 
 void neo_apply_header(uint8_t *buffer, uint16_t header);
 void neo_apply_class(uint8_t *buffer, uint8_t class);
