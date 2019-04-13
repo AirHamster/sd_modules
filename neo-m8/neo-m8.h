@@ -60,6 +60,10 @@ typedef double		R8;
 typedef char		CH;
 
 typedef struct{
+	uint8_t suspend_state;
+}neo_struct_t;
+
+typedef struct{
 	U4 iTOW;
 	U2 year;
 	U1 month;

@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-enum output_threads output;
+extern output_struct_t *output;
 
 
 #include "xbee.h"
@@ -39,21 +39,21 @@ thread_t *cmd_init(void){
 void cmd_start(BaseSequentialStream* chp, int argc, char* argv[]){
 	if (argc != 0){
 	if (strcmp(argv[0], "test") == 0){
-		//toggle_test_output();
+		toggle_test_output();
 		chprintf(chp, "Test started\n\r");
 		return;
 	}
 	if (strcmp(argv[0], "gps") == 0){
-		//toggle_gps_output();
+		toggle_gps_output();
 		chprintf(chp, "GPS started\n\r");
 		return;
 	}
 	if (strcmp(argv[0], "ypr") == 0){
-		//toggle_ypr_output();
+		toggle_ypr_output();
 		return;
 	}
 	if (strcmp(argv[0], "gyro") == 0){
-		//toggle_gyro_output();
+		toggle_gyro_output();
 		return;
 	}
 	}
@@ -61,7 +61,7 @@ void cmd_start(BaseSequentialStream* chp, int argc, char* argv[]){
 }
 
 void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]){
-	//cancel_output();
+	stop_all_tests();
 	chprintf(chp, "Stopped all outputs\n\r");
 }
 
@@ -172,3 +172,25 @@ void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
 	chprintf(chp, "Usage: xbee addr|dest|mesh|rssi|ping|stat|lb\n\r");
 }
 
+void toggle_test_output(void){
+	output->test = 1;
+}
+
+void toggle_gps_output(void){
+	output->gps = (~output->gps) & 0x01;
+}
+
+void toggle_ypr_output(void){
+	output->ypr = (~output->ypr) & 0x01;
+}
+
+void toggle_gyro_output(void){
+	output->gyro = (~output->gyro) & 0x01;
+}
+
+void stop_all_tests(void){
+	output->test = 0;
+	output->gps = 0;
+	output->ypr = 0;
+	output->gyro = 0;
+}

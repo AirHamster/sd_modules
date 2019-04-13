@@ -14,6 +14,14 @@ enum output_threads{
 	GYRO
 };
 
+typedef struct{
+	uint8_t suspend_state;
+	uint8_t test;
+	uint8_t gps;
+	uint8_t ypr;
+	uint8_t gyro;
+
+}output_struct_t;
 thread_t *cmd_init(void);
 
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]);
@@ -26,4 +34,9 @@ void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]);
 
+void toggle_test_output(void);
+void toggle_gps_output(void);
+void toggle_ypr_output(void);
+void toggle_gyro_output(void);
+void stop_all_tests(void);
 #endif

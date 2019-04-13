@@ -144,6 +144,8 @@ uint8_t xbee_create_at_write_message(char *at, uint8_t *buffer, uint8_t *data, u
 uint8_t xbee_calc_CRC(uint8_t *buffer, uint8_t num);
 uint8_t xbee_check_attn(void);
 
+void xbee_get_rssi(void);
+void xbee_get_stat(void);
 void xbee_get_addr(void);
 void xbee_read_own_addr(xbee_struct_t *str);
 void xbee_set_loopback(char* argv[]);

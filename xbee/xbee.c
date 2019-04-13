@@ -6,7 +6,7 @@
  */
 #include "xbee.h"
 #include <string.h>
-extern thread_reference_t trp;
+extern thread_reference_t xbee_trp;
 extern xbee_struct_t *xbee;
 void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff){
 		uint8_t len, i;
@@ -184,19 +184,19 @@ uint8_t xbee_calc_CRC(uint8_t *buffer, uint8_t num){
 void xbee_get_addr(void){
 	xbee->suspend_state = 0;
 	chSysLockFromISR();
-	chThdResumeI(&trp, (msg_t)XBEE_GET_OWN_ADDR);  /* Resuming the thread with message.*/
+	chThdResumeI(&xbee_trp, (msg_t)XBEE_GET_OWN_ADDR);  /* Resuming the thread with message.*/
 	chSysUnlockFromISR();
 }
 
 void xbee_get_rssi(void){
 	chSysLockFromISR();
-	chThdResumeI(&trp, (msg_t)XBEE_GET_RSSI);  /* Resuming the thread with message.*/
+	chThdResumeI(&xbee_trp, (msg_t)XBEE_GET_RSSI);  /* Resuming the thread with message.*/
 	chSysUnlockFromISR();
 }
 
 void xbee_get_stat(void){
 	chSysLockFromISR();
-	chThdResumeI(&trp, (msg_t)XBEE_GET_STAT);  /* Resuming the thread with message.*/
+	chThdResumeI(&xbee_trp, (msg_t)XBEE_GET_STAT);  /* Resuming the thread with message.*/
 	chSysUnlockFromISR();
 }
 
@@ -216,7 +216,7 @@ void xbee_set_loopback(char* argv[]){
 void xbee_thread_execute(uint8_t command){
 	xbee->suspend_state = 0;
 	  chSysLock();
-	  chThdResume(&trp, command);  /* Resuming the thread with message.*/
+	  chThdResume(&xbee_trp, command);  /* Resuming the thread with message.*/
 	  chSysUnlock();
 }
 /*========================================================

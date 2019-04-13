@@ -208,7 +208,9 @@ enum Mscale {
 };
 
 
-
+typedef struct{
+	uint8_t suspend_state;
+}mpu_struct_t;
 
 uint16_t mpu9250_init(void);
 void mpu_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value);
