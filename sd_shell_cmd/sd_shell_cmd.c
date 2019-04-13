@@ -135,7 +135,7 @@ void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]){
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0){
 	if (strcmp(argv[0], "addr") == 0){
-		//xbee_get_addr();
+		xbee_get_addr();
 			return;
 	}
 	if (strcmp(argv[0], "dest") == 0){
@@ -149,18 +149,26 @@ void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
 		return;
 	}
 	if (strcmp(argv[0], "rssi") == 0){
-		//xbee_get_rssi();
+		xbee_get_rssi();
 		return;
 	}
 	if (strcmp(argv[0], "stat") == 0){
-		//xbee_get_stat();
+		xbee_get_stat();
 		return;
 	}
 	if (strcmp(argv[0], "ping") == 0){
 		//xbee_get_ping();
 		return;
 	}
+	if (strcmp(argv[0], "lb") == 0){
+		if (argc == 2){
+			xbee_set_loopback(argv);
+		}else{
+			xbee_get_lb_status();
+		}
+			return;
+		}
 	}
-	chprintf(chp, "Usage: ublox addr|dest|mesh|rssi|ping|stat\n\r");
+	chprintf(chp, "Usage: xbee addr|dest|mesh|rssi|ping|stat|lb\n\r");
 }
 

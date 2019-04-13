@@ -13,19 +13,16 @@
 #include "hal.h"
 #include "shell.h"
 #include "chprintf.h"
-//#include <mem.h>
-#include <string.h>
 
-void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff);
-void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]);
-void xbee_send(SPIDriver *SPID, uint8_t len, uint8_t *txbuf);
-void xbee_receive(SPIDriver *SPID, uint8_t len, uint8_t *rxbuf);
-void xbee_attn(BaseSequentialStream* chp, int argc, char* argv[]);
-uint8_t xbee_create_at_read_message(uint8_t *at, uint8_t *buffer);
-uint8_t xbee_create_at_write_message(char *at, uint8_t *buffer, uint8_t *data, uint8_t num);
-uint8_t xbee_calc_CRC(uint8_t *buffer, uint8_t num);
-uint8_t xbee_check_attn(void);
 
+#define XBEE_GET_OWN_ADDR		1
+#define XBEE_GET_RSSI			2
+#define XBEE_GET_PACKET_PAYLOAD	3
+#define XBEE_GET_STAT			4
+
+#define XBEE_TRANSMIT_FRAME		0x10
+#define XBEE_AT_FRAME			0x08
+#define XBEE_HEADER_LEN			3
 // Diagnostic commands
 
 #define AT_BC				"BC"	// Bytes Transmitted
@@ -120,5 +117,45 @@ uint8_t xbee_check_attn(void);
 #define AT_NP				"NP"	// Maximum Packet Payload Bytes
 #define AT_CK				"CK"	// Configuration CRC
 
+typedef struct{
+	uint32_t own_addr_h;
+	uint32_t own_addr_l;
+	uint32_t dest_addr_h;
+	uint32_t dest_addr_l;
+	uint16_t packet_payload;
+	uint16_t rssi;
+	uint16_t bytes_transmitted;
+	uint16_t rec_err_count;
+	uint16_t good_packs_res;
+	uint16_t trans_errs;
+	uint16_t unicast_trans_count;
+	uint8_t suspend_state;
+	uint8_t loopback_mode;
+}xbee_struct_t;
+
+void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff);
+void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]);
+void xbee_send(SPIDriver *SPID, uint8_t len, uint8_t *txbuf);
+void xbee_receive(SPIDriver *SPID, uint8_t len, uint8_t *rxbuf);
+void xbee_attn(BaseSequentialStream* chp, int argc, char* argv[]);
+
+uint8_t xbee_create_at_read_message(uint8_t *at, uint8_t *buffer);
+uint8_t xbee_create_at_write_message(char *at, uint8_t *buffer, uint8_t *data, uint8_t num);
+uint8_t xbee_calc_CRC(uint8_t *buffer, uint8_t num);
+uint8_t xbee_check_attn(void);
+
+void xbee_get_addr(void);
+void xbee_read_own_addr(xbee_struct_t *str);
+void xbee_set_loopback(char* argv[]);
+void xbee_get_lb_status(void);
+void xbee_thread_execute(uint8_t command);
+
+uint16_t xbee_read_last_rssi(xbee_struct_t *xbee_str);
+uint16_t xbee_get_packet_payload(xbee_struct_t *xbee_str);
+uint16_t xbee_get_bytes_transmitted(xbee_struct_t *xbee_str);
+uint16_t xbee_get_good_packets_res(xbee_struct_t *xbee_str);
+uint16_t xbee_get_received_err_count(xbee_struct_t *xbee_str);
+uint16_t xbee_get_transceived_err_count(xbee_struct_t *xbee_str);
+uint16_t xbee_get_unicast_trans_count(xbee_struct_t *xbee_str);
 
 #endif /* SD_MODULES_XBEE_XBEE_H_ */
