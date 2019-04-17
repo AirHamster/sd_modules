@@ -6,26 +6,34 @@
  */
 #include "xbee.h"
 #include <string.h>
+#include <stdint.h>
+#include <stdlib.h>
 extern thread_reference_t xbee_trp;
-extern xbee_struct_t *xbee;
+extern thread_reference_t xbee_poll_trp;
+extern uint8_t payload[];
+extern struct ch_semaphore usart1_semaph;
+xbee_struct_t xbee_struct;
+xbee_struct_t *xbee = &xbee_struct;
+
 void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff){
-		uint8_t len, i;
+		uint8_t len;
 		uint8_t txbuff[20];
 		memset(txbuff, 0x00, 20);
-		chprintf((BaseSequentialStream*)&SD1, "Reading %s command \n\r", at_msg);
+		//chprintf((BaseSequentialStream*)&SD1, "Reading %s command \n\r", at_msg);
 		chThdSleepMilliseconds(10);
 		len = xbee_create_at_read_message(at_msg, txbuff);
-	    chprintf((BaseSequentialStream*)&SD1, "SPI ");
+	    /*chprintf((BaseSequentialStream*)&SD1, "SPI ");
 	    for (i = 0; i < len; i++){
 	    	chprintf((BaseSequentialStream*)&SD1, "%x ", txbuff[i]);
 	    }
 	    chprintf((BaseSequentialStream*)&SD1, "\n\r");
-
-	    xbee_send(SPID, len, txbuff);
+*/
+	    xbee_send(SPID, txbuff, len);
 		chThdSleepMilliseconds(10);
 		xbee_receive(SPID, rxlen, rxbuff);
 		spiReleaseBus(SPID); // Ownership release.
 }
+
 
 void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]){
 	if (argc == 3){
@@ -34,7 +42,7 @@ void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]){
 		char *at = argv[1];
 		uint32_t var = atoi(argv[2]);
 		chprintf(chp, "Write %s %x command \n\r", at, var);
-		len = xbee_create_at_read_message(argv[2], &txbuffer[0]);
+		len = xbee_create_at_read_message((uint8_t*)argv[2], &txbuffer[0]);
 
 		xbee_send(&SPID1, &txbuffer[0], len);
 	}else{
@@ -43,6 +51,7 @@ void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]){
 }
 
 void xbee_attn(BaseSequentialStream* chp, int argc, char* argv[]){
+	(void)argv;
 	if (argc == 1){
 	uint8_t stat = palReadLine(LINE_RF_868_SPI_ATTN);
 	chprintf(chp, "ATIIN pin: %d \n\r", stat);
@@ -52,7 +61,6 @@ void xbee_attn(BaseSequentialStream* chp, int argc, char* argv[]){
 }
 
 uint8_t xbee_create_at_read_message(uint8_t *at, uint8_t *buffer){
-	uint8_t i = 0;
 	buffer[0] = 0x7E;	// Start delimiter
 	buffer[1] = 0x00;	// Length MSB
 	buffer[2] = 0x04;	// Length LSB
@@ -81,7 +89,6 @@ uint8_t xbee_create_at_write_message(char *at, uint8_t *buffer, uint8_t *data, u
 }
 
 uint8_t xbee_create_data_read_message(uint8_t *at, uint8_t *buffer){
-	uint8_t i = 0;
 	buffer[0] = 0x7E;	// Start delimiter
 	buffer[1] = 0x00;	// Length MSB
 	buffer[2] = 0x04;	// Length LSB
@@ -93,25 +100,31 @@ uint8_t xbee_create_data_read_message(uint8_t *at, uint8_t *buffer){
 	return 8;	// Return length of packet
 }
 
-uint8_t xbee_create_data_write_message(char *at, uint8_t *buffer, uint8_t *data, uint8_t num){
+uint8_t xbee_create_data_write_message(uint8_t *buffer, uint8_t *data, uint8_t num){
 	uint8_t i = 0;
 	buffer[0] = 0x7E;	// Start delimiter
-	buffer[1] = (XBEE_HEADER_LEN + num + 2) << 8;	// Length MSB
-	buffer[2] = (XBEE_HEADER_LEN + num + 2) & 0xFF;	// Length LSB
+	buffer[1] = (num + 14) << 8;	// Length MSB
+	buffer[2] = (num + 14) & 0xFF;	// Length LSB
 	buffer[3] = XBEE_TRANSMIT_FRAME;	// Frame type - AT command
-	buffer[4] = at[0];	// Frame ID - it will return back
-	buffer[5] = xbee->dest_addr_h;	// Destination address MSB
-	buffer[6] = xbee->dest_addr_l;	// Destination address LSB
-	buffer[7] = 0xFF;				// Reserved, 0xff required
-	buffer[8] = 0xFE;				// Reserved, 0xfe required
-	buffer[9] = 0;					// Broadcast radius (num of mesh hops)
-	buffer[10] = 1 << 6;			// Delivery method (point-multipoint now)
+	buffer[4] = 'T';	// Frame ID - it will return back
+	buffer[5] = xbee->dest_addr_h << 24;	// Destination address MSB
+	buffer[6] = xbee->dest_addr_h << 16;	// Destination address MSB
+	buffer[7] = xbee->dest_addr_h << 8;	// Destination address MSB
+	buffer[8] = xbee->dest_addr_h;	// Destination address MSB
+	buffer[9] = xbee->dest_addr_l << 24;	// Destination address LSB
+	buffer[10] = xbee->dest_addr_l << 16;	// Destination address LSB
+	buffer[11] = xbee->dest_addr_l << 8;	// Destination address LSB
+	buffer[12] = xbee->dest_addr_l;	// Destination address LSB
+	buffer[13] = 0xFF;				// Reserved, 0xff required
+	buffer[14] = 0xFE;				// Reserved, 0xfe required
+	buffer[15] = 0;					// Broadcast radius (num of mesh hops)
+	buffer[16] = 1 << 6;			// Delivery method (point-multipoint now)
 	// Payload copying
 	for (i = 0; i < num; i++){
 		buffer[11+i] = data[i];
 	}
-	buffer[11+num] = xbee_calc_CRC(&buffer[3], 4 + num);
-	return 8 + num;		// Return length of packet
+	buffer[17+num] = xbee_calc_CRC(&buffer[3], 4 + num);
+	return 17 + num;		// Return length of packet
 }
 
 void xbee_receive(SPIDriver *SPID, uint8_t len, uint8_t *rxbuf){
@@ -126,8 +139,8 @@ void xbee_receive(SPIDriver *SPID, uint8_t len, uint8_t *rxbuf){
 	chThdSleepMilliseconds(1);
 }
 
-void xbee_send(SPIDriver *SPID, uint8_t len, uint8_t *txbuf){
-	palSetLine(LINE_RED_LED);
+void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len){
+	//palSetLine(LINE_RED_LED);
 	spiAcquireBus(SPID);              	/* Acquire ownership of the bus.    */
 	palClearLine(LINE_RF_868_CS);
 	chThdSleepMilliseconds(1);
@@ -136,7 +149,20 @@ void xbee_send(SPIDriver *SPID, uint8_t len, uint8_t *txbuf){
 	spiReleaseBus(SPID); 				/* Ownership release.               */
 	palSetLine(LINE_RF_868_CS);
 	chThdSleepMilliseconds(1);
-	palClearLine(LINE_RED_LED);
+	//palClearLine(LINE_RED_LED);
+}
+
+void xbee_read_no_cs(SPIDriver *SPID, uint8_t len, uint8_t *rxbuff){
+	uint8_t txbuff[len];
+	memset(txbuff, 0xFF, len);
+	spiAcquireBus(SPID);              	/* Acquire ownership of the bus.    */
+	palClearLine(LINE_RF_868_CS);
+	//chThdSleepMilliseconds(1);
+	//spiSend(SPID, len, txbuf);
+	spiExchange(SPID, 8, rxbuff, txbuff); 			/* Atomic transfer operations.      */
+	spiReleaseBus(SPID); 				/* Ownership release.               */
+	//palSetLine(LINE_RF_868_CS);
+	chThdSleepMilliseconds(1);
 }
 
 uint8_t xbee_check_attn(void){
@@ -154,7 +180,6 @@ uint8_t xbee_check_attn(void){
 					spiReleaseBus(&SPID1); // Ownership release.
 					chThdSleepMilliseconds(1);
 					//palClearLine(LINE_GREEN_LED); // LED OFF
-					chprintf(&SD1, "%x", &rxbuff[i]);
 				}
 				palSetLine(LINE_RF_868_CS);
 				chThdSleepMilliseconds(1);
@@ -164,6 +189,7 @@ uint8_t xbee_check_attn(void){
 				return 0;
 			}
 }
+
 uint8_t xbee_calc_CRC(uint8_t *buffer, uint8_t num){
 	uint8_t i;
 	uint16_t sum = 0;
@@ -213,6 +239,12 @@ void xbee_set_loopback(char* argv[]){
 		chprintf((BaseSequentialStream*)&SD1, "Usage: xbee lb <on|off>\n\r");
 	}
 }
+
+void xbee_get_ping(void){
+	chSysLockFromISR();
+	chThdResumeI(&xbee_trp, (msg_t)XBEE_GET_PING);  /* Resuming the thread with message.*/
+	chSysUnlockFromISR();
+}
 void xbee_thread_execute(uint8_t command){
 	xbee->suspend_state = 0;
 	  chSysLock();
@@ -227,119 +259,173 @@ void xbee_thread_execute(uint8_t command){
 
 void xbee_read_own_addr(xbee_struct_t *xbee_str){
 	uint8_t packet[15];
-	uint8_t i;
+
 	uint32_t address_l, address_h;
-	xbee_read(&SPID1, 8+6, "SL", packet);
-	/*chprintf((BaseSequentialStream*)&SD1, "ADDR_L ");
+	xbee_read(&SPID1, 8+6, (uint8_t*)"SL", packet);
+	/*uint8_t i;
+	chprintf((BaseSequentialStream*)&SD1, "ADDR_L ");
 		    for (i = 0; i < 15; i++){
 		    	chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
 		    }
-		    chprintf((BaseSequentialStream*)&SD1, "\n\r");
-	address_l = packet[8] << 24 | packet[9] << 16 | packet[10] << 8 | packet[11];*/
-	xbee_read(&SPID1, 8+6, "SH", packet);
+		    chprintf((BaseSequentialStream*)&SD1, "\n\r"); */
+	address_l = packet[8] << 24 | packet[9] << 16 | packet[10] << 8 | packet[11];
+	xbee_read(&SPID1, 8+6, (uint8_t*)"SH", packet);
 	/*	chprintf((BaseSequentialStream*)&SD1, "ADDR_H ");
 			    for (i = 0; i < 15; i++){
 			    	chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
 			    }
-			    chprintf((BaseSequentialStream*)&SD1, "\n\r");*/
+			    chprintf((BaseSequentialStream*)&SD1, "\n\r"); */
 	address_h = packet[8] << 24 | packet[9] << 16 | packet[10] << 8 | packet[11];
 	xbee_str->own_addr_h = address_h;
 	xbee_str->own_addr_l = address_l;
+	chSemWait(&usart1_semaph);
 	chprintf((BaseSequentialStream*)&SD1, "ADDR is %x%x\n\r", address_h, address_l);
+	chSemSignal(&usart1_semaph);
 }
 
 uint16_t xbee_read_last_rssi(xbee_struct_t *xbee_str){
 	uint8_t packet[15];
-	uint8_t i;
-	xbee_read(&SPID1, 8+6, "DB", packet);
+	(void)xbee_str;
+	xbee_read(&SPID1, 8+6, (uint8_t*)"DB", packet);
+	/*uint8_t i;
 	chprintf((BaseSequentialStream*)&SD1, "RSSI ");
 		    for (i = 0; i < 15; i++){
 		    	chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
 		    }
-		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
+		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");*/
     return (packet[7] << 8) | packet[8];
 }
 
 uint16_t xbee_get_packet_payload(xbee_struct_t *xbee_str){
 	uint8_t packet[15];
-	uint8_t i;
-	uint32_t address_l, address_h;
-	xbee_read(&SPID1, 8+6, "NP", packet);
+
+	xbee_read(&SPID1, 8+6, (uint8_t*)"NP", packet);
+	/*uint8_t i;
 	chprintf((BaseSequentialStream*)&SD1, "Packet payload: ");
 		    for (i = 0; i < 15; i++){
 		    	chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
 		    }
-		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
+		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");*/
 	xbee_str->packet_payload = ((packet[8] << 8) | packet[9]);
 	return ((packet[8] << 8) | packet[9]);
 }
 
 uint16_t xbee_get_bytes_transmitted(xbee_struct_t *xbee_str){
 	uint8_t packet[15];
-	uint8_t i;
-	uint32_t address_l, address_h;
-	xbee_read(&SPID1, 8+6, "BC", packet);
+
+	xbee_read(&SPID1, 8+6, (uint8_t*)"BC", packet);
+	/*uint8_t i;
 	chprintf((BaseSequentialStream*)&SD1, "BC: ");
 		    for (i = 0; i < 15; i++){
 		    	chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
 		    }
-		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
+		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");*/
 	xbee_str->bytes_transmitted = ((packet[8] << 8) | packet[9]);
 	return ((packet[7] << 8) | packet[8]);
 }
 
 uint16_t xbee_get_good_packets_res(xbee_struct_t *xbee_str){
 	uint8_t packet[15];
-	uint8_t i;
-	uint32_t address_l, address_h;
-	xbee_read(&SPID1, 8+6, "GD", packet);
+
+	xbee_read(&SPID1, 8+6, (uint8_t*)"GD", packet);
+	/*
+	 uint8_t i;
 	chprintf((BaseSequentialStream*)&SD1, "GD: ");
 		    for (i = 0; i < 15; i++){
 		    	chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
 		    }
-		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
+		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");*/
 	xbee_str->good_packs_res = ((packet[8] << 8) | packet[9]);
 	return ((packet[8] << 8) | packet[9]);
 }
 
 uint16_t xbee_get_received_err_count(xbee_struct_t *xbee_str){
 	uint8_t packet[15];
-	uint8_t i;
-	uint32_t address_l, address_h;
-	xbee_read(&SPID1, 8+6, "ER", packet);
-	chprintf((BaseSequentialStream*)&SD1, "ER: ");
+
+	xbee_read(&SPID1, 8+6, (uint8_t*)"ER", packet);
+	/*
+	  uint8_t i;
+	  chprintf((BaseSequentialStream*)&SD1, "ER: ");
 		    for (i = 0; i < 15; i++){
 		    	chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
 		    }
-		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
+		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");*/
 	xbee_str->rec_err_count = ((packet[8] << 8) | packet[9]);
 	return ((packet[8] << 8) | packet[9]);
 }
 
 uint16_t xbee_get_transceived_err_count(xbee_struct_t *xbee_str){
 	uint8_t packet[15];
-	uint8_t i;
-	uint32_t address_l, address_h;
-	xbee_read(&SPID1, 8+6, "TR", packet);
-	chprintf((BaseSequentialStream*)&SD1, "TR: ");
+
+	xbee_read(&SPID1, 8+6, (uint8_t*)"TR", packet);
+/*
+ 	 uint8_t i;
+ 	 chprintf((BaseSequentialStream*)&SD1, "TR: ");
 		    for (i = 0; i < 15; i++){
 		    	chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
 		    }
-		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
+		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");*/
 	xbee_str->trans_errs = ((packet[8] << 8) | packet[9]);
 	return ((packet[8] << 8) | packet[9]);
 }
 
 uint16_t xbee_get_unicast_trans_count(xbee_struct_t *xbee_str){
 	uint8_t packet[15];
-	uint8_t i;
-	uint32_t address_l, address_h;
-	xbee_read(&SPID1, 8+6, "UA", packet);
-	chprintf((BaseSequentialStream*)&SD1, "UA: ");
+
+	xbee_read(&SPID1, 8+6, (uint8_t*)"UA", packet);
+	/*
+	  uint8_t i;
+	  chprintf((BaseSequentialStream*)&SD1, "UA: ");
 		    for (i = 0; i < 15; i++){
 		    	chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
 		    }
-		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
+		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");*/
 	xbee_str->unicast_trans_count = ((packet[8] << 8) | packet[9]);
 	return ((packet[8] << 8) | packet[9]);
+}
+
+void xbee_send_ping_message(xbee_struct_t *xbee_strc){
+
+	uint8_t buffer[17+5];
+	xbee_strc->dest_addr_h = 0x013A200;
+	xbee_strc->dest_addr_l = 0x418856B2;
+	xbee_create_data_write_message(buffer, (uint8_t*)"HELLO", 5);
+	/*uint8_t i;
+	chprintf((BaseSequentialStream*)&SD1, "TX: ");
+			    for (i = 0; i < 18; i++){
+			    	chprintf((BaseSequentialStream*)&SD1, "%x ", buffer[i]);
+			    }
+			    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");*/
+	xbee_send(&SPID1, buffer, 18);
+
+}
+
+void xbee_attn_event(void){
+	chSysLockFromISR();
+	//chThdResumeI(&xbee_poll_trp, (msg_t)0x1137);  /* Resuming the thread with message.*/
+	chSysUnlockFromISR();
+	//palToggleLine(LINE_RED_LED);
+}
+
+void xbee_process_at_response(uint8_t* buffer){
+	(void)buffer;
+}
+
+void xbee_process_tx_stat(uint8_t* buffer){
+	(void)buffer;
+}
+
+void xbee_process_recieve(uint8_t* buffer){
+	//uint32_t sender_addr_h = buffer[4] << 24 | buffer[5] << 16 | buffer[6] << 8 | buffer[7];
+	//uint32_t sender_addr_l = buffer[8] << 24 | buffer[9] << 16 | buffer[10] << 8 | buffer[11];
+	//uint8_t packet_opts = buffer[14];
+	memset(payload, 0x00, 256);
+	memcpy(payload, &buffer[15], buffer[3]);
+	if (xbee->loopback_mode){
+		//xbee_send_payoad
+	}
+}
+
+void xbee_process_node_id(uint8_t* buffer){
+	(void)buffer;
 }

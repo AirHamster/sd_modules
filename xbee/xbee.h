@@ -19,10 +19,26 @@
 #define XBEE_GET_RSSI			2
 #define XBEE_GET_PACKET_PAYLOAD	3
 #define XBEE_GET_STAT			4
+#define XBEE_GET_PING			5
 
-#define XBEE_TRANSMIT_FRAME		0x10
-#define XBEE_AT_FRAME			0x08
-#define XBEE_HEADER_LEN			3
+#define XBEE_AT_FRAME				0x08
+#define XBEE_AT_QUEUE_FRAME			0x09
+#define XBEE_TRANSMIT_REQ_FRAME		0x10
+#define XBEE_EXPLICIT_ADDR_FRAME	0x11
+#define XBEE_REMOTE_AT_FRAME		0x17
+#define XBEE_AT_RESPONSE_FRAME		0x88
+#define XBEE_MODEM_STAT_FRAME		0x8A
+#define XBEE_TRANSMIT_STAT_FRAME	0x8B
+#define XBEE_ROUTE_INF_FRAME		0x8D
+#define XBEE_AGGREGATE_ADDR_FRAME	0x8E
+#define XBEE_RECEIVE_PACKET_FRAME	0x90
+#define XBEE_EXPLICIT_RX_FRAME		0x91
+#define XBEE_DATA_SAMPLE_FRAME		0x92
+#define XBEE_NODE_ID_FRAME			0x95
+#define XBEE_REMOTE_RESPONSE_FRAME	0x97
+#define XBEE_TRANSMIT_FRAME			0x10
+
+#define XBEE_HEADER_LEN				3
 // Diagnostic commands
 
 #define AT_BC				"BC"	// Bytes Transmitted
@@ -130,27 +146,36 @@ typedef struct{
 	uint16_t trans_errs;
 	uint16_t unicast_trans_count;
 	uint8_t suspend_state;
+	uint8_t poll_suspend_state;
 	uint8_t loopback_mode;
 }xbee_struct_t;
 
 void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff);
 void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]);
-void xbee_send(SPIDriver *SPID, uint8_t len, uint8_t *txbuf);
+void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len);
+void xbee_read_no_cs(SPIDriver *SPID, uint8_t len, uint8_t *rxbuff);
 void xbee_receive(SPIDriver *SPID, uint8_t len, uint8_t *rxbuf);
 void xbee_attn(BaseSequentialStream* chp, int argc, char* argv[]);
+void xbee_attn_event(void);
 
 uint8_t xbee_create_at_read_message(uint8_t *at, uint8_t *buffer);
-uint8_t xbee_create_at_write_message(char *at, uint8_t *buffer, uint8_t *data, uint8_t num);
+uint8_t xbee_create_data_write_message(uint8_t *buffer, uint8_t *data, uint8_t num);
 uint8_t xbee_calc_CRC(uint8_t *buffer, uint8_t num);
 uint8_t xbee_check_attn(void);
 
 void xbee_get_rssi(void);
 void xbee_get_stat(void);
 void xbee_get_addr(void);
+void xbee_get_ping(void);
 void xbee_read_own_addr(xbee_struct_t *str);
 void xbee_set_loopback(char* argv[]);
 void xbee_get_lb_status(void);
 void xbee_thread_execute(uint8_t command);
+
+void xbee_process_at_response(uint8_t* buffer);
+void xbee_process_tx_stat(uint8_t* buffer);
+void xbee_process_recieve(uint8_t* buffer);
+void xbee_process_node_id(uint8_t* buffer);
 
 uint16_t xbee_read_last_rssi(xbee_struct_t *xbee_str);
 uint16_t xbee_get_packet_payload(xbee_struct_t *xbee_str);

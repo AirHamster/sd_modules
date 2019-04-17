@@ -9,7 +9,8 @@
 #include "shell.h"
 #include "chprintf.h"
 
-#define SERIAL_DEBUG true
+#define MPU_GET_GYRO_DATA		0x01
+#define MPU_GET_MAGN_DATA		0x02
 
 // See also MPU-9250 Register Map and Descriptions, Revision 4.0,
 // RM-MPU-9250A-00, Rev. 1.4, 9/9/2013 for registers not listed in above
@@ -231,42 +232,6 @@ uint8_t read_AK8963_register(uint8_t regaddr);
 void read_AK8963_registers(uint8_t regaddr, uint8_t num, uint8_t *buff);
 void write_AK8963_register(uint8_t regaddr, uint8_t data);
 void calibrateMPU9250(float * dest1, float * dest2);
-
-/*
-
-
-// Pin definitions
-int intPin = 12;  // These can be changed, 2 and 3 are the Arduinos ext int pins
-
-int16_t accelCount[3];  // Stores the 16-bit signed accelerometer sensor output
-int16_t gyroCount[3];   // Stores the 16-bit signed gyro sensor output
-int16_t magCount[3];    // Stores the 16-bit signed magnetometer sensor output
-float magCalibration[3] = {0, 0, 0}, magbias[3] = {0, 0, 0};  // Factory mag calibration and mag bias
-float gyroBias[3] = {0, 0, 0}, accelBias[3] = {0, 0, 0}; // Bias corrections for gyro and accelerometer
-float ax, ay, az, gx, gy, gz, mx, my, mz; // variables to hold latest sensor data values
-int16_t tempCount;   // Stores the real internal chip temperature in degrees Celsius
-float temperature;
-float SelfTest[6];
-
-int delt_t = 0; // used to control display output rate
-int count = 0;  // used to control display output rate
-
-// parameters for 6 DoF sensor fusion calculations
-float PI = 3.14159265358979323846f;
-float GyroMeasError = PI * (60.0f / 180.0f);     // gyroscope measurement error in rads/s (start at 60 deg/s), then reduce after ~10 s to 3
-float beta = sqrt(3.0f / 4.0f) * GyroMeasError;  // compute beta
-float GyroMeasDrift = PI * (1.0f / 180.0f);      // gyroscope measurement drift in rad/s/s (start at 0.0 deg/s/s)
-float zeta = sqrt(3.0f / 4.0f) * GyroMeasDrift;  // compute zeta, the other free parameter in the Madgwick scheme usually set to a small or zero value
-#define Kp 2.0f * 5.0f // these are the free parameters in the Mahony filter and fusion scheme, Kp for proportional feedback, Ki for integral
-#define Ki 0.0f
-
-float pitch, yaw, roll;
-float deltat = 0.0f;                             // integration interval for both filter schemes
-int lastUpdate = 0, firstUpdate = 0, Now = 0;    // used to calculate integration interval                               // used to calculate integration interval
-float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};           // vector to hold quaternion
-float eInt[3] = {0.0f, 0.0f, 0.0f};              // vector to hold integral error for Mahony method
-
-
-*/
+void mpu_get_gyro_data(void);
 
 #endif
