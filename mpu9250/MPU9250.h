@@ -211,6 +211,19 @@ enum Mscale {
 
 typedef struct{
 	uint8_t suspend_state;
+	float aRes, gRes, mRes;      // scale resolutions per LSB for the sensors
+	float pitch, yaw, roll;
+	float magCalibration[3], magbias[3];  // Factory mag calibration and mag bias
+	float gyroBias[3], accelBias[3]; // Bias corrections for gyro and accelerometer
+	float ax, ay, az, gx, gy, gz, mx, my, mz; // variables to hold latest sensor data values
+	int16_t accel_data[3];
+	int16_t gyro_data[3];
+	int16_t mag_data[3];
+	float calib[3];
+	int16_t accelCount[3];  // Stores the 16-bit signed accelerometer sensor output
+	int16_t gyroCount[3];   // Stores the 16-bit signed gyro sensor output
+	int16_t magCount[3];    // Stores the 16-bit signed magnetometer sensor output
+
 }mpu_struct_t;
 
 uint16_t mpu9250_init(void);

@@ -8,6 +8,7 @@
 #include "neo-m8.h"
 
 extern struct ch_semaphore usart1_semaph;
+extern const SPIConfig neo_spi_cfg;
 ubx_nav_pvt_t pvt;
 ubx_nav_pvt_t *pvt_box = &pvt;
 
@@ -28,6 +29,7 @@ ubx_cfg_rate_t *rate_box = &rate_struct;
 
 void neo_write(SPIDriver *SPID, uint8_t *txbuff, uint8_t len) {
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
+	//spiStart(&SPID2, &neo_spi_cfg);
 	palClearLine(LINE_NEO_CS);
 	chThdSleepMilliseconds(1);
 	spiSend(SPID, len, txbuff); /* send request       */
@@ -40,6 +42,7 @@ void neo_read_bytes(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf) {
 	uint8_t *txbuf[num];
 	memset(txbuf, 0xFF, num);
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
+	//spiStart(&SPID2, &neo_spi_cfg);
 	palClearLine(LINE_NEO_CS);
 	chThdSleepMilliseconds(1);
 	spiExchange(SPID, num, txbuf, rxbuf); /* Atomic transfer operations.      */
@@ -52,6 +55,7 @@ void neo_read_bytes_no_cs(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf) {
 	uint8_t *txbuf[num];
 	memset(txbuf, 0xFF, num);
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
+	//spiStart(&SPID2, &neo_spi_cfg);
 	palClearLine(LINE_NEO_CS);
 	spiExchange(SPID, num, txbuf, rxbuf); /* Atomic transfer operations.      */
 	spiReleaseBus(SPID); /* Ownership release.               */
@@ -271,12 +275,14 @@ void neo_process_pvt(uint8_t *message){
 	uint16_t crc;
 	neo_read_bytes(&SPID2, pack_len - UBX_HEADER_LEN, &pvt_message[UBX_HEADER_LEN]);
 	memcpy(pvt_message, message, UBX_HEADER_LEN);
-	/*chprintf((BaseSequentialStream*)&SD1, "SPI2: ");
-					    			    for (j = 0; j < 100; j++){
+	/*chSemWait(&usart1_semaph);
+	int8_t j;
+	chprintf((BaseSequentialStream*)&SD1, "SPI2: ");
+					    			    for (j = 0; j < pack_len; j++){
 						    			    	chprintf((BaseSequentialStream*)&SD1, "%x ", pvt_message[j]);
 						    			    }
 						    			    chprintf((BaseSequentialStream*)&SD1, "\n\r");
-	 */
+	chSemSignal(&usart1_semaph); */
 	crc = ((pvt_message[pack_len-2] << 8) | (pvt_message[pack_len-1]));
 	if (crc == neo_calc_crc(pvt_message, pack_len)){
 		neo_cp_to_struct(pvt_message, (uint8_t*)pvt_box, UBX_NAV_PVT_LEN);

@@ -5,6 +5,9 @@
  *      Author: a-h
  */
 #include "neo_ubx.h"
+#include "sd_shell_cmds.h"
+
+extern thread_reference_t shell_trp;
 
 void neo_toggle_slas(uint8_t stat){
 	if (stat == true){
@@ -82,8 +85,21 @@ void neo_set_vel_gain(char* val){
 	}
 }
 
+void neo_get_rate_status(void){
+	chSysLockFromISR();
+	chThdResumeI(&shell_trp, (msg_t)SHELL_UBX_RATE_STATUS);  /* Resuming the thread with message.*/
+	chSysUnlockFromISR();
+}
+void neo_set_rate_ms(uint8_t val){
+	(void)val;
+	chSysLockFromISR();
+	chThdResumeI(&shell_trp, (msg_t)SHELL_UBX_RATE_SET);  /* Resuming the thread with message.*/
+	chSysUnlockFromISR();
+}
 void neo_get_lpf_status(void){
-
+	chSysLockFromISR();
+	chThdResumeI(&shell_trp, (msg_t)SHELL_UBX_COG_STATUS);  /* Resuming the thread with message.*/
+	chSysUnlockFromISR();
 }
 
 void neo_get_slas_sbas_status(void){

@@ -40,9 +40,11 @@ static const ShellConfig shell_cfg1 = {
 
 thread_t *cmd_init(void){
 	return chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
-			"shell", NORMALPRIO + 10,
+			"shell", NORMALPRIO,
 			shellThread, (void *)&shell_cfg1);
 }
+
+
 
 
 void cmd_start(BaseSequentialStream* chp, int argc, char* argv[]){
@@ -79,14 +81,15 @@ void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]){
 void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]){
 	if (argc != 0){
 		if (strcmp(argv[0], "cog_lpf") == 0){
+			chprintf(chp, "Cog stat, argc %d\r\n", argc);
 			if (argc == 2){
-				if (strcmp(argv[1], "on")){
+				if (strcmp(argv[1], "on") == 0){
 					neo_toggle_cog_lpf(true);
-				}else if(strcmp(argv[1], "off")){
+				}else if(strcmp(argv[1], "off") == 0){
 					neo_toggle_cog_lpf(false);
-				}else if(strcmp(argv[1], "status")){
+				}else if(strcmp(argv[1], "status") == 0){
 					neo_get_lpf_status();
-				}else if(strcmp(argv[1], "help")){
+				}else if(strcmp(argv[1], "help") == 0){
 					chprintf(chp, "Usage: ublox cog_lpf on/off | status | max_speed | max_pos_acc | lp_gain\r\n");
 				}else{
 					chprintf(chp, "Usage: ublox cog_lpf on|off\r\n");
@@ -108,9 +111,9 @@ void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]){
 		}
 		if (strcmp(argv[0], "vel_lpf") == 0){
 			if (argc == 2){
-				if (strcmp(argv[1], "on")){
+				if (strcmp(argv[1], "on") == 0){
 					neo_toggle_vel_lpf(true);
-				}else if(strcmp(argv[1], "off")){
+				}else if(strcmp(argv[1], "off") == 0){
 					neo_toggle_vel_lpf(false);
 				}
 			}else if (argc == 3){
@@ -126,11 +129,11 @@ void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]){
 		}
 		if (strcmp(argv[0], "slas") == 0){
 			if (argc == 2){
-				if (strcmp(argv[1], "on")){
+				if (strcmp(argv[1], "on") == 0){
 					neo_toggle_slas(true);
-				}else if(strcmp(argv[1], "off")){
+				}else if(strcmp(argv[1], "off") == 0){
 					neo_toggle_slas(false);
-				}else if(strcmp(argv[1], "status")){
+				}else if(strcmp(argv[1], "status") == 0){
 					neo_get_slas_sbas_status();
 				}
 			}else{
@@ -140,11 +143,11 @@ void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]){
 		}
 		if (strcmp(argv[0], "sbas") == 0){
 			if (argc == 2){
-				if (strcmp(argv[1], "on")){
+				if (strcmp(argv[1], "on") == 0){
 					neo_toggle_sbas(true);
-				}else if(strcmp(argv[1], "off")){
+				}else if(strcmp(argv[1], "off") == 0){
 					neo_toggle_sbas(false);
-				}else if(strcmp(argv[1], "status")){
+				}else if(strcmp(argv[1], "status") == 0){
 					neo_get_slas_sbas_status();
 				}
 			}else{
@@ -154,11 +157,11 @@ void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]){
 		}
 		if (strcmp(argv[0], "rtk") == 0){
 			if (argc == 2){
-				if (strcmp(argv[1], "on")){
+				if (strcmp(argv[1], "on") == 0){
 					neo_toggle_rtk(true);
-				}else if(strcmp(argv[1], "off")){
+				}else if(strcmp(argv[1], "off") == 0){
 						neo_toggle_rtk(false);
-				}else if(strcmp(argv[1], "status")){
+				}else if(strcmp(argv[1], "status") == 0){
 					neo_get_rtk_status();
 				}
 			}else{
@@ -170,6 +173,20 @@ void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]){
 			neo_get_full_status();
 			return;
 		}
+		if (strcmp(argv[0], "rate") == 0){
+					if (argc == 2){
+						if (strcmp(argv[1], "status") == 0){
+							neo_get_rate_status();
+						}
+					}else if (argc == 3){
+						if (strcmp(argv[1], "set") == 0){
+							neo_set_rate_ms(argv[2]);
+						}
+					}else{
+						chprintf(chp, "Usage: ublox rate status | set < ms >\r\n");
+					}
+					return;
+				}
 	}
 	chprintf(chp, "Usage: ublox lpf|slas|sbas|rtk|stat\n\r");
 }

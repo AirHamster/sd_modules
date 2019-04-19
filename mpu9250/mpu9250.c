@@ -9,28 +9,19 @@
 #include "quaternionFilters.h"
 mpu_struct_t mpu_struct;
 mpu_struct_t *mpu = &mpu_struct;
-
+extern const SPIConfig mpu_spi_cfg;
+extern struct ch_semaphore usart1_semaph;
 float PI = CONST_PI;
 float GyroMeasError = CONST_GME; // gyroscope measurement error in rads/s (start at 60 deg/s), then reduce after ~10 s to 3
 float beta = CONST_beta;  // compute beta
 float GyroMeasDrift = CONST_GMD; // gyroscope measurement drift in rad/s/s (start at 0.0 deg/s/s)
 float zeta = CONST_zeta; // compute zeta, the other free parameter in the Madgwick scheme usually set to a small or zero value
-int16_t accel_data[3];
-int16_t gyro_data[3];
-int16_t mag_data[3];
-float calib[3];
-int16_t accelCount[3];  // Stores the 16-bit signed accelerometer sensor output
-int16_t gyroCount[3];   // Stores the 16-bit signed gyro sensor output
-int16_t magCount[3];    // Stores the 16-bit signed magnetometer sensor output
 
-float magCalibration[3] = {0, 0, 0}, magbias[3] = {0, 0, 0};  // Factory mag calibration and mag bias
-float gyroBias[3] = {0, 0, 0}, accelBias[3] = {0, 0, 0}; // Bias corrections for gyro and accelerometer
-float ax, ay, az, gx, gy, gz, mx, my, mz; // variables to hold latest sensor data values
+
+
 int16_t tempCount;   // Stores the real internal chip temperature in degrees Celsius
 float temperature;
 float SelfTest[6];
-float aRes, gRes, mRes;      // scale resolutions per LSB for the sensors
-float pitch, yaw, roll;
 float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};
 
 uint8_t Ascale = AFS_8G;     // AFS_2G, AFS_4G, AFS_8G, AFS_16G
@@ -44,6 +35,7 @@ void mpu_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value) {
 	txbuf[0] = reg_addr;
 	txbuf[1] = value;
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
+//	spiStart(&SPID2, &mpu_spi_cfg);
 	palClearLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
 	spiSend(SPID, 2, txbuf); /* send request       */
@@ -56,6 +48,7 @@ uint8_t mpu_read_byte(SPIDriver *SPID, uint8_t reg_addr) {
 	uint8_t value;
 	reg_addr |= 0x80;	//0x80 indicates read operation
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
+//	spiStart(&SPID2, &mpu_spi_cfg);
 	palClearLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
 	spiSend(SPID, 1, &reg_addr); /* send request       */
@@ -71,6 +64,7 @@ void mpu_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t reg_addr,
 	uint8_t txbuf[num];
 	reg_addr |= 0x80;
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
+//	spiStart(&SPID2, &mpu_spi_cfg);
 	palClearLine(LINE_MPU_CS);
 	//chThdSleepMilliseconds(1);
 	spiSend(SPID, 1, &reg_addr); /* send request       */
@@ -81,33 +75,54 @@ void mpu_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t reg_addr,
 }
 
 void mpu_get_gyro_data(void){
-	float deltat = 0.2f;
-	mpu_read_accel_data(&accelCount[0]);
-	mpu_read_gyro_data(&gyroCount[0]);
-	mpu_read_mag_data(&magCount[0]);
+	float deltat = 0.01f;
 
+	mpu_read_accel_data(&mpu->accelCount[0]);
+	mpu_read_gyro_data(&mpu->gyroCount[0]);
+	mpu_read_mag_data(&mpu->magCount[0]);
+
+	/*chSemWait(&usart1_semaph);
+					chprintf((BaseSequentialStream*)&SD1, "A1: %d, A2: %d, A3: %d  G1: %d, G2: %d, G3: %d  M1: %d, M2: %d, M3: %d\r\n",
+							mpu->accelCount[0], mpu->accelCount[1], mpu->accelCount[2],
+							mpu->gyroCount[0], mpu->gyroCount[1], mpu->gyroCount[2],
+							mpu->magCount[0], mpu->magCount[1], mpu->magCount[2]);
+					chSemSignal(&usart1_semaph);
+*/
 	// Now we'll calculate the accleration value into actual g's
-	ax = (float)accelCount[0]*aRes - accelBias[0];  // get actual g value, this depends on scale being set
-	ay = (float)accelCount[1]*aRes - accelBias[1];
-	az = (float)accelCount[2]*aRes - accelBias[2];
+	mpu->ax = (float)mpu->accelCount[0]*mpu->aRes - mpu->accelBias[0];  // get actual g value, this depends on scale being set
+	mpu->ay = (float)mpu->accelCount[1]*mpu->aRes - mpu->accelBias[1];
+	mpu->az = (float)mpu->accelCount[2]*mpu->aRes - mpu->accelBias[2];
 
 	// Calculate the gyro value into actual degrees per second
-	gx = (float)gyroCount[0]*gRes - gyroBias[0];  // get actual gyro value, this depends on scale being set
-	gy = (float)gyroCount[1]*gRes - gyroBias[1];
-	gz = (float)gyroCount[2]*gRes - gyroBias[2];
+	mpu->gx = (float)mpu->gyroCount[0]*mpu->gRes - mpu->gyroBias[0];  // get actual gyro value, this depends on scale being set
+	mpu->gy = (float)mpu->gyroCount[1]*mpu->gRes - mpu->gyroBias[1];
+	mpu->gz = (float)mpu->gyroCount[2]*mpu->gRes - mpu->gyroBias[2];
 
-	mx = (float)magCount[0]*mRes*magCalibration[0] - magbias[0];  // get actual magnetometer value, this depends on scale being set
-	my = (float)magCount[1]*mRes*magCalibration[1] - magbias[1];
-	mz = (float)magCount[2]*mRes*magCalibration[2] - magbias[2];
-
-	MahonyQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f, my, mx, mz, deltat);
-	yaw   = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
-	pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
-	roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
-	pitch *= 180.0f / PI;
-	yaw   *= 180.0f / PI;
-	yaw   -= 13.8f; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
-	roll  *= 180.0f / PI;
+	mpu->mx = (float)mpu->magCount[0]*mpu->mRes*mpu->magCalibration[0] - mpu->magbias[0];  // get actual magnetometer value, this depends on scale being set
+	mpu->my = (float)mpu->magCount[1]*mpu->mRes*mpu->magCalibration[1] - mpu->magbias[1];
+	mpu->mz = (float)mpu->magCount[2]*mpu->mRes*mpu->magCalibration[2] - mpu->magbias[2];
+	chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*)&SD1, "AX: %f, AY: %f, AZ: %f  GX: %f, GY: %f, GZ: %f  MX: %f, MY: %f, MZ: %f\r\n",
+		mpu->ax, mpu->ay, mpu->az,
+		mpu->gx, mpu->gy, mpu->gz,
+		//mpu->magCount[0], mpu->magCount[1], mpu->magCount[2]);
+		mpu->mx, mpu->my, mpu->mz);
+	chSemSignal(&usart1_semaph);
+	palToggleLine(LINE_ORANGE_LED);
+/*
+	MahonyQuaternionUpdate(mpu->ax, mpu->ay, mpu->az, mpu->gx*PI/180.0f, mpu->gy*PI/180.0f, mpu->gz*PI/180.0f, mpu->my, mpu->mx, mpu->mz, deltat);
+	mpu->yaw   = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
+	mpu->pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
+	mpu->roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
+	mpu->pitch *= 180.0f / PI;
+	mpu->yaw   *= 180.0f / PI;
+	mpu->yaw   -= 13.8f; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
+	mpu->roll  *= 180.0f / PI;
+	*/
+	/*chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*)&SD1, "Yaw: %f, Pitch: %f, Roll: %f\n\r",
+												mpu->yaw, mpu->pitch, mpu->roll);
+	chSemSignal(&usart1_semaph);*/
 
 }
 
@@ -118,10 +133,18 @@ uint16_t mpu9250_init(void) {
 
 	tmp = mpu_read_byte(&SPID2, WHO_AM_I_MPU9250);
 	if (tmp == 0x71){
+		chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*)&SD1, "MPU9250 on-line\r\n");
+		chSemSignal(&usart1_semaph);
 	}else{
-		chprintf((BaseSequentialStream*)&SD1, "MPU9250 not found\r\n");
+		chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*)&SD1, "MPU9250 not found, %x\r\n", tmp);
+		chSemSignal(&usart1_semaph);
 	}
+
+	calibrateMPU9250(mpu->gyroBias, mpu->accelBias);
+
+
 	// Initialize MPU9250 device
 	// wake up device
 	mpu_write_byte(&SPID2, PWR_MGMT_1, 0x00); // Clear sleep mode bit (6), enable all sensors
@@ -185,10 +208,15 @@ uint16_t mpu9250_init(void) {
 	mpu_write_byte(&SPID2, I2C_SLV4_CTRL, 0);	//step 3 - reset i2c slave reg
 	mpu_write_byte(&SPID2, I2C_SLV4_ADDR, 0x0C);	//step 7 - rnw to 0 and addr of magn
 
-	magbias[0] = +470.;  // User environmental x-axis correction in milliGauss, should be automatically calculated
-	magbias[1] = +120.;  // User environmental x-axis correction in milliGauss
-	magbias[2] = +125.;  // User environmental x-axis correction in milliGauss
+	mpu->magbias[0] = +470.;  // User environmental x-axis correction in milliGauss, should be automatically calculated
+	mpu->magbias[1] = +120.;  // User environmental x-axis correction in milliGauss
+	mpu->magbias[2] = +125.;  // User environmental x-axis correction in milliGauss
+
+	getAres(); // Get accelerometer sensitivity
+	getGres(); // Get gyro sensitivity
+	getMres(); // Get magnetometer sensitivity
 	chThdSleepMilliseconds(100);
+	palToggleLine(LINE_RED_LED);
 	return 0;
 }
 
@@ -202,10 +230,15 @@ uint8_t get_mag_whoami(void)
 void initAK8963(float *destination){
 	uint8_t tmp = get_mag_whoami();
 	if (tmp == 0x48){
+		chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*)&SD1, "Magnetometr on-line\r\n");
+		chSemSignal(&usart1_semaph);
 	}else{
+		chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*)&SD1, "Magnetometr not found\r\n");
+		chSemSignal(&usart1_semaph);
 	}
+	palToggleLine(LINE_GREEN_LED);
 	// First extract the factory calibration for each magnetometer axis
 	uint8_t rawData[3];  // x/y/z gyro calibration data stored here
 	write_AK8963_register(AK8963_CNTL, 0x00); // Power down magnetometer
@@ -214,7 +247,9 @@ void initAK8963(float *destination){
 	chThdSleepMilliseconds(10);
 	// Read the x-, y-, and z-axis calibration values
 	read_AK8963_registers(AK8963_ASAX, 3, &rawData[0]);
-
+	chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*)&SD1, "ASA: %d, %d, %d\r\n", rawData[0], rawData[1], rawData[2]);
+		chSemSignal(&usart1_semaph);
 	// Return x-axis sensitivity adjustment values, etc.
 	destination[0] = (float) (rawData[0] - 128) / 256. + 1.;
 	destination[1] = (float) (rawData[1] - 128) / 256. + 1.;
@@ -301,10 +336,10 @@ void getMres() {
 	// Possible magnetometer scales (and their register bit settings) are:
 	// 14 bit resolution (0) and 16 bit resolution (1)
 	case MFS_14BITS:
-		mRes = 10.0*4912.0/8190.0; // Proper scale to return milliGauss
+		mpu->mRes = 10.0*4912.0/8190.0; // Proper scale to return milliGauss
 		break;
 	case MFS_16BITS:
-		mRes = 10.0*4912.0/32760.0; // Proper scale to return milliGauss
+		mpu->mRes = 10.0*4912.0/32760.0; // Proper scale to return milliGauss
 		break;
 	}
 }
@@ -317,16 +352,16 @@ void getGres() {
 	// 250 DPS (00), 500 DPS (01), 1000 DPS (10), and 2000 DPS  (11).
 	// Here's a bit of an algorith to calculate DPS/(ADC tick) based on that 2-bit value:
 	case GFS_250DPS:
-		gRes = 250.0/32768.0;
+		mpu->gRes = 250.0/32768.0;
 		break;
 	case GFS_500DPS:
-		gRes = 500.0/32768.0;
+		mpu->gRes = 500.0/32768.0;
 		break;
 	case GFS_1000DPS:
-		gRes = 1000.0/32768.0;
+		mpu->gRes = 1000.0/32768.0;
 		break;
 	case GFS_2000DPS:
-		gRes = 2000.0/32768.0;
+		mpu->gRes = 2000.0/32768.0;
 		break;
 	}
 }
@@ -339,16 +374,16 @@ void getAres() {
 	// 2 Gs (00), 4 Gs (01), 8 Gs (10), and 16 Gs  (11).
 	// Here's a bit of an algorith to calculate DPS/(ADC tick) based on that 2-bit value:
 	case AFS_2G:
-		aRes = 2.0/32768.0;
+		mpu->aRes = 2.0/32768.0;
 		break;
 	case AFS_4G:
-		aRes = 4.0/32768.0;
+		mpu->aRes = 4.0/32768.0;
 		break;
 	case AFS_8G:
-		aRes = 8.0/32768.0;
+		mpu->aRes = 8.0/32768.0;
 		break;
 	case AFS_16G:
-		aRes = 16.0/32768.0;
+		mpu->aRes = 16.0/32768.0;
 		break;
 	}
 }

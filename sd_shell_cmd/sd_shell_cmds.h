@@ -8,6 +8,10 @@
 #define SHELL_SD         SD1
 #define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(4096*2)
 
+#define SHELL_UBX_COG_STATUS		1
+#define SHELL_UBX_RATE_STATUS		2
+#define SHELL_UBX_RATE_SET			3
+
 enum output_threads{
 	GPS = 0,
 	YPR,
