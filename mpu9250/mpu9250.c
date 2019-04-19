@@ -11,6 +11,7 @@ mpu_struct_t mpu_struct;
 mpu_struct_t *mpu = &mpu_struct;
 extern const SPIConfig mpu_spi_cfg;
 extern struct ch_semaphore usart1_semaph;
+extern struct ch_semaphore spi2_semaph;
 float PI = CONST_PI;
 float GyroMeasError = CONST_GME; // gyroscope measurement error in rads/s (start at 60 deg/s), then reduce after ~10 s to 3
 float beta = CONST_beta;  // compute beta
@@ -34,27 +35,31 @@ void mpu_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value) {
 	uint8_t txbuf[2];
 	txbuf[0] = reg_addr;
 	txbuf[1] = value;
+	chSemWait(&spi2_semaph);
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
 //	spiStart(&SPID2, &mpu_spi_cfg);
 	palClearLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
 	spiSend(SPID, 2, txbuf); /* send request       */
-	spiReleaseBus(SPID); /* Ownership release.               */
 	palSetLine(LINE_MPU_CS);
+	spiReleaseBus(SPID); /* Ownership release.               */
+	chSemSignal(&spi2_semaph);
 	chThdSleepMilliseconds(1);
 }
 
 uint8_t mpu_read_byte(SPIDriver *SPID, uint8_t reg_addr) {
 	uint8_t value;
 	reg_addr |= 0x80;	//0x80 indicates read operation
+	chSemWait(&spi2_semaph);
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
 //	spiStart(&SPID2, &mpu_spi_cfg);
 	palClearLine(LINE_MPU_CS);
 	chThdSleepMilliseconds(1);
 	spiSend(SPID, 1, &reg_addr); /* send request       */
 	spiReceive(SPID, 1, &value);
-	spiReleaseBus(SPID); /* Ownership release.               */
 	palSetLine(LINE_MPU_CS);
+	spiReleaseBus(SPID); /* Ownership release.               */
+	chSemSignal(&spi2_semaph);
 	chThdSleepMilliseconds(1);
 	return value;
 }
@@ -63,24 +68,30 @@ void mpu_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t reg_addr,
 		uint8_t *rxbuf) {
 	uint8_t txbuf[num];
 	reg_addr |= 0x80;
+	chSemWait(&spi2_semaph);
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
 //	spiStart(&SPID2, &mpu_spi_cfg);
 	palClearLine(LINE_MPU_CS);
 	//chThdSleepMilliseconds(1);
 	spiSend(SPID, 1, &reg_addr); /* send request       */
 	spiExchange(SPID, num, txbuf, rxbuf); /* Atomic transfer operations.      */
-	spiReleaseBus(SPID); /* Ownership release.               */
 	palSetLine(LINE_MPU_CS);
+	spiReleaseBus(SPID); /* Ownership release.               */
+	chSemSignal(&spi2_semaph);
+
 	//chThdSleepMilliseconds(1);
 }
 
 void mpu_get_gyro_data(void){
-	float deltat = 0.01f;
+	float deltat = 0.025f;
 
 	mpu_read_accel_data(&mpu->accelCount[0]);
 	mpu_read_gyro_data(&mpu->gyroCount[0]);
 	mpu_read_mag_data(&mpu->magCount[0]);
-
+	/*chSemWait(&usart1_semaph);
+							chprintf((BaseSequentialStream*)&SD1, "magCount: %d\r\n",
+									mpu->magCount[1]);
+							chSemSignal(&usart1_semaph); */
 	/*chSemWait(&usart1_semaph);
 					chprintf((BaseSequentialStream*)&SD1, "A1: %d, A2: %d, A3: %d  G1: %d, G2: %d, G3: %d  M1: %d, M2: %d, M3: %d\r\n",
 							mpu->accelCount[0], mpu->accelCount[1], mpu->accelCount[2],
@@ -88,6 +99,7 @@ void mpu_get_gyro_data(void){
 							mpu->magCount[0], mpu->magCount[1], mpu->magCount[2]);
 					chSemSignal(&usart1_semaph);
 */
+	chSysLock();
 	// Now we'll calculate the accleration value into actual g's
 	mpu->ax = (float)mpu->accelCount[0]*mpu->aRes - mpu->accelBias[0];  // get actual g value, this depends on scale being set
 	mpu->ay = (float)mpu->accelCount[1]*mpu->aRes - mpu->accelBias[1];
@@ -101,28 +113,32 @@ void mpu_get_gyro_data(void){
 	mpu->mx = (float)mpu->magCount[0]*mpu->mRes*mpu->magCalibration[0] - mpu->magbias[0];  // get actual magnetometer value, this depends on scale being set
 	mpu->my = (float)mpu->magCount[1]*mpu->mRes*mpu->magCalibration[1] - mpu->magbias[1];
 	mpu->mz = (float)mpu->magCount[2]*mpu->mRes*mpu->magCalibration[2] - mpu->magbias[2];
-	chSemWait(&usart1_semaph);
+
+	/*chSemWait(&usart1_semaph);
+	chprintf((BaseSequentialStream*)&SD1, "magCount: %d, mRes: %f, magCalibration: %f, my: %f\r\n",
+						mpu->magCount[1], mpu->mRes, mpu->magCalibration[1], mpu->my);
+	chSemSignal(&usart1_semaph); */
+	/*chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*)&SD1, "AX: %f, AY: %f, AZ: %f  GX: %f, GY: %f, GZ: %f  MX: %f, MY: %f, MZ: %f\r\n",
 		mpu->ax, mpu->ay, mpu->az,
 		mpu->gx, mpu->gy, mpu->gz,
 		//mpu->magCount[0], mpu->magCount[1], mpu->magCount[2]);
 		mpu->mx, mpu->my, mpu->mz);
-	chSemSignal(&usart1_semaph);
+	chSemSignal(&usart1_semaph);*/
 	palToggleLine(LINE_ORANGE_LED);
-/*
+
 	MahonyQuaternionUpdate(mpu->ax, mpu->ay, mpu->az, mpu->gx*PI/180.0f, mpu->gy*PI/180.0f, mpu->gz*PI/180.0f, mpu->my, mpu->mx, mpu->mz, deltat);
 	mpu->yaw   = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
 	mpu->pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
 	mpu->roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
 	mpu->pitch *= 180.0f / PI;
+
 	mpu->yaw   *= 180.0f / PI;
 	mpu->yaw   -= 13.8f; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
+
 	mpu->roll  *= 180.0f / PI;
-	*/
-	/*chSemWait(&usart1_semaph);
-		chprintf((BaseSequentialStream*)&SD1, "Yaw: %f, Pitch: %f, Roll: %f\n\r",
-												mpu->yaw, mpu->pitch, mpu->roll);
-	chSemSignal(&usart1_semaph);*/
+
+	chSysUnlock();
 
 }
 

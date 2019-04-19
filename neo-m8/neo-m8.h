@@ -196,6 +196,8 @@ typedef struct{
 void neo_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value);
 uint8_t neo_read_byte(SPIDriver *SPID, uint8_t reg_addr);
 void neo_read_bytes(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf);
+void neo_read_bytes_release_cs(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf);
+void neo_read_bytes_no_cs(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf);
 void neo_switch_to_ubx(void);
 void neo_set_pvt_1hz(void);
 void neo_poll_prt(void);
