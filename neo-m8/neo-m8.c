@@ -61,12 +61,15 @@ void neo_read_bytes_no_cs(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf) {
 	uint8_t *txbuf[num];
 	memset(txbuf, 0xFF, num);
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
+	if (palReadLine(LINE_NEO_CS)){
+		chThdSleepMilliseconds(1);
+	}
 	//spiStart(&SPID2, &neo_spi_cfg);
 	palClearLine(LINE_NEO_CS);
 	spiExchange(SPID, num, txbuf, rxbuf); /* Atomic transfer operations.      */
 	spiReleaseBus(SPID); /* Ownership release.               */
 	//palSetLine(LINE_NEO_CS);
-	chThdSleepMilliseconds(1);
+	//chThdSleepMilliseconds(1);
 
 }
 

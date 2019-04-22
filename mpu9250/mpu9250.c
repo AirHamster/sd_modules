@@ -83,7 +83,7 @@ void mpu_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t reg_addr,
 }
 
 void mpu_get_gyro_data(void){
-	float deltat = 0.025f;
+	float deltat = 0.0025f;
 
 	mpu_read_accel_data(&mpu->accelCount[0]);
 	mpu_read_gyro_data(&mpu->gyroCount[0]);

@@ -36,7 +36,6 @@
 #define XBEE_DATA_SAMPLE_FRAME		0x92
 #define XBEE_NODE_ID_FRAME			0x95
 #define XBEE_REMOTE_RESPONSE_FRAME	0x97
-#define XBEE_TRANSMIT_FRAME			0x10
 
 #define XBEE_HEADER_LEN				3
 // Diagnostic commands
@@ -172,10 +171,21 @@ void xbee_set_loopback(char* argv[]);
 void xbee_get_lb_status(void);
 void xbee_thread_execute(uint8_t command);
 
+void xbee_process_at_frame(uint8_t* buffer);
+void xbee_process_at_queue_frame(uint8_t* buffer);
+void xbee_process_tx_req_frame(uint8_t* buffer);
+void xbee_process_explicit_frame(uint8_t* buffer);
+void xbee_process_remote_at_frame(uint8_t* buffer);
 void xbee_process_at_response(uint8_t* buffer);
+void xbee_process_modem_stat_frame(uint8_t* buffer);
 void xbee_process_tx_stat(uint8_t* buffer);
-void xbee_process_recieve(uint8_t* buffer);
-void xbee_process_node_id(uint8_t* buffer);
+void xbee_process_route_inf_frame(uint8_t* buffer);
+void xbee_process_aggregade_addr_frame(uint8_t* buffer);
+void xbee_process_receive_packet_frame(uint8_t* buffer);
+void xbee_process_explicit_rx_frame(uint8_t* buffer);
+void xbee_process_data_sample_frame(uint8_t* buffer);
+void xbee_process_node_id_frame(uint8_t* buffer);
+void xbee_process_remote_response_frame(uint8_t* buffer);
 
 uint16_t xbee_read_last_rssi(xbee_struct_t *xbee_str);
 uint16_t xbee_get_packet_payload(xbee_struct_t *xbee_str);
@@ -184,5 +194,7 @@ uint16_t xbee_get_good_packets_res(xbee_struct_t *xbee_str);
 uint16_t xbee_get_received_err_count(xbee_struct_t *xbee_str);
 uint16_t xbee_get_transceived_err_count(xbee_struct_t *xbee_str);
 uint16_t xbee_get_unicast_trans_count(xbee_struct_t *xbee_str);
+void xbee_send_ping_message(xbee_struct_t *xbee_strc);
+void xbee_polling(void);
 
 #endif /* SD_MODULES_XBEE_XBEE_H_ */
