@@ -40,7 +40,7 @@
 #define IBX_CFG_ODO_ID			0x1E
 #define UBX_NAV_PVT_ID			0x07
 #define UBX_CFG_NAV5_ID			0x24
-#define UBX_NAV_ODO_ID			0x34
+#define UBX_NAV_ODO_ID			0x09
 
 #define UBX_HEADER_LEN			6
 #define CRC_LEN					2
@@ -192,6 +192,16 @@ typedef struct{
 	U1 res[20];
 }ubx_cfg_pm2;
 
+typedef struct{
+	U1 version;
+	U1 res1;
+	U1 res2;
+	U1 res3;
+	U4 iTOW;
+	U4 distance;
+	U4 totalDistance;
+	U4 distanceStd;
+}ubx_nav_odo_t;
 
 void neo_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value);
 uint8_t neo_read_byte(SPIDriver *SPID, uint8_t reg_addr);

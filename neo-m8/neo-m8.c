@@ -22,8 +22,11 @@ ubx_cfg_pm2 *pm2_box = &pm2;
 neo_struct_t neo_struct;
 neo_struct_t *neo = &neo_struct;
 
-ubx_cfg_odo_t odo_struct;
-ubx_cfg_odo_t *odo_box = &odo_struct;
+ubx_cfg_odo_t cfg_odo_struct;
+ubx_cfg_odo_t *cfg_odo_box = &cfg_odo_struct;
+
+ubx_nav_odo_t nav_odo_struct;
+ubx_nav_odo_t *odo_box = &nav_odo_struct;
 
 ubx_cfg_rate_t rate_struct;
 ubx_cfg_rate_t *rate_box = &rate_struct;
@@ -98,6 +101,14 @@ void neo_create_poll_request(uint8_t class, uint8_t id){
 	crc = neo_calc_crc(packet, len);
 	packet[len-2] = crc >> 8;
 	packet[len-1] = crc & 0xFF;
+	/*chSemWait(&usart1_semaph);
+	int i;
+		chprintf((BaseSequentialStream*)&SD1, "poll req: ");
+			for (i = 0; i< len; i++){
+				chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
+			}
+			chprintf((BaseSequentialStream*)&SD1, "\n\r");
+	chSemSignal(&usart1_semaph);*/
 	neo_write(&SPID2, packet, len);
 }
 
@@ -222,21 +233,23 @@ void neo_process_odo(uint8_t *message){
 	neo_read_bytes_release_cs(&SPID2, pack_len - UBX_HEADER_LEN, &odo_message[UBX_HEADER_LEN]);
 	chSemSignal(&spi2_semaph);
 	memcpy(odo_message, message, UBX_HEADER_LEN);
-	/*chprintf((BaseSequentialStream*)&SD1, "SPI2: ");
+	/*uint8_t j;
+	chprintf((BaseSequentialStream*)&SD1, "SPI2: ");
 				    			    for (j = 0; j < 100; j++){
-					    			    	chprintf((BaseSequentialStream*)&SD1, "%x ", pvt_message[j]);
+					    			    	chprintf((BaseSequentialStream*)&SD1, "%x ", odo_message[j]);
 					    			    }
-					    			    chprintf((BaseSequentialStream*)&SD1, "\n\r");
-	 */		crc = ((odo_message[pack_len-2] << 8) | (odo_message[pack_len-1]));
-	 if (crc == neo_calc_crc(odo_message, pack_len)){
-		 neo_cp_to_struct(odo_message, (uint8_t*)odo_box, UBX_NAV_ODO_LEN);
-		 //memcpy(odo_box, odo_message, UBX_NAV_ODO_LEN);
-		 //chprintf((BaseSequentialStream*)&SD1, "CRC is the same \n\r");
-	 }else{
-		 chSemWait(&usart1_semaph);
-		 chprintf((BaseSequentialStream*)&SD1, "CRC fault: %x vs %x \n\r", crc, neo_calc_crc(odo_message, pack_len));
-		 chSemSignal(&usart1_semaph);
-	 }
+					    			    chprintf((BaseSequentialStream*)&SD1, "\n\r"); */
+
+	crc = ((odo_message[pack_len-2] << 8) | (odo_message[pack_len-1]));
+	if (crc == neo_calc_crc(odo_message, pack_len)){
+		neo_cp_to_struct(odo_message, (uint8_t*)odo_box, UBX_NAV_ODO_LEN);
+		//memcpy(odo_box, odo_message, UBX_NAV_ODO_LEN);
+		//chprintf((BaseSequentialStream*)&SD1, "CRC is the same \n\r");
+	}else{
+		chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*)&SD1, "CRC fault: %x vs %x \n\r", crc, neo_calc_crc(odo_message, pack_len));
+		chSemSignal(&usart1_semaph);
+	}
 }
 
 void neo_process_nav5(uint8_t *message){
@@ -256,9 +269,9 @@ void neo_process_nav5(uint8_t *message){
 	if (crc == neo_calc_crc(nav5_message, pack_len)){
 		neo_cp_to_struct(nav5_message, (uint8_t*)nav5_box, UBX_CFG_NAV5_LEN);
 		chSemWait(&usart1_semaph);
-			chprintf((BaseSequentialStream*)&SD1, "CFG_NAV5: stat_hold_dist %d, stat_hold_thresh %d, dynModel %d \n\r",
-											nav5_box->staticHoldMaxDist, nav5_box->staticHoldThresh, nav5_box->dynModel);
-			chSemSignal(&usart1_semaph);
+		chprintf((BaseSequentialStream*)&SD1, "CFG_NAV5: stat_hold_dist %d, stat_hold_thresh %d, dynModel %d \n\r",
+				nav5_box->staticHoldMaxDist, nav5_box->staticHoldThresh, nav5_box->dynModel);
+		chSemSignal(&usart1_semaph);
 		//memcpy(nav5_box, nav5_message, UBX_CFG_NAV5_LEN);
 		//chprintf((BaseSequentialStream*)&SD1, "CRC is the same \n\r");
 	}else{
@@ -301,14 +314,15 @@ void neo_process_pvt(uint8_t *message){
 	neo_read_bytes_release_cs(&SPID2, pack_len - UBX_HEADER_LEN, &pvt_message[UBX_HEADER_LEN]);
 	chSemSignal(&spi2_semaph);
 	memcpy(pvt_message, message, UBX_HEADER_LEN);
-	/*chSemWait(&usart1_semaph);
-	int8_t j;
+	//chSemWait(&usart1_semaph);
+	/*int8_t j;
 	chprintf((BaseSequentialStream*)&SD1, "SPI2: ");
 					    			    for (j = 0; j < pack_len; j++){
 						    			    	chprintf((BaseSequentialStream*)&SD1, "%x ", pvt_message[j]);
 						    			    }
-						    			    chprintf((BaseSequentialStream*)&SD1, "\n\r");
-	chSemSignal(&usart1_semaph); */
+						    			    chprintf((BaseSequentialStream*)&SD1, "\n\r");*/
+	//	chprintf((BaseSequentialStream*)&SD1, "GPS PVT\r\n");
+	//	chSemSignal(&usart1_semaph);
 	crc = ((pvt_message[pack_len-2] << 8) | (pvt_message[pack_len-1]));
 	if (crc == neo_calc_crc(pvt_message, pack_len)){
 		neo_cp_to_struct(pvt_message, (uint8_t*)pvt_box, UBX_NAV_PVT_LEN);
@@ -335,7 +349,7 @@ void neo_process_ack(uint8_t *message){
 		chprintf((BaseSequentialStream*)&SD1, "%x ", ack_payload[i]);
 	}
 	chprintf((BaseSequentialStream*)&SD1, "\n\r");
-*/
+	 */
 	if (id == 0x01){
 		if (crc == (ack_payload[8] << 8 | ack_payload[9])){
 			chSemWait(&usart1_semaph);

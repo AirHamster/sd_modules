@@ -24,6 +24,7 @@ typedef struct{
 	uint8_t gps;
 	uint8_t ypr;
 	uint8_t gyro;
+	uint8_t xbee;
 
 }output_struct_t;
 thread_t *cmd_init(void);

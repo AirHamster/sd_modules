@@ -38,6 +38,11 @@
 #define XBEE_REMOTE_RESPONSE_FRAME	0x97
 
 #define XBEE_HEADER_LEN				3
+
+#define OUTPUT_USART	1
+#define OUTPUT_XBEE		2
+
+#define RF_PACK_LEN		15
 // Diagnostic commands
 
 #define AT_BC				"BC"	// Bytes Transmitted
@@ -149,6 +154,19 @@ typedef struct{
 	uint8_t loopback_mode;
 }xbee_struct_t;
 
+typedef struct{
+	int16_t lat_cel;
+	uint16_t lat_drob;
+	int16_t lon_cel;
+	uint16_t lon_drob;
+	uint8_t hour;
+	uint8_t min;
+	uint8_t sec;
+	uint8_t sat;
+	uint16_t dist;
+	uint8_t speed;
+}tx_box_t;
+
 void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff);
 void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]);
 void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len);
@@ -187,6 +205,8 @@ void xbee_process_data_sample_frame(uint8_t* buffer);
 void xbee_process_node_id_frame(uint8_t* buffer);
 void xbee_process_remote_response_frame(uint8_t* buffer);
 
+void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len);
+void xbee_parse_rf_packet(uint8_t *rxbuff);
 uint16_t xbee_read_last_rssi(xbee_struct_t *xbee_str);
 uint16_t xbee_get_packet_payload(xbee_struct_t *xbee_str);
 uint16_t xbee_get_bytes_transmitted(xbee_struct_t *xbee_str);

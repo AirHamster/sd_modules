@@ -232,7 +232,7 @@ uint16_t mpu9250_init(void) {
 	getGres(); // Get gyro sensitivity
 	getMres(); // Get magnetometer sensitivity
 	chThdSleepMilliseconds(100);
-	palToggleLine(LINE_RED_LED);
+	//palToggleLine(LINE_RED_LED);
 	return 0;
 }
 
