@@ -32,7 +32,7 @@ static const ShellConfig shell_cfg1 = {
 		(BaseSequentialStream*) &SHELL_SD,
 		commands,
 		history_buffer,
-		history_size,
+		32,
 		complete_buffer
 };
 

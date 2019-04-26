@@ -238,21 +238,21 @@ uint8_t xbee_calc_CRC(uint8_t *buffer, uint8_t num){
  ==============================================================*/
 void xbee_get_addr(void){
 	xbee->suspend_state = 0;
-	chSysLockFromISR();
-	chThdResumeI(&xbee_trp, (msg_t)XBEE_GET_OWN_ADDR);  /* Resuming the thread with message.*/
-	chSysUnlockFromISR();
+	//chSysLock();
+	chThdResume(&xbee_trp, (msg_t)XBEE_GET_OWN_ADDR);  /* Resuming the thread with message.*/
+	//chSysUnlock();
 }
 
 void xbee_get_rssi(void){
-	chSysLockFromISR();
-	chThdResumeI(&xbee_trp, (msg_t)XBEE_GET_RSSI);  /* Resuming the thread with message.*/
-	chSysUnlockFromISR();
+	//chSysLockFromISR();
+	chThdResume(&xbee_trp, (msg_t)XBEE_GET_RSSI);  /* Resuming the thread with message.*/
+	//chSysUnlockFromISR();
 }
 
 void xbee_get_stat(void){
-	chSysLockFromISR();
-	chThdResumeI(&xbee_trp, (msg_t)XBEE_GET_STAT);  /* Resuming the thread with message.*/
-	chSysUnlockFromISR();
+	//chSysLockFromISR();
+	chThdResume(&xbee_trp, (msg_t)XBEE_GET_STAT);  /* Resuming the thread with message.*/
+	//chSysUnlockFromISR();
 }
 
 void xbee_get_lb_status(void){
@@ -270,9 +270,9 @@ void xbee_set_loopback(char* argv[]){
 }
 
 void xbee_get_ping(void){
-	chSysLockFromISR();
-	chThdResumeI(&xbee_trp, (msg_t)XBEE_GET_PING);  /* Resuming the thread with message.*/
-	chSysUnlockFromISR();
+	//chSysLockFromISR();
+	chThdResume(&xbee_trp, (msg_t)XBEE_GET_PING);  /* Resuming the thread with message.*/
+	//chSysUnlockFromISR();
 }
 void xbee_thread_execute(uint8_t command){
 	xbee->suspend_state = 0;
@@ -648,13 +648,13 @@ void xbee_process_tx_stat(uint8_t* buffer){
 			uint8_t rxbuff[payload_len + 1];
 			uint8_t i;
 			xbee_read_release_cs(&SPID1, payload_len + 1, rxbuff);
-		/*	chSemWait(&usart1_semaph);
+			chSemWait(&usart1_semaph);
 				chprintf((BaseSequentialStream*)&SD1, "Xbee tx stat id %d\r\n", payload_len);
 							    for (i = 0; i < payload_len; i++){
 							    	chprintf((BaseSequentialStream*)&SD1, "%x ", rxbuff[i]);
 							    }
 							    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
-			chSemSignal(&usart1_semaph); */
+			chSemSignal(&usart1_semaph);
 }
 
 void xbee_process_route_inf_frame(uint8_t* buffer){

@@ -6,7 +6,7 @@
 #include "chprintf.h"
 #include <string.h>
 #define SHELL_SD         SD1
-#define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(4096*2)
+#define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(1024)
 
 #define SHELL_UBX_COG_STATUS		1
 #define SHELL_UBX_RATE_STATUS		2
