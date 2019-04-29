@@ -258,9 +258,9 @@ void initAK8963(float *destination){
 	// First extract the factory calibration for each magnetometer axis
 	uint8_t rawData[3];  // x/y/z gyro calibration data stored here
 	write_AK8963_register(AK8963_CNTL, 0x00); // Power down magnetometer
-	chThdSleepMilliseconds(10);
+	chThdSleepMilliseconds(100);
 	write_AK8963_register(AK8963_CNTL, 0x0F); // Enter Fuse ROM access mode
-	chThdSleepMilliseconds(10);
+	chThdSleepMilliseconds(100);
 	// Read the x-, y-, and z-axis calibration values
 	read_AK8963_registers(AK8963_ASAX, 3, &rawData[0]);
 	chSemWait(&usart1_semaph);

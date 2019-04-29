@@ -228,6 +228,10 @@ void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
 			xbee_get_ping();
 			return;
 		}
+		if (strcmp(argv[0], "channels") == 0){
+					xbee_get_channels();
+					return;
+				}
 		if (strcmp(argv[0], "lb") == 0){
 			if (argc == 2){
 				xbee_set_loopback(argv);

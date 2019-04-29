@@ -274,6 +274,13 @@ void xbee_get_ping(void){
 	chThdResume(&xbee_trp, (msg_t)XBEE_GET_PING);  /* Resuming the thread with message.*/
 	//chSysUnlockFromISR();
 }
+
+void xbee_get_channels(void){
+	//chSysLockFromISR();
+	chThdResume(&xbee_trp, (msg_t)XBEE_GET_CHANNELS);  /* Resuming the thread with message.*/
+	//chSysUnlockFromISR();
+}
+
 void xbee_thread_execute(uint8_t command){
 	xbee->suspend_state = 0;
 	  chSysLock();
@@ -312,6 +319,19 @@ void xbee_read_own_addr(xbee_struct_t *xbee_str){
 	chSemSignal(&usart1_semaph);
 }
 
+uint16_t xbee_get_attn_pin_cfg(xbee_struct_t *xbee_str){
+	uint8_t packet[15];
+	(void)xbee_str;
+	xbee_read(&SPID1, 8+6, (uint8_t*)"P9", packet);
+	/*uint8_t i;
+	chprintf((BaseSequentialStream*)&SD1, "RSSI ");
+		    for (i = 0; i < 15; i++){
+		    	chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
+		    }
+		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");*/
+    return (packet[7] << 8) | packet[8];
+}
+
 uint16_t xbee_read_last_rssi(xbee_struct_t *xbee_str){
 	uint8_t packet[15];
 	(void)xbee_str;
@@ -323,6 +343,19 @@ uint16_t xbee_read_last_rssi(xbee_struct_t *xbee_str){
 		    }
 		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");*/
     return (packet[7] << 8) | packet[8];
+}
+
+uint32_t xbee_read_channels(xbee_struct_t *xbee_str){
+	uint8_t packet[17];
+	(void)xbee_str;
+	xbee_read(&SPID1, 8+8, (uint8_t*)"CM", packet);
+	uint8_t i;
+	chprintf((BaseSequentialStream*)&SD1, "RSSI ");
+		    for (i = 0; i < 17; i++){
+		    	chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
+		    }
+		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
+    return (packet[7] << 24) | (packet[8] << 16) | (packet[9] << 8) | packet[10];
 }
 
 uint16_t xbee_get_packet_payload(xbee_struct_t *xbee_str){
@@ -418,7 +451,7 @@ void xbee_send_ping_message(xbee_struct_t *xbee_strc){
 	uint8_t buffer[64];
 	uint8_t len;
 	xbee_strc->dest_addr_h = 0x013A200;
-	xbee_strc->dest_addr_l = 0x418856B2;
+	xbee_strc->dest_addr_l = 0x418856C9;
 	//xbee_strc->dest_addr_h = 0x00;
 	//xbee_strc->dest_addr_l = 0x0000FFFF;
 	len = xbee_create_data_write_message(buffer, (uint8_t*)"HELLO", 5);
@@ -439,7 +472,7 @@ void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len
 	uint8_t txbuff[128];
 	uint8_t pack_len;
 	xbee_strc->dest_addr_h = 0x013A200;
-	xbee_strc->dest_addr_l = 0x418856B2;
+	xbee_strc->dest_addr_l = 0x418856C9;
 	//xbee_strc->dest_addr_h = 0x00;
 	//xbee_strc->dest_addr_l = 0x0000FFFF;
 	pack_len = xbee_create_data_write_message(txbuff, buffer, len);
@@ -465,8 +498,8 @@ void xbee_attn_event(void){
 
 
 void xbee_polling(void){
-	const uint16_t pack_len = 4;
-	uint8_t message[pack_len];
+	//const uint16_t pack_len = 4;
+	uint8_t message[4];
 	uint8_t i = 0;
 	//chSemWait(&spi2_semaph);
 	//chSemWait(&usart1_semaph);
@@ -692,7 +725,7 @@ void xbee_process_receive_packet_frame(uint8_t* buffer){
 	uint8_t i;
 	xbee_read_release_cs(&SPID1, payload_len + 1, rxbuff);
 	chSemWait(&usart1_semaph);
-		chprintf((BaseSequentialStream*)&SD1, "Xbee received \r\n");
+		chprintf((BaseSequentialStream*)&SD1, "Xbee received len %d \r\n", payload_len);
 /*					    for (i = 0; i < payload_len; i++){
 					    	chprintf((BaseSequentialStream*)&SD1, "%x ", rxbuff[i]);
 					    }

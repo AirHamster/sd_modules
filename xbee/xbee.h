@@ -20,6 +20,7 @@
 #define XBEE_GET_PACKET_PAYLOAD	3
 #define XBEE_GET_STAT			4
 #define XBEE_GET_PING			5
+#define XBEE_GET_CHANNELS		6
 
 #define XBEE_AT_FRAME				0x08
 #define XBEE_AT_QUEUE_FRAME			0x09
@@ -42,7 +43,7 @@
 #define OUTPUT_USART	1
 #define OUTPUT_XBEE		2
 
-#define RF_PACK_LEN		15
+#define RF_PACK_LEN		128
 // Diagnostic commands
 
 #define AT_BC				"BC"	// Bytes Transmitted
@@ -142,6 +143,7 @@ typedef struct{
 	uint32_t own_addr_l;
 	uint32_t dest_addr_h;
 	uint32_t dest_addr_l;
+	uint32_t channels;
 	uint16_t packet_payload;
 	uint16_t rssi;
 	uint16_t bytes_transmitted;
@@ -208,6 +210,8 @@ void xbee_process_remote_response_frame(uint8_t* buffer);
 void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len);
 void xbee_parse_rf_packet(uint8_t *rxbuff);
 uint16_t xbee_read_last_rssi(xbee_struct_t *xbee_str);
+uint32_t xbee_read_channels(xbee_struct_t *xbee_str);
+uint16_t xbee_get_attn_pin_cfg(xbee_struct_t *xbee_str);
 uint16_t xbee_get_packet_payload(xbee_struct_t *xbee_str);
 uint16_t xbee_get_bytes_transmitted(xbee_struct_t *xbee_str);
 uint16_t xbee_get_good_packets_res(xbee_struct_t *xbee_str);
