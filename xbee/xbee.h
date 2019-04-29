@@ -157,10 +157,8 @@ typedef struct{
 }xbee_struct_t;
 
 typedef struct{
-	int16_t lat_cel;
-	uint16_t lat_drob;
-	int16_t lon_cel;
-	uint16_t lon_drob;
+	int32_t lat;
+	int32_t lon;
 	uint8_t hour;
 	uint8_t min;
 	uint8_t sec;

@@ -738,15 +738,15 @@ void xbee_process_receive_packet_frame(uint8_t* buffer){
 }
 
 void xbee_parse_rf_packet(uint8_t *rxbuff){
-	uint16_t lat_cel, lat_drob, lon_cel, lon_drob, dist;
+	int32_t lat, lon;
+	float flat, flon;
+	uint16_t dist;
 	uint8_t hour, min, sec, sat, speed;
 
-	lat_cel = rxbuff[11] << 8 | rxbuff[12];
-	lat_drob = rxbuff[13] << 8 | rxbuff[14];
-
-	lon_cel = rxbuff[15] << 8 | rxbuff[16];
-	lon_drob = rxbuff[17] << 8 | rxbuff[18];
-
+	lat = rxbuff[11] << 24 | rxbuff[12] << 16 | rxbuff[13] << 8 | rxbuff[14];
+	lon = rxbuff[15] << 24 | rxbuff[16] << 16 | rxbuff[17] << 8 | rxbuff[18];
+	flat = lat / 10000000.0f;
+	flon = lon / 10000000.0f;
 	hour = rxbuff[19];
 	min = rxbuff[20];
 	sec = rxbuff[21];
@@ -754,9 +754,8 @@ void xbee_parse_rf_packet(uint8_t *rxbuff){
 	dist = rxbuff[23] << 8 | rxbuff[24];
 	speed = rxbuff[25];
 	chSemWait(&usart1_semaph);
-	chprintf((BaseSequentialStream*)&SD1, "%d.%d;%d.%d;%d:%d:%d:%d:%d:%d:\r\n",
-					lat_cel, lat_drob, lon_cel, lon_drob, hour,
-					min, sec, sat, dist, speed);
+	chprintf((BaseSequentialStream*)&SD1, "%f;%f;%d:%d:%d:%d:%d:%d:\r\n",
+						flat, flon, hour, min, sec, sat, dist, speed);
 	chSemSignal(&usart1_semaph);
 }
 
