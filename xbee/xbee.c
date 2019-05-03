@@ -724,17 +724,21 @@ void xbee_process_receive_packet_frame(uint8_t* buffer){
 	uint8_t rxbuff[RF_PACK_LEN + 1];
 	uint8_t i;
 	xbee_read_release_cs(&SPID1, payload_len + 1, rxbuff);
-	chSemWait(&usart1_semaph);
-		chprintf((BaseSequentialStream*)&SD1, "Xbee received len %d \r\n", payload_len);
+	//chSemWait(&usart1_semaph);
+		//chprintf((BaseSequentialStream*)&SD1, "Xbee received len %d \r\n", payload_len);
 /*					    for (i = 0; i < payload_len; i++){
 					    	chprintf((BaseSequentialStream*)&SD1, "%x ", rxbuff[i]);
 					    }
 					    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");*/
-	chSemSignal(&usart1_semaph);
+	//chSemSignal(&usart1_semaph);
 	xbee_parse_rf_packet(rxbuff);
 	if (xbee->loopback_mode){
 		//xbee_send_payoad
 	}
+	xbee->rssi = xbee_read_last_rssi(xbee);
+	//chSemWait(&usart1_semaph);
+	//chprintf((BaseSequentialStream*)&SD1, "RSSI: %d\r\n", xbee->rssi);
+	//chSemSignal(&usart1_semaph);
 }
 
 void xbee_parse_rf_packet(uint8_t *rxbuff){
@@ -754,8 +758,8 @@ void xbee_parse_rf_packet(uint8_t *rxbuff){
 	dist = rxbuff[23] << 8 | rxbuff[24];
 	speed = rxbuff[25];
 	chSemWait(&usart1_semaph);
-	chprintf((BaseSequentialStream*)&SD1, "%f;%f;%d:%d:%d:%d:%d:%d:\r\n",
-						flat, flon, hour, min, sec, sat, dist, speed);
+	chprintf((BaseSequentialStream*)&SD1, "%f,%f,%d:%d:%d:%d,%d,%d,%d\r\n",
+						flat, flon, hour, min, sec, sat, dist, speed, xbee->rssi);
 	chSemSignal(&usart1_semaph);
 }
 

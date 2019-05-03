@@ -9,6 +9,8 @@
 #include "shell.h"
 #include "chprintf.h"
 
+#define CONST_PI		3.14159265358979323846f
+
 #define MPU_GET_GYRO_DATA		0x01
 #define MPU_GET_MAGN_DATA		0x02
 

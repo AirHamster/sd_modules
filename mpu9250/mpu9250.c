@@ -24,6 +24,10 @@ int16_t tempCount;   // Stores the real internal chip temperature in degrees Cel
 float temperature;
 float SelfTest[6];
 float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};
+extern volatile float q0;
+extern volatile float q1;
+extern volatile float q2;
+extern volatile float q3;
 
 uint8_t Ascale = AFS_8G;     // AFS_2G, AFS_4G, AFS_8G, AFS_16G
 uint8_t Gscale = GFS_1000DPS; // GFS_250DPS, GFS_500DPS, GFS_1000DPS, GFS_2000DPS
@@ -85,8 +89,8 @@ void mpu_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t reg_addr,
 void mpu_get_gyro_data(void){
 	float deltat = 0.0025f;
 
-	mpu_read_accel_data(&mpu->accelCount[0]);
-	mpu_read_gyro_data(&mpu->gyroCount[0]);
+	//mpu_read_accel_data(&mpu->accelCount[0]);
+	//mpu_read_gyro_data(&mpu->gyroCount[0]);
 	mpu_read_mag_data(&mpu->magCount[0]);
 	/*chSemWait(&usart1_semaph);
 							chprintf((BaseSequentialStream*)&SD1, "magCount: %d\r\n",
@@ -99,7 +103,7 @@ void mpu_get_gyro_data(void){
 							mpu->magCount[0], mpu->magCount[1], mpu->magCount[2]);
 					chSemSignal(&usart1_semaph);
 */
-	chSysLock();
+	//chSysLock();
 	// Now we'll calculate the accleration value into actual g's
 	mpu->ax = (float)mpu->accelCount[0]*mpu->aRes - mpu->accelBias[0];  // get actual g value, this depends on scale being set
 	mpu->ay = (float)mpu->accelCount[1]*mpu->aRes - mpu->accelBias[1];
@@ -131,6 +135,13 @@ void mpu_get_gyro_data(void){
 	mpu->yaw   = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
 	mpu->pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
 	mpu->roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
+
+	/*
+	MahonyAHRSupdate(mpu->ax, mpu->ay, mpu->az, mpu->gx*PI/180.0f, mpu->gy*PI/180.0f, mpu->gz*PI/180.0f, mpu->my, mpu->mx, mpu->mz);
+	mpu->yaw   = atan2(2.0f * (q1 * q2 + q0 * q3), q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3);
+	mpu->pitch = -asin(2.0f * (q1 * q3 - q0 * q2));
+	mpu->roll  = atan2(2.0f * (q0 * q1 + q2 * q3), q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3);
+	*/
 	mpu->pitch *= 180.0f / PI;
 
 	mpu->yaw   *= 180.0f / PI;
@@ -138,7 +149,7 @@ void mpu_get_gyro_data(void){
 
 	mpu->roll  *= 180.0f / PI;
 
-	chSysUnlock();
+	//chSysUnlock();
 
 }
 
