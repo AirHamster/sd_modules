@@ -38,6 +38,7 @@
 #define UBX_CFG_MSG_ID			0x01
 #define UBX_CFG_RATE_ID			0x08
 #define IBX_CFG_ODO_ID			0x1E
+#define UBX_CFG_SBAS_ID			0x16
 #define UBX_NAV_PVT_ID			0x07
 #define UBX_CFG_NAV5_ID			0x24
 #define UBX_NAV_ODO_ID			0x09
@@ -50,6 +51,7 @@
 #define UBX_CFG_NAV5_LEN		36
 #define UBX_NAV_ODO_LEN			20
 #define UBX_CFG_RATE_LEN		6
+#define UBX_CFG_SBAS_LEN		8
 
 typedef uint8_t		U1;
 typedef uint8_t		RU1_3;
@@ -202,6 +204,14 @@ typedef struct{
 	U4 totalDistance;
 	U4 distanceStd;
 }ubx_nav_odo_t;
+
+typedef struct{
+	X1 mode;
+	X1 usage;
+	U1 maxSBAS;
+	X1 scanmode2;
+	X4 scanmode1;
+}ubx_cfg_sbas_t;
 
 void neo_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value);
 uint8_t neo_read_byte(SPIDriver *SPID, uint8_t reg_addr);

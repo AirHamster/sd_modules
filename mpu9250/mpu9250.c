@@ -89,8 +89,8 @@ void mpu_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t reg_addr,
 void mpu_get_gyro_data(void){
 	float deltat = 0.0025f;
 
-	//mpu_read_accel_data(&mpu->accelCount[0]);
-	//mpu_read_gyro_data(&mpu->gyroCount[0]);
+	mpu_read_accel_data(&mpu->accelCount[0]);
+	mpu_read_gyro_data(&mpu->gyroCount[0]);
 	mpu_read_mag_data(&mpu->magCount[0]);
 	/*chSemWait(&usart1_semaph);
 							chprintf((BaseSequentialStream*)&SD1, "magCount: %d\r\n",
@@ -114,10 +114,15 @@ void mpu_get_gyro_data(void){
 	mpu->gy = (float)mpu->gyroCount[1]*mpu->gRes - mpu->gyroBias[1];
 	mpu->gz = (float)mpu->gyroCount[2]*mpu->gRes - mpu->gyroBias[2];
 
+	//swapped x and y axis
+	mpu->my = (float)mpu->magCount[0]*mpu->mRes*mpu->magCalibration[0] - mpu->magbias[0];  // get actual magnetometer value, this depends on scale being set
+	mpu->mx = (float)mpu->magCount[1]*mpu->mRes*mpu->magCalibration[1] - mpu->magbias[1];
+	mpu->mz = (float)mpu->magCount[2]*mpu->mRes*mpu->magCalibration[2] - mpu->magbias[2];
+/*
 	mpu->mx = (float)mpu->magCount[0]*mpu->mRes*mpu->magCalibration[0] - mpu->magbias[0];  // get actual magnetometer value, this depends on scale being set
 	mpu->my = (float)mpu->magCount[1]*mpu->mRes*mpu->magCalibration[1] - mpu->magbias[1];
 	mpu->mz = (float)mpu->magCount[2]*mpu->mRes*mpu->magCalibration[2] - mpu->magbias[2];
-
+*/
 	/*chSemWait(&usart1_semaph);
 	chprintf((BaseSequentialStream*)&SD1, "magCount: %d, mRes: %f, magCalibration: %f, my: %f\r\n",
 						mpu->magCount[1], mpu->mRes, mpu->magCalibration[1], mpu->my);
@@ -169,7 +174,7 @@ uint16_t mpu9250_init(void) {
 		chSemSignal(&usart1_semaph);
 	}
 
-	calibrateMPU9250(mpu->gyroBias, mpu->accelBias);
+	//calibrateMPU9250(mpu->gyroBias, mpu->accelBias);
 
 
 	// Initialize MPU9250 device

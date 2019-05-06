@@ -139,7 +139,7 @@ void xbee_receive(SPIDriver *SPID, uint8_t len, uint8_t *rxbuf){
 	spiExchange(SPID, len, txbuf, rxbuf); // Atomic transfer operations.
 	spiReleaseBus(SPID); 				/* Ownership release.               */
 	palSetLine(LINE_RF_868_CS);
-	chThdSleepMilliseconds(1);
+	//chThdSleepMilliseconds(1);
 }
 
 void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len){
@@ -151,7 +151,7 @@ void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len){
 	//spiExchange(SPID, 8, rxbuf, txbuf); 			/* Atomic transfer operations.      */
 	spiReleaseBus(SPID); 				/* Ownership release.               */
 	palSetLine(LINE_RF_868_CS);
-	chThdSleepMilliseconds(1);
+	//chThdSleepMilliseconds(1);
 	//palClearLine(LINE_RED_LED);
 }
 
@@ -476,8 +476,8 @@ void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len
 	//xbee_strc->dest_addr_h = 0x00;
 	//xbee_strc->dest_addr_l = 0x0000FFFF;
 	pack_len = xbee_create_data_write_message(txbuff, buffer, len);
-	uint8_t i;
-/*	chSemWait(&usart1_semaph);
+/*	uint8_t i;
+	chSemWait(&usart1_semaph);
 	//chprintf((BaseSequentialStream*)&SD1, "addr_h: %x, addr_l: %x\r\n", xbee_strc->dest_addr_h, xbee_strc->dest_addr_l);
 	chprintf((BaseSequentialStream*)&SD1, "TX: ");
 	for (i = 0; i < pack_len; i++){
@@ -485,7 +485,11 @@ void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len
 	}
 	chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
 	chSemSignal(&usart1_semaph); */
-	xbee_send(&SPID1, txbuff, pack_len);
+	if (xbee->tx_ready)
+	{
+		xbee_send(&SPID1, txbuff, pack_len);
+		xbee->tx_ready = 0;
+	}
 
 }
 
@@ -688,6 +692,7 @@ void xbee_process_tx_stat(uint8_t* buffer){
 							    }
 							    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
 			chSemSignal(&usart1_semaph);
+			xbee->tx_ready = 1;
 }
 
 void xbee_process_route_inf_frame(uint8_t* buffer){
@@ -742,21 +747,35 @@ void xbee_process_receive_packet_frame(uint8_t* buffer){
 }
 
 void xbee_parse_rf_packet(uint8_t *rxbuff){
+	uint8_t packet_type;
+	packet_type = rxbuff[11];
+
+	switch (packet_type){
+	case RF_GPS_PACKET:
+		xbee_parse_gps_packet(rxbuff);
+		break;
+	default:
+		break;
+	}
+}
+
+void xbee_parse_gps_packet(uint8_t *rxbuff){
 	int32_t lat, lon;
 	float flat, flon;
 	uint16_t dist;
 	uint8_t hour, min, sec, sat, speed;
 
-	lat = rxbuff[11] << 24 | rxbuff[12] << 16 | rxbuff[13] << 8 | rxbuff[14];
-	lon = rxbuff[15] << 24 | rxbuff[16] << 16 | rxbuff[17] << 8 | rxbuff[18];
+	lat = rxbuff[12] << 24 | rxbuff[13] << 16 | rxbuff[14] << 8 | rxbuff[15];
+	lon = rxbuff[16] << 24 | rxbuff[17] << 16 | rxbuff[18] << 8 | rxbuff[19];
 	flat = lat / 10000000.0f;
 	flon = lon / 10000000.0f;
-	hour = rxbuff[19];
-	min = rxbuff[20];
-	sec = rxbuff[21];
-	sat = rxbuff[22];
-	dist = rxbuff[23] << 8 | rxbuff[24];
-	speed = rxbuff[25];
+	hour = rxbuff[20];
+	min = rxbuff[21];
+	sec = rxbuff[22];
+	sat = rxbuff[23];
+	dist = rxbuff[24] << 8 | rxbuff[25];
+	speed = rxbuff[26];
+
 	chSemWait(&usart1_semaph);
 	chprintf((BaseSequentialStream*)&SD1, "%f,%f,%d:%d:%d:%d,%d,%d,%d\r\n",
 						flat, flon, hour, min, sec, sat, dist, speed, xbee->rssi);

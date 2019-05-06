@@ -44,6 +44,9 @@
 #define OUTPUT_XBEE		2
 
 #define RF_PACK_LEN		128
+
+#define RF_GPS_PACKET	1
+
 // Diagnostic commands
 
 #define AT_BC				"BC"	// Bytes Transmitted
@@ -154,6 +157,7 @@ typedef struct{
 	uint8_t suspend_state;
 	uint8_t poll_suspend_state;
 	uint8_t loopback_mode;
+	uint8_t tx_ready;
 }xbee_struct_t;
 
 typedef struct{

@@ -10,6 +10,10 @@
 extern struct ch_semaphore usart1_semaph;
 extern const SPIConfig neo_spi_cfg;
 extern struct ch_semaphore spi2_semaph;
+
+ubx_cfg_sbas_t sbas;
+ubx_cfg_sbas_t *sbas_box = &sbas;
+
 ubx_nav_pvt_t pvt;
 ubx_nav_pvt_t *pvt_box = &pvt;
 
@@ -307,6 +311,36 @@ void neo_process_rate(uint8_t *message){
 		chSemSignal(&usart1_semaph);
 	}
 }
+
+void neo_process_sbas(uint8_t *message){
+	const uint16_t pack_len = (UBX_CFG_SBAS_LEN + UBX_HEADER_LEN + CRC_LEN);
+		uint8_t sbas_message[pack_len];
+		uint16_t crc;
+		neo_read_bytes_release_cs(&SPID2, pack_len - UBX_HEADER_LEN, &sbas_message[UBX_HEADER_LEN]);
+		chSemSignal(&spi2_semaph);
+		memcpy(sbas_message, message, UBX_HEADER_LEN);
+		uint8_t j;
+		chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*)&SD1, "SBAS: ");
+		   			    for (j = 0; j < 100; j++){
+		    			    	chprintf((BaseSequentialStream*)&SD1, "%x ", sbas_message[j]);
+		    			    }
+		 			    chprintf((BaseSequentialStream*)&SD1, "\n\r");
+		chSemSignal(&usart1_semaph);
+		crc = ((sbas_message[pack_len-2] << 8) | (sbas_message[pack_len-1]));
+		if (crc == neo_calc_crc(sbas_message, pack_len)){
+			neo_cp_to_struct(sbas_message, (uint8_t*)sbas_box, UBX_CFG_SBAS_LEN);
+			//memcpy(rate_box, rate_message, UBX_CFG_RATE_LEN);
+			chSemWait(&usart1_semaph);
+			chprintf((BaseSequentialStream*)&SD1, "CFG_SBAS: mode = %d usage = %d, maxSBAS = %d \n\r", sbas_box->mode, sbas_box->usage, sbas_box->maxSBAS);
+			chSemSignal(&usart1_semaph);
+		}else{
+			chSemWait(&usart1_semaph);
+			chprintf((BaseSequentialStream*)&SD1, "CRC fault: %x vs %x \n\r", crc, neo_calc_crc(sbas_message, pack_len));
+			chSemSignal(&usart1_semaph);
+		}
+}
+
 void neo_process_pvt(uint8_t *message){
 	const uint16_t pack_len = (UBX_NAV_PVT_LEN + UBX_HEADER_LEN + CRC_LEN);
 	uint8_t pvt_message[pack_len];
@@ -343,13 +377,13 @@ void neo_process_ack(uint8_t *message){
 	memcpy(&ack_payload[0], &message[0], 6);
 	crc = neo_calc_crc(ack_payload, 10);
 
-	/*uint8_t i;
+	uint8_t i;
 	chprintf((BaseSequentialStream*)&SD1, "ACK: ");
 	for (i = 0; i < 10; i++){
 		chprintf((BaseSequentialStream*)&SD1, "%x ", ack_payload[i]);
 	}
 	chprintf((BaseSequentialStream*)&SD1, "\n\r");
-	 */
+
 	if (id == 0x01){
 		if (crc == (ack_payload[8] << 8 | ack_payload[9])){
 			chSemWait(&usart1_semaph);
@@ -390,6 +424,9 @@ void neo_process_cfg(uint8_t *message){
 		break;
 	case UBX_CFG_RATE_ID:
 		neo_process_rate(message);
+		break;
+	case UBX_CFG_SBAS_ID:
+		neo_process_sbas(message);
 		break;
 	}
 }

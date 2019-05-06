@@ -246,6 +246,7 @@ uint8_t get_mag_whoami(void);
 uint8_t read_AK8963_register(uint8_t regaddr);
 void read_AK8963_registers(uint8_t regaddr, uint8_t num, uint8_t *buff);
 void write_AK8963_register(uint8_t regaddr, uint8_t data);
+void read_AK9863_magn_data(uint8_t regaddr, uint8_t num, uint8_t *buff);
 void calibrateMPU9250(float * dest1, float * dest2);
 void mpu_get_gyro_data(void);
 
