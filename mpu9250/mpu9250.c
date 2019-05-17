@@ -115,14 +115,14 @@ void mpu_get_gyro_data(void){
 	mpu->gz = (float)mpu->gyroCount[2]*mpu->gRes - mpu->gyroBias[2];
 
 	//swapped x and y axis
-	mpu->my = (float)mpu->magCount[0]*mpu->mRes*mpu->magCalibration[0] - mpu->magbias[0];  // get actual magnetometer value, this depends on scale being set
-	mpu->mx = (float)mpu->magCount[1]*mpu->mRes*mpu->magCalibration[1] - mpu->magbias[1];
-	mpu->mz = (float)mpu->magCount[2]*mpu->mRes*mpu->magCalibration[2] - mpu->magbias[2];
-/*
+//	mpu->my = (float)mpu->magCount[0]*mpu->mRes*mpu->magCalibration[0] - mpu->magbias[0];  // get actual magnetometer value, this depends on scale being set
+//	mpu->mx = (float)mpu->magCount[1]*mpu->mRes*mpu->magCalibration[1] - mpu->magbias[1];
+//	mpu->mz = (float)mpu->magCount[2]*mpu->mRes*mpu->magCalibration[2] - mpu->magbias[2];
+
 	mpu->mx = (float)mpu->magCount[0]*mpu->mRes*mpu->magCalibration[0] - mpu->magbias[0];  // get actual magnetometer value, this depends on scale being set
 	mpu->my = (float)mpu->magCount[1]*mpu->mRes*mpu->magCalibration[1] - mpu->magbias[1];
 	mpu->mz = (float)mpu->magCount[2]*mpu->mRes*mpu->magCalibration[2] - mpu->magbias[2];
-*/
+
 	/*chSemWait(&usart1_semaph);
 	chprintf((BaseSequentialStream*)&SD1, "magCount: %d, mRes: %f, magCalibration: %f, my: %f\r\n",
 						mpu->magCount[1], mpu->mRes, mpu->magCalibration[1], mpu->my);
@@ -150,7 +150,7 @@ void mpu_get_gyro_data(void){
 	mpu->pitch *= 180.0f / PI;
 
 	mpu->yaw   *= 180.0f / PI;
-	mpu->yaw   -= 13.8f; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
+	mpu->yaw   += 10.942f; // Declination
 
 	mpu->roll  *= 180.0f / PI;
 
@@ -240,10 +240,6 @@ uint16_t mpu9250_init(void) {
 	mpu_write_byte(&SPID2, I2C_SLV4_CTRL, 0);	//step 3 - reset i2c slave reg
 	mpu_write_byte(&SPID2, I2C_SLV4_ADDR, 0x0C);	//step 7 - rnw to 0 and addr of magn
 
-	mpu->magbias[0] = +470.;  // User environmental x-axis correction in milliGauss, should be automatically calculated
-	mpu->magbias[1] = +120.;  // User environmental x-axis correction in milliGauss
-	mpu->magbias[2] = +125.;  // User environmental x-axis correction in milliGauss
-
 	getAres(); // Get accelerometer sensitivity
 	getGres(); // Get gyro sensitivity
 	getMres(); // Get magnetometer sensitivity
@@ -297,7 +293,9 @@ void initAK8963(float *destination){
 	// Set magnetometer data resolution and sample ODR
 	write_AK8963_register(AK8963_CNTL, Mscale << 4 | Mmode);
 	chThdSleepMilliseconds(10);
-
+	//mpu->magbias[0] = +470.;  // User environmental x-axis correction in milliGauss, should be automatically calculated
+	//mpu->magbias[1] = +120.;  // User environmental x-axis correction in milliGauss
+	//mpu->magbias[2] = +125.;  // User environmental x-axis correction in milliGauss
 }
 
 uint8_t read_AK8963_register(uint8_t regaddr){
