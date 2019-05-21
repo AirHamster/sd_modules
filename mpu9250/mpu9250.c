@@ -150,7 +150,13 @@ void mpu_get_gyro_data(void){
 	mpu->pitch *= 180.0f / PI;
 
 	mpu->yaw   *= 180.0f / PI;
-	mpu->yaw   += 10.942f; // Declination
+	mpu->yaw += 90.0;
+	if (mpu->yaw < 0){
+		mpu->yaw += 360.0;
+	}
+	mpu->yaw =  360.0 - mpu->yaw;
+
+	//mpu->yaw   += 10.942f; // Declination
 
 	mpu->roll  *= 180.0f / PI;
 
@@ -293,9 +299,9 @@ void initAK8963(float *destination){
 	// Set magnetometer data resolution and sample ODR
 	write_AK8963_register(AK8963_CNTL, Mscale << 4 | Mmode);
 	chThdSleepMilliseconds(10);
-	//mpu->magbias[0] = +470.;  // User environmental x-axis correction in milliGauss, should be automatically calculated
-	//mpu->magbias[1] = +120.;  // User environmental x-axis correction in milliGauss
-	//mpu->magbias[2] = +125.;  // User environmental x-axis correction in milliGauss
+	mpu->magbias[0] = +323.91;  // User environmental x-axis correction in milliGauss, should be automatically calculated
+	mpu->magbias[1] = +695.38;  // User environmental x-axis correction in milliGauss
+	mpu->magbias[2] = +229.59;  // User environmental x-axis correction in milliGauss
 }
 
 uint8_t read_AK8963_register(uint8_t regaddr){
@@ -563,4 +569,74 @@ void calibrateMPU9250(float * dest1, float * dest2)
 	dest2[0] = (float)accel_bias[0]/(float)accelsensitivity;
 	dest2[1] = (float)accel_bias[1]/(float)accelsensitivity;
 	dest2[2] = (float)accel_bias[2]/(float)accelsensitivity;
+}
+
+void mag_calibration(float * dest1, float * dest2) {
+	uint16_t ii = 0, sample_count = 0;
+	int32_t mag_bias[3] = { 0, 0, 0 }, mag_scale[3] = { 0, 0, 0 };
+	int16_t mag_max[3] = { -32767, -32767, -32767 }, mag_min[3] = { 32767,
+			32767, 32767 }, mag_temp[3] = { 0, 0, 0 };
+
+	chSemWait(&usart1_semaph);
+	chprintf((BaseSequentialStream*) &SD1, "Mag Calibration: Wave device in a figure eight until done!\r\n");
+	chSemSignal(&usart1_semaph);
+	chThdSleepMilliseconds(4000);
+
+// shoot for ~fifteen seconds of mag data
+	//if (MPU9250Mmode == 0x02)
+		//sample_count = 128; // at 8 Hz ODR, new mag data is available every 125 ms
+	//if (MPU9250Mmode == 0x06)
+		sample_count = 1500; // at 100 Hz ODR, new mag data is available every 10 ms
+	for (ii = 0; ii < sample_count; ii++) {
+		mpu_read_mag_data(&mpu->magCount[0]);
+		chSemWait(&usart1_semaph);
+				chprintf((BaseSequentialStream*)&SD1, "MX: %d, MY: %d, MZ: %d\r\n",
+						mpu->magCount[0], mpu->magCount[1], mpu->magCount[2]);
+		chSemSignal(&usart1_semaph);
+		//MPU9250readMagData(mag_temp);  // Read the mag data
+		for (int jj = 0; jj < 3; jj++) {
+			if (mpu->magCount[jj] > mag_max[jj])
+				mag_max[jj] = mpu->magCount[jj];
+			if (mpu->magCount[jj] < mag_min[jj])
+				mag_min[jj] = mpu->magCount[jj];
+		}
+		//if (MPU9250Mmode == 0x02)
+			//delay(135);  // at 8 Hz ODR, new mag data is available every 125 ms
+		//if (MPU9250Mmode == 0x06)
+		chThdSleepMilliseconds(12);  // at 100 Hz ODR, new mag data is available every 10 ms
+	}
+
+	chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*) &SD1, "max x = %d, max y = %d, max z = %d\r\n", mag_max[0], mag_max[1], mag_max[2]);
+		chprintf((BaseSequentialStream*) &SD1, "min x = %d, min y = %d, min z = %d\r\n", mag_min[0], mag_min[1], mag_min[2]);
+	chSemSignal(&usart1_semaph);
+// Get hard iron correction
+	mag_bias[0] = (mag_max[0] + mag_min[0]) / 2; // get average x mag bias in counts
+	mag_bias[1] = (mag_max[1] + mag_min[1]) / 2; // get average y mag bias in counts
+	mag_bias[2] = (mag_max[2] + mag_min[2]) / 2; // get average z mag bias in counts
+
+	//dest1[0] = (float) mag_bias[0] * mpu->mRes * mpu->magCalibration[0]; // save mag biases in G for main program
+	//dest1[1] = (float) mag_bias[1] * mpu->mRes * mpu->magCalibration[1];
+	//dest1[2] = (float) mag_bias[2] * mpu->mRes * mpu->magCalibration[2];
+
+	dest1[0] = (float) mag_bias[0] * mpu->mRes * 1.207; // save mag biases in G for main program
+	dest1[1] = (float) mag_bias[1] * mpu->mRes * 1.214;
+	dest1[2] = (float) mag_bias[2] * mpu->mRes * 1.167;
+
+// Get soft iron correction estimate
+	mag_scale[0] = (mag_max[0] - mag_min[0]) / 2; // get average x axis max chord length in counts
+	mag_scale[1] = (mag_max[1] - mag_min[1]) / 2; // get average y axis max chord length in counts
+	mag_scale[2] = (mag_max[2] - mag_min[2]) / 2; // get average z axis max chord length in counts
+
+	float avg_rad = mag_scale[0] + mag_scale[1] + mag_scale[2];
+	avg_rad /= 3.0;
+
+	dest2[0] = avg_rad / ((float) mag_scale[0]);
+	dest2[1] = avg_rad / ((float) mag_scale[1]);
+	dest2[2] = avg_rad / ((float) mag_scale[2]);
+
+	chSemWait(&usart1_semaph);
+	chprintf((BaseSequentialStream*) &SD1, "Mag Calibration done!\r\ndest1 x = %f, dest1 y = %f, dest1 z = %f\r\ndest2 x = %f, dest2 y = %f, dest2 z = %f\r\n",
+				dest1[0], dest1[1], dest1[2], dest2[0], dest2[1], dest2[2]);
+	chSemSignal(&usart1_semaph);
 }
