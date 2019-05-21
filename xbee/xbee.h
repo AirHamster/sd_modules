@@ -210,7 +210,10 @@ void xbee_process_node_id_frame(uint8_t* buffer);
 void xbee_process_remote_response_frame(uint8_t* buffer);
 
 void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len);
+void xbee_send_rf_message_back(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len);
 void xbee_parse_rf_packet(uint8_t *rxbuff);
+void xbee_parse_gps_packet_back(uint8_t *rxbuff);
+void xbee_parse_gps_packet(uint8_t *rxbuff);
 uint16_t xbee_read_last_rssi(xbee_struct_t *xbee_str);
 uint32_t xbee_read_channels(xbee_struct_t *xbee_str);
 uint16_t xbee_get_attn_pin_cfg(xbee_struct_t *xbee_str);
