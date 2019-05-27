@@ -14,7 +14,7 @@ endif
 #MPU9250 - 9-axis accel/gyro/magn chip
 ifeq ($(USE_MPU_9250_MODULE), TRUE)
 SD_SRC += ./sd_modules/mpu9250/mpu9250.c
-#SD_SRC += ./sd_modules/mpu9250/MahonyAHRS.c
+#SD_SRC += ./sd_modules/mpu9250/MadgwickAHRS.c
 SD_SRC += ./sd_modules/mpu9250/quaternionFilters.c
 SD_INC += ./sd_modules/mpu9250
 endif
@@ -31,6 +31,12 @@ endif
 ifeq ($(USE_XBEE_868_MODULE), TRUE)
 SD_SRC += ./sd_modules/xbee/xbee.c
 SD_INC += ./sd_modules/xbee
+endif
+
+#EEPROM
+ifeq ($(USE_EEPROM_MODULE), TRUE)
+SD_SRC += ./sd_modules/eeprom/eeprom.c
+SD_INC += ./sd_modules/eeprom
 endif
 
 # Shared variables

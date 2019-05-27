@@ -17,6 +17,16 @@
 
 #define Kp 2.0f * 5.0f // these are the free parameters in the Mahony filter and fusion scheme, Kp for proportional feedback, Ki for integral
 #define Ki 0.0f
+//---------------------------------------------------------------------------------------------------
+// Definitions
+
+#define sampleFreq	512.0f			// sample frequency in Hz
+#define twoKpDef	(2.0f * 0.5f)	// 2 * proportional gain
+#define twoKiDef	(2.0f * 0.0f)	// 2 * integral gain
+
+//---------------------------------------------------------------------------------------------------
+// Variable definitions
+
 
 void MadgwickQuaternionUpdate(float ax, float ay, float az, float gx, float gy,
                               float gz, float mx, float my, float mz,
@@ -24,6 +34,8 @@ void MadgwickQuaternionUpdate(float ax, float ay, float az, float gx, float gy,
 void MahonyQuaternionUpdate(float ax, float ay, float az, float gx, float gy,
                             float gz, float mx, float my, float mz,
                             float deltat);
+void  FreeIMUAHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz);
+float invSqrt(float number);
 //const float * getQ();
 
 #endif // _QUATERNIONFILTERS_H_

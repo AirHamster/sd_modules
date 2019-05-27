@@ -79,9 +79,9 @@ uint8_t xbee_create_at_write_message(char *at, uint8_t *buffer, uint8_t *data, u
 	uint8_t i = 0;
 	buffer[0] = 0x7E;	// Start delimiter
 	buffer[1] = 0x00;	// Length MSB
-	buffer[2] = 0x04;	// Length LSB
+	buffer[2] = 0x04 + num;	// Length LSB
 	buffer[3] = XBEE_AT_FRAME;	// Frame type - AT command
-	buffer[4] = at[0];	// Frame ID - it will return back
+	buffer[4] = 0x52;	// Frame ID - it will return back
 	buffer[5] = at[0];
 	buffer[6] = at[1];	// AT command - two symbols
 	for (i = 0; i < num; i++){
@@ -281,6 +281,7 @@ void xbee_get_channels(void){
 	//chSysUnlockFromISR();
 }
 
+
 void xbee_thread_execute(uint8_t command){
 	xbee->suspend_state = 0;
 	  chSysLock();
@@ -333,16 +334,21 @@ uint16_t xbee_get_attn_pin_cfg(xbee_struct_t *xbee_str){
 }
 
 uint16_t xbee_read_last_rssi(xbee_struct_t *xbee_str){
-	uint8_t packet[15];
-	(void)xbee_str;
-	xbee_read(&SPID1, 8+6, (uint8_t*)"DB", packet);
-	/*uint8_t i;
-	chprintf((BaseSequentialStream*)&SD1, "RSSI ");
-		    for (i = 0; i < 15; i++){
-		    	chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
-		    }
-		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");*/
-    return (packet[7] << 8) | packet[8];
+	uint8_t len;
+		uint8_t txbuffer[20];
+		uint8_t i;
+		uint8_t zero_byte = 0;
+			len = xbee_create_at_read_message("DB", &txbuffer[0]);
+			/*chSemWait(&usart1_semaph);
+							chprintf((BaseSequentialStream*)&SD1, "Write DB %d command \n\r");
+										    for (i = 0; i < len; i++){
+										    	chprintf((BaseSequentialStream*)&SD1, "%x ", txbuffer[i]);
+										    }
+										    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
+						chSemSignal(&usart1_semaph);*/
+		xbee_send(&SPID1, &txbuffer[0], len);
+
+ return 0;
 }
 
 uint32_t xbee_read_channels(xbee_struct_t *xbee_str){
@@ -356,6 +362,19 @@ uint32_t xbee_read_channels(xbee_struct_t *xbee_str){
 		    }
 		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
     return (packet[7] << 24) | (packet[8] << 16) | (packet[9] << 8) | packet[10];
+}
+
+uint16_t xbee_read_baudrate(xbee_struct_t *xbee_str){
+	uint8_t packet[15];
+	(void)xbee_str;
+	xbee_read(&SPID1, 8+6, (uint8_t*)"BR", packet);
+	uint8_t i;
+	chprintf((BaseSequentialStream*)&SD1, "Baudrate ");
+		    for (i = 0; i < 15; i++){
+		    	chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
+		    }
+		    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
+    return (packet[7] << 8) | packet[8];
 }
 
 uint16_t xbee_get_packet_payload(xbee_struct_t *xbee_str){
@@ -693,6 +712,10 @@ void xbee_process_at_response(uint8_t* buffer){
 							    }
 							    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
 			chSemSignal(&usart1_semaph);*/
+			if (rxbuff[1] == 'D' && rxbuff[2] == 'B')
+			{
+				xbee->rssi = rxbuff[3] << 8 | rxbuff[4];
+			}
 }
 
 void xbee_process_modem_stat_frame(uint8_t* buffer){
@@ -770,7 +793,7 @@ void xbee_process_receive_packet_frame(uint8_t* buffer){
 	if (xbee->loopback_mode){
 		//xbee_send_payoad
 	}
-	xbee->rssi = xbee_read_last_rssi(xbee);
+	xbee_read_last_rssi(xbee);
 	//chSemWait(&usart1_semaph);
 	//chprintf((BaseSequentialStream*)&SD1, "RSSI: %d\r\n", xbee->rssi);
 	//chSemSignal(&usart1_semaph);
@@ -919,3 +942,28 @@ void xbee_process_remote_response_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
+
+void xbee_set_10kbs_rate(void){
+	uint8_t len;
+	uint8_t txbuffer[20];
+	uint8_t i;
+	uint8_t zero_byte = 0;
+		len = xbee_create_at_write_message("BR", &txbuffer[0], &zero_byte, 1);
+		chSemWait(&usart1_semaph);
+						chprintf((BaseSequentialStream*)&SD1, "Write BD %d command \n\r", zero_byte);
+									    for (i = 0; i < len; i++){
+									    	chprintf((BaseSequentialStream*)&SD1, "%x ", txbuffer[i]);
+									    }
+									    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
+					chSemSignal(&usart1_semaph);
+	xbee_send(&SPID1, &txbuffer[0], len);
+}
+
+void xbee_set_80kbs_rate(void){
+	uint8_t len;
+	uint8_t txbuffer[20];
+	uint8_t true_byte = 1;
+	chprintf((BaseSequentialStream*)&SD1, "Write BD %d command \n\r", true_byte);
+		len = xbee_create_at_write_message("BR", &txbuffer[0], &true_byte, 1);
+	xbee_send(&SPID1, &txbuffer[0], len);
+}

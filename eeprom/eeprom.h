@@ -10,6 +10,11 @@
 #include "chprintf.h"
 
 
-#define EEPROM_ADDRESS	0xA6
+#define EEPROM_ADDRESS	0x53
+#define EEPROM_HW_VER_ADDR 0x00
+
+
+void eeprom_read_hw_version(void);
+void eeprom_write_hw_version(void);
 
 #endif

@@ -216,6 +216,7 @@ void xbee_parse_gps_packet_back(uint8_t *rxbuff);
 void xbee_parse_gps_packet(uint8_t *rxbuff);
 uint16_t xbee_read_last_rssi(xbee_struct_t *xbee_str);
 uint32_t xbee_read_channels(xbee_struct_t *xbee_str);
+uint16_t xbee_read_baudrate(xbee_struct_t *xbee_str);
 uint16_t xbee_get_attn_pin_cfg(xbee_struct_t *xbee_str);
 uint16_t xbee_get_packet_payload(xbee_struct_t *xbee_str);
 uint16_t xbee_get_bytes_transmitted(xbee_struct_t *xbee_str);
@@ -225,5 +226,6 @@ uint16_t xbee_get_transceived_err_count(xbee_struct_t *xbee_str);
 uint16_t xbee_get_unicast_trans_count(xbee_struct_t *xbee_str);
 void xbee_send_ping_message(xbee_struct_t *xbee_strc);
 void xbee_polling(void);
-
+void xbee_set_10kbs_rate(void);
+void xbee_set_80kbs_rate(void);
 #endif /* SD_MODULES_XBEE_XBEE_H_ */

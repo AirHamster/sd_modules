@@ -87,8 +87,8 @@ void mpu_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t reg_addr,
 }
 
 void mpu_get_gyro_data(void){
-	float deltat = 0.0025f;
-
+	float deltat = 0.004f;
+	float Xhor, Yhor;
 	mpu_read_accel_data(&mpu->accelCount[0]);
 	mpu_read_gyro_data(&mpu->gyroCount[0]);
 	mpu_read_mag_data(&mpu->magCount[0]);
@@ -136,11 +136,18 @@ void mpu_get_gyro_data(void){
 	chSemSignal(&usart1_semaph);*/
 	palToggleLine(LINE_ORANGE_LED);
 
-	MahonyQuaternionUpdate(mpu->ax, mpu->ay, mpu->az, mpu->gx*PI/180.0f, mpu->gy*PI/180.0f, mpu->gz*PI/180.0f, mpu->my, mpu->mx, mpu->mz, deltat);
-	mpu->yaw   = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
-	mpu->pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
-	mpu->roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
+	//Xhor = mpu->mx*cos(mpu->pitch) + mpu->my*sin(mpu->roll)*sin(mpu->pitch) + mpu->mz*cos(mpu->roll)*sin(mpu->pitch);
+	//Yhor = mpu->my*cos(mpu->roll) + mpu->mz*sin(mpu->roll);
+	//mpu->yaw = atan2(-Yhor, Xhor);
 
+	MahonyQuaternionUpdate(mpu->ax, mpu->ay, mpu->az, mpu->gx*PI/180.0f, mpu->gy*PI/180.0f, mpu->gz*PI/180.0f, mpu->my, mpu->mx, -mpu->mz, deltat);
+	mpu->yaw   = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
+	mpu->roll = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
+	mpu->pitch  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
+
+	//Xhor = mpu->mx*cos(mpu->pitch) + mpu->my*sin(mpu->roll)*sin(mpu->pitch) + mpu->mz*cos(mpu->roll)*sin(mpu->pitch);
+	//Yhor = mpu->my*cos(mpu->roll) + mpu->mz*sin(mpu->roll);
+	//mpu->yaw = atan2(-Yhor, Xhor);
 	/*
 	MahonyAHRSupdate(mpu->ax, mpu->ay, mpu->az, mpu->gx*PI/180.0f, mpu->gy*PI/180.0f, mpu->gz*PI/180.0f, mpu->my, mpu->mx, mpu->mz);
 	mpu->yaw   = atan2(2.0f * (q1 * q2 + q0 * q3), q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3);
@@ -150,6 +157,7 @@ void mpu_get_gyro_data(void){
 	mpu->pitch *= 180.0f / PI;
 
 	mpu->yaw   *= 180.0f / PI;
+
 	mpu->yaw += 90.0;
 	if (mpu->yaw < 0){
 		mpu->yaw += 360.0;
