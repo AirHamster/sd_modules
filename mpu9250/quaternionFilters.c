@@ -10,10 +10,7 @@
 #include "MPU9250.h"
 #include "quaternionFilters.h"
 #include <math.h>
-// These are the free parameters in the Mahony filter and fusion scheme, Kp
-// for proportional feedback, Ki for integral
-#define Kp 2.0f * 5.0f
-#define Ki 0.0f
+
 
 extern volatile float twoKp;											// 2 * proportional gain (Kp)
 extern volatile float twoKi;											// 2 * integral gain (Ki)
