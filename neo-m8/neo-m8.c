@@ -302,9 +302,9 @@ void neo_process_rate(uint8_t *message){
 	if (crc == neo_calc_crc(rate_message, pack_len)){
 		neo_cp_to_struct(rate_message, (uint8_t*)rate_box, UBX_CFG_RATE_LEN);
 		//memcpy(rate_box, rate_message, UBX_CFG_RATE_LEN);
-		chSemWait(&usart1_semaph);
+	/*	chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*)&SD1, "CFG_RATE: meas = %d nav = %d, time = %d \n\r", rate_box->measRate, rate_box->navRate, rate_box->timeRef);
-		chSemSignal(&usart1_semaph);
+		chSemSignal(&usart1_semaph);*/
 	}else{
 		chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*)&SD1, "CRC fault: %x vs %x \n\r", crc, neo_calc_crc(rate_message, pack_len));

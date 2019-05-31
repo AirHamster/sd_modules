@@ -8,11 +8,13 @@
 #include "MPU9250.h"
 //#include "quaternionFilters.h"
 #include "MadgwickAHRS.h"
+#include "xbee.h"
 mpu_struct_t mpu_struct;
 mpu_struct_t *mpu = &mpu_struct;
 extern const SPIConfig mpu_spi_cfg;
 extern struct ch_semaphore usart1_semaph;
 extern struct ch_semaphore spi2_semaph;
+extern tx_box_t *tx_box;
 float PI = CONST_PI;
 //float GyroMeasError = CONST_GME; // gyroscope measurement error in rads/s (start at 60 deg/s), then reduce after ~10 s to 3
 //float beta = CONST_beta;  // compute beta
@@ -123,8 +125,8 @@ void mpu_get_gyro_data(void){
 
 	MadgwickAHRSupdate(mpu->gx*PI/180.0f, mpu->gy*PI/180.0f, mpu->gz*PI/180.0f, mpu->ax, mpu->ay, mpu->az, mpu->my, mpu->mx, -mpu->mz);
 	mpu->yaw   = atan2(2.0f * (q1 * q2 + q0 * q3), q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3);
-	mpu->pitch = -asin(2.0f * (q1 * q3 - q0 * q2));
-	mpu->roll  = atan2(2.0f * (q0 * q1 + q2 * q3), q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3);
+	mpu->roll = -asin(2.0f * (q1 * q3 - q0 * q2));
+	mpu->pitch  = atan2(2.0f * (q0 * q1 + q2 * q3), q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3);
 
 	mpu->pitch *= 180.0f / PI;
 
@@ -139,7 +141,9 @@ void mpu_get_gyro_data(void){
 	//mpu->yaw   += 10.942f; // Declination
 
 	mpu->roll  *= 180.0f / PI;
-
+	tx_box->yaw = (int16_t)mpu->yaw;
+	tx_box->pitch = (int16_t)mpu->pitch;
+	tx_box->roll = (int16_t)mpu->roll;
 	//chSysUnlock();
 
 }
@@ -152,11 +156,11 @@ uint16_t mpu9250_init(void) {
 	tmp = mpu_read_byte(&SPID2, WHO_AM_I_MPU9250);
 	if (tmp == 0x71){
 		chSemWait(&usart1_semaph);
-		chprintf((BaseSequentialStream*)&SD1, "MPU9250 on-line\r\n");
+		//chprintf((BaseSequentialStream*)&SD1, "MPU9250 on-line\r\n");
 		chSemSignal(&usart1_semaph);
 	}else{
 		chSemWait(&usart1_semaph);
-		chprintf((BaseSequentialStream*)&SD1, "MPU9250 not found, %x\r\n", tmp);
+		//chprintf((BaseSequentialStream*)&SD1, "MPU9250 not found, %x\r\n", tmp);
 		chSemSignal(&usart1_semaph);
 	}
 
@@ -244,13 +248,14 @@ uint8_t get_mag_whoami(void)
 void initAK8963(float *destination){
 	uint8_t tmp = get_mag_whoami();
 	if (tmp == 0x48){
-		chSemWait(&usart1_semaph);
+	/*	chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*)&SD1, "Magnetometr on-line\r\n");
-		chSemSignal(&usart1_semaph);
+		chSemSignal(&usart1_semaph);*/
 	}else{
+		/*
 		chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*)&SD1, "Magnetometr not found\r\n");
-		chSemSignal(&usart1_semaph);
+		chSemSignal(&usart1_semaph);*/
 	}
 	palToggleLine(LINE_GREEN_LED);
 	// First extract the factory calibration for each magnetometer axis
@@ -261,9 +266,9 @@ void initAK8963(float *destination){
 	chThdSleepMilliseconds(100);
 	// Read the x-, y-, and z-axis calibration values
 	read_AK8963_registers(AK8963_ASAX, 3, &rawData[0]);
-	chSemWait(&usart1_semaph);
+	/*chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*)&SD1, "ASA: %d, %d, %d\r\n", rawData[0], rawData[1], rawData[2]);
-		chSemSignal(&usart1_semaph);
+		chSemSignal(&usart1_semaph);*/
 	// Return x-axis sensitivity adjustment values, etc.
 	destination[0] = (float) (rawData[0] - 128) / 256. + 1.;
 	destination[1] = (float) (rawData[1] - 128) / 256. + 1.;

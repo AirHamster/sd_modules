@@ -26,9 +26,9 @@ void eeprom_write_hw_version(void){
 	status = i2cMasterTransmitTimeout(&I2CD1, EEPROM_ADDRESS, txbuff, 3, NULL, 0, 1000);
 	i2cReleaseBus(&I2CD1);
 	if (status != MSG_OK){
-		chSemWait(&usart1_semaph);
+	/*	chSemWait(&usart1_semaph);
 			chprintf((BaseSequentialStream*)&SD1, "Shit happened: status is %d\r\n", i2cGetErrors(&I2CD1));
-			chSemSignal(&usart1_semaph);
+			chSemSignal(&usart1_semaph);*/
 	}
 }
 
@@ -40,11 +40,12 @@ void eeprom_read_hw_version(void){
 	txbuff[1] = EEPROM_HW_VER_ADDR & 0xFF;
 	status = i2cMasterTransmitTimeout(&I2CD1, EEPROM_ADDRESS, txbuff, 2, rxbuff, 1, 1000);
 	if (status != MSG_OK){
+		/*
 		chSemWait(&usart1_semaph);
 			chprintf((BaseSequentialStream*)&SD1, "Shit happened: status is %d\r\n", i2cGetErrors(&I2CD1));
-			chSemSignal(&usart1_semaph);
-	}
+			chSemSignal(&usart1_semaph);*/
+	}/*
 	chSemWait(&usart1_semaph);
 	chprintf((BaseSequentialStream*)&SD1, "Hardware version readed from EEPROM: %d\r\n", rxbuff[0]);
-	chSemSignal(&usart1_semaph);
+	chSemSignal(&usart1_semaph);*/
 }
