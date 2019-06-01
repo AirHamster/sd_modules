@@ -37,7 +37,7 @@
 #define UBX_CFG_PRT_ID			0x00
 #define UBX_CFG_MSG_ID			0x01
 #define UBX_CFG_RATE_ID			0x08
-#define IBX_CFG_ODO_ID			0x1E
+#define UBX_CFG_ODO_ID			0x1E
 #define UBX_CFG_SBAS_ID			0x16
 #define UBX_NAV_PVT_ID			0x07
 #define UBX_CFG_NAV5_ID			0x24
@@ -50,6 +50,7 @@
 #define UBX_NAV_PVT_LEN			92
 #define UBX_CFG_NAV5_LEN		36
 #define UBX_NAV_ODO_LEN			20
+#define UBX_CFG_ODO_LEN			20
 #define UBX_CFG_RATE_LEN		6
 #define UBX_CFG_SBAS_LEN		8
 
@@ -234,6 +235,7 @@ void neo_apply_length(uint8_t *buffer, uint8_t len);
 uint16_t neo_calc_crc(uint8_t *buffer, uint16_t len);
 
 void neo_process_cfg(uint8_t *message);
+void neo_process_cfg_odo(uint8_t *message);
 void neo_process_pvt(uint8_t *message);
 void neo_process_nav(uint8_t *message);
 void neo_process_nav5(uint8_t *message);

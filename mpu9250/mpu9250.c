@@ -42,7 +42,7 @@ void mpu_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value) {
 	uint8_t txbuf[2];
 	txbuf[0] = reg_addr;
 	txbuf[1] = value;
-	chSemWait(&spi2_semaph);
+	//chSemWait(&spi2_semaph);
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
 //	spiStart(&SPID2, &mpu_spi_cfg);
 	palClearLine(LINE_MPU_CS);
@@ -50,14 +50,14 @@ void mpu_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value) {
 	spiSend(SPID, 2, txbuf); /* send request       */
 	palSetLine(LINE_MPU_CS);
 	spiReleaseBus(SPID); /* Ownership release.               */
-	chSemSignal(&spi2_semaph);
+	//chSemSignal(&spi2_semaph);
 	chThdSleepMilliseconds(1);
 }
 
 uint8_t mpu_read_byte(SPIDriver *SPID, uint8_t reg_addr) {
 	uint8_t value;
 	reg_addr |= 0x80;	//0x80 indicates read operation
-	chSemWait(&spi2_semaph);
+	//chSemWait(&spi2_semaph);
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
 //	spiStart(&SPID2, &mpu_spi_cfg);
 	palClearLine(LINE_MPU_CS);
@@ -66,7 +66,7 @@ uint8_t mpu_read_byte(SPIDriver *SPID, uint8_t reg_addr) {
 	spiReceive(SPID, 1, &value);
 	palSetLine(LINE_MPU_CS);
 	spiReleaseBus(SPID); /* Ownership release.               */
-	chSemSignal(&spi2_semaph);
+	//chSemSignal(&spi2_semaph);
 	chThdSleepMilliseconds(1);
 	return value;
 }
@@ -75,7 +75,7 @@ void mpu_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t reg_addr,
 		uint8_t *rxbuf) {
 	uint8_t txbuf[num];
 	reg_addr |= 0x80;
-	chSemWait(&spi2_semaph);
+	//chSemWait(&spi2_semaph);
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
 //	spiStart(&SPID2, &mpu_spi_cfg);
 	palClearLine(LINE_MPU_CS);
@@ -84,7 +84,7 @@ void mpu_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t reg_addr,
 	spiExchange(SPID, num, txbuf, rxbuf); /* Atomic transfer operations.      */
 	palSetLine(LINE_MPU_CS);
 	spiReleaseBus(SPID); /* Ownership release.               */
-	chSemSignal(&spi2_semaph);
+	//chSemSignal(&spi2_semaph);
 
 	//chThdSleepMilliseconds(1);
 }
@@ -92,10 +92,11 @@ void mpu_read_bytes(SPIDriver *SPID, uint8_t num, uint8_t reg_addr,
 void mpu_get_gyro_data(void){
 	float deltat = 0.002f;
 	float Xhor, Yhor;
+	chSemWait(&spi2_semaph);
 	mpu_read_accel_data(&mpu->accelCount[0]);
 	mpu_read_gyro_data(&mpu->gyroCount[0]);
 	mpu_read_mag_data(&mpu->magCount[0]);
-
+	chSemSignal(&spi2_semaph);
 	// Now we'll calculate the accleration value into actual g's
 	mpu->ax = (float)mpu->accelCount[0]*mpu->aRes - mpu->accelBias[0];  // get actual g value, this depends on scale being set
 	mpu->ay = (float)mpu->accelCount[1]*mpu->aRes - mpu->accelBias[1];
@@ -284,9 +285,9 @@ void initAK8963(float *destination){
 	// Set magnetometer data resolution and sample ODR
 	write_AK8963_register(AK8963_CNTL, Mscale << 4 | Mmode);
 	chThdSleepMilliseconds(10);
-	mpu->magbias[0] = +323.91;  // User environmental x-axis correction in milliGauss, should be automatically calculated
-	mpu->magbias[1] = +695.38;  // User environmental x-axis correction in milliGauss
-	mpu->magbias[2] = -229.59;  // User environmental x-axis correction in milliGauss
+	mpu->magbias[0] = +347.91;  // User environmental x-axis correction in milliGauss, should be automatically calculated
+	mpu->magbias[1] = +574.38;  // User environmental x-axis correction in milliGauss
+	mpu->magbias[2] = -398.59;  // User environmental x-axis correction in milliGauss
 	//mpu->magbias[2] = -450.59;  // User environmental x-axis correction in milliGauss
 }
 
