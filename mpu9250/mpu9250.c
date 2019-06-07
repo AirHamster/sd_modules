@@ -285,9 +285,9 @@ void initAK8963(float *destination){
 	// Set magnetometer data resolution and sample ODR
 	write_AK8963_register(AK8963_CNTL, Mscale << 4 | Mmode);
 	chThdSleepMilliseconds(10);
-	mpu->magbias[0] = +347.91;  // User environmental x-axis correction in milliGauss, should be automatically calculated
-	mpu->magbias[1] = +574.38;  // User environmental x-axis correction in milliGauss
-	mpu->magbias[2] = -398.59;  // User environmental x-axis correction in milliGauss
+	mpu->magbias[0] = +504.91;  // User environmental x-axis correction in milliGauss, should be automatically calculated
+	mpu->magbias[1] = +547.38;  // User environmental x-axis correction in milliGauss
+	mpu->magbias[2] = -360.59;  // User environmental x-axis correction in milliGauss
 	//mpu->magbias[2] = -450.59;  // User environmental x-axis correction in milliGauss
 }
 
