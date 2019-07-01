@@ -163,6 +163,8 @@ typedef struct{
 typedef struct{
 	int32_t lat;
 	int32_t lon;
+	int32_t headMot;
+	int32_t headVeh;
 	uint16_t dist;
 	int16_t yaw;
 	int16_t pitch;

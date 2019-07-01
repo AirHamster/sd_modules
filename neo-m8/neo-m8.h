@@ -215,6 +215,7 @@ typedef struct{
 }ubx_cfg_sbas_t;
 
 void neo_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value);
+void neo_write_no_cs(SPIDriver *SPID, uint8_t *txbuff, uint8_t len);
 uint8_t neo_read_byte(SPIDriver *SPID, uint8_t reg_addr);
 void neo_read_bytes(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf);
 void neo_read_bytes_release_cs(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf);
@@ -227,6 +228,7 @@ void neo_polling(SPIDriver *SPID, uint8_t class, uint8_t id);
 void neo_cp_to_struct(uint8_t *msg, uint8_t *strc, uint8_t len);
 void neo_write_struct(uint8_t *strc, uint8_t class, uint8_t id, uint8_t payload_len);
 void neo_create_poll_request(uint8_t class, uint8_t id);
+
 
 void neo_apply_header(uint8_t *buffer, uint16_t header);
 void neo_apply_class(uint8_t *buffer, uint8_t class);

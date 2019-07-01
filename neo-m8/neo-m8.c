@@ -49,7 +49,20 @@ void neo_write(SPIDriver *SPID, uint8_t *txbuff, uint8_t len) {
 	//chSemSignal(&spi2_semaph);
 	chThdSleepMilliseconds(1);
 }
+void neo_write_no_cs(SPIDriver *SPID, uint8_t *txbuff, uint8_t len) {
 
+	//chSemWait(&spi2_semaph);
+	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
+	//spiStart(&SPID2, &neo_spi_cfg);
+	palClearLine(LINE_NEO_CS);
+	chThdSleepMilliseconds(1);
+	spiSend(SPID, len, txbuff); /* send request       */
+	chThdSleepMilliseconds(1);
+	//palSetLine(LINE_NEO_CS);
+	spiReleaseBus(SPID); /* Ownership release.               */
+	//chSemSignal(&spi2_semaph);
+	//chThdSleepMilliseconds(1);
+}
 void neo_read_bytes(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf) {
 	uint8_t *txbuf[num];
 	memset(txbuf, 0xFF, num);
@@ -505,12 +518,12 @@ void neo_poll(void){
 	uint8_t message[pack_len];
 	uint8_t i = 0;
 	//chSemWait(&spi2_semaph);
-	while (i < 100){
+	while (i < 200){
 		neo_read_bytes_no_cs(&SPID2, 1, &message[0]);
 		if ((message[0] == 0xB5)){
 			neo_read_bytes_no_cs(&SPID2, 1, &message[1]);
 			if (message[1] == 0x62){
-				i = 100;
+				i = 200;
 				neo_read_bytes_no_cs(&SPID2, 4, &message[2]);
 				switch(message[2]){
 				case UBX_NAV_CLASS:
@@ -558,6 +571,7 @@ void neo_poll(void){
 			i++;
 		}
 	}
+	palSetLine(LINE_NEO_CS);
 	//chSemSignal(&spi2_semaph);
 }
 

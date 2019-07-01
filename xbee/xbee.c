@@ -860,8 +860,8 @@ void xbee_parse_gps_packet_back(uint8_t *rxbuff){
 
 void xbee_parse_gps_packet(uint8_t *rxbuff){
 	int32_t lat, lon;
-	float flat, flon;
-	uint16_t dist;
+	float flat, flon, headMot, headVeh;
+	uint16_t dist, headMot_int;
 	int16_t yaw, pitch, roll;
 	uint8_t hour, min, sec, sat, speed, bat;
 
@@ -880,11 +880,17 @@ void xbee_parse_gps_packet(uint8_t *rxbuff){
 	roll = rxbuff[31] << 8 | rxbuff[32];
 	bat = rxbuff[33];
 
+	headMot = rxbuff[34] << 24 | rxbuff[35] << 16 | rxbuff[36] << 8 | rxbuff[37];
+	headVeh = rxbuff[38] << 24 | rxbuff[39] << 16 | rxbuff[40] << 8 | rxbuff[41];
+	headMot_int = (uint16_t)(headMot / 100000);
 	//json_create_message
 	chSemWait(&usart1_semaph);
 	/*chprintf((BaseSequentialStream*)&SD1, "%f,%f,%d:%d:%d:%d,%d,%d,%d\r\n",
 						flat, flon, hour, min, sec, sat, dist, speed, xbee->rssi);*/
 	chprintf((BaseSequentialStream*)&SD1, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
+	chprintf((BaseSequentialStream*)&SD1, "\"hour\":%d,\r\n\t\t\t", hour);
+	chprintf((BaseSequentialStream*)&SD1, "\"min\":%d,\r\n\t\t\t", min);
+	chprintf((BaseSequentialStream*)&SD1, "\"sec\":%d,\r\n\t\t\t", sec);
 	chprintf((BaseSequentialStream*)&SD1, "\"lat\":%f,\r\n\t\t\t", flat);
 	chprintf((BaseSequentialStream*)&SD1, "\"lon\":%f,\r\n\t\t\t", flon);
 	chprintf((BaseSequentialStream*)&SD1, "\"speed\":%d,\r\n\t\t\t", speed);
@@ -892,6 +898,7 @@ void xbee_parse_gps_packet(uint8_t *rxbuff){
 	chprintf((BaseSequentialStream*)&SD1, "\"yaw\":%d,\r\n\t\t\t", yaw);
 	chprintf((BaseSequentialStream*)&SD1, "\"pitch\":%d,\r\n\t\t\t", pitch);
 	chprintf((BaseSequentialStream*)&SD1, "\"roll\":%d,\r\n\t\t\t", roll);
+	chprintf((BaseSequentialStream*)&SD1, "\"headMot\":%d,\r\n\t\t\t", headMot_int);
 	chprintf((BaseSequentialStream*)&SD1, "\"sat\":%d,\r\n\t\t\t", sat);
 	chprintf((BaseSequentialStream*)&SD1, "\"rssi\":%d,\r\n\t\t\t", xbee->rssi);
 	chprintf((BaseSequentialStream*)&SD1, "\"bat\":0\r\n\t\t\t");
