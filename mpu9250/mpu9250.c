@@ -142,9 +142,9 @@ void mpu_get_gyro_data(void){
 	//mpu->yaw   += 10.942f; // Declination
 
 	mpu->roll  *= 180.0f / PI;
-	tx_box->yaw = (int16_t)mpu->yaw;
-	tx_box->pitch = (int16_t)mpu->pitch;
-	tx_box->roll = (int16_t)mpu->roll;
+	tx_box->yaw = mpu->yaw;
+	tx_box->pitch = mpu->pitch;
+	tx_box->roll = mpu->roll;
 	//chSysUnlock();
 
 }

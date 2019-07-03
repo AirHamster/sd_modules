@@ -165,15 +165,15 @@ typedef struct{
 	int32_t lon;
 	int32_t headMot;
 	int32_t headVeh;
+	int32_t yaw;
+	float pitch;
+	float roll;
+	float speed;
 	uint16_t dist;
-	int16_t yaw;
-	int16_t pitch;
-	int16_t roll;
 	uint8_t hour;
 	uint8_t min;
 	uint8_t sec;
 	uint8_t sat;
-	uint8_t speed;
 	uint8_t bat;
 }tx_box_t;
 
