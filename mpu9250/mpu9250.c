@@ -271,9 +271,12 @@ void initAK8963(float *destination){
 		chprintf((BaseSequentialStream*)&SD1, "ASA: %d, %d, %d\r\n", rawData[0], rawData[1], rawData[2]);
 		chSemSignal(&usart1_semaph);*/
 	// Return x-axis sensitivity adjustment values, etc.
-	destination[0] = (float) (rawData[0] - 128) / 256. + 1.;
-	destination[1] = (float) (rawData[1] - 128) / 256. + 1.;
-	destination[2] = (float) (rawData[2] - 128) / 256. + 1.;
+	//destination[0] = (float) (rawData[0] - 128) / 256. + 1.;
+	//destination[1] = (float) (rawData[1] - 128) / 256. + 1.;
+	//destination[2] = (float) (rawData[2] - 128) / 256. + 1.;
+	destination[0] = 1.207f;
+	destination[1] = 1.214f;
+	destination[2] = 1.167f;
 	write_AK8963_register(AK8963_CNTL, 0x00); // Power down magnetometer
 	chThdSleepMilliseconds(10);
 
