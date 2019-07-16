@@ -39,6 +39,13 @@ SD_SRC += ./sd_modules/eeprom/eeprom.c
 SD_INC += ./sd_modules/eeprom
 endif
 
+#BNO055
+ifeq ($(USE_BNO055_MODULE), TRUE)
+SD_SRC += ./sd_modules/bno055/bno055.c
+SD_SRC += ./sd_modules/bno055/bno055_i2c.c
+SD_INC += ./sd_modules/bno055
+endif
+
 # Shared variables
 ALLCSRC += $(SD_SRC)
 ALLINC  += $(SD_INC)
