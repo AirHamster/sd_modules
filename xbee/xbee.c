@@ -782,13 +782,13 @@ void xbee_process_receive_packet_frame(uint8_t* buffer){
 	uint8_t rxbuff[RF_PACK_LEN + 1];
 	uint8_t i;
 	xbee_read_release_cs(&SPID1, payload_len + 1, rxbuff);
-	//chSemWait(&usart1_semaph);
-/*		chprintf((BaseSequentialStream*)&SD1, "Xbee received len %d \r\n", payload_len);
+	/*chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*)&SD1, "Xbee received len %d \r\n", payload_len);
 					    for (i = 0; i < payload_len; i++){
 					    	chprintf((BaseSequentialStream*)&SD1, "%x ", rxbuff[i]);
 					    }
-					    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r"); */
-	//chSemSignal(&usart1_semaph);
+					    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
+	chSemSignal(&usart1_semaph);*/
 	xbee_parse_rf_packet(rxbuff);
 	if (xbee->loopback_mode){
 		//xbee_send_payoad
@@ -860,9 +860,10 @@ void xbee_parse_gps_packet_back(uint8_t *rxbuff){
 
 void xbee_parse_gps_packet(uint8_t *rxbuff){
 	int32_t lat, lon;
-	float flat, flon;
-	uint16_t dist;
-	uint8_t hour, min, sec, sat, speed;
+	float flat, flon, headMot, headVeh;
+	uint16_t yaw, dist, headMot_int;
+	float pitch, roll, speed;
+	uint8_t hour, min, sec, sat, bat;
 
 	lat = rxbuff[12] << 24 | rxbuff[13] << 16 | rxbuff[14] << 8 | rxbuff[15];
 	lon = rxbuff[16] << 24 | rxbuff[17] << 16 | rxbuff[18] << 8 | rxbuff[19];
@@ -873,12 +874,43 @@ void xbee_parse_gps_packet(uint8_t *rxbuff){
 	sec = rxbuff[22];
 	sat = rxbuff[23];
 	dist = rxbuff[24] << 8 | rxbuff[25];
-	speed = rxbuff[26];
 
+	memcpy(&speed, &rxbuff[26], sizeof(speed));
+	//speed = rxbuff[26] << 24 | rxbuff[27] << 16 | rxbuff[28] << 8 | rxbuff[29];
+
+
+	yaw = (rxbuff[30] << 8 | rxbuff[31]);
+	memcpy(&pitch, &rxbuff[32], sizeof(pitch));
+	//pitch = (float)(rxbuff[32] + (float)(rxbuff[33] / 10));
+	//pitch = (rxbuff[32] << 24 | rxbuff[33] << 16 | rxbuff[34] << 8 | rxbuff[35]);
+	memcpy(&roll, &rxbuff[36], sizeof(roll));
+	//roll = (rxbuff[36] << 24 | rxbuff[37] << 16 | rxbuff[38] << 8 | rxbuff[39]);
+	bat = rxbuff[40];
+
+	headMot = rxbuff[41] << 24 | rxbuff[42] << 16 | rxbuff[43] << 8 | rxbuff[44];
+	//headVeh = rxbuff[47] << 24 | rxbuff[48] << 16 | rxbuff[49] << 8 | rxbuff[50];
+	headMot_int = (uint16_t)(headMot / 100000);
 	//json_create_message
 	chSemWait(&usart1_semaph);
-	chprintf((BaseSequentialStream*)&SD1, "%f,%f,%d:%d:%d:%d,%d,%d,%d\r\n",
-						flat, flon, hour, min, sec, sat, dist, speed, xbee->rssi);
+	/*chprintf((BaseSequentialStream*)&SD1, "%f,%f,%d:%d:%d:%d,%d,%d,%d\r\n",
+						flat, flon, hour, min, sec, sat, dist, speed, xbee->rssi);*/
+	chprintf((BaseSequentialStream*)&SD1, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
+	chprintf((BaseSequentialStream*)&SD1, "\"hour\":%d,\r\n\t\t\t", hour);
+	chprintf((BaseSequentialStream*)&SD1, "\"min\":%d,\r\n\t\t\t", min);
+	chprintf((BaseSequentialStream*)&SD1, "\"sec\":%d,\r\n\t\t\t", sec);
+	chprintf((BaseSequentialStream*)&SD1, "\"lat\":%f,\r\n\t\t\t", flat);
+	chprintf((BaseSequentialStream*)&SD1, "\"lon\":%f,\r\n\t\t\t", flon);
+	chprintf((BaseSequentialStream*)&SD1, "\"speed\":%f,\r\n\t\t\t", speed);
+	chprintf((BaseSequentialStream*)&SD1, "\"dist\":%d,\r\n\t\t\t", dist);
+	chprintf((BaseSequentialStream*)&SD1, "\"yaw\":%d,\r\n\t\t\t", yaw);
+	chprintf((BaseSequentialStream*)&SD1, "\"pitch\":%f,\r\n\t\t\t", pitch);
+	chprintf((BaseSequentialStream*)&SD1, "\"roll\":%f,\r\n\t\t\t", roll);
+	chprintf((BaseSequentialStream*)&SD1, "\"headMot\":%d,\r\n\t\t\t", headMot_int);
+	chprintf((BaseSequentialStream*)&SD1, "\"sat\":%d,\r\n\t\t\t", sat);
+	chprintf((BaseSequentialStream*)&SD1, "\"rssi\":%d,\r\n\t\t\t", xbee->rssi);
+	chprintf((BaseSequentialStream*)&SD1, "\"bat\":0\r\n\t\t\t");
+	chprintf((BaseSequentialStream*)&SD1, "}\r\n\t}");
+	//chprintf((BaseSequentialStream*)&SD1, "");
 	chSemSignal(&usart1_semaph);
 }
 
@@ -949,13 +981,13 @@ void xbee_set_10kbs_rate(void){
 	uint8_t i;
 	uint8_t zero_byte = 0;
 		len = xbee_create_at_write_message("BR", &txbuffer[0], &zero_byte, 1);
-		chSemWait(&usart1_semaph);
+		/*chSemWait(&usart1_semaph);
 						chprintf((BaseSequentialStream*)&SD1, "Write BD %d command \n\r", zero_byte);
 									    for (i = 0; i < len; i++){
 									    	chprintf((BaseSequentialStream*)&SD1, "%x ", txbuffer[i]);
 									    }
 									    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
-					chSemSignal(&usart1_semaph);
+					chSemSignal(&usart1_semaph);*/
 	xbee_send(&SPID1, &txbuffer[0], len);
 }
 

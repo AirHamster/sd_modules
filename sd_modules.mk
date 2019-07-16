@@ -14,8 +14,8 @@ endif
 #MPU9250 - 9-axis accel/gyro/magn chip
 ifeq ($(USE_MPU_9250_MODULE), TRUE)
 SD_SRC += ./sd_modules/mpu9250/mpu9250.c
-#SD_SRC += ./sd_modules/mpu9250/MadgwickAHRS.c
-SD_SRC += ./sd_modules/mpu9250/quaternionFilters.c
+SD_SRC += ./sd_modules/mpu9250/MadgwickAHRS.c
+//SD_SRC += ./sd_modules/mpu9250/quaternionFilters.c
 SD_INC += ./sd_modules/mpu9250
 endif
 

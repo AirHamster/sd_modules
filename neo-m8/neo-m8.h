@@ -37,7 +37,7 @@
 #define UBX_CFG_PRT_ID			0x00
 #define UBX_CFG_MSG_ID			0x01
 #define UBX_CFG_RATE_ID			0x08
-#define IBX_CFG_ODO_ID			0x1E
+#define UBX_CFG_ODO_ID			0x1E
 #define UBX_CFG_SBAS_ID			0x16
 #define UBX_NAV_PVT_ID			0x07
 #define UBX_CFG_NAV5_ID			0x24
@@ -50,6 +50,7 @@
 #define UBX_NAV_PVT_LEN			92
 #define UBX_CFG_NAV5_LEN		36
 #define UBX_NAV_ODO_LEN			20
+#define UBX_CFG_ODO_LEN			20
 #define UBX_CFG_RATE_LEN		6
 #define UBX_CFG_SBAS_LEN		8
 
@@ -214,6 +215,7 @@ typedef struct{
 }ubx_cfg_sbas_t;
 
 void neo_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value);
+void neo_write_no_cs(SPIDriver *SPID, uint8_t *txbuff, uint8_t len);
 uint8_t neo_read_byte(SPIDriver *SPID, uint8_t reg_addr);
 void neo_read_bytes(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf);
 void neo_read_bytes_release_cs(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf);
@@ -227,6 +229,7 @@ void neo_cp_to_struct(uint8_t *msg, uint8_t *strc, uint8_t len);
 void neo_write_struct(uint8_t *strc, uint8_t class, uint8_t id, uint8_t payload_len);
 void neo_create_poll_request(uint8_t class, uint8_t id);
 
+
 void neo_apply_header(uint8_t *buffer, uint16_t header);
 void neo_apply_class(uint8_t *buffer, uint8_t class);
 void neo_apply_id(uint8_t *buffer, uint8_t id);
@@ -234,6 +237,7 @@ void neo_apply_length(uint8_t *buffer, uint8_t len);
 uint16_t neo_calc_crc(uint8_t *buffer, uint16_t len);
 
 void neo_process_cfg(uint8_t *message);
+void neo_process_cfg_odo(uint8_t *message);
 void neo_process_pvt(uint8_t *message);
 void neo_process_nav(uint8_t *message);
 void neo_process_nav5(uint8_t *message);

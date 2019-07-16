@@ -163,12 +163,18 @@ typedef struct{
 typedef struct{
 	int32_t lat;
 	int32_t lon;
+	int32_t headMot;
+	int32_t headVeh;
+	int32_t yaw;
+	float pitch;
+	float roll;
+	float speed;
+	uint16_t dist;
 	uint8_t hour;
 	uint8_t min;
 	uint8_t sec;
 	uint8_t sat;
-	uint16_t dist;
-	uint8_t speed;
+	uint8_t bat;
 }tx_box_t;
 
 void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff);
