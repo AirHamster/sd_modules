@@ -17,6 +17,74 @@
 #include "bno055_i2c.h"
 extern struct ch_semaphore usart1_semaph;
 
+int8_t bno055_full_init(struct bno055_t *bno055)
+{
+	int8_t comres = BNO055_INIT_VALUE;
+	bno055_i2c_routine(bno055);
+/*--------------------------------------------------------------------------*
+ *  This API used to assign the value/reference of
+ *	the following parameters
+ *	I2C address
+ *	Bus Write
+ *	Bus read
+ *	Chip id
+ *	Page id
+ *	Accel revision id
+ *	Mag revision id
+ *	Gyro revision id
+ *	Boot loader revision id
+ *	Software revision id
+ *-------------------------------------------------------------------------*/
+	comres = bno055_init(bno055);
+
+/*	For initializing the BNO sensor it is required to the operation mode
+	of the sensor as NORMAL
+	Normal mode can set from the register
+	Page - page0
+	register - 0x3E
+	bit positions - 0 and 1*/
+	/* set the power mode as NORMAL*/
+	comres += bno055_set_power_mode(BNO055_POWER_MODE_NORMAL);
+
+	/*For reading fusion data it is required to set the
+		operation modes of the sensor
+		operation mode can set from the register
+		page - page0
+		register - 0x3D
+		bit - 0 to 3
+		for sensor data read following operation mode have to set
+		*FUSION MODE
+			*0x08 - BNO055_OPERATION_MODE_IMUPLUS
+			*0x09 - BNO055_OPERATION_MODE_COMPASS
+			*0x0A - BNO055_OPERATION_MODE_M4G
+			*0x0B - BNO055_OPERATION_MODE_NDOF_FMC_OFF
+			*0x0C - BNO055_OPERATION_MODE_NDOF
+			based on the user need configure the operation mode*/
+		comres += bno055_set_operation_mode(BNO055_OPERATION_MODE_NDOF);
+	return comres;
+}
+
+int8_t bno055_read_euler(struct bno055_t *bno055){
+	int8_t comres = BNO055_INIT_VALUE;
+	/* structure used to read the euler hrp data output
+	as as degree or radians */
+	struct bno055_euler_double_t d_euler_hpr;
+	/*	API used to read Euler data output as double  - degree and radians
+		float functions also available in the BNO055 API */
+	/*	comres += bno055_convert_double_euler_h_deg(&bno055->d_euler_hpr->h);
+		comres += bno055_convert_double_euler_r_deg(&d_euler_data_r);
+		comres += bno055_convert_double_euler_p_deg(&d_euler_data_p);
+		comres += bno055_convert_double_euler_h_rad(&d_euler_data_h);
+		comres += bno055_convert_double_euler_r_rad(&d_euler_data_r);
+		comres += bno055_convert_double_euler_p_rad(&d_euler_data_p);*/
+		comres += bno055_convert_double_euler_hpr_deg(&d_euler_hpr);
+		//comres += bno055_convert_double_euler_hpr_rad(&d_euler_hpr);
+		chSemWait(&usart1_semaph);
+				chprintf((BaseSequentialStream*)&SD1, "Yaw %f Pitch %f Roll %f\r\n", d_euler_hpr.h, d_euler_hpr.p, d_euler_hpr.r);
+				chSemSignal(&usart1_semaph);
+		return comres;
+}
+
 int8_t bno055_i2c_routine(struct bno055_t *bno055)
 {
 	bno055->BNO055_I2C_bus_write= BNO055_I2C_bus_write;
@@ -47,10 +115,12 @@ int8_t bno055_read(uint8_t dev_addr, uint8_t *reg_data, uint8_t r_len){
 				chSemSignal(&usart1_semaph);
 				return -1;
 		}
+
+		chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*)&SD1, "CHIP_ID from BNO055: %d\r\n", *reg_data);
+		chSemSignal(&usart1_semaph);
 		return 0;
-		//chSemWait(&usart1_semaph);
-		//chprintf((BaseSequentialStream*)&SD1, "CHIP_ID from BNO055: %d\r\n", *reg_data);
-		//chSemSignal(&usart1_semaph);
+
 }
 
 int8_t bno055_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len){

@@ -515,6 +515,7 @@ define the data types manually
 *	@brief bno055 struct
 */
 struct bno055_t {
+
 u8 chip_id;/**< chip_id of bno055 */
 u16 sw_rev_id;/**< software revision id of bno055 */
 u8 page_id;/**< page_id of bno055 */
