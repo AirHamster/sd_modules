@@ -64,11 +64,11 @@ int8_t bno055_full_init(struct bno055_t *bno055)
 	return comres;
 }
 
-int8_t bno055_read_euler(struct bno055_t *bno055){
+int8_t bno055_read_euler(bno055_t *bno055){
 	int8_t comres = BNO055_INIT_VALUE;
 	/* structure used to read the euler hrp data output
 	as as degree or radians */
-	struct bno055_euler_double_t d_euler_hpr;
+	//struct bno055_euler_double_t d_euler_hpr;
 	/*	API used to read Euler data output as double  - degree and radians
 		float functions also available in the BNO055 API */
 	/*	comres += bno055_convert_double_euler_h_deg(&bno055->d_euler_hpr->h);
@@ -77,15 +77,15 @@ int8_t bno055_read_euler(struct bno055_t *bno055){
 		comres += bno055_convert_double_euler_h_rad(&d_euler_data_h);
 		comres += bno055_convert_double_euler_r_rad(&d_euler_data_r);
 		comres += bno055_convert_double_euler_p_rad(&d_euler_data_p);*/
-		comres += bno055_convert_double_euler_hpr_deg(&d_euler_hpr);
+		comres += bno055_convert_double_euler_hpr_deg(&bno055->d_euler_hpr);
 		//comres += bno055_convert_double_euler_hpr_rad(&d_euler_hpr);
-		chSemWait(&usart1_semaph);
+	/*	chSemWait(&usart1_semaph);
 				chprintf((BaseSequentialStream*)&SD1, "Yaw %f Pitch %f Roll %f\r\n", d_euler_hpr.h, d_euler_hpr.p, d_euler_hpr.r);
-				chSemSignal(&usart1_semaph);
+				chSemSignal(&usart1_semaph);*/
 		return comres;
 }
 
-int8_t bno055_i2c_routine(struct bno055_t *bno055)
+int8_t bno055_i2c_routine(bno055_t *bno055)
 {
 	bno055->BNO055_I2C_bus_write= BNO055_I2C_bus_write;
 	bno055->BNO055_I2C_bus_read = BNO055_I2C_bus_read;
@@ -105,9 +105,9 @@ int8_t bno055_read(uint8_t dev_addr, uint8_t *reg_data, uint8_t r_len){
 		msg_t status;
 		//txbuff[0] = reg_addr;
 		//txbuff[1] = EEPROM_HW_VER_ADDR & 0xFF;
-		chSemWait(&usart1_semaph);
+		/*chSemWait(&usart1_semaph);
 				chprintf((BaseSequentialStream*)&SD1, "Entered read func\r\n");
-				chSemSignal(&usart1_semaph);
+				chSemSignal(&usart1_semaph);*/
 		status = i2cMasterTransmitTimeout(&I2CD1, dev_addr, reg_data, 1, reg_data, r_len, 1000);
 		if (status != MSG_OK){
 			chSemWait(&usart1_semaph);
@@ -115,10 +115,10 @@ int8_t bno055_read(uint8_t dev_addr, uint8_t *reg_data, uint8_t r_len){
 				chSemSignal(&usart1_semaph);
 				return -1;
 		}
-
+/*
 		chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*)&SD1, "CHIP_ID from BNO055: %d\r\n", *reg_data);
-		chSemSignal(&usart1_semaph);
+		chSemSignal(&usart1_semaph);*/
 		return 0;
 
 }
@@ -130,9 +130,9 @@ int8_t bno055_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len){
 		//txbuff[0] = reg_addr;
 		//memcpy(&txbuff[1], reg_data, wr_len);
 		//txbuff[1] = EEPROM_HW_VER_ADDR & 0xFF;
-		chSemWait(&usart1_semaph);
+		/*chSemWait(&usart1_semaph);
 						chprintf((BaseSequentialStream*)&SD1, "Entered write func: d_addr %x, reg %x, wr_len %d\r\n", dev_addr, *reg_data, wr_len);
-						chSemSignal(&usart1_semaph);
+						chSemSignal(&usart1_semaph);*/
 		status = i2cMasterTransmitTimeout(&I2CD1, dev_addr, reg_data, wr_len, rxbuff, 0, 1000);
 		if (status != MSG_OK){
 			chSemWait(&usart1_semaph);
@@ -140,9 +140,10 @@ int8_t bno055_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len){
 				chSemSignal(&usart1_semaph);
 				return -1;
 		}
+		/*
 		chSemWait(&usart1_semaph);
 						chprintf((BaseSequentialStream*)&SD1, "Shit not happened: status is %d\r\n", i2cGetErrors(&I2CD1));
-						chSemSignal(&usart1_semaph);
+						chSemSignal(&usart1_semaph);*/
 		return 0;
 		//chSemWait(&usart1_semaph);
 		//chprintf((BaseSequentialStream*)&SD1, "CHIP_ID from BNO055: %d\r\n", rxbuff[0]);

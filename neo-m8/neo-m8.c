@@ -399,7 +399,7 @@ void neo_process_pvt(uint8_t *message){
 						    			    	chprintf((BaseSequentialStream*)&SD1, "%x ", pvt_message[j]);
 						    			    }
 						    			    chprintf((BaseSequentialStream*)&SD1, "\n\r");*/
-		chprintf((BaseSequentialStream*)&SD1, "GPS PVT\r\n");
+		//chprintf((BaseSequentialStream*)&SD1, "GPS PVT\r\n");
 		chSemSignal(&usart1_semaph);
 	crc = ((pvt_message[pack_len-2] << 8) | (pvt_message[pack_len-1]));
 	if (crc == neo_calc_crc(pvt_message, pack_len)){
