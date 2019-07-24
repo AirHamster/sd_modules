@@ -78,6 +78,13 @@ int8_t bno055_read_euler(bno055_t *bno055){
 		comres += bno055_convert_double_euler_r_rad(&d_euler_data_r);
 		comres += bno055_convert_double_euler_p_rad(&d_euler_data_p);*/
 		comres += bno055_convert_double_euler_hpr_deg(&bno055->d_euler_hpr);
+		chThdSleepMilliseconds(2);
+		comres += bno055_read_accel_xyz(&bno055->accel_raw);
+		chThdSleepMilliseconds(2);
+		comres += bno055_read_gyro_xyz(&bno055->gyro_raw);
+		chThdSleepMilliseconds(2);
+		comres += bno055_read_mag_xyz(&bno055->mag_raw);
+		chThdSleepMilliseconds(2);
 		//comres += bno055_convert_double_euler_hpr_rad(&d_euler_hpr);
 	/*	chSemWait(&usart1_semaph);
 				chprintf((BaseSequentialStream*)&SD1, "Yaw %f Pitch %f Roll %f\r\n", d_euler_hpr.h, d_euler_hpr.p, d_euler_hpr.r);
