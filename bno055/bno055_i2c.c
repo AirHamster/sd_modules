@@ -16,7 +16,8 @@
 #include "bno055.h"
 #include "bno055_i2c.h"
 extern struct ch_semaphore usart1_semaph;
-
+struct ch_semaphore i2c1_semaph;
+extern const I2CConfig i2c1cfg;
 int8_t bno055_full_init(struct bno055_t *bno055)
 {
 	int8_t comres = BNO055_INIT_VALUE;
@@ -78,13 +79,13 @@ int8_t bno055_read_euler(bno055_t *bno055){
 		comres += bno055_convert_double_euler_r_rad(&d_euler_data_r);
 		comres += bno055_convert_double_euler_p_rad(&d_euler_data_p);*/
 		comres += bno055_convert_double_euler_hpr_deg(&bno055->d_euler_hpr);
-		chThdSleepMilliseconds(2);
+		chThdSleepMilliseconds(1);
 		comres += bno055_read_accel_xyz(&bno055->accel_raw);
-		chThdSleepMilliseconds(2);
+		//chThdSleepMilliseconds(1);
 		comres += bno055_read_gyro_xyz(&bno055->gyro_raw);
-		chThdSleepMilliseconds(2);
+		//chThdSleepMilliseconds(1);
 		comres += bno055_read_mag_xyz(&bno055->mag_raw);
-		chThdSleepMilliseconds(2);
+		//chThdSleepMilliseconds(1);
 		//comres += bno055_convert_double_euler_hpr_rad(&d_euler_hpr);
 	/*	chSemWait(&usart1_semaph);
 				chprintf((BaseSequentialStream*)&SD1, "Yaw %f Pitch %f Roll %f\r\n", d_euler_hpr.h, d_euler_hpr.p, d_euler_hpr.r);
@@ -115,11 +116,14 @@ int8_t bno055_read(uint8_t dev_addr, uint8_t *reg_data, uint8_t r_len){
 		/*chSemWait(&usart1_semaph);
 				chprintf((BaseSequentialStream*)&SD1, "Entered read func\r\n");
 				chSemSignal(&usart1_semaph);*/
-		status = i2cMasterTransmitTimeout(&I2CD1, dev_addr, reg_data, 1, reg_data, r_len, 1000);
+		chSemWait(&i2c1_semaph);
+		status = i2cMasterTransmitTimeout(&I2CD1, dev_addr, reg_data, 1, reg_data, r_len, 100);
+		chSemSignal(&i2c1_semaph);
 		if (status != MSG_OK){
 			chSemWait(&usart1_semaph);
 				chprintf((BaseSequentialStream*)&SD1, "Shit happened: status is %d\r\n", i2cGetErrors(&I2CD1));
 				chSemSignal(&usart1_semaph);
+				i2c_restart(&I2CD1);
 				return -1;
 		}
 /*
@@ -140,11 +144,14 @@ int8_t bno055_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len){
 		/*chSemWait(&usart1_semaph);
 						chprintf((BaseSequentialStream*)&SD1, "Entered write func: d_addr %x, reg %x, wr_len %d\r\n", dev_addr, *reg_data, wr_len);
 						chSemSignal(&usart1_semaph);*/
-		status = i2cMasterTransmitTimeout(&I2CD1, dev_addr, reg_data, wr_len, rxbuff, 0, 1000);
+		chSemWait(&i2c1_semaph);
+		status = i2cMasterTransmitTimeout(&I2CD1, dev_addr, reg_data, wr_len, rxbuff, 0, 100);
+		chSemSignal(&i2c1_semaph);
 		if (status != MSG_OK){
 			chSemWait(&usart1_semaph);
 				chprintf((BaseSequentialStream*)&SD1, "Shit happened: status is %d\r\n", i2cGetErrors(&I2CD1));
 				chSemSignal(&usart1_semaph);
+				i2c_restart(&I2CD1);
 				return -1;
 		}
 		/*
@@ -220,4 +227,11 @@ s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 	for (stringpos = BNO055_INIT_VALUE; stringpos < cnt; stringpos++)
 		*(reg_data + stringpos) = array[stringpos];
 	return (s8)BNO055_iERROR;
+}
+
+void i2c_restart(I2CDriver *i2cp)
+{
+	i2cStop(i2cp);
+	chThdSleepMilliseconds(1);
+	i2cStart (i2cp, &i2c1cfg);
 }
