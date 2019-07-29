@@ -62,11 +62,17 @@ int8_t bno055_full_init(struct bno055_t *bno055)
 			*0x0C - BNO055_OPERATION_MODE_NDOF
 			based on the user need configure the operation mode*/
 		comres += bno055_set_operation_mode(BNO055_OPERATION_MODE_NDOF);
+		comres += bno055_write_page_id(BNO055_PAGE_ZERO);
+		comres += bno055_set_euler_unit(BNO055_EULER_UNIT_DEG);
+
 	return comres;
 }
 
 int8_t bno055_read_euler(bno055_t *bno055){
 	int8_t comres = BNO055_INIT_VALUE;
+	uint8_t euler_data[6];
+	struct bno055_euler_t reg_euler = {BNO055_INIT_VALUE,
+		BNO055_INIT_VALUE, BNO055_INIT_VALUE};
 	/* structure used to read the euler hrp data output
 	as as degree or radians */
 	//struct bno055_euler_double_t d_euler_hpr;
@@ -78,15 +84,23 @@ int8_t bno055_read_euler(bno055_t *bno055){
 		comres += bno055_convert_double_euler_h_rad(&d_euler_data_h);
 		comres += bno055_convert_double_euler_r_rad(&d_euler_data_r);
 		comres += bno055_convert_double_euler_p_rad(&d_euler_data_p);*/
-		comres += bno055_convert_double_euler_hpr_deg(&bno055->d_euler_hpr);
-		chThdSleepMilliseconds(1);
-		comres += bno055_read_accel_xyz(&bno055->accel_raw);
+		//comres += bno055_convert_double_euler_hpr_deg(&bno055->d_euler_hpr);
+	//chThdSleepMilliseconds(1);
+		//comres += bno055_read_accel_xyz(&bno055->accel_raw);
 		//chThdSleepMilliseconds(1);
-		comres += bno055_read_gyro_xyz(&bno055->gyro_raw);
+		//comres += bno055_read_gyro_xyz(&bno055->gyro_raw);
 		//chThdSleepMilliseconds(1);
-		comres += bno055_read_mag_xyz(&bno055->mag_raw);
+		//comres += bno055_read_mag_xyz(&bno055->mag_raw);
 		//chThdSleepMilliseconds(1);
 		//comres += bno055_convert_double_euler_hpr_rad(&d_euler_hpr);
+	euler_data[0] = BNO055_EULER_H_LSB_VALUEH_REG;
+	bno055_read(bno055->dev_addr, euler_data, 6);
+	reg_euler.h = (int16_t)(euler_data[0] | euler_data[1] << 8);
+	reg_euler.r = (int16_t)(euler_data[2] | euler_data[3] << 8);
+	reg_euler.p = (int16_t)(euler_data[4] | euler_data[5] << 8);
+	bno055->d_euler_hpr.h = (float)(reg_euler.h/BNO055_EULER_DIV_DEG);
+	bno055->d_euler_hpr.r = (float)(reg_euler.r/BNO055_EULER_DIV_DEG);
+	bno055->d_euler_hpr.p = (float)(reg_euler.p/BNO055_EULER_DIV_DEG);
 	/*	chSemWait(&usart1_semaph);
 				chprintf((BaseSequentialStream*)&SD1, "Yaw %f Pitch %f Roll %f\r\n", d_euler_hpr.h, d_euler_hpr.p, d_euler_hpr.r);
 				chSemSignal(&usart1_semaph);*/
@@ -116,9 +130,11 @@ int8_t bno055_read(uint8_t dev_addr, uint8_t *reg_data, uint8_t r_len){
 		/*chSemWait(&usart1_semaph);
 				chprintf((BaseSequentialStream*)&SD1, "Entered read func\r\n");
 				chSemSignal(&usart1_semaph);*/
-		chSemWait(&i2c1_semaph);
+		//chSemWait(&i2c1_semaph);
+		i2cAcquireBus(&I2CD1);
 		status = i2cMasterTransmitTimeout(&I2CD1, dev_addr, reg_data, 1, reg_data, r_len, 100);
-		chSemSignal(&i2c1_semaph);
+		i2cReleaseBus(&I2CD1);
+		//chSemSignal(&i2c1_semaph);
 		if (status != MSG_OK){
 			chSemWait(&usart1_semaph);
 				chprintf((BaseSequentialStream*)&SD1, "Shit happened: status is %d\r\n", i2cGetErrors(&I2CD1));
@@ -144,9 +160,11 @@ int8_t bno055_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len){
 		/*chSemWait(&usart1_semaph);
 						chprintf((BaseSequentialStream*)&SD1, "Entered write func: d_addr %x, reg %x, wr_len %d\r\n", dev_addr, *reg_data, wr_len);
 						chSemSignal(&usart1_semaph);*/
-		chSemWait(&i2c1_semaph);
+		//chSemWait(&i2c1_semaph);
+		i2cAcquireBus(&I2CD1);
 		status = i2cMasterTransmitTimeout(&I2CD1, dev_addr, reg_data, wr_len, rxbuff, 0, 100);
-		chSemSignal(&i2c1_semaph);
+		i2cReleaseBus(&I2CD1);
+		//	chSemSignal(&i2c1_semaph);
 		if (status != MSG_OK){
 			chSemWait(&usart1_semaph);
 				chprintf((BaseSequentialStream*)&SD1, "Shit happened: status is %d\r\n", i2cGetErrors(&I2CD1));
@@ -235,3 +253,4 @@ void i2c_restart(I2CDriver *i2cp)
 	chThdSleepMilliseconds(1);
 	i2cStart (i2cp, &i2c1cfg);
 }
+
