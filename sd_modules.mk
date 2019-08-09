@@ -46,6 +46,15 @@ SD_SRC += ./sd_modules/bno055/bno055_i2c.c
 SD_INC += ./sd_modules/bno055
 endif
 
+#FATFS
+ifeq ($(USE_FATFS_MODULE), TRUE)
+SD_SRC += ./sd_modules/fatfs/diskio.c
+SD_SRC += ./sd_modules/fatfs/ff.c
+SD_SRC += ./sd_modules/fatfs/ffsystem.c
+SD_SRC += ./sd_modules/fatfs/ffunicode.c
+SD_INC += ./sd_modules/fatfs
+endif
+
 # Shared variables
 ALLCSRC += $(SD_SRC)
 ALLINC  += $(SD_INC)

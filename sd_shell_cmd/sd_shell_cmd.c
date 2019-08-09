@@ -6,7 +6,8 @@
 #include <stdlib.h>
 
 
-
+extern void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]);
+extern cmd_mount(BaseSequentialStream *chp, int argc, char *argv[]);
 output_struct_t output_struct;
 output_struct_t *output = &output_struct;
 #include "xbee.h"
@@ -24,6 +25,8 @@ static const ShellCommand commands[] = {
 		{"ublox", cmd_ublox},
 		{"xbee", cmd_xbee},
 		{"gyro", cmd_gyro},
+		{"tree", cmd_tree},
+		{"mount_sd", cmd_mount},
 		{NULL, NULL}
 };
 
