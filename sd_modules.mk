@@ -52,6 +52,7 @@ SD_SRC += ./sd_modules/fatfs/diskio.c
 SD_SRC += ./sd_modules/fatfs/ff.c
 SD_SRC += ./sd_modules/fatfs/ffsystem.c
 SD_SRC += ./sd_modules/fatfs/ffunicode.c
+SD_SRC += ./sd_modules/fatfs/filesystem.c
 SD_INC += ./sd_modules/fatfs
 endif
 
