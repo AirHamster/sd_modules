@@ -56,6 +56,12 @@ SD_SRC += ./sd_modules/fatfs/filesystem.c
 SD_INC += ./sd_modules/fatfs
 endif
 
+#WIND sensor
+ifeq ($(USE_WINDSENSOR_MODULE), TRUE)
+SD_SRC += ./sd_modules/windsensor/windsensor.c
+SD_INC += ./sd_modules/windsensor
+endif
+
 # Shared variables
 ALLCSRC += $(SD_SRC)
 ALLINC  += $(SD_INC)

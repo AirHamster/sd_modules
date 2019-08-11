@@ -6,14 +6,12 @@
 #include <stdlib.h>
 
 
-extern void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]);
-extern cmd_mount(BaseSequentialStream *chp, int argc, char *argv[]);
 output_struct_t output_struct;
 output_struct_t *output = &output_struct;
 #include "xbee.h"
 #include "neo-m8.h"
 #include "neo_ubx.h"
-
+//#include "filesystem.h"
 char *complete_buffer[16];
 char history_buffer[128];
 const int history_size = 128;
@@ -25,8 +23,8 @@ static const ShellCommand commands[] = {
 		{"ublox", cmd_ublox},
 		{"xbee", cmd_xbee},
 		{"gyro", cmd_gyro},
-		{"tree", cmd_tree},
-		{"mount_sd", cmd_mount},
+	//	{"tree", cmd_tree},
+	//	{"mount_sd", cmd_mount},
 		{NULL, NULL}
 };
 
