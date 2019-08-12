@@ -1,6 +1,6 @@
 # List of all the board related files.
 #Debug shell - often used on USART1 to debug firmware
-ifeq ($(USE_DEBUG_SHELL), TRUE)
+ifeq ($(USE_DEBUG_SHELL),)
 SD_SRC += ./sd_modules/dbg_shell_cmd/dbg_shell_cmd.c
 SD_INC += ./sd_modules/dbg_shell_cmd
 endif
@@ -47,13 +47,13 @@ SD_INC += ./sd_modules/bno055
 endif
 
 #FATFS
-ifeq ($(USE_FATFS_MODULE), TRUE)
-SD_SRC += ./sd_modules/fatfs/diskio.c
-SD_SRC += ./sd_modules/fatfs/ff.c
-SD_SRC += ./sd_modules/fatfs/ffsystem.c
-SD_SRC += ./sd_modules/fatfs/ffunicode.c
-SD_SRC += ./sd_modules/fatfs/filesystem.c
-SD_INC += ./sd_modules/fatfs
+ifeq ($(USE_MICROSD_MODULE), TRUE)
+#SD_SRC += ./sd_modules/microsd/diskio.c
+#SD_SRC += ./sd_modules/microsd/ff.c
+#SD_SRC += ./sd_modules/microsd/ffsystem.c
+#SD_SRC += ./sd_modules/microsd/ffunicode.c
+SD_SRC += ./sd_modules/microsd/microsd.c
+SD_INC += ./sd_modules/microsd
 endif
 
 #WIND sensor

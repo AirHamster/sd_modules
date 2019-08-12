@@ -4,6 +4,7 @@
  *  Created on: Aug 10, 2019
  *      Author: a-h
  */
+#include "config.h"
 #include "windsensor.h"
 #include <string.h>
 #include <stdlib.h>

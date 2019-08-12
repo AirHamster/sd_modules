@@ -4,7 +4,7 @@
  *  Created on: Jul 16, 2019
  *      Author: a-h
  */
-
+#include "config.h"
 #include <stdlib.h>
 #include <string.h>
 #include "stdint.h"
