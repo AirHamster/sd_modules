@@ -51,14 +51,15 @@ static THD_WORKING_AREA(wind_thread_wa, 2048);
 static THD_FUNCTION(wind_thread, p){
 	(void)p;
 	msg_t msg;
-	char str[128];
+	char str[64];
 	int i = 0;
+	uint8_t scan_res = 0;
 	uint16_t tmp;
 	int32_t token;
 
 	int R=0;
 	   int Dn=0;
-	   uint16_t Dm=0;
+	   int Dm=0;
 	   int Dx=0;
 	   int Sn1=0;
 	   int Sm1=0;
@@ -71,6 +72,7 @@ static THD_FUNCTION(wind_thread, p){
 	chSemWait(&usart1_semaph);
 	chprintf((BaseSequentialStream*)&SD1, "Wind thd");
 	chSemSignal(&usart1_semaph);
+	memset(str, 0, 64);
 	while (true) {
 		//uartStartReceive(&UARTD8, 1, &tmp);
 	//	msg = uartReceiveTimeout(&UARTD8, 1, &tmp, TIME_S2I(1));
@@ -80,20 +82,24 @@ static THD_FUNCTION(wind_thread, p){
 		if (msg == UART_CHAR_RECEIVED){
 			str[i] = uart_temp;
 			if (str[i] == '\n'){
-				/*chSemWait(&usart1_semaph);
-				chprintf((BaseSequentialStream*)&SD1, "Char: %c\n\r", str[i]);
+
+				scan_res = sscanf(str, "0R1,Dn=%dD,Dm=%dD,Dx=%dD,Sn=%d.%dM,Sm=%d.%dM,Sx=%d.%dM", &Dn, &Dm, &Dx, &Sn1, &Sn2, &Sm1, &Sm2, &Sx1, &Sx2);
+		/*		chSemWait(&usart1_semaph);
+				chprintf((BaseSequentialStream*)&SD1, "Char: i = %d scan_res = %d %s\n\r", i, scan_res, str);
 				chSemSignal(&usart1_semaph);*/
-				sscanf(str, "0R1,Dn=%dD,Dm=%dD,Dx=%dD,Sn=%d.%dM,Sm=%d.%dM,Sx=%d.%dM", &Dn, &Dm, &Dx, &Sn1, &Sn2, &Sm1, &Sm2, &Sx1, &Sx2);
-				wind->direction = Dm;
+				if (scan_res == 9){
+				wind->direction = (uint16_t)Dm;
 				wind->speed = (float)(Sm1 + Sm2 / 10.0);
+				}
 				i = 0;
-				memset(str, 0, 128);
-			}
+				memset(str, 0, 64);
+			}else{
 			i++;
-			if (i >= 128)
+			}
+			if (i >= 64)
 			{
 				i = 0;
-				memset(str, 0, 128);
+				memset(str, 0, 64);
 			}
 		}else if (msg == UART_GENERIC_NOTIFY){
 			chSemWait(&usart1_semaph);
@@ -138,7 +144,7 @@ void start_windsensor_module(void)
 
 	//sdStart(&SD8, &wind_uart_cfg);
 
-	chThdCreateStatic(wind_thread_wa, sizeof(wind_thread_wa), NORMALPRIO, wind_thread, NULL);
+	chThdCreateStatic(wind_thread_wa, sizeof(wind_thread_wa), NORMALPRIO+2, wind_thread, NULL);
 	uartStart(&UARTD8, &uart8_cfg);
 }
 static void windstation_char_recieved_async(UARTDriver *uartp, uint16_t c){
