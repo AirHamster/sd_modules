@@ -11,9 +11,22 @@
 #include "stdint.h"
 #include "ch.h"
 #include "hal.h"
+#include "ff.h"
+
+#define MICROSD_WRITE_FILE		1
+#define MICROSD_OPEN_FILE		2
+#define MICROSD_CLOSE_FILE		3
+#define MICROSD_SCAN_FILES		4
+#define MICROSD_MOUNT_FS		5
+#define MICROSD_SHOW_TREE		6
+#define MICROSD_SHOW_FREE		7
+
 
 void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_mount(BaseSequentialStream *chp, int argc, char *argv[]);
+void cmd_free(BaseSequentialStream *chp, int argc, char *argv[]);
+void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]);
+//DWORD get_fattime (void);
 
 void start_microsd_module(void);
 uint8_t fs_create_new_log(void);
