@@ -262,7 +262,9 @@ static THD_FUNCTION( microsd_thread, p) {
 
 		if (msg == MICROSD_WRITE_FILE) {
 			write_test_file((BaseSequentialStream*) &SD1);
-		} else if (msg == MICROSD_OPEN_FILE) {
+		}else if (msg == MICROSD_WRITE_SENSOR_LOG_LINE){
+			microsd_write_sensor_log_line(path_to_file, sensor_data);
+		}else if (msg == MICROSD_OPEN_FILE) {
 
 		} else if (msg == MICROSD_CLOSE_FILE) {
 
@@ -275,6 +277,29 @@ static THD_FUNCTION( microsd_thread, p) {
 		} else if (msg == MICROSD_MOUNT_FS) {
 
 			microsd_mount_fs();
+		}
+	}
+}
+
+static microsd_write_sensor_log_line(path_to_file, sensor_data) {
+	FRESULT res;
+	FILINFO fno;
+	DIR dir;
+	uint8_t path = "\";
+	res = f_opendir(&path_to_file, path);
+	if (res == FR_OK) {
+		/*
+		 * If the path opened successfully.
+		 */
+		//i = strlen(path);
+	} else if (res == FR_NO_PATH) {
+		res = f_mkdir(path_to_file);
+		if (res != FR_OK) {
+			return res;
+		}
+		res = f_opendir(dir, path_to_file);
+		if (res != FR_OK) {
+			return res;
 		}
 	}
 }
