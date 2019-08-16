@@ -18,6 +18,7 @@
 extern struct ch_semaphore usart1_semaph;
 struct ch_semaphore i2c1_semaph;
 extern const I2CConfig i2c1cfg;
+extern const I2CConfig bno055_i2c_cfg;
 int8_t bno055_full_init(struct bno055_t *bno055)
 {
 	int8_t comres = BNO055_INIT_VALUE;
@@ -251,6 +252,6 @@ void i2c_restart(I2CDriver *i2cp)
 {
 	i2cStop(i2cp);
 	chThdSleepMilliseconds(1);
-	i2cStart (i2cp, &i2c1cfg);
+	i2cStart (i2cp, &bno055_i2c_cfg);
 }
 

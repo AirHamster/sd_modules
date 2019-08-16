@@ -18,17 +18,24 @@
 #include "config.h"
 #include "ff.h"
 #include "neo-m8.h"
+#include "bno055.h"
+#include "bno055_i2c.h"
 
 extern ubx_nav_pvt_t *pvt_box;
+extern bno055_t *bno055;
 static FRESULT scan_files(BaseSequentialStream *chp, char *path);
 static void microsd_show_tree(BaseSequentialStream *chp);
 static void microsd_show_free(BaseSequentialStream *chp);
 static void write_test_file(BaseSequentialStream *chp);
+static void microsd_open_logfile(BaseSequentialStream *chp);
 static void verbose_error(BaseSequentialStream *chp, FRESULT err);
+static int8_t microsd_create_filename_from_date(uint8_t *name_str);
 static uint8_t microsd_mount_fs(void);
 static char* fresult_str(FRESULT stat);
-
-
+static int8_t microsd_create_filename_from_date(uint8_t *name_str);
+static microsd_write_sensor_log_line(BaseSequentialStream *chp);
+static FIL logfile;   /* file object */
+static uint8_t path_to_file[32];
 static thread_reference_t microsd_trp = NULL;
 /* Maximum speed SPI configuration (18MHz, CPHA=0, CPOL=0, MSb first).*/
 static const SPIConfig hs_spicfg = { false, NULL, GPIOC, GPIOC_SD_CS, 0, 0 };
@@ -220,6 +227,15 @@ void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]) {
 //	chSysUnlock();
 }
 
+void cmd_open(BaseSequentialStream *chp, int argc, char *argv[]) {
+	(void) argv;
+	(void) argc;
+	(void) chp;
+//	chSysLock();
+	chThdResume(&microsd_trp, (msg_t) MICROSD_OPEN_FILE); /* Resuming the thread with message.*/
+//	chSysUnlock();
+}
+
 void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
 	(void) argv;
 	(void) argc;
@@ -261,11 +277,12 @@ static THD_FUNCTION( microsd_thread, p) {
 		chSysUnlock();
 
 		if (msg == MICROSD_WRITE_FILE) {
-			write_test_file((BaseSequentialStream*) &SD1);
+			//write_test_file((BaseSequentialStream*) &SD1);
+			microsd_write_sensor_log_line((BaseSequentialStream*) &SD1);
 		}else if (msg == MICROSD_WRITE_SENSOR_LOG_LINE){
-			microsd_write_sensor_log_line(path_to_file, sensor_data);
+			//microsd_write_sensor_log_line(path_to_file, sensor_data);
 		}else if (msg == MICROSD_OPEN_FILE) {
-
+			microsd_open_logfile((BaseSequentialStream*) &SD1);
 		} else if (msg == MICROSD_CLOSE_FILE) {
 
 		} else if (msg == MICROSD_SCAN_FILES) {
@@ -281,27 +298,42 @@ static THD_FUNCTION( microsd_thread, p) {
 	}
 }
 
-static microsd_write_sensor_log_line(path_to_file, sensor_data) {
+static microsd_write_sensor_log_line(BaseSequentialStream *chp) {
 	FRESULT res;
 	FILINFO fno;
-	DIR dir;
-	uint8_t path = "\";
-	res = f_opendir(&path_to_file, path);
-	if (res == FR_OK) {
-		/*
-		 * If the path opened successfully.
-		 */
-		//i = strlen(path);
-	} else if (res == FR_NO_PATH) {
-		res = f_mkdir(path_to_file);
-		if (res != FR_OK) {
-			return res;
+	int written;
+	uint8_t lon_s[16];
+	uint8_t lat_s[16];
+	uint8_t spd_s[8];
+	uint8_t pitch_s[8];
+	uint8_t roll_s[8];
+	memset(lat_s, 0, 16);
+	memset(lon_s, 0, 16);
+	memset(spd_s, 0, 8);
+	memset(pitch_s, 0, 8);
+	memset(roll_s, 0, 8);
+	sprintf((char*)lon_s, "%f", pvt_box->lon / 10000000.0f);
+	sprintf((char*)lat_s, "%f", pvt_box->lat / 10000000.0f);
+	sprintf((char*)spd_s, "%f", (float) (pvt_box->gSpeed * 0.0036));
+	sprintf((char*)roll_s, "%f", bno055->d_euler_hpr.r);
+	sprintf((char*)pitch_s, "%f", bno055->d_euler_hpr.p);
+
+	f_lseek(&logfile, f_size(&logfile));
+	written = f_printf (&logfile,
+				"%d,%d,%d,LAT,%s,LON,%s,SPD,%s,YAW,%d,PITCH,%s,ROLL,%s,COG_GPS,%d\r\n",
+				pvt_box->hour, pvt_box->min, pvt_box->sec,
+				lon_s, lat_s,
+				spd_s,
+				(uint16_t) bno055->d_euler_hpr.h, pitch_s,
+				roll_s, (uint16_t) (pvt_box->headMot / 100000));
+		if (written == -1) {
+			chprintf(chp, "FS: f_puts(\"Hello World\",\"hello.txt\") failed\r\n");
+		} else {
+			chprintf(chp, "FS: f_puts(\"Hello World\",\"%s\") succeeded\r\n", path_to_file);
 		}
-		res = f_opendir(dir, path_to_file);
-		if (res != FR_OK) {
-			return res;
-		}
-	}
+		f_sync(&logfile);
+
+
 }
 
 static void microsd_show_tree(BaseSequentialStream *chp){
@@ -338,27 +370,36 @@ static void write_test_file(BaseSequentialStream *chp) {
 	/*
 	 * Open the text file
 	 */
-	err = f_open(&fsrc, "hello.txt", FA_READ | FA_WRITE | FA_CREATE_ALWAYS);
-	if (err != FR_OK) {
-		chprintf(chp, "FS: f_open(\"hello.txt\") failed.\r\n");
-		verbose_error(chp, err);
-		return;
-	} else {
-		chprintf(chp, "FS: f_open(\"hello.txt\") succeeded\r\n");
-	}
+
 	/*
 	 * Write text to the file.
 	 */
-	written = f_puts ("Hello World", &fsrc);
+	f_lseek(&logfile, f_size(&logfile));
+	written = f_printf (&logfile, "Hello World");
 	if (written == -1) {
 		chprintf(chp, "FS: f_puts(\"Hello World\",\"hello.txt\") failed\r\n");
 	} else {
-		chprintf(chp, "FS: f_puts(\"Hello World\",\"hello.txt\") succeeded\r\n");
+		chprintf(chp, "FS: f_puts(\"Hello World\",\"%s\") succeeded\r\n", path_to_file);
 	}
+	f_sync(&logfile);
 	/*
 	 * Close the file
 	 */
-	f_close(&fsrc);
+	//f_close(&logfile);
+	//memset(&logfile, 0, sizeof(FIL));
+}
+
+static void microsd_open_logfile(BaseSequentialStream *chp) {
+	FRESULT err;
+	microsd_create_filename_from_date(path_to_file);
+	err = f_open(&logfile, path_to_file, FA_READ | FA_WRITE | FA_CREATE_ALWAYS);
+	if (err != FR_OK) {
+		chprintf(chp, "FS: f_open(\"%s\") failed.\r\n", path_to_file);
+		verbose_error(chp, err);
+		return;
+	} else {
+		chprintf(chp, "FS: f_open(\"%s\") succeeded\r\n", path_to_file);
+	}
 }
 
 static void microsd_show_free(BaseSequentialStream *chp) {
@@ -493,4 +534,33 @@ static char* fresult_str(FRESULT stat) {
 			return "Unknown";
 	}
 	return "";
+}
+
+static int8_t microsd_create_filename_from_date(uint8_t *name_str) {
+	if ((pvt_box->valid & (1 << 2)) != 0) {
+		uint8_t buffer[10];
+		memset(buffer, 0, 10);
+		itoa(pvt_box->year, (char*)buffer, 10);
+		strcat(name_str, buffer);
+		strcat(name_str, "-");
+		itoa(pvt_box->month, buffer, 10);
+		strcat(name_str, buffer);
+		strcat(name_str, "-");
+		itoa(pvt_box->day, buffer, 10);
+		strcat(name_str, buffer);
+		strcat(name_str, "-");
+		itoa(pvt_box->hour, buffer, 10);
+		strcat(name_str, buffer);
+		strcat(name_str, "_");
+		itoa(pvt_box->min, buffer, 10);
+		strcat(name_str, buffer);
+		strcat(name_str, "_");
+		itoa(pvt_box->sec, buffer, 10);
+		strcat(name_str, buffer);
+		strcat(name_str, ".csv");
+		return 0;
+	} else {
+		strcat(name_str, "1980-01-01-01_01_01.csv");
+		return -1;
+	}
 }

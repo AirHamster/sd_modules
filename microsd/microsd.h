@@ -20,8 +20,9 @@
 #define MICROSD_MOUNT_FS		5
 #define MICROSD_SHOW_TREE		6
 #define MICROSD_SHOW_FREE		7
+#define MICROSD_WRITE_SENSOR_LOG_LINE 8
 
-
+void cmd_open(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_mount(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_free(BaseSequentialStream *chp, int argc, char *argv[]);

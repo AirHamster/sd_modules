@@ -25,6 +25,7 @@ static const ShellCommand commands[] = {
 		{"tree", cmd_tree },
 		{"mount", cmd_mount},
 		{"free", cmd_free},
+		{"open", cmd_open},
 		{"write", cmd_write},
 		{ NULL, NULL }
 };
