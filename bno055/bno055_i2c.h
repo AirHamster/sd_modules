@@ -13,6 +13,7 @@
 #define SD_MODULES_BNO055_BNO055_I2C_H_
 
 #define I2C_BUFFER_LEN 128
+int8_t bno055_full_init(bno055_t *bno055);
 int8_t bno055_i2c_routine(bno055_t *bno055);
 int8_t bno055_read(uint8_t dev_addr, uint8_t *reg_data, uint8_t r_len);
 int8_t bno055_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len);

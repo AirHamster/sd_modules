@@ -17,12 +17,17 @@
 #include "bno055_i2c.h"
 extern struct ch_semaphore usart1_semaph;
 struct ch_semaphore i2c1_semaph;
-extern const I2CConfig i2c1cfg;
-extern const I2CConfig bno055_i2c_cfg;
-int8_t bno055_full_init(struct bno055_t *bno055)
+
+const I2CConfig bno055_i2c_cfg = {
+  0x20E7112A,
+  0,
+  0
+};
+int8_t bno055_full_init(bno055_t *bno055)
 {
 	int8_t comres = BNO055_INIT_VALUE;
 	bno055_i2c_routine(bno055);
+	i2cStart(&I2CD1, &bno055_i2c_cfg);
 /*--------------------------------------------------------------------------*
  *  This API used to assign the value/reference of
  *	the following parameters

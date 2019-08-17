@@ -36,7 +36,7 @@ static int8_t microsd_create_filename_from_date(uint8_t *name_str);
 static microsd_write_sensor_log_line(BaseSequentialStream *chp);
 static FIL logfile;   /* file object */
 static uint8_t path_to_file[32];
-static thread_reference_t microsd_trp = NULL;
+thread_reference_t microsd_trp = NULL;
 /* Maximum speed SPI configuration (18MHz, CPHA=0, CPOL=0, MSb first).*/
 static const SPIConfig hs_spicfg = { false, NULL, GPIOC, GPIOC_SD_CS, 0, 0 };
 
@@ -264,7 +264,7 @@ void cmd_mount(BaseSequentialStream *chp, int argc, char *argv[]) {
 //	chSysUnlock();
 }
 
-static THD_WORKING_AREA(microsd_thread_wa, 4096);
+static THD_WORKING_AREA(microsd_thread_wa, 4096*3);
 static THD_FUNCTION( microsd_thread, p) {
 	(void) p;
 	msg_t msg;
@@ -277,9 +277,10 @@ static THD_FUNCTION( microsd_thread, p) {
 		chSysUnlock();
 
 		if (msg == MICROSD_WRITE_FILE) {
-			//write_test_file((BaseSequentialStream*) &SD1);
-			microsd_write_sensor_log_line((BaseSequentialStream*) &SD1);
+
+			write_test_file((BaseSequentialStream*) &SD1);
 		}else if (msg == MICROSD_WRITE_SENSOR_LOG_LINE){
+			microsd_write_sensor_log_line((BaseSequentialStream*) &SD1);
 			//microsd_write_sensor_log_line(path_to_file, sensor_data);
 		}else if (msg == MICROSD_OPEN_FILE) {
 			microsd_open_logfile((BaseSequentialStream*) &SD1);
@@ -321,9 +322,7 @@ static microsd_write_sensor_log_line(BaseSequentialStream *chp) {
 	f_lseek(&logfile, f_size(&logfile));
 	written = f_printf (&logfile,
 				"%d,%d,%d,LAT,%s,LON,%s,SPD,%s,YAW,%d,PITCH,%s,ROLL,%s,COG_GPS,%d\r\n",
-				pvt_box->hour, pvt_box->min, pvt_box->sec,
-				lon_s, lat_s,
-				spd_s,
+				pvt_box->hour, pvt_box->min, pvt_box->sec, lat_s, lon_s, spd_s,
 				(uint16_t) bno055->d_euler_hpr.h, pitch_s,
 				roll_s, (uint16_t) (pvt_box->headMot / 100000));
 		if (written == -1) {
@@ -360,6 +359,8 @@ void start_microsd_module(void) {
 	mmcObjectInit(&MMCD1);
 	chThdCreateStatic(microsd_thread_wa, sizeof(microsd_thread_wa), NORMALPRIO + 3, microsd_thread, NULL);
 	chThdSleepMilliseconds(110);
+	microsd_mount_fs();
+	microsd_open_logfile((BaseSequentialStream*) &SD1);
 }
 
 static void write_test_file(BaseSequentialStream *chp) {
@@ -392,7 +393,7 @@ static void write_test_file(BaseSequentialStream *chp) {
 static void microsd_open_logfile(BaseSequentialStream *chp) {
 	FRESULT err;
 	microsd_create_filename_from_date(path_to_file);
-	err = f_open(&logfile, path_to_file, FA_READ | FA_WRITE | FA_CREATE_ALWAYS);
+	err = f_open(&logfile, path_to_file, FA_READ | FA_WRITE | FA_OPEN_APPEND);
 	if (err != FR_OK) {
 		chprintf(chp, "FS: f_open(\"%s\") failed.\r\n", path_to_file);
 		verbose_error(chp, err);
