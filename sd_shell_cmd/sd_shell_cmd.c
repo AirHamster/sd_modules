@@ -172,11 +172,11 @@ void send_json(void)
 #endif
 		chprintf((BaseSequentialStream*)&SD1, "\"headMot\":%d,\r\n\t\t\t", (uint16_t)(pvt_box->headMot / 100000));
 		chprintf((BaseSequentialStream*)&SD1, "\"sat\":%d,\r\n\t\t\t", pvt_box->numSV);
-//		chprintf((BaseSequentialStream*)&SD1, "\"rssi\":%d,\r\n\t\t\t", xbee->rssi);
 #ifdef USE_WINDSENSOR_MODULE
 		chprintf((BaseSequentialStream*)&SD1, "\"wind_dir\":%d,\r\n\t\t\t", wind->direction);
 		chprintf((BaseSequentialStream*)&SD1, "\"wind_spd\":%f,\r\n\t\t\t", wind->speed);
 #endif
+		chprintf((BaseSequentialStream*)&SD1, "\"rssi\":%d,\r\n\t\t\t", 0);
 		//	chprintf((BaseSequentialStream*)&SD1, "\"accel_raw\":%d; %d; %d,\r\n\t\t\t", bno055->accel_raw.x, bno055->accel_raw.y, bno055->accel_raw.z);
 	//	chprintf((BaseSequentialStream*)&SD1, "\"gyro_raw\":%d; %d; %d,\r\n\t\t\t", bno055->gyro_raw.x, bno055->gyro_raw.y, bno055->gyro_raw.z);
 	//	chprintf((BaseSequentialStream*)&SD1, "\"magn_raw\":%d; %d; %d,\r\n\t\t\t", bno055->mag_raw.x, bno055->mag_raw.y, bno055->mag_raw.z);
