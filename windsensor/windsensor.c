@@ -11,15 +11,14 @@
 #include <stdio.h>
 #include "ch.h"
 #include "hal.h"
-#include "rt_test_root.h"
-#include "oslib_test_root.h"
 #include "shell.h"
 #include "chprintf.h"
 
 extern struct ch_semaphore usart1_semaph;
-static windsensor_t wind_struct;
+//static windsensor_t wind_struct;
 static uint16_t uart_temp;
-windsensor_t *wind = &wind_struct;
+//windsensor_t *wind = &wind_struct;
+windsensor_t *wind;
 
 
 /** @brief Driver default configuration.*/
@@ -144,9 +143,9 @@ void start_windsensor_module(void)
 {
 
 	//sdStart(&SD8, &wind_uart_cfg);
+uartStart(&UARTD8, &uart8_cfg);
+	chThdCreateStatic(wind_thread_wa, sizeof(wind_thread_wa), NORMALPRIO + 3, wind_thread, NULL);
 
-	chThdCreateStatic(wind_thread_wa, sizeof(wind_thread_wa), NORMALPRIO+2, wind_thread, NULL);
-	uartStart(&UARTD8, &uart8_cfg);
 }
 static void windstation_char_recieved_async(UARTDriver *uartp, uint16_t c){
 	(void)uartp;

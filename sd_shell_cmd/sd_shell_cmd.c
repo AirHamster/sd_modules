@@ -5,28 +5,53 @@
 #include <shell.h>
 #include <string.h>
 #include <stdlib.h>
+#ifdef USE_MICROSD_MODULE
 #include "microsd.h"
-
-output_struct_t output_struct;
-output_struct_t *output = &output_struct;
+extern thread_reference_t microsd_trp;
+#endif
+#ifdef USE_XBEE_868_MODULE
 #include "xbee.h"
+#endif
+#ifdef USE_UBLOX_GPS_MODULE
 #include "neo-m8.h"
 #include "neo_ubx.h"
+extern ubx_nav_pvt_t *pvt_box;
+extern ubx_nav_odo_t *odo_box;
+#endif
+#ifdef USE_BNO055_MODULE
+#include "bno055_i2c.h"
+#include "bno055.h"
+extern bno055_t *bno055;
+#endif
+#ifdef USE_WINDSENSOR_MODULE
+#include "windsensor.h"
+extern windsensor_t *wind;
+#endif
+extern struct ch_semaphore usart1_semaph;
+//output_struct_t output_struct;
+//output_struct_t *output = &output_struct;
+
 char *complete_buffer[16];
 char history_buffer[128];
 const int history_size = 128;
-
+static void send_json(void);
+thread_reference_t output_trp = NULL;
+static THD_WORKING_AREA(output_thread_wa, 1024*4);
+static THD_FUNCTION(output_thread, arg);
 static const ShellCommand commands[] = {
 		{ "start", cmd_start },
 		{ "c", cmd_c },
-		{ "ublox", cmd_ublox },
+	//	{ "ublox", cmd_ublox },
+#ifdef USE_XBEE_868_MODULE
 		{ "xbee", cmd_xbee },
-		{ "gyro", cmd_gyro },
+#endif
+#ifdef USE_MICROSD_MODULE
 		{"tree", cmd_tree },
 		{"mount", cmd_mount},
 		{"free", cmd_free},
 		{"open", cmd_open},
 		{"write", cmd_write},
+#endif
 		{ NULL, NULL }
 };
 
@@ -34,8 +59,133 @@ static const ShellConfig shell_cfg1 = { (BaseSequentialStream*) &SHELL_SD,
 		commands, history_buffer, 32, complete_buffer };
 
 thread_t *cmd_init(void) {
-	return chThdCreateFromHeap(NULL, SHELL_WA_SIZE, "shell", NORMALPRIO + 3,
+	return chThdCreateFromHeap(NULL, SHELL_WA_SIZE, "shell", NORMALPRIO,
 			shellThread, (void *) &shell_cfg1);
+}
+
+void start_json_module(void){
+	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO, output_thread, NULL);
+}
+
+/*
+ * Thread that outputs debug data which is needed
+ */
+
+static THD_FUNCTION(output_thread, arg) {
+	(void)arg;
+
+	chRegSetThreadName("Data output");
+/*	gptStop(&GPTD14);
+	gptStart(&GPTD14, &gpt14cfg);
+	gptStartContinuous(&GPTD14, 2000);*/
+	systime_t prev = chVTGetSystemTime(); // Current system time.
+
+	while (true) {
+		wdgReset(&WDGD1);
+		/*chSysLock();
+		if (output->suspend_state) {
+			msg = chThdSuspendS(&output_trp);
+		}
+		chSysUnlock();
+		*/
+		palToggleLine(LINE_GREEN_LED);
+#ifdef USE_MICROSD_MODULE
+		//chThdResume(&microsd_trp, (msg_t) MICROSD_WRITE_SENSOR_LOG_LINE);
+		/*chSysLock();
+		chSchRescheduleS();
+		chSysUnlock();*/
+#endif
+		chThdSleepMilliseconds(5);
+		send_json();
+		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
+	//		chThdResume(&microsd_trp, (msg_t) MICROSD_WRITE_SENSOR_LOG_LINE); /* Resuming the thread with message.*/
+	}
+}
+/*
+void send_data(uint8_t stream){
+	uint8_t databuff[34];
+	int32_t spdi = 0;
+	double spd;
+	double dlat, dlon;
+	spd = (float)(pvt_box->gSpeed * 0.0036);
+	spdi = (int32_t)(spd);
+	tx_box->lat = pvt_box->lat;
+	tx_box->lon = pvt_box->lon;
+	tx_box->hour = pvt_box->hour;
+	tx_box->min = pvt_box->min;
+	tx_box->sec = pvt_box->sec;
+	tx_box->dist = (uint16_t)odo_box->distance;
+	tx_box->sat = pvt_box->numSV;
+	tx_box->speed = spd;
+	tx_box->headMot = pvt_box->headMot;
+	tx_box->headVeh = pvt_box->headVeh;
+
+		databuff[0] = RF_GPS_PACKET;
+		databuff[1] = (uint8_t)(tx_box->lat >> 24);
+		databuff[2] = (uint8_t)(tx_box->lat >> 16 );
+		databuff[3] = (uint8_t)(tx_box->lat >> 8);
+		databuff[4] = (uint8_t)(tx_box->lat);
+		databuff[5] = (uint8_t)(tx_box->lon >> 24);
+		databuff[6] = (uint8_t)(tx_box->lon >> 16);
+		databuff[7] = (uint8_t)(tx_box->lon >> 8);
+		databuff[8] = (uint8_t)(tx_box->lon);
+		databuff[9] = tx_box->hour;
+		databuff[10] = tx_box->min;
+		databuff[11] = tx_box->sec;
+		databuff[12] = tx_box->sat;
+		databuff[13] = (uint8_t)(tx_box->dist >> 8);
+		databuff[14] = (uint8_t)(tx_box->dist);
+
+		memcpy(&databuff[15], &tx_box->speed, sizeof(tx_box->speed));
+
+		databuff[19] = (uint8_t)(tx_box->yaw >> 8);
+		databuff[20] = (uint8_t)(tx_box->yaw);
+
+		memcpy(&databuff[21], &tx_box->pitch, sizeof(tx_box->pitch));
+
+		memcpy(&databuff[25], &tx_box->roll, sizeof(tx_box->roll));
+		databuff[29] = tx_box->bat;
+
+		databuff[30] = (uint8_t)(tx_box->headMot >> 24);
+		databuff[31] = (uint8_t)(tx_box->headMot >> 16);
+		databuff[32] = (uint8_t)(tx_box->headMot >> 8);
+		databuff[33] = (uint8_t)(tx_box->headMot);
+
+	xbee_send_rf_message(xbee, databuff, 34);
+}
+*/
+void send_json(void)
+{
+	chSemWait(&usart1_semaph);
+	chprintf((BaseSequentialStream*)&SD1, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
+		chprintf((BaseSequentialStream*)&SD1, "\"hour\":%d,\r\n\t\t\t", pvt_box->hour);
+		chprintf((BaseSequentialStream*)&SD1, "\"min\":%d,\r\n\t\t\t", pvt_box->min);
+		chprintf((BaseSequentialStream*)&SD1, "\"sec\":%d,\r\n\t\t\t", pvt_box->sec);
+		chprintf((BaseSequentialStream*)&SD1, "\"lat\":%f,\r\n\t\t\t", pvt_box->lat / 10000000.0f);
+		chprintf((BaseSequentialStream*)&SD1, "\"lon\":%f,\r\n\t\t\t", pvt_box->lon / 10000000.0f);
+		chprintf((BaseSequentialStream*)&SD1, "\"speed\":%f,\r\n\t\t\t", (float)(pvt_box->gSpeed * 0.0036));
+		chprintf((BaseSequentialStream*)&SD1, "\"dist\":%d,\r\n\t\t\t", (uint16_t)odo_box->distance);
+#ifdef USE_BNO055_MODULE
+		chprintf((BaseSequentialStream*)&SD1, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
+		chprintf((BaseSequentialStream*)&SD1, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
+		chprintf((BaseSequentialStream*)&SD1, "\"roll\":%f,\r\n\t\t\t", bno055->d_euler_hpr.r);
+#endif
+		chprintf((BaseSequentialStream*)&SD1, "\"headMot\":%d,\r\n\t\t\t", (uint16_t)(pvt_box->headMot / 100000));
+		chprintf((BaseSequentialStream*)&SD1, "\"sat\":%d,\r\n\t\t\t", pvt_box->numSV);
+//		chprintf((BaseSequentialStream*)&SD1, "\"rssi\":%d,\r\n\t\t\t", xbee->rssi);
+#ifdef USE_WINDSENSOR_MODULE
+		chprintf((BaseSequentialStream*)&SD1, "\"wind_dir\":%d,\r\n\t\t\t", wind->direction);
+		chprintf((BaseSequentialStream*)&SD1, "\"wind_spd\":%f,\r\n\t\t\t", wind->speed);
+#endif
+		//	chprintf((BaseSequentialStream*)&SD1, "\"accel_raw\":%d; %d; %d,\r\n\t\t\t", bno055->accel_raw.x, bno055->accel_raw.y, bno055->accel_raw.z);
+	//	chprintf((BaseSequentialStream*)&SD1, "\"gyro_raw\":%d; %d; %d,\r\n\t\t\t", bno055->gyro_raw.x, bno055->gyro_raw.y, bno055->gyro_raw.z);
+	//	chprintf((BaseSequentialStream*)&SD1, "\"magn_raw\":%d; %d; %d,\r\n\t\t\t", bno055->mag_raw.x, bno055->mag_raw.y, bno055->mag_raw.z);
+	//	chprintf((BaseSequentialStream*)&SD1, "\"magn_cal\":%d,\r\n\t\t\t", bno055->magn_cal);
+	//	chprintf((BaseSequentialStream*)&SD1, "\"accel_cal\":%d,\r\n\t\t\t", bno055->accel_cal);
+	//	chprintf((BaseSequentialStream*)&SD1, "\"gyro_cal\":%d,\r\n\t\t\t", bno055->gyro_cal);
+		chprintf((BaseSequentialStream*)&SD1, "\"bat\":0\r\n\t\t\t");
+		chprintf((BaseSequentialStream*)&SD1, "}\r\n\t}");
+		chSemSignal(&usart1_semaph);
 }
 
 void cmd_start(BaseSequentialStream* chp, int argc, char* argv[]) {
@@ -194,6 +344,7 @@ void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]) {
 	chprintf(chp, "Usage: start params|||\n\r");
 }
 
+#ifdef USE_XBEE_868_MODULE
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
 		if (strcmp(argv[0], "addr") == 0) {
@@ -237,28 +388,28 @@ void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
 	}
 	chprintf(chp, "Usage: xbee addr|dest|mesh|rssi|ping|stat|lb\n\r");
 }
-
+#endif
 void toggle_test_output(void) {
-	output->test = 1;
+	//output->test = 1;
 }
 
 void toggle_gps_output(void) {
-	output->gps = (~output->gps) & 0x01;
+	//output->gps = (~output->gps) & 0x01;
 }
 
 void toggle_ypr_output(void) {
-	output->ypr = (~output->ypr) & 0x01;
+	//output->ypr = (~output->ypr) & 0x01;
 }
 
 void toggle_gyro_output(void) {
-	output->gyro = (~output->gyro) & 0x01;
+	//output->gyro = (~output->gyro) & 0x01;
 }
 
 void stop_all_tests(void) {
-	output->test = 0;
+	/*output->test = 0;
 	output->gps = 0;
 	output->ypr = 0;
-	output->gyro = 0;
+	output->gyro = 0;*/
 }
 
 

@@ -714,7 +714,7 @@ s16 sic_8;/**< soft iron calibration matrix 8 data */
 *	@brief bno055 struct
 */
 typedef struct{
-	struct bno055_euler_double_t d_euler_hpr;
+	struct bno055_euler_float_t d_euler_hpr;
 	struct bno055_accel_t accel_raw;
 	struct bno055_gyro_t gyro_raw;
 	struct bno055_mag_t mag_raw;

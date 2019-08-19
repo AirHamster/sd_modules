@@ -8,32 +8,112 @@
 #include "neo-m8.h"
 
 extern struct ch_semaphore usart1_semaph;
-extern const SPIConfig neo_spi_cfg;
 extern struct ch_semaphore spi2_semaph;
 
-ubx_cfg_sbas_t sbas;
+static ubx_cfg_sbas_t sbas;
 ubx_cfg_sbas_t *sbas_box = &sbas;
 
-ubx_nav_pvt_t pvt;
-ubx_nav_pvt_t *pvt_box = &pvt;
+//static ubx_nav_pvt_t pvt;
+//ubx_nav_pvt_t *pvt_box = &pvt;
+ubx_nav_pvt_t *pvt_box;
 
-ubx_cfg_nav5_t nav5;
+static ubx_cfg_nav5_t nav5;
 ubx_cfg_nav5_t *nav5_box = &nav5;
 
-ubx_cfg_pm2 pm2;
+static ubx_cfg_pm2 pm2;
 ubx_cfg_pm2 *pm2_box = &pm2;
 
-neo_struct_t neo_struct;
+static neo_struct_t neo_struct;
 neo_struct_t *neo = &neo_struct;
 
-ubx_cfg_odo_t cfg_odo_struct;
+static ubx_cfg_odo_t cfg_odo_struct;
 ubx_cfg_odo_t *cfg_odo_box = &cfg_odo_struct;
 
-ubx_nav_odo_t nav_odo_struct;
+static ubx_nav_odo_t nav_odo_struct;
 ubx_nav_odo_t *odo_box = &nav_odo_struct;
 
-ubx_cfg_rate_t rate_struct;
+static ubx_cfg_rate_t rate_struct;
 ubx_cfg_rate_t *rate_box = &rate_struct;
+
+static const SPIConfig neo_spi_cfg = {
+		false,
+		NULL,
+		GPIOC,
+		GPIOC_MCU_CS,
+		SPI_CR1_BR_1 | SPI_CR1_BR_0,
+		//0,
+		0
+};
+
+thread_reference_t coords_trp = NULL;
+static THD_WORKING_AREA(coords_thread_wa, 4096);
+static THD_FUNCTION(coords_thread, arg);
+
+void start_gps_module(void){
+
+	spiStart(&SPID2, &neo_spi_cfg);
+	neo_switch_to_ubx();
+	chThdSleepMilliseconds(50);
+	chThdSleepMilliseconds(50);
+	neo_create_poll_request(UBX_CFG_CLASS, UBX_CFG_RATE_ID);
+	chThdSleepMilliseconds(50);
+	neo_poll();
+	rate_box->measRate = 250;
+	chThdSleepMilliseconds(50);
+	neo_write_struct((uint8_t *) rate_box, UBX_CFG_CLASS, UBX_CFG_RATE_ID,
+			sizeof(ubx_cfg_rate_t));
+	chThdSleepMilliseconds(50);
+	neo_poll();
+	chThdSleepMilliseconds(50);
+
+	neo_create_poll_request(UBX_CFG_CLASS, UBX_CFG_ODO_ID);
+	chThdSleepMilliseconds(50);
+	neo_poll();
+	cfg_odo_box->flags = 1 << 0;
+	chThdSleepMilliseconds(50);
+	neo_write_struct((uint8_t *) cfg_odo_box, UBX_CFG_CLASS, UBX_CFG_ODO_ID,
+			sizeof(ubx_cfg_odo_t));
+	chThdSleepMilliseconds(50);
+	neo_poll();
+
+	chThdCreateStatic(coords_thread_wa, sizeof(coords_thread_wa), NORMALPRIO + 1,
+			coords_thread, NULL);
+}
+
+
+/*
+ * Thread to process data collection and filtering from NEO-M8P
+ */
+
+
+static THD_FUNCTION( coords_thread, arg) {
+
+	(void) arg;
+	msg_t msg;
+	chRegSetThreadName("GPS Parse");
+//	gptStop(&GPTD12);
+//#ifndef TRAINER_MODULE
+//	gptStart(&GPTD12, &gpt12cfg);
+//	gptStartContinuous(&GPTD12, 5000);
+//#endif
+	systime_t prev = chVTGetSystemTime(); // Current system time.
+	while (true) {
+		/*		chSysLock();
+		 if (neo->suspend_state) {
+		 msg = chThdSuspendS(&coords_trp);
+		 }
+		 chSysUnlock();
+		 */
+		chSemWait(&spi2_semaph);
+		neo_create_poll_request(UBX_NAV_CLASS, UBX_NAV_PVT_ID);
+		chThdSleepMilliseconds(5);
+		neo_poll();
+		chSemSignal(&spi2_semaph);
+
+		palToggleLine(LINE_RED_LED);
+		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(500));
+	}
+}
 
 void neo_write(SPIDriver *SPID, uint8_t *txbuff, uint8_t len) {
 

@@ -214,6 +214,7 @@ typedef struct{
 	X4 scanmode1;
 }ubx_cfg_sbas_t;
 
+void start_gps_module(void);
 void neo_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value);
 void neo_write_no_cs(SPIDriver *SPID, uint8_t *txbuff, uint8_t len);
 uint8_t neo_read_byte(SPIDriver *SPID, uint8_t reg_addr);

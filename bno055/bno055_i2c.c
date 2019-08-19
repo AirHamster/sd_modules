@@ -17,12 +17,54 @@
 #include "bno055_i2c.h"
 extern struct ch_semaphore usart1_semaph;
 struct ch_semaphore i2c1_semaph;
+//static bno055_t bno055_struct;
+//bno055_t *bno055 = &bno055_struct;
+bno055_t *bno055;
 
+thread_reference_t mbno055_trp = NULL;
+static THD_WORKING_AREA(bno055_thread_wa, 4096*2);
+static THD_FUNCTION(bno055_thread, arg);
 const I2CConfig bno055_i2c_cfg = {
-  0x20E7112A,
+  0x30420F13,
+		//0x20E7112A,
+ // 0x40B45B69,
   0,
   0
 };
+
+void start_bno055_module(void){
+	bno055_full_init(bno055);
+	chThdCreateStatic(bno055_thread_wa, sizeof(bno055_thread_wa), NORMALPRIO + 4, bno055_thread, NULL);
+}
+
+/*
+ * Thread to process data collection and filtering from MPU9250
+ */
+
+static THD_FUNCTION(bno055_thread, arg) {
+
+	(void) arg;
+	//msg_t msg;
+	chRegSetThreadName("BNO055 Thread");
+	systime_t prev = chVTGetSystemTime(); // Current system time.
+			/*	gptStop(&GPTD11);
+			 #ifndef TRAINER_MODULE
+			 gptStart(&GPTD11, &gpt11cfg);
+			 gptStartContinuous(&GPTD11, 2000);
+			 #endif
+			 */
+	while (true) {
+		/*chSysLock();
+		 if (mpu->suspend_state) {
+		 msg = chThdSuspendS(&mpu_trp);
+		 }
+		 chSysUnlock();
+		 */
+		bno055_read_euler(bno055);
+		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
+	}
+}
+
 int8_t bno055_full_init(bno055_t *bno055)
 {
 	int8_t comres = BNO055_INIT_VALUE;
@@ -77,39 +119,16 @@ int8_t bno055_full_init(bno055_t *bno055)
 int8_t bno055_read_euler(bno055_t *bno055){
 	int8_t comres = BNO055_INIT_VALUE;
 	uint8_t euler_data[6];
-	struct bno055_euler_t reg_euler = {BNO055_INIT_VALUE,
-		BNO055_INIT_VALUE, BNO055_INIT_VALUE};
-	/* structure used to read the euler hrp data output
-	as as degree or radians */
-	//struct bno055_euler_double_t d_euler_hpr;
-	/*	API used to read Euler data output as double  - degree and radians
-		float functions also available in the BNO055 API */
-	/*	comres += bno055_convert_double_euler_h_deg(&bno055->d_euler_hpr->h);
-		comres += bno055_convert_double_euler_r_deg(&d_euler_data_r);
-		comres += bno055_convert_double_euler_p_deg(&d_euler_data_p);
-		comres += bno055_convert_double_euler_h_rad(&d_euler_data_h);
-		comres += bno055_convert_double_euler_r_rad(&d_euler_data_r);
-		comres += bno055_convert_double_euler_p_rad(&d_euler_data_p);*/
-		//comres += bno055_convert_double_euler_hpr_deg(&bno055->d_euler_hpr);
-	//chThdSleepMilliseconds(1);
-		//comres += bno055_read_accel_xyz(&bno055->accel_raw);
-		//chThdSleepMilliseconds(1);
-		//comres += bno055_read_gyro_xyz(&bno055->gyro_raw);
-		//chThdSleepMilliseconds(1);
-		//comres += bno055_read_mag_xyz(&bno055->mag_raw);
-		//chThdSleepMilliseconds(1);
-		//comres += bno055_convert_double_euler_hpr_rad(&d_euler_hpr);
+//	struct bno055_euler_t reg_euler = {BNO055_INIT_VALUE,
+	//	BNO055_INIT_VALUE, BNO055_INIT_VALUE};
 	euler_data[0] = BNO055_EULER_H_LSB_VALUEH_REG;
 	bno055_read(bno055->dev_addr, euler_data, 6);
-	reg_euler.h = (int16_t)(euler_data[0] | euler_data[1] << 8);
-	reg_euler.r = (int16_t)(euler_data[2] | euler_data[3] << 8);
-	reg_euler.p = (int16_t)(euler_data[4] | euler_data[5] << 8);
-	bno055->d_euler_hpr.h = (float)(reg_euler.h/BNO055_EULER_DIV_DEG);
-	bno055->d_euler_hpr.r = (float)(reg_euler.r/BNO055_EULER_DIV_DEG);
-	bno055->d_euler_hpr.p = (float)(reg_euler.p/BNO055_EULER_DIV_DEG);
-	/*	chSemWait(&usart1_semaph);
-				chprintf((BaseSequentialStream*)&SD1, "Yaw %f Pitch %f Roll %f\r\n", d_euler_hpr.h, d_euler_hpr.p, d_euler_hpr.r);
-				chSemSignal(&usart1_semaph);*/
+	bno055->d_euler_hpr.h = (float)(((int16_t)(euler_data[0] | euler_data[1] << 8))/BNO055_EULER_DIV_DEG);
+	bno055->d_euler_hpr.r = (float)(((int16_t)(euler_data[2] | euler_data[3] << 8))/BNO055_EULER_DIV_DEG);
+	bno055->d_euler_hpr.p = (float)(((int16_t)(euler_data[4] | euler_data[5] << 8))/BNO055_EULER_DIV_DEG);
+	//bno055->d_euler_hpr.h = (float)(reg_euler.h/BNO055_EULER_DIV_DEG);
+	//bno055->d_euler_hpr.r = (float)(reg_euler.r/BNO055_EULER_DIV_DEG);
+	//bno055->d_euler_hpr.p = (float)(reg_euler.p/BNO055_EULER_DIV_DEG);
 		return comres;
 }
 
@@ -127,65 +146,48 @@ void bno055_delay_ms(uint16_t msec){
 	chThdSleepMilliseconds(msec);
 }
 
-int8_t bno055_read(uint8_t dev_addr, uint8_t *reg_data, uint8_t r_len){
-		//uint8_t txbuff[1];
-		//uint8_t rxbuff[1];
-		msg_t status;
-		//txbuff[0] = reg_addr;
-		//txbuff[1] = EEPROM_HW_VER_ADDR & 0xFF;
-		/*chSemWait(&usart1_semaph);
-				chprintf((BaseSequentialStream*)&SD1, "Entered read func\r\n");
-				chSemSignal(&usart1_semaph);*/
-		//chSemWait(&i2c1_semaph);
-		i2cAcquireBus(&I2CD1);
-		status = i2cMasterTransmitTimeout(&I2CD1, dev_addr, reg_data, 1, reg_data, r_len, 100);
-		i2cReleaseBus(&I2CD1);
-		//chSemSignal(&i2c1_semaph);
-		if (status != MSG_OK){
-			chSemWait(&usart1_semaph);
-				chprintf((BaseSequentialStream*)&SD1, "Shit happened: status is %d\r\n", i2cGetErrors(&I2CD1));
-				chSemSignal(&usart1_semaph);
-				i2c_restart(&I2CD1);
-				return -1;
-		}
-/*
+int8_t bno055_read(uint8_t dev_addr, uint8_t *reg_data, uint8_t r_len) {
+	msg_t status;
+	uint8_t databuff[64];
+	uint8_t register_addr = reg_data[0];
+	memset(databuff, 0, 64);
+
+	i2cAcquireBus(&I2CD1);
+	status = i2cMasterTransmitTimeout(&I2CD1, dev_addr, &register_addr, 1, databuff,
+			r_len, TIME_INFINITE);
+	i2cReleaseBus(&I2CD1);
+	if (status != MSG_OK) {
 		chSemWait(&usart1_semaph);
-		chprintf((BaseSequentialStream*)&SD1, "CHIP_ID from BNO055: %d\r\n", *reg_data);
-		chSemSignal(&usart1_semaph);*/
-		return 0;
+		chprintf((BaseSequentialStream*) &SD1, "Shit happened: status %d\r\n",
+				i2cGetErrors(&I2CD1));
+		chSemSignal(&usart1_semaph);
+		i2c_restart(&I2CD1);
+		return -1;
+	}
+	memcpy(reg_data, databuff, r_len);
+	return 0;
 
 }
 
-int8_t bno055_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len){
-		//uint8_t txbuff[wr_len+1];
-		uint8_t rxbuff[1];
-		msg_t status;
-		//txbuff[0] = reg_addr;
-		//memcpy(&txbuff[1], reg_data, wr_len);
-		//txbuff[1] = EEPROM_HW_VER_ADDR & 0xFF;
-		/*chSemWait(&usart1_semaph);
-						chprintf((BaseSequentialStream*)&SD1, "Entered write func: d_addr %x, reg %x, wr_len %d\r\n", dev_addr, *reg_data, wr_len);
-						chSemSignal(&usart1_semaph);*/
-		//chSemWait(&i2c1_semaph);
-		i2cAcquireBus(&I2CD1);
-		status = i2cMasterTransmitTimeout(&I2CD1, dev_addr, reg_data, wr_len, rxbuff, 0, 100);
-		i2cReleaseBus(&I2CD1);
-		//	chSemSignal(&i2c1_semaph);
-		if (status != MSG_OK){
-			chSemWait(&usart1_semaph);
-				chprintf((BaseSequentialStream*)&SD1, "Shit happened: status is %d\r\n", i2cGetErrors(&I2CD1));
-				chSemSignal(&usart1_semaph);
-				i2c_restart(&I2CD1);
-				return -1;
-		}
-		/*
+int8_t bno055_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len) {
+	uint8_t rxbuff[1];
+	msg_t status;
+	uint8_t databuff[64];
+	//uint8_t register_addr = reg_data[0];
+	memcpy(databuff, reg_data, wr_len);
+	i2cAcquireBus(&I2CD1);
+	status = i2cMasterTransmitTimeout(&I2CD1, dev_addr, databuff, wr_len,
+			NULL, 0, TIME_INFINITE);
+	i2cReleaseBus(&I2CD1);
+	if (status != MSG_OK) {
 		chSemWait(&usart1_semaph);
-						chprintf((BaseSequentialStream*)&SD1, "Shit not happened: status is %d\r\n", i2cGetErrors(&I2CD1));
-						chSemSignal(&usart1_semaph);*/
-		return 0;
-		//chSemWait(&usart1_semaph);
-		//chprintf((BaseSequentialStream*)&SD1, "CHIP_ID from BNO055: %d\r\n", rxbuff[0]);
-		//chSemSignal(&usart1_semaph);
+		chprintf((BaseSequentialStream*) &SD1,
+				"Shit happened: status is %d\r\n", i2cGetErrors(&I2CD1));
+		chSemSignal(&usart1_semaph);
+		i2c_restart(&I2CD1);
+		return -1;
+	}
+	return 0;
 }
 
 s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)

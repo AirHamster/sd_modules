@@ -10,19 +10,26 @@
 #include <string.h>
 #include "ch.h"
 #include "hal.h"
-#include "rt_test_root.h"
-#include "oslib_test_root.h"
 #include "shell.h"
 #include "chprintf.h"
 #include "microsd.h"
-#include "config.h"
 #include "ff.h"
+#ifdef USE_UBLOX_GPS_MODULE
 #include "neo-m8.h"
+extern ubx_nav_pvt_t *pvt_box;
+#endif
+#ifdef USE_BNO055_MODULE
 #include "bno055.h"
 #include "bno055_i2c.h"
-
-extern ubx_nav_pvt_t *pvt_box;
 extern bno055_t *bno055;
+#endif
+#ifdef USE_WINDSENSOR_MODULE
+#include "windsensor.h"
+extern windsensor_t *wind;
+#endif
+
+
+
 static FRESULT scan_files(BaseSequentialStream *chp, char *path);
 static void microsd_show_tree(BaseSequentialStream *chp);
 static void microsd_show_free(BaseSequentialStream *chp);
@@ -33,9 +40,10 @@ static int8_t microsd_create_filename_from_date(uint8_t *name_str);
 static uint8_t microsd_mount_fs(void);
 static char* fresult_str(FRESULT stat);
 static int8_t microsd_create_filename_from_date(uint8_t *name_str);
-static microsd_write_sensor_log_line(BaseSequentialStream *chp);
+static void microsd_write_sensor_log_line(BaseSequentialStream *chp);
 static FIL logfile;   /* file object */
 static uint8_t path_to_file[32];
+
 thread_reference_t microsd_trp = NULL;
 /* Maximum speed SPI configuration (18MHz, CPHA=0, CPOL=0, MSb first).*/
 static const SPIConfig hs_spicfg = { false, NULL, GPIOC, GPIOC_SD_CS, 0, 0 };
@@ -45,7 +53,7 @@ static const SPIConfig ls_spicfg = { false, NULL, GPIOC, GPIOC_SD_CS,
 		SPI_CR1_BR_2 | SPI_CR1_BR_1 | SPI_CR1_BR_0, 0 };
 
 /* MMC/SD over SPI driver configuration.*/
-static MMCConfig const portab_mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
+static MMCConfig const mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 MMCDriver MMCD1;
 /*===========================================================================*/
 /* FatFs related.                                                            */
@@ -264,103 +272,92 @@ void cmd_mount(BaseSequentialStream *chp, int argc, char *argv[]) {
 //	chSysUnlock();
 }
 
-static THD_WORKING_AREA(microsd_thread_wa, 4096*3);
+static THD_WORKING_AREA(microsd_thread_wa, 4096*2);
 static THD_FUNCTION( microsd_thread, p) {
 	(void) p;
 	msg_t msg;
 	chRegSetThreadName("MicroSD Thd");
-	mmcStart(&MMCD1, &portab_mmccfg);
+	systime_t prev = chVTGetSystemTime(); // Current system time.
 	while (true) {
-
-		chSysLock();
-		msg = chThdSuspendS(&microsd_trp);
-		chSysUnlock();
-
-		if (msg == MICROSD_WRITE_FILE) {
-
-			write_test_file((BaseSequentialStream*) &SD1);
-		}else if (msg == MICROSD_WRITE_SENSOR_LOG_LINE){
-			microsd_write_sensor_log_line((BaseSequentialStream*) &SD1);
-			//microsd_write_sensor_log_line(path_to_file, sensor_data);
-		}else if (msg == MICROSD_OPEN_FILE) {
-			microsd_open_logfile((BaseSequentialStream*) &SD1);
-		} else if (msg == MICROSD_CLOSE_FILE) {
-
-		} else if (msg == MICROSD_SCAN_FILES) {
-
-		} else if (msg == MICROSD_SHOW_TREE) {
-			microsd_show_tree((BaseSequentialStream*) &SD1);
-		} else if (msg == MICROSD_SHOW_FREE) {
-			microsd_show_free((BaseSequentialStream*) &SD1);
-		} else if (msg == MICROSD_MOUNT_FS) {
-
-			microsd_mount_fs();
-		}
+		wdgReset(&WDGD1);
+		//microsd_write_sensor_log_line((BaseSequentialStream*) &SD1);
+		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(500));
 	}
 }
 
-static microsd_write_sensor_log_line(BaseSequentialStream *chp) {
+static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
+	FRESULT res;
+	FILINFO fno;
+	int written = 0;
+	uint8_t lon_s[16];
+	uint8_t lat_s[16];
+	uint8_t spd_s[16];
+	uint8_t pitch_s[16];
+	uint8_t roll_s[16];
+	uint8_t wind_spd_s[16];
+	uint8_t megastring[256];
+	memset(lat_s, 0, 16);
+	memset(lon_s, 0, 16);
+	memset(spd_s, 0, 16);
+	memset(pitch_s, 0, 16);
+	memset(roll_s, 0, 16);
+	memset(wind_spd_s, 0, 16);
+	memset(megastring, 0, 256);
+	sprintf((char*)megastring, "%d-%d,%d,%d,%d,%f,%f,%f,%d,%f,%f,%f,%d,%f\r\n",
+			pvt_box->month, pvt_box->day, pvt_box->hour, pvt_box->min, pvt_box->sec, pvt_box->lat / 10000000.0f, pvt_box->lon / 10000000.0f,
+			(float) (pvt_box->gSpeed * 0.0036), (uint16_t) (pvt_box->headMot / 100000), bno055->d_euler_hpr.h, bno055->d_euler_hpr.r,
+			bno055->d_euler_hpr.p, wind->direction, wind->speed);
+/*
+	sprintf((char*) lon_s, "%f", pvt_box->lon / 10000000.0f);
+	sprintf((char*) lat_s, "%f", pvt_box->lat / 10000000.0f);
+	sprintf((char*) spd_s, "%f", (float) (pvt_box->gSpeed * 0.0036));
+//#ifdef USE_BNO055_MODULE
+	sprintf((char*) roll_s, "%f", bno055->d_euler_hpr.r);
+	sprintf((char*) pitch_s, "%f", bno055->d_euler_hpr.p);
+//#endif
+	sprintf((char*) wind_spd_s, "%f", wind->speed);
+	*/
+	//f_lseek(&logfile, f_size(&logfile));
+//	written = f_puts((char*)megastring, &logfile);
+	/*written |= f_printf(&logfile,  "%s,%s,%s,", lat_s, lon_s, spd_s);
+	written |= f_printf(&logfile, "%d,%d,%s,", (uint16_t) (pvt_box->headMot / 100000), bno055->d_euler_hpr.h, pitch_s);
+	written |= f_printf(&logfile, "%s,%d,%s\r\n", roll_s, wind->direction, wind_spd_s);
+*/
+	if (written == -1) {
+		chprintf(chp, "FS: f_puts(\"Hello World\",\"hello.txt\") failed\r\n");
+	} else {
+		//chprintf(chp, "FS: f_puts(\"Hello World\",\"%s\") succeeded\r\n", path_to_file);
+	}
+
+	//f_sync(&logfile);
+}
+
+static void microsd_write_logfile_header(BaseSequentialStream *chp) {
 	FRESULT res;
 	FILINFO fno;
 	int written;
-	uint8_t lon_s[16];
-	uint8_t lat_s[16];
-	uint8_t spd_s[8];
-	uint8_t pitch_s[8];
-	uint8_t roll_s[8];
-	memset(lat_s, 0, 16);
-	memset(lon_s, 0, 16);
-	memset(spd_s, 0, 8);
-	memset(pitch_s, 0, 8);
-	memset(roll_s, 0, 8);
-	sprintf((char*)lon_s, "%f", pvt_box->lon / 10000000.0f);
-	sprintf((char*)lat_s, "%f", pvt_box->lat / 10000000.0f);
-	sprintf((char*)spd_s, "%f", (float) (pvt_box->gSpeed * 0.0036));
-	sprintf((char*)roll_s, "%f", bno055->d_euler_hpr.r);
-	sprintf((char*)pitch_s, "%f", bno055->d_euler_hpr.p);
-
 	f_lseek(&logfile, f_size(&logfile));
-	written = f_printf (&logfile,
-				"%d,%d,%d,LAT,%s,LON,%s,SPD,%s,YAW,%d,PITCH,%s,ROLL,%s,COG_GPS,%d\r\n",
-				pvt_box->hour, pvt_box->min, pvt_box->sec, lat_s, lon_s, spd_s,
-				(uint16_t) bno055->d_euler_hpr.h, pitch_s,
-				roll_s, (uint16_t) (pvt_box->headMot / 100000));
-		if (written == -1) {
-			chprintf(chp, "FS: f_puts(\"Hello World\",\"hello.txt\") failed\r\n");
-		} else {
-			chprintf(chp, "FS: f_puts(\"Hello World\",\"%s\") succeeded\r\n", path_to_file);
-		}
-		f_sync(&logfile);
+	written =
+			f_printf(&logfile, "DATE,HOUR,MIN,SEC,LAT,LON,SPD,COG_GPS,YAW,PITCH,ROLL,WIND_DIR,WIND_SPD\r\n");
 
-
-}
-
-static void microsd_show_tree(BaseSequentialStream *chp){
-	FRESULT err;
-		uint32_t fre_clust;
-		FATFS *fsp;
-
-		if (!fs_ready) {
-			chprintf(chp, "File System not mounted\r\n");
-			return;
-		}
-		err = f_getfree("/", &fre_clust, &fsp);
-		if (err != FR_OK) {
-			chprintf(chp, "FS: f_getfree() failed\r\n");
-			return;
-		}
-		chprintf(chp, "FS: %lu free clusters with %lu sectors (%lu bytes) per cluster\r\n",
-				fre_clust, (uint32_t) fsp->csize, (uint32_t) fsp->csize * 512);
-		fbuff[0] = 0;
-		scan_files(chp, (char *) fbuff);
+	if (written == -1) {
+		chprintf(chp, "FS: f_puts(\"Hello World\",\"hello.txt\") failed\r\n");
+	} else {
+		//chprintf(chp, "FS: f_puts(\"Hello World\",\"%s\") succeeded\r\n", path_to_file);
+	}
+	f_sync(&logfile);
 }
 
 void start_microsd_module(void) {
 	mmcObjectInit(&MMCD1);
-	chThdCreateStatic(microsd_thread_wa, sizeof(microsd_thread_wa), NORMALPRIO + 3, microsd_thread, NULL);
-	chThdSleepMilliseconds(110);
+	mmcStart(&MMCD1, &mmccfg);               // Configures and activates the MMC peripheral.
 	microsd_mount_fs();
 	microsd_open_logfile((BaseSequentialStream*) &SD1);
+	microsd_write_logfile_header((BaseSequentialStream*) &SD1);
+	wdgReset(&WDGD1);
+	chThdSleepMilliseconds(110);
+	wdgReset(&WDGD1);
+	//chThdCreateStatic(microsd_thread_wa, sizeof(microsd_thread_wa), NORMALPRIO+2, microsd_thread, NULL);
 }
 
 static void write_test_file(BaseSequentialStream *chp) {
@@ -403,30 +400,6 @@ static void microsd_open_logfile(BaseSequentialStream *chp) {
 	}
 }
 
-static void microsd_show_free(BaseSequentialStream *chp) {
-	FRESULT err;
-	uint32_t clusters;
-	FATFS *fsp;
-	//(void)argc;
-	//(void)argv;
-
-	err = f_getfree("/", &clusters, &fsp);
-	if (err != FR_OK) {
-		chprintf(chp, "FS: f_getfree() failed\r\n");
-		return;
-	}
-	/*
-	 * Print the number of free clusters and size free in B, KiB and MiB.
-	 */
-	chprintf(chp,"FS: %ju free clusters\r\n    %lu sectors per cluster\r\n",
-		clusters, (uint32_t)SDC_FS.csize);
-	chprintf(chp,"%llu B free\r\n",
-		clusters * (uint64_t)SDC_FS.csize * (uint64_t)MMCSD_BLOCK_SIZE);
-	chprintf(chp,"%llu KB free\r\n",
-		(clusters * (uint64_t)SDC_FS.csize * (uint64_t)MMCSD_BLOCK_SIZE)/(1024));
-	chprintf(chp,"%llu MB free\r\n",
-		(clusters * (uint64_t)SDC_FS.csize * (uint64_t)MMCSD_BLOCK_SIZE)/(1024*1024));
-}
 
 DWORD get_fattime (void){
 	uint32_t time = 0;
@@ -441,7 +414,7 @@ DWORD get_fattime (void){
 		time |= (uint8_t)pvt_box->hour << 11;
 		time |= (uint8_t)pvt_box->min << 5;
 		time |= (uint8_t)pvt_box->sec >> 1;	//seconds should be divided by two
-		chprintf((BaseSequentialStream*) &SD1, "FS: pvt_box->valid = %x\r\n", time);
+	//	chprintf((BaseSequentialStream*) &SD1, "FS: pvt_box->valid = %x\r\n", time);
 		return time;
 	}else{
 
