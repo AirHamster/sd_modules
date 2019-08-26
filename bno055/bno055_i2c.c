@@ -33,7 +33,7 @@ const I2CConfig bno055_i2c_cfg = {
 };
 
 void start_bno055_module(void){
-	bno055_full_init(bno055);
+
 	chThdCreateStatic(bno055_thread_wa, sizeof(bno055_thread_wa), NORMALPRIO + 4, bno055_thread, NULL);
 }
 
@@ -46,6 +46,7 @@ static THD_FUNCTION(bno055_thread, arg) {
 	(void) arg;
 	//msg_t msg;
 	chRegSetThreadName("BNO055 Thread");
+	bno055_full_init(bno055);
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 			/*	gptStop(&GPTD11);
 			 #ifndef TRAINER_MODULE
@@ -69,7 +70,7 @@ int8_t bno055_full_init(bno055_t *bno055)
 {
 	int8_t comres = BNO055_INIT_VALUE;
 	bno055_i2c_routine(bno055);
-	i2cStart(&I2CD1, &bno055_i2c_cfg);
+	i2cStart(&I2CD2, &bno055_i2c_cfg);
 /*--------------------------------------------------------------------------*
  *  This API used to assign the value/reference of
  *	the following parameters
@@ -152,16 +153,16 @@ int8_t bno055_read(uint8_t dev_addr, uint8_t *reg_data, uint8_t r_len) {
 	uint8_t register_addr = reg_data[0];
 	memset(databuff, 0, 64);
 
-	i2cAcquireBus(&I2CD1);
-	status = i2cMasterTransmitTimeout(&I2CD1, dev_addr, &register_addr, 1, databuff,
+	i2cAcquireBus(&I2CD2);
+	status = i2cMasterTransmitTimeout(&I2CD2, dev_addr, &register_addr, 1, databuff,
 			r_len, TIME_INFINITE);
-	i2cReleaseBus(&I2CD1);
+	i2cReleaseBus(&I2CD2);
 	if (status != MSG_OK) {
 		chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*) &SD1, "Shit happened: status %d\r\n",
-				i2cGetErrors(&I2CD1));
+				i2cGetErrors(&I2CD2));
 		chSemSignal(&usart1_semaph);
-		i2c_restart(&I2CD1);
+		i2c_restart(&I2CD2);
 		return -1;
 	}
 	memcpy(reg_data, databuff, r_len);
@@ -175,16 +176,16 @@ int8_t bno055_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len) {
 	uint8_t databuff[64];
 	//uint8_t register_addr = reg_data[0];
 	memcpy(databuff, reg_data, wr_len);
-	i2cAcquireBus(&I2CD1);
-	status = i2cMasterTransmitTimeout(&I2CD1, dev_addr, databuff, wr_len,
+	i2cAcquireBus(&I2CD2);
+	status = i2cMasterTransmitTimeout(&I2CD2, dev_addr, databuff, wr_len,
 			NULL, 0, TIME_INFINITE);
-	i2cReleaseBus(&I2CD1);
+	i2cReleaseBus(&I2CD2);
 	if (status != MSG_OK) {
 		chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*) &SD1,
-				"Shit happened: status is %d\r\n", i2cGetErrors(&I2CD1));
+				"Shit happened: status is %d\r\n", i2cGetErrors(&I2CD2));
 		chSemSignal(&usart1_semaph);
-		i2c_restart(&I2CD1);
+		i2c_restart(&I2CD2);
 		return -1;
 	}
 	return 0;

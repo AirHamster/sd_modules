@@ -15,6 +15,7 @@ ubx_cfg_sbas_t *sbas_box = &sbas;
 
 //static ubx_nav_pvt_t pvt;
 //ubx_nav_pvt_t *pvt_box = &pvt;
+static neo_init_module(void);
 ubx_nav_pvt_t *pvt_box;
 
 static ubx_cfg_nav5_t nav5;
@@ -49,32 +50,34 @@ thread_reference_t coords_trp = NULL;
 static THD_WORKING_AREA(coords_thread_wa, 4096);
 static THD_FUNCTION(coords_thread, arg);
 
-void start_gps_module(void){
-
+static neo_init_module(void){
 	spiStart(&SPID4, &neo_spi_cfg);
-	neo_switch_to_ubx();
-	chThdSleepMilliseconds(50);
-	chThdSleepMilliseconds(50);
-	neo_create_poll_request(UBX_CFG_CLASS, UBX_CFG_RATE_ID);
-	chThdSleepMilliseconds(50);
-	neo_poll();
-	rate_box->measRate = 250;
-	chThdSleepMilliseconds(50);
-	neo_write_struct((uint8_t *) rate_box, UBX_CFG_CLASS, UBX_CFG_RATE_ID,
-			sizeof(ubx_cfg_rate_t));
-	chThdSleepMilliseconds(50);
-	neo_poll();
-	chThdSleepMilliseconds(50);
+		neo_switch_to_ubx();
+		chThdSleepMilliseconds(50);
+		chThdSleepMilliseconds(50);
+		neo_create_poll_request(UBX_CFG_CLASS, UBX_CFG_RATE_ID);
+		chThdSleepMilliseconds(50);
+		neo_poll();
+		rate_box->measRate = 250;
+		chThdSleepMilliseconds(50);
+		neo_write_struct((uint8_t *) rate_box, UBX_CFG_CLASS, UBX_CFG_RATE_ID,
+				sizeof(ubx_cfg_rate_t));
+		chThdSleepMilliseconds(50);
+		neo_poll();
+		chThdSleepMilliseconds(50);
 
-	neo_create_poll_request(UBX_CFG_CLASS, UBX_CFG_ODO_ID);
-	chThdSleepMilliseconds(50);
-	neo_poll();
-	cfg_odo_box->flags = 1 << 0;
-	chThdSleepMilliseconds(50);
-	neo_write_struct((uint8_t *) cfg_odo_box, UBX_CFG_CLASS, UBX_CFG_ODO_ID,
-			sizeof(ubx_cfg_odo_t));
-	chThdSleepMilliseconds(50);
-	neo_poll();
+		neo_create_poll_request(UBX_CFG_CLASS, UBX_CFG_ODO_ID);
+		chThdSleepMilliseconds(50);
+		neo_poll();
+		cfg_odo_box->flags = 1 << 0;
+		chThdSleepMilliseconds(50);
+		neo_write_struct((uint8_t *) cfg_odo_box, UBX_CFG_CLASS, UBX_CFG_ODO_ID,
+				sizeof(ubx_cfg_odo_t));
+		chThdSleepMilliseconds(50);
+		neo_poll();
+}
+
+void start_gps_module(void){
 
 	chThdCreateStatic(coords_thread_wa, sizeof(coords_thread_wa), NORMALPRIO + 1,
 			coords_thread, NULL);
@@ -87,10 +90,9 @@ void start_gps_module(void){
 
 
 static THD_FUNCTION( coords_thread, arg) {
-
 	(void) arg;
-	msg_t msg;
 	chRegSetThreadName("GPS Parse");
+	neo_init_module();
 //	gptStop(&GPTD12);
 //#ifndef TRAINER_MODULE
 //	gptStart(&GPTD12, &gpt12cfg);
