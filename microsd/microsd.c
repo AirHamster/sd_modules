@@ -291,11 +291,11 @@ static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
 	int written = 0;
 	uint8_t megastring[256];
 	memset(megastring, 0, 256);
-	sprintf((char*)megastring, "%d-%d,%d,%d,%d,%f,%f,%f,%d,%f,%f,%f,%d,%f\r\n",
+	/*sprintf((char*)megastring, "%d-%d,%d,%d,%d,%f,%f,%f,%d,%f,%f,%f,%d,%f\r\n",
 			pvt_box->month, pvt_box->day, pvt_box->hour, pvt_box->min, pvt_box->sec, pvt_box->lat / 10000000.0f, pvt_box->lon / 10000000.0f,
 			(float) (pvt_box->gSpeed * 0.0036), (uint16_t) (pvt_box->headMot / 100000), bno055->d_euler_hpr.h, bno055->d_euler_hpr.r,
 			bno055->d_euler_hpr.p, wind->direction, wind->speed);
-
+*/
 	f_lseek(&logfile, f_size(&logfile));
 	written = f_puts((char*)megastring, &logfile);
 	/*written |= f_printf(&logfile,  "%s,%s,%s,", lat_s, lon_s, spd_s);
@@ -384,7 +384,7 @@ DWORD get_fattime (void){
 	uint32_t time = 0;
 	uint8_t tmp;
 	//If fullyResolved flag set in gps pvt data then we have true timestamp
-	tmp = pvt_box->valid;
+/*	tmp = pvt_box->valid;
 	if ( (pvt_box->valid & (1 << 2)) != 0)
 	{
 		time |= (uint8_t)(pvt_box->year - 1980) << 25;
@@ -404,7 +404,7 @@ DWORD get_fattime (void){
 		time |= 4 << 5;
 		time |= 5;
 		return time;
-	}
+	}*/
 }
 
 /*===========================================================================*/
@@ -490,7 +490,7 @@ static char* fresult_str(FRESULT stat) {
 }
 
 static int8_t microsd_create_filename_from_date(uint8_t *name_str) {
-	if ((pvt_box->valid & (1 << 2)) != 0) {
+/*	if ((pvt_box->valid & (1 << 2)) != 0) {
 		uint8_t buffer[10];
 		memset(buffer, 0, 10);
 		itoa(pvt_box->year, (char*)buffer, 10);
@@ -515,5 +515,5 @@ static int8_t microsd_create_filename_from_date(uint8_t *name_str) {
 	} else {
 		strcat(name_str, "1980-01-01-01_01_01.csv");
 		return -1;
-	}
+	}*/
 }

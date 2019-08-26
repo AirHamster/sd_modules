@@ -158,20 +158,24 @@ void send_json(void)
 {
 	chSemWait(&usart1_semaph);
 	chprintf((BaseSequentialStream*)&SD1, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
-		chprintf((BaseSequentialStream*)&SD1, "\"hour\":%d,\r\n\t\t\t", pvt_box->hour);
+#ifdef USE_UBLOX_GPS_MODULE
+	chprintf((BaseSequentialStream*)&SD1, "\"hour\":%d,\r\n\t\t\t", pvt_box->hour);
 		chprintf((BaseSequentialStream*)&SD1, "\"min\":%d,\r\n\t\t\t", pvt_box->min);
 		chprintf((BaseSequentialStream*)&SD1, "\"sec\":%d,\r\n\t\t\t", pvt_box->sec);
 		chprintf((BaseSequentialStream*)&SD1, "\"lat\":%f,\r\n\t\t\t", pvt_box->lat / 10000000.0f);
 		chprintf((BaseSequentialStream*)&SD1, "\"lon\":%f,\r\n\t\t\t", pvt_box->lon / 10000000.0f);
 		chprintf((BaseSequentialStream*)&SD1, "\"speed\":%f,\r\n\t\t\t", (float)(pvt_box->gSpeed * 0.0036));
 		chprintf((BaseSequentialStream*)&SD1, "\"dist\":%d,\r\n\t\t\t", (uint16_t)odo_box->distance);
+#endif
 #ifdef USE_BNO055_MODULE
 		chprintf((BaseSequentialStream*)&SD1, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
 		chprintf((BaseSequentialStream*)&SD1, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
 		chprintf((BaseSequentialStream*)&SD1, "\"roll\":%f,\r\n\t\t\t", bno055->d_euler_hpr.r);
 #endif
+#ifdef USE_UBLOX_GPS_MODULE
 		chprintf((BaseSequentialStream*)&SD1, "\"headMot\":%d,\r\n\t\t\t", (uint16_t)(pvt_box->headMot / 100000));
 		chprintf((BaseSequentialStream*)&SD1, "\"sat\":%d,\r\n\t\t\t", pvt_box->numSV);
+#endif
 #ifdef USE_WINDSENSOR_MODULE
 		chprintf((BaseSequentialStream*)&SD1, "\"wind_dir\":%d,\r\n\t\t\t", wind->direction);
 		chprintf((BaseSequentialStream*)&SD1, "\"wind_spd\":%f,\r\n\t\t\t", wind->speed);
