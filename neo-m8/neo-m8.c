@@ -6,7 +6,7 @@
  */
 
 #include "neo-m8.h"
-
+#include "config.h"
 extern struct ch_semaphore usart1_semaph;
 extern struct ch_semaphore spi2_semaph;
 
@@ -42,7 +42,6 @@ static const SPIConfig neo_spi_cfg = {
 		GPIOC,
 		GPIOC_MCU_CS,
 		SPI_CR1_BR_1 | SPI_CR1_BR_0,
-		//0,
 		0
 };
 
@@ -51,7 +50,7 @@ static THD_WORKING_AREA(coords_thread_wa, 4096);
 static THD_FUNCTION(coords_thread, arg);
 
 static neo_init_module(void){
-	spiStart(&SPID4, &neo_spi_cfg);
+	spiStart(&GPS_IF, &neo_spi_cfg);
 		neo_switch_to_ubx();
 		chThdSleepMilliseconds(50);
 		chThdSleepMilliseconds(50);
@@ -121,7 +120,7 @@ void neo_write(SPIDriver *SPID, uint8_t *txbuff, uint8_t len) {
 
 	//chSemWait(&spi2_semaph);
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
-	//spiStart(&SPID4, &neo_spi_cfg);
+	//spiStart(&GPS_IF, &neo_spi_cfg);
 	palClearLine(LINE_NEO_CS);
 	chThdSleepMilliseconds(1);
 	spiSend(SPID, len, txbuff); /* send request       */
@@ -135,7 +134,7 @@ void neo_write_no_cs(SPIDriver *SPID, uint8_t *txbuff, uint8_t len) {
 
 	//chSemWait(&spi2_semaph);
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
-	//spiStart(&SPID4, &neo_spi_cfg);
+	//spiStart(&GPS_IF, &neo_spi_cfg);
 	palClearLine(LINE_NEO_CS);
 	chThdSleepMilliseconds(1);
 	spiSend(SPID, len, txbuff); /* send request       */
@@ -150,7 +149,7 @@ void neo_read_bytes(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf) {
 	memset(txbuf, 0xFF, num);
 	//chSemWait(&spi2_semaph);
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
-	//spiStart(&SPID4, &neo_spi_cfg);
+	//spiStart(&GPS_IF, &neo_spi_cfg);
 	palClearLine(LINE_NEO_CS);
 	chThdSleepMilliseconds(1);
 	spiExchange(SPID, num, txbuf, rxbuf); /* Atomic transfer operations.      */
@@ -168,7 +167,7 @@ void neo_read_bytes_no_cs(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf) {
 	if (palReadLine(LINE_NEO_CS)){
 		chThdSleepMilliseconds(1);
 	}
-	//spiStart(&SPID4, &neo_spi_cfg);
+	//spiStart(&GPS_IF, &neo_spi_cfg);
 	palClearLine(LINE_NEO_CS);
 	chThdSleepMilliseconds(1);
 	spiExchange(SPID, num, txbuf, rxbuf); /* Atomic transfer operations.      */
@@ -182,7 +181,7 @@ void neo_read_bytes_release_cs(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf) {
 	uint8_t *txbuf[num];
 	memset(txbuf, 0xFF, num);
 	spiAcquireBus(SPID);              /* Acquire ownership of the bus.    */
-	//spiStart(&SPID4, &neo_spi_cfg);
+	//spiStart(&GPS_IF, &neo_spi_cfg);
 	palClearLine(LINE_NEO_CS);
 	spiExchange(SPID, num, txbuf, rxbuf); /* Atomic transfer operations.      */
 	chThdSleepMilliseconds(1);
@@ -212,7 +211,7 @@ void neo_create_poll_request(uint8_t class, uint8_t id){
 			}
 			chprintf((BaseSequentialStream*)&SD1, "\n\r");
 	chSemSignal(&usart1_semaph);*/
-	neo_write(&SPID4, packet, len);
+	neo_write(&GPS_IF, packet, len);
 }
 
 void neo_switch_to_ubx(void){
@@ -230,7 +229,7 @@ void neo_switch_to_ubx(void){
 	crc = neo_calc_crc(packet, len);
 	packet[len-2] = crc >> 8;
 	packet[len-1] = crc & 0xFF;
-	neo_write(&SPID4, packet, len);
+	neo_write(&GPS_IF, packet, len);
 }
 
 void neo_apply_header(uint8_t *buffer, uint16_t header){
@@ -274,7 +273,7 @@ void neo_write_struct(uint8_t *strc, uint8_t class, uint8_t id, uint8_t payload_
 	crc = neo_calc_crc(packet, len);
 	packet[len-2] = crc >> 8;
 	packet[len-1] = crc & 0xFF;
-	neo_write(&SPID4, packet, UBX_HEADER_LEN + CRC_LEN + len);
+	neo_write(&GPS_IF, packet, UBX_HEADER_LEN + CRC_LEN + len);
 }
 void neo_set_pvt_1hz(){
 	uint8_t packet[UBX_CFG_MSG_LEN_SINGLE + 8];
@@ -291,7 +290,7 @@ void neo_set_pvt_1hz(){
 	crc = neo_calc_crc(packet, len);
 	packet[len-2] = crc >> 8;
 	packet[len-1] = crc & 0xFF;
-	neo_write(&SPID4, packet, len);
+	neo_write(&GPS_IF, packet, len);
 }
 
 void neo_poll_prt(void){
@@ -313,7 +312,7 @@ void neo_poll_prt(void){
 			chprintf((BaseSequentialStream*)&SD1, "%x ", packet[i]);
 		}
 		chprintf((BaseSequentialStream*)&SD1, "\n\r");*/
-	neo_write(&SPID4, packet, len);
+	neo_write(&GPS_IF, packet, len);
 }
 
 void neo_process_nav(uint8_t *message){
@@ -333,7 +332,7 @@ void neo_process_odo(uint8_t *message){
 	const uint16_t pack_len = (UBX_NAV_ODO_LEN + UBX_HEADER_LEN + CRC_LEN);
 	uint8_t odo_message[pack_len];
 	uint16_t crc;
-	neo_read_bytes_release_cs(&SPID4, pack_len - UBX_HEADER_LEN, &odo_message[UBX_HEADER_LEN]);
+	neo_read_bytes_release_cs(&GPS_IF, pack_len - UBX_HEADER_LEN, &odo_message[UBX_HEADER_LEN]);
 	//chSemSignal(&spi2_semaph);
 	memcpy(odo_message, message, UBX_HEADER_LEN);
 	uint8_t j;
@@ -359,7 +358,7 @@ void neo_process_cfg_odo(uint8_t *message){
 	const uint16_t pack_len = (UBX_CFG_ODO_LEN + UBX_HEADER_LEN + CRC_LEN);
 	uint8_t cfg_odo_message[pack_len];
 	uint16_t crc;
-	neo_read_bytes_release_cs(&SPID4, pack_len - UBX_HEADER_LEN, &cfg_odo_message[UBX_HEADER_LEN]);
+	neo_read_bytes_release_cs(&GPS_IF, pack_len - UBX_HEADER_LEN, &cfg_odo_message[UBX_HEADER_LEN]);
 	//chSemSignal(&spi2_semaph);
 	memcpy(cfg_odo_message, message, UBX_HEADER_LEN);
 	uint8_t j;
@@ -386,7 +385,7 @@ void neo_process_nav5(uint8_t *message){
 	const uint16_t pack_len = (UBX_CFG_NAV5_LEN + UBX_HEADER_LEN + CRC_LEN);
 	uint8_t nav5_message[pack_len];
 	uint16_t crc;
-	neo_read_bytes_release_cs(&SPID4, pack_len - UBX_HEADER_LEN, &nav5_message[UBX_HEADER_LEN]);
+	neo_read_bytes_release_cs(&GPS_IF, pack_len - UBX_HEADER_LEN, &nav5_message[UBX_HEADER_LEN]);
 	//chSemSignal(&spi2_semaph);
 	memcpy(nav5_message, message, UBX_HEADER_LEN);
 	/*chprintf((BaseSequentialStream*)&SD1, "SPI2: ");
@@ -415,7 +414,7 @@ void neo_process_rate(uint8_t *message){
 	const uint16_t pack_len = (UBX_CFG_RATE_LEN + UBX_HEADER_LEN + CRC_LEN);
 	uint8_t rate_message[pack_len];
 	uint16_t crc;
-	neo_read_bytes_release_cs(&SPID4, pack_len - UBX_HEADER_LEN, &rate_message[UBX_HEADER_LEN]);
+	neo_read_bytes_release_cs(&GPS_IF, pack_len - UBX_HEADER_LEN, &rate_message[UBX_HEADER_LEN]);
 	//chSemSignal(&spi2_semaph);
 	memcpy(rate_message, message, UBX_HEADER_LEN);
 	/*chprintf((BaseSequentialStream*)&SD1, "SPI2: ");
@@ -442,7 +441,7 @@ void neo_process_sbas(uint8_t *message){
 	const uint16_t pack_len = (UBX_CFG_SBAS_LEN + UBX_HEADER_LEN + CRC_LEN);
 		uint8_t sbas_message[pack_len];
 		uint16_t crc;
-		neo_read_bytes_release_cs(&SPID4, pack_len - UBX_HEADER_LEN, &sbas_message[UBX_HEADER_LEN]);
+		neo_read_bytes_release_cs(&GPS_IF, pack_len - UBX_HEADER_LEN, &sbas_message[UBX_HEADER_LEN]);
 		//chSemSignal(&spi2_semaph);
 		memcpy(sbas_message, message, UBX_HEADER_LEN);
 		uint8_t j;
@@ -471,7 +470,7 @@ void neo_process_pvt(uint8_t *message){
 	const uint16_t pack_len = (UBX_NAV_PVT_LEN + UBX_HEADER_LEN + CRC_LEN);
 	uint8_t pvt_message[pack_len];
 	uint16_t crc;
-	neo_read_bytes_release_cs(&SPID4, pack_len - UBX_HEADER_LEN, &pvt_message[UBX_HEADER_LEN]);
+	neo_read_bytes_release_cs(&GPS_IF, pack_len - UBX_HEADER_LEN, &pvt_message[UBX_HEADER_LEN]);
 	//chSemSignal(&spi2_semaph);
 	memcpy(pvt_message, message, UBX_HEADER_LEN);
 	chSemWait(&usart1_semaph);
@@ -498,7 +497,7 @@ void neo_process_ack(uint8_t *message){
 	uint8_t id = message[3];
 	uint8_t ack_payload[10];
 	uint16_t crc;
-	neo_read_bytes_release_cs(&SPID4, 6, &ack_payload[6]);
+	neo_read_bytes_release_cs(&GPS_IF, 6, &ack_payload[6]);
 	//chSemSignal(&spi2_semaph);
 	memcpy(&ack_payload[0], &message[0], 6);
 	crc = neo_calc_crc(ack_payload, 10);
@@ -601,12 +600,12 @@ void neo_poll(void){
 	uint8_t i = 0;
 	//chSemWait(&spi2_semaph);
 	while (i < 200){
-		neo_read_bytes_no_cs(&SPID4, 1, &message[0]);
+		neo_read_bytes_no_cs(&GPS_IF, 1, &message[0]);
 		if ((message[0] == 0xB5)){
-			neo_read_bytes_no_cs(&SPID4, 1, &message[1]);
+			neo_read_bytes_no_cs(&GPS_IF, 1, &message[1]);
 			if (message[1] == 0x62){
 				i = 200;
-				neo_read_bytes_no_cs(&SPID4, 4, &message[2]);
+				neo_read_bytes_no_cs(&GPS_IF, 4, &message[2]);
 				switch(message[2]){
 				case UBX_NAV_CLASS:
 					neo_process_nav(message);
