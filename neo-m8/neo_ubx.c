@@ -85,23 +85,24 @@ void neo_set_vel_gain(char* val){
 	}
 }
 
+/*
 void neo_get_rate_status(void){
 	chSysLockFromISR();
-	chThdResumeI(&shell_trp, (msg_t)SHELL_UBX_RATE_STATUS);  /* Resuming the thread with message.*/
+	chThdResumeI(&shell_trp, (msg_t)SHELL_UBX_RATE_STATUS);   Resuming the thread with message.
 	chSysUnlockFromISR();
 }
 void neo_set_rate_ms(uint8_t val){
 	(void)val;
 	chSysLockFromISR();
-	chThdResumeI(&shell_trp, (msg_t)SHELL_UBX_RATE_SET);  /* Resuming the thread with message.*/
+	chThdResumeI(&shell_trp, (msg_t)SHELL_UBX_RATE_SET);   Resuming the thread with message.
 	chSysUnlockFromISR();
 }
 void neo_get_lpf_status(void){
 	chSysLockFromISR();
-	chThdResumeI(&shell_trp, (msg_t)SHELL_UBX_COG_STATUS);  /* Resuming the thread with message.*/
+	chThdResumeI(&shell_trp, (msg_t)SHELL_UBX_COG_STATUS);   Resuming the thread with message.
 	chSysUnlockFromISR();
 }
-
+*/
 void neo_get_slas_sbas_status(void){
 
 }

@@ -38,7 +38,7 @@ void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]);
-
+void start_json_module(void);
 void toggle_test_output(void);
 void toggle_gps_output(void);
 void toggle_ypr_output(void);
