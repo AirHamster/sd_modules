@@ -92,19 +92,8 @@ static THD_FUNCTION( coords_thread, arg) {
 	(void) arg;
 	chRegSetThreadName("GPS Parse");
 	neo_init_module();
-//	gptStop(&GPTD12);
-//#ifndef TRAINER_MODULE
-//	gptStart(&GPTD12, &gpt12cfg);
-//	gptStartContinuous(&GPTD12, 5000);
-//#endif
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 	while (true) {
-		/*		chSysLock();
-		 if (neo->suspend_state) {
-		 msg = chThdSuspendS(&coords_trp);
-		 }
-		 chSysUnlock();
-		 */
 		chSemWait(&spi2_semaph);
 		neo_create_poll_request(UBX_NAV_CLASS, UBX_NAV_PVT_ID);
 		chThdSleepMilliseconds(5);
@@ -112,7 +101,7 @@ static THD_FUNCTION( coords_thread, arg) {
 		chSemSignal(&spi2_semaph);
 
 		palToggleLine(LINE_RED_LED);
-		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(500));
+		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(250));
 	}
 }
 

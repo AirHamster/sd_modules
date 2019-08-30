@@ -259,7 +259,7 @@ static THD_FUNCTION( microsd_thread, p) {
 	while (true) {
 		wdgReset(&WDGD1);
 		microsd_write_sensor_log_line((BaseSequentialStream*) &SD1);
-		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(500));
+		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 	}
 }
 
@@ -269,19 +269,16 @@ static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
 	int written = 0;
 	uint8_t megastring[256];
 	memset(megastring, 0, 256);
-	sprintf((char*)megastring, "%d-%d,%d,%d,%d,%f,%f,%f,%d,%f,%f,%f,%d,%f\r\n",
+	sprintf((char*)megastring, "%d-%d,%d,%d,%d,%f,%f,%f,%d,%d,%f,%f,%d,%f,%d\r\n",
 			pvt_box->month, pvt_box->day, pvt_box->hour, pvt_box->min, pvt_box->sec, pvt_box->lat / 10000000.0f, pvt_box->lon / 10000000.0f,
-			(float) (pvt_box->gSpeed * 0.0036), (uint16_t) (pvt_box->headMot / 100000), bno055->d_euler_hpr.h, bno055->d_euler_hpr.r,
-			bno055->d_euler_hpr.p, wind->direction, wind->speed);
+			(float) (pvt_box->gSpeed * 0.0036), (uint16_t) (pvt_box->headMot / 100000), (uint16_t)bno055->d_euler_hpr.h, bno055->d_euler_hpr.r,
+			bno055->d_euler_hpr.p, wind->direction, wind->speed, pvt_box->numSV);
 
 	f_lseek(&logfile, f_size(&logfile));
 	written = f_puts((char*)megastring, &logfile);
-	/*written |= f_printf(&logfile,  "%s,%s,%s,", lat_s, lon_s, spd_s);
-	written |= f_printf(&logfile, "%d,%d,%s,", (uint16_t) (pvt_box->headMot / 100000), bno055->d_euler_hpr.h, pitch_s);
-	written |= f_printf(&logfile, "%s,%d,%s\r\n", roll_s, wind->direction, wind_spd_s);
-*/
+
 	if (written == -1) {
-		chprintf(chp, "FS: f_puts(\"Hello World\",\"hello.txt\") failed\r\n");
+		chprintf(chp, "\r\nFS: f_puts(\"Hello World\",\"hello.txt\") failed\r\n");
 	} else {
 		palToggleLine(LINE_ORANGE_LED);
 		//chprintf(chp, "FS: f_puts(\"Hello World\",\"%s\") succeeded\r\n", path_to_file);
@@ -296,7 +293,7 @@ static void microsd_write_logfile_header(BaseSequentialStream *chp) {
 	int written;
 	f_lseek(&logfile, f_size(&logfile));
 	written =
-			f_printf(&logfile, "DATE,HOUR,MIN,SEC,LAT,LON,SPD,COG_GPS,YAW,PITCH,ROLL,WIND_DIR,WIND_SPD\r\n");
+			f_printf(&logfile, "DATE,HOUR,MIN,SEC,LAT,LON,SPD,COG_GPS,YAW,PITCH,ROLL,WIND_DIR,WIND_SPD,SAT\r\n");
 
 	if (written == -1) {
 		chprintf(chp, "FS: f_puts(\"Hello World\",\"hello.txt\") failed\r\n");
@@ -307,7 +304,7 @@ static void microsd_write_logfile_header(BaseSequentialStream *chp) {
 }
 
 void start_microsd_module(void) {
-	chThdCreateStatic(microsd_thread_wa, sizeof(microsd_thread_wa), NORMALPRIO+2, microsd_thread, NULL);
+	chThdCreateStatic(microsd_thread_wa, sizeof(microsd_thread_wa), NORMALPRIO + 4, microsd_thread, NULL);
 }
 
 static void write_test_file(BaseSequentialStream *chp) {
