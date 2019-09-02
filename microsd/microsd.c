@@ -46,10 +46,10 @@ static uint8_t path_to_file[32];
 
 thread_reference_t microsd_trp = NULL;
 /* Maximum speed SPI configuration (18MHz, CPHA=0, CPOL=0, MSb first).*/
-static const SPIConfig hs_spicfg = { false, NULL, GPIOC, GPIOC_SD_CS, 0, 0 };
+static const SPIConfig hs_spicfg = { false, NULL, GPIOD, GPIOD_SD_CS, 0, 0 };
 
 /* Low speed SPI configuration (281.250kHz, CPHA=0, CPOL=0, MSb first).*/
-static const SPIConfig ls_spicfg = { false, NULL, GPIOC, GPIOC_SD_CS,
+static const SPIConfig ls_spicfg = { false, NULL, GPIOD, GPIOD_SD_CS,
 		SPI_CR1_BR_2 | SPI_CR1_BR_1 | SPI_CR1_BR_0, 0 };
 
 /* MMC/SD over SPI driver configuration.*/

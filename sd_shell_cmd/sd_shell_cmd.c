@@ -27,10 +27,12 @@ extern bno055_t *bno055;
 #include "windsensor.h"
 extern windsensor_t *wind;
 #endif
+#ifdef USE_SERVICE_MODE
+#include "service_mode.h"
+#endif
 extern struct ch_semaphore usart1_semaph;
-//output_struct_t output_struct;
-//output_struct_t *output = &output_struct;
 
+output_t *output;
 char *complete_buffer[16];
 char history_buffer[128];
 const int history_size = 128;
@@ -41,16 +43,19 @@ static THD_FUNCTION(output_thread, arg);
 static const ShellCommand commands[] = {
 		{ "start", cmd_start },
 		{ "c", cmd_c },
-	//	{ "ublox", cmd_ublox },
+		{ "service", cmd_service },
 #ifdef USE_XBEE_868_MODULE
 		{ "xbee", cmd_xbee },
 #endif
 #ifdef USE_MICROSD_MODULE
-		{"tree", cmd_tree },
-		{"mount", cmd_mount},
-		{"free", cmd_free},
-		{"open", cmd_open},
-		{"write", cmd_write},
+		{ "tree", cmd_tree },
+		{ "mount", cmd_mount },
+		{ "free", cmd_free },
+		{ "open", cmd_open },
+		{ "write", cmd_write },
+#endif
+#ifdef USE_ADC_MODULE
+		{"adc", cmd_adc },
 #endif
 		{ NULL, NULL }
 };
@@ -75,30 +80,14 @@ static THD_FUNCTION(output_thread, arg) {
 	(void)arg;
 
 	chRegSetThreadName("Data output");
-/*	gptStop(&GPTD14);
-	gptStart(&GPTD14, &gpt14cfg);
-	gptStartContinuous(&GPTD14, 2000);*/
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 
 	while (true) {
 		wdgReset(&WDGD1);
-		/*chSysLock();
-		if (output->suspend_state) {
-			msg = chThdSuspendS(&output_trp);
-		}
-		chSysUnlock();
-		*/
 		palToggleLine(LINE_GREEN_LED);
-#ifdef USE_MICROSD_MODULE
-		//chThdResume(&microsd_trp, (msg_t) MICROSD_WRITE_SENSOR_LOG_LINE);
-		/*chSysLock();
-		chSchRescheduleS();
-		chSysUnlock();*/
-#endif
 		chThdSleepMilliseconds(5);
 		send_json();
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
-	//		chThdResume(&microsd_trp, (msg_t) MICROSD_WRITE_SENSOR_LOG_LINE); /* Resuming the thread with message.*/
 	}
 }
 /*
@@ -154,12 +143,13 @@ void send_data(uint8_t stream){
 	xbee_send_rf_message(xbee, databuff, 34);
 }
 */
+
 void send_json(void)
 {
 	chSemWait(&usart1_semaph);
 	chprintf((BaseSequentialStream*)&SD1, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
 #ifdef USE_UBLOX_GPS_MODULE
-	chprintf((BaseSequentialStream*)&SD1, "\"hour\":%d,\r\n\t\t\t", pvt_box->hour);
+		chprintf((BaseSequentialStream*)&SD1, "\"hour\":%d,\r\n\t\t\t", pvt_box->hour);
 		chprintf((BaseSequentialStream*)&SD1, "\"min\":%d,\r\n\t\t\t", pvt_box->min);
 		chprintf((BaseSequentialStream*)&SD1, "\"sec\":%d,\r\n\t\t\t", pvt_box->sec);
 		chprintf((BaseSequentialStream*)&SD1, "\"lat\":%f,\r\n\t\t\t", pvt_box->lat / 10000000.0f);
@@ -222,6 +212,8 @@ void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]) {
 	stop_all_tests();
 	chprintf(chp, "Stopped all outputs\n\r");
 }
+
+
 
 void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
@@ -339,15 +331,6 @@ void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]) {
 	chprintf(chp, "Usage: ublox lpf|slas|sbas|rtk|stat\n\r");
 }
 
-void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]) {
-	if (argc != 0) {
-		if (strcmp(argv[0], "params") == 0) {
-			return;
-		}
-	}
-	chprintf(chp, "Usage: start params|||\n\r");
-}
-
 #ifdef USE_XBEE_868_MODULE
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
@@ -394,26 +377,30 @@ void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
 }
 #endif
 void toggle_test_output(void) {
-	//output->test = 1;
+	output->service = 0;
+	output->test = (~output->test) & 0x01;
 }
 
 void toggle_gps_output(void) {
-	//output->gps = (~output->gps) & 0x01;
+	output->service = 0;
+	output->gps = (~output->gps) & 0x01;
 }
 
 void toggle_ypr_output(void) {
-	//output->ypr = (~output->ypr) & 0x01;
+	output->service = 1;
+	output->ypr = (~output->ypr) & 0x01;
 }
 
 void toggle_gyro_output(void) {
-	//output->gyro = (~output->gyro) & 0x01;
+	output->service = 1;
+	output->gyro = (~output->gyro) & 0x01;
 }
 
 void stop_all_tests(void) {
-	/*output->test = 0;
+	output->test = 0;
 	output->gps = 0;
 	output->ypr = 0;
-	output->gyro = 0;*/
+	output->gyro = 0;
 }
 
 

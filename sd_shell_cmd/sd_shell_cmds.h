@@ -25,8 +25,10 @@ typedef struct{
 	uint8_t ypr;
 	uint8_t gyro;
 	uint8_t xbee;
+	uint8_t service;
 
-}output_struct_t;
+}output_t;
+
 thread_t *cmd_init(void);
 
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]);
@@ -36,7 +38,6 @@ void cmd_start(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_help(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]);
-void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]);
 void start_json_module(void);
 void toggle_test_output(void);
