@@ -10,7 +10,7 @@
 #include "chprintf.h"
 
 
-#define EEPROM_ADDRESS	0x57
+#define EEPROM_ADDRESS	0x50
 #define EEPROM_MEMORY_START		0x0001
 #define EEPROM_HW_VER_ADDR 		(EEPROM_MEMORY_START)
 
@@ -30,6 +30,7 @@
 #define BNO055_ADDRESS	0x28
 #define BNO055_CHIP_ID_ADDR	0x00
 
+void eeprom_check_i2c_bus(void);
 void eeprom_read_hw_version(void);
 void eeprom_write_hw_version(void);
 void bno055_read_id(void);

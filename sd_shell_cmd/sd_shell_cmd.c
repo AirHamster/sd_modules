@@ -83,7 +83,7 @@ static THD_FUNCTION(output_thread, arg) {
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 
 	while (true) {
-		wdgReset(&WDGD1);
+		//wdgReset(&WDGD1);
 		palToggleLine(LINE_GREEN_LED);
 		chThdSleepMilliseconds(5);
 		send_json();
