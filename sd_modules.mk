@@ -68,6 +68,11 @@ SD_SRC += ./sd_modules/windsensor/windsensor.c
 SD_INC += ./sd_modules/windsensor
 endif
 
+#ADC module
+ifeq (${USE_ADC_MODULE}, TRUE)
+SD_SRC += ./sd_modules/adc/adc.c
+SD_INC += ./sd_modules/adc
+endif
 # Shared variables
 ALLCSRC += $(SD_SRC)
 ALLINC  += $(SD_INC)

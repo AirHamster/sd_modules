@@ -55,7 +55,7 @@ static const ShellCommand commands[] = {
 		{ "write", cmd_write },
 #endif
 #ifdef USE_ADC_MODULE
-		{"adc", cmd_adc },
+		//{"adc", cmd_adc },
 #endif
 		{ NULL, NULL }
 };
