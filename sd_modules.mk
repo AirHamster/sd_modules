@@ -39,7 +39,7 @@ SD_SRC += ./sd_modules/eeprom/eeprom.c
 SD_INC += ./sd_modules/eeprom
 endif
 
-#EEPROM
+#BLE
 ifeq ($(USE_BLE_MODULE), TRUE)
 SD_SRC += ./sd_modules/nina-b3/nina-b3.c
 SD_INC += ./sd_modules/nina-b3

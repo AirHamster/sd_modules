@@ -8,7 +8,7 @@
 #ifndef SD_MODULES_NINA_B3_NINA_B3_H_
 #define SD_MODULES_NINA_B3_NINA_B3_H_
 
-#define NINA_IFACE		(BaseSequentialStream*)&SD7
+
 void start_ble_module(void);
 
 #endif /* SD_MODULES_NINA_B3_NINA_B3_H_ */
