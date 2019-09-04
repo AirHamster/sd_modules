@@ -45,6 +45,12 @@ SD_SRC += ./sd_modules/eeprom/eeprom.c
 SD_INC += ./sd_modules/eeprom
 endif
 
+#BLE
+ifeq ($(USE_BLE_MODULE), TRUE)
+SD_SRC += ./sd_modules/nina-b3/nina-b3.c
+SD_INC += ./sd_modules/nina-b3
+endif
+
 #BNO055
 ifeq ($(USE_BNO055_MODULE), TRUE)
 SD_SRC += ./sd_modules/bno055/bno055.c

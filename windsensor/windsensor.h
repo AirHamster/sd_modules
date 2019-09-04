@@ -16,10 +16,6 @@
 #define UART_ERROR				3
 
 void start_windsensor_module(void);
-static void windstation_char_recieved_async(UARTDriver *uartp, uint16_t c);
-static void windstation_rx_buff_filled(UARTDriver *uartp);
-static void windstation_rx_error(UARTDriver *uartp, uartflags_t e);
-//static THD_FUNCTION(wind_thread, p);
 
 typedef struct{
 	float speed;

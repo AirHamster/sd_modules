@@ -8,14 +8,7 @@
 #ifndef SD_MODULES_NINA_B3_NINA_B3_H_
 #define SD_MODULES_NINA_B3_NINA_B3_H_
 
-#include <stdlib.h>
-#include "stdint.h"
-#include "math.h"
-#include "ch.h"
-#include "hal.h"
-#include "shell.h"
-#include "chprintf.h"
 
-
+void start_ble_module(void);
 
 #endif /* SD_MODULES_NINA_B3_NINA_B3_H_ */

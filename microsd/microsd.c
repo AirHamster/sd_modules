@@ -32,7 +32,7 @@ extern windsensor_t *wind;
 
 static FRESULT scan_files(BaseSequentialStream *chp, char *path);
 static void microsd_show_tree(BaseSequentialStream *chp);
-static void microsd_show_free(BaseSequentialStream *chp);
+static void microsd_write_logfile_header(BaseSequentialStream *chp);
 static void write_test_file(BaseSequentialStream *chp);
 static void microsd_open_logfile(BaseSequentialStream *chp);
 static void verbose_error(BaseSequentialStream *chp, FRESULT err);
@@ -53,7 +53,7 @@ static const SPIConfig ls_spicfg = { false, NULL, GPIOD, GPIOD_SD_CS,
 		SPI_CR1_BR_2 | SPI_CR1_BR_1 | SPI_CR1_BR_0, 0 };
 
 /* MMC/SD over SPI driver configuration.*/
-static MMCConfig const mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
+static MMCConfig const mmccfg = {&MICROSD_IF, &ls_spicfg, &hs_spicfg};
 MMCDriver MMCD1;
 /*===========================================================================*/
 /* FatFs related.                                                            */
@@ -69,35 +69,6 @@ static bool fs_ready = FALSE;
 
 /* Generic large buffer.*/
 static uint8_t fbuff[1024];
-
-/*static FRESULT scan_files(BaseSequentialStream *chp, char *path) {
-	static FILINFO fno;
-	FRESULT res;
-	DIR dir;
-	size_t i;
-	char *fn;
-
-	res = f_opendir(&dir, path);
-	if (res == FR_OK) {
-		i = strlen(path);
-		while (((res = f_readdir(&dir, &fno)) == FR_OK) && fno.fname[0]) {
-			if (FF_FS_RPATH && fno.fname[0] == '.')
-				continue;
-			fn = fno.fname;
-			if (fno.fattrib & AM_DIR) {
-				*(path + i) = '/';
-				strcpy(path + i + 1, fn);
-				res = scan_files(chp, path);
-				*(path + i) = '\0';
-				if (res != FR_OK)
-					break;
-			} else {
-				chprintf(chp, "%s/%s\r\n", path, fn);
-			}
-		}
-	}
-	return res;
-}*/
 
 FRESULT scan_files(BaseSequentialStream *chp, char *path) {
 	FRESULT res;
@@ -277,11 +248,18 @@ static THD_FUNCTION( microsd_thread, p) {
 	(void) p;
 	msg_t msg;
 	chRegSetThreadName("MicroSD Thd");
+	mmcObjectInit(&MMCD1);
+	mmcStart(&MMCD1, &mmccfg);   // Configures and activates the MMC peripheral.
+	microsd_mount_fs();
+	microsd_open_logfile((BaseSequentialStream*) &SD1);
+	microsd_write_logfile_header((BaseSequentialStream*) &SD1);
+	wdgReset(&WDGD1);
+	chThdSleepMilliseconds(110);
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 	while (true) {
 		wdgReset(&WDGD1);
 		microsd_write_sensor_log_line((BaseSequentialStream*) &SD1);
-		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(500));
+		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 	}
 }
 
@@ -291,20 +269,18 @@ static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
 	int written = 0;
 	uint8_t megastring[256];
 	memset(megastring, 0, 256);
-	/*sprintf((char*)megastring, "%d-%d,%d,%d,%d,%f,%f,%f,%d,%f,%f,%f,%d,%f\r\n",
+	sprintf((char*)megastring, "%d-%d,%d,%d,%d,%f,%f,%f,%d,%d,%f,%f,%d,%f,%d\r\n",
 			pvt_box->month, pvt_box->day, pvt_box->hour, pvt_box->min, pvt_box->sec, pvt_box->lat / 10000000.0f, pvt_box->lon / 10000000.0f,
-			(float) (pvt_box->gSpeed * 0.0036), (uint16_t) (pvt_box->headMot / 100000), bno055->d_euler_hpr.h, bno055->d_euler_hpr.r,
-			bno055->d_euler_hpr.p, wind->direction, wind->speed);
-*/
+			(float) (pvt_box->gSpeed * 0.0036), (uint16_t) (pvt_box->headMot / 100000), (uint16_t)bno055->d_euler_hpr.h, bno055->d_euler_hpr.r,
+			bno055->d_euler_hpr.p, wind->direction, wind->speed, pvt_box->numSV);
+
 	f_lseek(&logfile, f_size(&logfile));
 	written = f_puts((char*)megastring, &logfile);
-	/*written |= f_printf(&logfile,  "%s,%s,%s,", lat_s, lon_s, spd_s);
-	written |= f_printf(&logfile, "%d,%d,%s,", (uint16_t) (pvt_box->headMot / 100000), bno055->d_euler_hpr.h, pitch_s);
-	written |= f_printf(&logfile, "%s,%d,%s\r\n", roll_s, wind->direction, wind_spd_s);
-*/
+
 	if (written == -1) {
-		chprintf(chp, "FS: f_puts(\"Hello World\",\"hello.txt\") failed\r\n");
+		chprintf(chp, "\r\nFS: f_puts(\"Hello World\",\"hello.txt\") failed\r\n");
 	} else {
+		palToggleLine(LINE_ORANGE_LED);
 		//chprintf(chp, "FS: f_puts(\"Hello World\",\"%s\") succeeded\r\n", path_to_file);
 	}
 
@@ -317,7 +293,7 @@ static void microsd_write_logfile_header(BaseSequentialStream *chp) {
 	int written;
 	f_lseek(&logfile, f_size(&logfile));
 	written =
-			f_printf(&logfile, "DATE,HOUR,MIN,SEC,LAT,LON,SPD,COG_GPS,YAW,PITCH,ROLL,WIND_DIR,WIND_SPD\r\n");
+			f_printf(&logfile, "DATE,HOUR,MIN,SEC,LAT,LON,SPD,COG_GPS,YAW,PITCH,ROLL,WIND_DIR,WIND_SPD,SAT\r\n");
 
 	if (written == -1) {
 		chprintf(chp, "FS: f_puts(\"Hello World\",\"hello.txt\") failed\r\n");
@@ -328,15 +304,7 @@ static void microsd_write_logfile_header(BaseSequentialStream *chp) {
 }
 
 void start_microsd_module(void) {
-	mmcObjectInit(&MMCD1);
-	mmcStart(&MMCD1, &mmccfg);               // Configures and activates the MMC peripheral.
-	microsd_mount_fs();
-	microsd_open_logfile((BaseSequentialStream*) &SD1);
-	microsd_write_logfile_header((BaseSequentialStream*) &SD1);
-	wdgReset(&WDGD1);
-	chThdSleepMilliseconds(110);
-	wdgReset(&WDGD1);
-	chThdCreateStatic(microsd_thread_wa, sizeof(microsd_thread_wa), NORMALPRIO+2, microsd_thread, NULL);
+	chThdCreateStatic(microsd_thread_wa, sizeof(microsd_thread_wa), NORMALPRIO + 4, microsd_thread, NULL);
 }
 
 static void write_test_file(BaseSequentialStream *chp) {
@@ -383,28 +351,35 @@ static void microsd_open_logfile(BaseSequentialStream *chp) {
 DWORD get_fattime (void){
 	uint32_t time = 0;
 	uint8_t tmp;
-	//If fullyResolved flag set in gps pvt data then we have true timestamp
-/*	tmp = pvt_box->valid;
-	if ( (pvt_box->valid & (1 << 2)) != 0)
-	{
-		time |= (uint8_t)(pvt_box->year - 1980) << 25;
-		time |= (uint8_t)pvt_box->month << 21;
-		time |= (uint8_t)pvt_box->day << 16;
-		time |= (uint8_t)pvt_box->hour << 11;
-		time |= (uint8_t)pvt_box->min << 5;
-		time |= (uint8_t)pvt_box->sec >> 1;	//seconds should be divided by two
-	//	chprintf((BaseSequentialStream*) &SD1, "FS: pvt_box->valid = %x\r\n", time);
-		return time;
-	}else{
 
+#ifdef USE_UBLOX_GPS_MODULE
+	//If fullyResolved flag set in gps pvt data then we have true timestamp
+	tmp = pvt_box->valid;
+	if ((pvt_box->valid & (1 << 2)) != 0) {
+		time |= (uint8_t) (pvt_box->year - 1980) << 25;
+		time |= (uint8_t) pvt_box->month << 21;
+		time |= (uint8_t) pvt_box->day << 16;
+		time |= (uint8_t) pvt_box->hour << 11;
+		time |= (uint8_t) pvt_box->min << 5;
+		time |= (uint8_t) pvt_box->sec >> 1;//seconds should be divided by two
+	} else {
 		time |= 0 << 25;
 		time |= 1 << 21;
 		time |= 2 << 16;
 		time |= 3 << 11;
 		time |= 4 << 5;
 		time |= 5;
-		return time;
-	}*/
+	}
+#else
+	// Else use hardcoded time
+	time |= 0 << 25;
+	time |= 1 << 21;
+	time |= 2 << 16;
+	time |= 3 << 11;
+	time |= 4 << 5;
+	time |= 5;
+#endif
+	return time;
 }
 
 /*===========================================================================*/
@@ -490,10 +465,12 @@ static char* fresult_str(FRESULT stat) {
 }
 
 static int8_t microsd_create_filename_from_date(uint8_t *name_str) {
-/*	if ((pvt_box->valid & (1 << 2)) != 0) {
+
+#ifdef USE_UBLOX_GPS_MODULE
+	if ((pvt_box->valid & (1 << 2)) != 0) {
 		uint8_t buffer[10];
 		memset(buffer, 0, 10);
-		itoa(pvt_box->year, (char*)buffer, 10);
+		itoa(pvt_box->year, (char*) buffer, 10);
 		strcat(name_str, buffer);
 		strcat(name_str, "-");
 		itoa(pvt_box->month, buffer, 10);
@@ -515,5 +492,9 @@ static int8_t microsd_create_filename_from_date(uint8_t *name_str) {
 	} else {
 		strcat(name_str, "1980-01-01-01_01_01.csv");
 		return -1;
-	}*/
+	}
+#else
+	strcat(name_str, "1980-01-01-01_01_01.csv");
+	return -1;
+#endif
 }
