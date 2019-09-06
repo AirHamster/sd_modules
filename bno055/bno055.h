@@ -709,27 +709,39 @@ s16 sic_6;/**< soft iron calibration matrix 6 data */
 s16 sic_7;/**< soft iron calibration matrix 7 data */
 s16 sic_8;/**< soft iron calibration matrix 8 data */
 };
-
+struct bno055_calib_status {
+	u8 magn;
+	u8 accel;
+	u8 gyro;
+	u8 system;
+};
 /*!
 *	@brief bno055 struct
 */
-typedef struct{
+typedef struct {
 	struct bno055_euler_float_t d_euler_hpr;
 	struct bno055_accel_t accel_raw;
 	struct bno055_gyro_t gyro_raw;
 	struct bno055_mag_t mag_raw;
-u8 chip_id;/**< chip_id of bno055 */
-u16 sw_rev_id;/**< software revision id of bno055 */
-u8 page_id;/**< page_id of bno055 */
-u8 accel_rev_id;/**< accel revision id of bno055 */
-u8 mag_rev_id;/**< mag revision id of bno055 */
-u8 gyro_rev_id;/**< gyro revision id of bno055 */
-u8 bl_rev_id;/**< boot loader revision id of bno055 */
-u8 dev_addr;/**< i2c device address of bno055 */
-BNO055_WR_FUNC_PTR;/**< bus write function pointer */
-BNO055_RD_FUNC_PTR;/**<bus read function pointer */
-void (*delay_msec)(BNO055_MDELAY_DATA_TYPE);/**< delay function pointer */
-}bno055_t;
+	struct bno055_sic_matrix_t sic_matrix;
+	struct bno055_mag_offset_t magn_offset;
+	struct bno055_gyro_offset_t gyro_offset;
+	struct bno055_accel_offset_t accel_offset;
+	u16 sw_rev_id;/**< software revision id of bno055 */
+	u8 chip_id;/**< chip_id of bno055 */
+	struct bno055_calib_status calib_stat;
+	u8 page_id;/**< page_id of bno055 */
+	u8 accel_rev_id;/**< accel revision id of bno055 */
+	u8 mag_rev_id;/**< mag revision id of bno055 */
+	u8 gyro_rev_id;/**< gyro revision id of bno055 */
+	u8 bl_rev_id;/**< boot loader revision id of bno055 */
+	u8 dev_addr;/**< i2c device address of bno055 */
+	u8 static_calib;
+	u8 check_calib_coefs;
+	u8 read_type;BNO055_WR_FUNC_PTR;/**< bus write function pointer */
+	BNO055_RD_FUNC_PTR;/**<bus read function pointer */
+	void (*delay_msec)(BNO055_MDELAY_DATA_TYPE);/**< delay function pointer */
+} bno055_t;
 /***************************************************/
 /**\name	CONSTANT DEFINITIONS                   */
 /***************************************************/

@@ -13,6 +13,7 @@
 #include "shell.h"
 #include "shellconf.h"
 #include "chprintf.h"
+#include "service_mode.h"
 #ifdef USE_UBLOX_GPS_MODULE
 #include "neo-m8.h"
 extern ubx_nav_pvt_t *pvt_box;
@@ -32,6 +33,12 @@ extern bno055_t *bno055;
 #include "windsensor.h"
 extern windsensor_t *wind;
 #endif
+#ifdef USE_BNO055_MODULE
+#include "bno055_i2c.h"
+#include "bno055.h"
+extern bno055_t *bno055;
+#endif
+extern struct ch_semaphore usart1_semaph;
 
 void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
@@ -55,7 +62,7 @@ void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]) {
 		chprintf(chp, "Usage: service <help>\n\r");
 	}
 	stop_all_tests();
-	output->service = 1;
+	output->type = OUTPUT_SERVICE;
 	chprintf(chp,
 			"\r\nService mode activated. Write <service help> to get more info\n\r");
 }
@@ -63,7 +70,7 @@ void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]) {
 #ifdef USE_BNO055_MODULE
 void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]) {
 
-	if (!output->service) {
+	if (output->type != OUTPUT_SERVICE) {
 		return;
 	}
 	if (argc != 0) {
@@ -72,35 +79,98 @@ void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]) {
 					"Usage: gyro status|calibrate|get_cal_params|write_cal_params\r\n");
 		} else if (strcmp(argv[0], "calibrate") == 0) {
 			chprintf(chp, "Starting gyro calibration routine\r\n");
+			bno055_start_calibration(bno055);
+			output->type = OUTPUT_ALL_CALIB;
 		} else if (strcmp(argv[0], "get_cal_params") == 0) {
 			chprintf(chp, "BNO055 calibration parameters:\r\n");
-			chprintf(chp, "\t- magn x offset: \r\n");
-			chprintf(chp, "\t- magn y offset: \r\n");
-			chprintf(chp, "\t- magn z offset: \r\n");
-			chprintf(chp, "\t- magn radius: \r\n");
-
-			chprintf(chp, "\t- gyro x offset: \r\n");
-			chprintf(chp, "\t- gyro y offset: \r\n");
-			chprintf(chp, "\t- gyro z offset: \r\n");
-
-			chprintf(chp, "\t- accel x offset: \r\n");
-			chprintf(chp, "\t- accel y offset: \r\n");
-			chprintf(chp, "\t- accel z offset: \r\n");
-		} else if (strcmp(argv[0], "write_cal_params") == 0) {
-
+			bno055_set_operation_mode(BNO055_OPERATION_MODE_CONFIG);
+			bno055_check_calib_coefs(bno055);
+			chSemWait(&usart1_semaph);
+			chprintf(SHELL_IFACE,
+					"\r\n{\"msg_type\":\"calib_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
+			chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.magn);
+			chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.accel);
+			chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.gyro);
+			chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.system);
+			chprintf(SHELL_IFACE, "\"magn_x_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.x);
+			chprintf(SHELL_IFACE, "\"magn_y_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.y);
+			chprintf(SHELL_IFACE, "\"magn_z_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.z);
+			chprintf(SHELL_IFACE, "\"magn_radius\":  %x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.r);
+			chprintf(SHELL_IFACE, "\"gyro_x_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->gyro_offset.x);
+			chprintf(SHELL_IFACE, "\"gyro_y_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->gyro_offset.y);
+			chprintf(SHELL_IFACE, "\"gyro_z_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->gyro_offset.z);
+			chprintf(SHELL_IFACE, "\"accel_x_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.x);
+			chprintf(SHELL_IFACE, "\"accel_y_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.y);
+			chprintf(SHELL_IFACE, "\"accel_z_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.z);
+			chprintf(SHELL_IFACE, "\"accel_radius\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.r);
+			chprintf(SHELL_IFACE, "}\r\n\t}\r\n");
+			chSemSignal(&usart1_semaph);
+			bno055_set_operation_mode(BNO055_OPERATION_MODE_NDOF);
+		} else if (strcmp(argv[0], "save_cal_params") == 0) {
+			chSemWait(&usart1_semaph);
 			chprintf(chp, "Writing calibration parameters to EEPROM:\r\n");
-			chprintf(chp, "magn x offset: \r\n");
-			chprintf(chp, "magn y offset: \r\n");
-			chprintf(chp, "magn z offset: \r\n");
-			chprintf(chp, "magn radius: \r\n");
-
-			chprintf(chp, "gyro x offset: \r\n");
-			chprintf(chp, "gyro y offset: \r\n");
-			chprintf(chp, "gyro z offset: \r\n");
-
-			chprintf(chp, "accel x offset: \r\n");
-			chprintf(chp, "accel y offset: \r\n");
-			chprintf(chp, "accel z offset: \r\n");
+			chprintf(SHELL_IFACE,
+					"\r\n{\"msg_type\":\"calib_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
+			chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.magn);
+			chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.accel);
+			chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.gyro);
+			chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.system);
+			chprintf(SHELL_IFACE, "\"magn_x_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.x);
+			chprintf(SHELL_IFACE, "\"magn_y_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.y);
+			chprintf(SHELL_IFACE, "\"magn_z_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.z);
+			chprintf(SHELL_IFACE, "\"magn_radius\":  %x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.r);
+			chprintf(SHELL_IFACE, "\"gyro_x_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->gyro_offset.x);
+			chprintf(SHELL_IFACE, "\"gyro_y_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->gyro_offset.y);
+			chprintf(SHELL_IFACE, "\"gyro_z_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->gyro_offset.z);
+			chprintf(SHELL_IFACE, "\"accel_x_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.x);
+			chprintf(SHELL_IFACE, "\"accel_y_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.y);
+			chprintf(SHELL_IFACE, "\"accel_z_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.z);
+			chprintf(SHELL_IFACE, "\"accel_radius\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.r);
+			chprintf(SHELL_IFACE, "}\r\n\t}\r\n");
+			chSemSignal(&usart1_semaph);
+			bno055_save_calib_to_eeprom(bno055);
+		} else if (strcmp(argv[0], "set_static_cal") == 0) {
+			if (argc == 2) {
+				if (strcmp(argv[1], "1") == 0) {
+					bno055_set_static_calib(bno055);
+				} else if (strcmp(argv[1], "0") == 0) {
+					bno055_set_dynamic_calib(bno055);
+				} else {
+					chprintf(chp, "Usage: gyro set_static_cal [0, 1]\n\r");
+				}
+			} else {
+				chprintf(chp, "Usage: gyro set_static_cal [0, 1]\n\r");
+			}
 		} else if (strcmp(argv[0], "status") == 0) {
 			chprintf(chp,
 					"BNO055 status:\r\n\t- compass: \r\n\t- gyro: \r\n\t- accel: \r\n\t- system: \r\n");
@@ -111,7 +181,7 @@ void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 #ifdef USE_UBLOX_GPS_MODULE
 void cmd_gps(BaseSequentialStream* chp, int argc, char* argv[]) {
-	if (!output->service) {
+	if (output->type != OUTPUT_SERVICE) {
 		return;
 	}
 }
@@ -119,7 +189,7 @@ void cmd_gps(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 #ifdef USE_MICROSD_MODULE
 void cmd_microsd(BaseSequentialStream* chp, int argc, char* argv[]) {
-	if (!output->service) {
+	if (output->type != OUTPUT_SERVICE) {
 		return;
 	}
 	if (argc != 0) {
@@ -145,7 +215,7 @@ void cmd_microsd(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 #ifdef USE_WINDSENSOR_MODULE
 void cmd_wind(BaseSequentialStream* chp, int argc, char* argv[]) {
-	if (!output->service) {
+	if (output->type != OUTPUT_SERVICE) {
 		return;
 	}
 }
@@ -153,7 +223,7 @@ void cmd_wind(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 #ifdef USE_RUDDER_MODULE
 void cmd_rudder(BaseSequentialStream* chp, int argc, char* argv[]) {
-	if (!output->service) {
+	if (output->type != OUTPUT_SERVICE) {
 		return;
 	}
 	if (argc != 0) {

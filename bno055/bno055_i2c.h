@@ -22,6 +22,17 @@ int8_t bno055_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len);
 s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt);
 s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt);
 int8_t bno055_read_euler(bno055_t *bno055);
+int8_t bno055_read_status(bno055_t *bno055);
+int8_t bno055_check_calib_coefs(bno055_t *bno055);
+int8_t bno055_start_calibration(bno055_t *bno055);
+int8_t bno055_save_calib_to_eeprom(bno055_t *bno055);
+int8_t bno055_apply_calib_to_chip(bno055_t *bno055);
+int8_t bno055_set_dynamic_calib(bno055_t *bno055);
+int8_t bno055_set_static_calib(bno055_t *bno055);
+int8_t bno955_read_static_flag_from_eeprom(bno055_t *bno055);
+int8_t bno055_read_calib_from_eeprom(bno055_t *bno055);
+int8_t bno055_save_calib_to_eeprom(bno055_t *bno055);
+
 void i2c_restart(I2CDriver *i2cp);
 void bno055_delay_ms(uint16_t msec);
 #endif /* SD_MODULES_BNO055_BNO055_I2C_H_ */
