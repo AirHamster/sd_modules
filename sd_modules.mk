@@ -12,7 +12,7 @@ SD_INC += ./sd_modules/sd_shell_cmd
 endif
 
 #Service mode - manual configuration via shell
-ifeq ($(USE_SD_SHELL), TRUE)
+ifeq ($(USE_SERVICE_MODE), TRUE)
 SD_SRC += ./sd_modules/sd_shell_cmd/service_mode.c
 SD_INC += ./sd_modules/sd_shell_cmd
 endif
