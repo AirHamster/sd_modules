@@ -58,6 +58,12 @@ SD_SRC += ./sd_modules/bno055/bno055_i2c.c
 SD_INC += ./sd_modules/bno055
 endif
 
+#LAG
+ifeq ($(USE_LAG_MODULE), TRUE)
+SD_SRC += ./sd_modules/lag/lag.c
+SD_INC += ./sd_modules/lag
+endif
+
 #FATFS
 ifeq ($(USE_MICROSD_MODULE), TRUE)
 #SD_SRC += ./sd_modules/microsd/diskio.c
