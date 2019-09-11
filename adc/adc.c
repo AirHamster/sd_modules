@@ -42,7 +42,7 @@ const ADCConversionGroup adcgrpcfg = {
   .num_channels = IR_ADC_GRP1_NUM_CHANNELS,
   .end_cb       = adcendcallback,
   .error_cb     = NULL,
-  .cfgr         = 0U,
+  .cfgr         = ADC_CFGR_CONT,
   .cfgr2        = 0U,
   .tr1          = ADC_TR(0, 4095),
   .smpr         = {
@@ -50,7 +50,7 @@ const ADCConversionGroup adcgrpcfg = {
     0U
   },
   .sqr          = {
-    ADC_SQR1_SQ1_N(ADC_CHANNEL_IN5),
+    ADC_SQR1_SQ1_N(ADC_CHANNEL_IN6),
     0U,
     0U,
     0U
@@ -70,13 +70,21 @@ static void adcerrorcallback(ADCDriver *adcp) {
 static THD_WORKING_AREA(adc_thread_wa, 1024);
 static THD_FUNCTION( adc_thread, p) {
 	(void) p;
+	uint8_t i = 0;
+	uint32_t tmp;
 	chRegSetThreadName("ADC Thd");
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 
 	while (true) {
-		chprintf((BaseSequentialStream*) &SD1, "ADC: %d\r\n", irSamples[0]);
+		chprintf((BaseSequentialStream*) &SD1, "ADC: %d\r\n", tmp);
 		adcConvert(&ADCD1, &adcgrpcfg, irSamples, IR_ADC_GRP1_BUF_DEPTH);
-		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(300));
+		for (i = 0; i < IR_ADC_GRP1_BUF_DEPTH; i++){
+			tmp += irSamples[i];
+		}
+		tmp /= IR_ADC_GRP1_BUF_DEPTH;
+		chprintf((BaseSequentialStream*) &SD1, "ADC: %d\r\n", (uint16_t)tmp);
+		tmp = 0;
+		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 	}
 }
 
