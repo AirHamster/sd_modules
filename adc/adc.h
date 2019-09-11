@@ -11,4 +11,6 @@
 #include "ch.h"
 #include "hal.h"
 
+void start_adc_module(void);
+
 #endif /* SD_MODULES_ADC_ADC_H_ */

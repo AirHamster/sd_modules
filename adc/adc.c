@@ -12,6 +12,7 @@
 #include "hal.h"
 #include "shell.h"
 #include "chprintf.h"
+#include "adc.h"
 #ifdef USE_UBLOX_GPS_MODULE
 #include "neo-m8.h"
 extern ubx_nav_pvt_t *pvt_box;
@@ -27,7 +28,8 @@ extern windsensor_t *wind;
 #endif
 
 #define IR_ADC_GRP1_NUM_CHANNELS 1
-#define IR_ADC_GRP1_BUF_DEPTH 32
+#define IR_ADC_GRP1_BUF_DEPTH 4
+static void adcendcallback(ADCDriver *adcp);
 static adcsample_t irSamples[IR_ADC_GRP1_NUM_CHANNELS * IR_ADC_GRP1_BUF_DEPTH];
 
 const ADCConfig adccfg = {
@@ -36,42 +38,50 @@ const ADCConfig adccfg = {
 
 
 const ADCConversionGroup adcgrpcfg = {
-  .circular     = false,
+  .circular     = FALSE,
   .num_channels = IR_ADC_GRP1_NUM_CHANNELS,
-  .end_cb       = NULL,
+  .end_cb       = adcendcallback,
   .error_cb     = NULL,
   .cfgr         = 0U,
   .cfgr2        = 0U,
   .tr1          = ADC_TR(0, 4095),
   .smpr         = {
-    ADC_SMPR1_SMP_AN0(ADC_SMPR_SMP_247P5) |
-    ADC_SMPR1_SMP_AN5(ADC_SMPR_SMP_247P5),
+    0U,
     0U
   },
   .sqr          = {
-    ADC_SQR1_SQ2_N(ADC_CHANNEL_IN5),
+    ADC_SQR1_SQ1_N(ADC_CHANNEL_IN5),
     0U,
     0U,
     0U
   }
 };
 
+static void adcendcallback(ADCDriver *adcp) {
+  (void)adcp;
+//  chprintf((BaseSequentialStream*) &SD1, "ADC end: %d\r\n", irSamples[0]);
+}
+
+static void adcerrorcallback(ADCDriver *adcp) {
+  (void)adcp;
+//  chprintf((BaseSequentialStream*) &SD1, "ADC end: %d\r\n", irSamples[0]);
+}
+
 static THD_WORKING_AREA(adc_thread_wa, 1024);
 static THD_FUNCTION( adc_thread, p) {
 	(void) p;
-	msg_t msg;
 	chRegSetThreadName("ADC Thd");
 	systime_t prev = chVTGetSystemTime(); // Current system time.
-	while (true) {
-		/* Performing a one-shot conversion on two channels.*/
-		adcStartConversion(&ADCD1, &adcgrpcfg, irSamples, IR_ADC_GRP1_BUF_DEPTH);
 
-		  chprintf((BaseSequentialStream*) &SD1, "ADC: %d\r\n", irSamples[0]);
-		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(500));
+	while (true) {
+		chprintf((BaseSequentialStream*) &SD1, "ADC: %d\r\n", irSamples[0]);
+		adcConvert(&ADCD1, &adcgrpcfg, irSamples, IR_ADC_GRP1_BUF_DEPTH);
+		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(300));
 	}
 }
 
-void adc_init(void){
-	adcStart(&ADCD1, &adccfg);
+void start_adc_module(void){
+	adcStart(&ADCD1, NULL);
+	adcSTM32EnableVREF(&ADCD1);
 	chThdCreateStatic(adc_thread_wa, sizeof(adc_thread_wa), NORMALPRIO, adc_thread, NULL);
 }

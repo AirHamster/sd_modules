@@ -12,13 +12,20 @@
 
 extern struct ch_semaphore usart1_semaph;
 
+#ifdef SD_MODULE_TRAINER
 const I2CConfig eeprom_i2c_cfg = {
   0xD0D43C4C,
-		//0x20E7112A,
- // 0x40B45B69,
   0,
   0
 };
+#endif
+#ifdef SENSOR_BOX
+const I2CConfig eeprom_i2c_cfg = {
+  0x10E37AFF,
+  0,
+  0
+};
+#endif
 
 int8_t eeprom_write(uint16_t byte_addr, const int8_t *txbuf, size_t txbytes) {
 	int8_t buff[txbytes + 2];
