@@ -27,10 +27,12 @@ extern bno055_t *bno055;
 #include "windsensor.h"
 extern windsensor_t *wind;
 #endif
+#ifdef USE_SERVICE_MODE
+#include "service_mode.h"
+#endif
 extern struct ch_semaphore usart1_semaph;
-//output_struct_t output_struct;
-//output_struct_t *output = &output_struct;
 
+output_t *output;
 char *complete_buffer[16];
 char history_buffer[128];
 const int history_size = 128;
@@ -41,16 +43,24 @@ static THD_FUNCTION(output_thread, arg);
 static const ShellCommand commands[] = {
 		{ "start", cmd_start },
 		{ "c", cmd_c },
-	//	{ "ublox", cmd_ublox },
+#ifdef USE_SERVICE_MODE
+	/*	{ "service", cmd_service },
+		{ "gyro", cmd_gyro },
+		{ "microsd", cmd_microsd },*/
+#endif
+
 #ifdef USE_XBEE_868_MODULE
 		{ "xbee", cmd_xbee },
 #endif
 #ifdef USE_MICROSD_MODULE
-		{"tree", cmd_tree },
-		{"mount", cmd_mount},
-		{"free", cmd_free},
-		{"open", cmd_open},
-		{"write", cmd_write},
+		{ "tree", cmd_tree },
+		{ "mount", cmd_mount },
+		{ "free", cmd_free },
+		{ "open", cmd_open },
+		{ "write", cmd_write },
+#endif
+#ifdef USE_ADC_MODULE
+		//{"adc", cmd_adc },
 #endif
 		{ NULL, NULL }
 };
@@ -75,32 +85,48 @@ static THD_FUNCTION(output_thread, arg) {
 	(void)arg;
 
 	chRegSetThreadName("Data output");
-/*	gptStop(&GPTD14);
-	gptStart(&GPTD14, &gpt14cfg);
-	gptStartContinuous(&GPTD14, 2000);*/
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 
 	while (true) {
-		wdgReset(&WDGD1);
-		/*chSysLock();
-		if (output->suspend_state) {
-			msg = chThdSuspendS(&output_trp);
-		}
-		chSysUnlock();
-		*/
+		//wdgReset(&WDGD1);
 		palToggleLine(LINE_GREEN_LED);
-#ifdef USE_MICROSD_MODULE
-		//chThdResume(&microsd_trp, (msg_t) MICROSD_WRITE_SENSOR_LOG_LINE);
-		/*chSysLock();
-		chSchRescheduleS();
-		chSysUnlock();*/
-#endif
 		chThdSleepMilliseconds(5);
-		send_json();
+#ifdef USE_BNO055_MODULE
+		switch (output->type){
+		case OUTPUT_NONE:
+			break;
+		case OUTPUT_TEST:
+			send_json();
+			break;
+		case OUTPUT_SERVICE:
+			break;
+		case OUTPUT_ALL_CALIB:
+			output_all_calib();
+			break;
+		default:
+			break;
+		}
+#endif
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
-	//		chThdResume(&microsd_trp, (msg_t) MICROSD_WRITE_SENSOR_LOG_LINE); /* Resuming the thread with message.*/
 	}
 }
+
+#ifdef USE_BNO055_MODULE
+uint8_t output_all_calib(void){
+	chSemWait(&usart1_semaph);
+	chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"calib_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
+	chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
+	chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
+	chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", bno055->d_euler_hpr.r);
+	chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t", bno055->calib_stat.magn);
+	chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t", bno055->calib_stat.accel);
+	chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t", bno055->calib_stat.gyro);
+	chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t", bno055->calib_stat.system);
+	chprintf(SHELL_IFACE, "}\r\n\t}");
+	chSemSignal(&usart1_semaph);
+}
+#endif
+
 /*
 void send_data(uint8_t stream){
 	uint8_t databuff[34];
@@ -154,41 +180,44 @@ void send_data(uint8_t stream){
 	xbee_send_rf_message(xbee, databuff, 34);
 }
 */
+
 void send_json(void)
 {
 	chSemWait(&usart1_semaph);
-	chprintf((BaseSequentialStream*)&SD1, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
+	chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
 #ifdef USE_UBLOX_GPS_MODULE
-	chprintf((BaseSequentialStream*)&SD1, "\"hour\":%d,\r\n\t\t\t", pvt_box->hour);
-		chprintf((BaseSequentialStream*)&SD1, "\"min\":%d,\r\n\t\t\t", pvt_box->min);
-		chprintf((BaseSequentialStream*)&SD1, "\"sec\":%d,\r\n\t\t\t", pvt_box->sec);
-		chprintf((BaseSequentialStream*)&SD1, "\"lat\":%f,\r\n\t\t\t", pvt_box->lat / 10000000.0f);
-		chprintf((BaseSequentialStream*)&SD1, "\"lon\":%f,\r\n\t\t\t", pvt_box->lon / 10000000.0f);
-		chprintf((BaseSequentialStream*)&SD1, "\"speed\":%f,\r\n\t\t\t", (float)(pvt_box->gSpeed * 0.0036));
-		chprintf((BaseSequentialStream*)&SD1, "\"dist\":%d,\r\n\t\t\t", (uint16_t)odo_box->distance);
+		chprintf(SHELL_IFACE, "\"hour\":%d,\r\n\t\t\t", pvt_box->hour);
+		chprintf(SHELL_IFACE, "\"min\":%d,\r\n\t\t\t", pvt_box->min);
+		chprintf(SHELL_IFACE, "\"sec\":%d,\r\n\t\t\t", pvt_box->sec);
+		chprintf(SHELL_IFACE, "\"lat\":%f,\r\n\t\t\t", pvt_box->lat / 10000000.0f);
+		chprintf(SHELL_IFACE, "\"lon\":%f,\r\n\t\t\t", pvt_box->lon / 10000000.0f);
+		chprintf(SHELL_IFACE, "\"speed\":%f,\r\n\t\t\t", (float)(pvt_box->gSpeed * 0.0036));
+		chprintf(SHELL_IFACE, "\"dist\":%d,\r\n\t\t\t", (uint16_t)odo_box->distance);
 #endif
 #ifdef USE_BNO055_MODULE
-		chprintf((BaseSequentialStream*)&SD1, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
-		chprintf((BaseSequentialStream*)&SD1, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
-		chprintf((BaseSequentialStream*)&SD1, "\"roll\":%f,\r\n\t\t\t", bno055->d_euler_hpr.r);
+		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
+		chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
+		chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", bno055->d_euler_hpr.r);
+		chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t", bno055->calib_stat.magn);
+		chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t", bno055->calib_stat.accel);
+		chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t", bno055->calib_stat.gyro);
+		chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t", bno055->calib_stat.system);
 #endif
 #ifdef USE_UBLOX_GPS_MODULE
-		chprintf((BaseSequentialStream*)&SD1, "\"headMot\":%d,\r\n\t\t\t", (uint16_t)(pvt_box->headMot / 100000));
-		chprintf((BaseSequentialStream*)&SD1, "\"sat\":%d,\r\n\t\t\t", pvt_box->numSV);
+		chprintf(SHELL_IFACE, "\"headMot\":%d,\r\n\t\t\t", (uint16_t)(pvt_box->headMot / 100000));
+		chprintf(SHELL_IFACE, "\"sat\":%d,\r\n\t\t\t", pvt_box->numSV);
 #endif
 #ifdef USE_WINDSENSOR_MODULE
-		chprintf((BaseSequentialStream*)&SD1, "\"wind_dir\":%d,\r\n\t\t\t", wind->direction);
-		chprintf((BaseSequentialStream*)&SD1, "\"wind_spd\":%f,\r\n\t\t\t", wind->speed);
+		chprintf(SHELL_IFACE, "\"wind_dir\":%d,\r\n\t\t\t", wind->direction);
+		chprintf(SHELL_IFACE, "\"wind_spd\":%f,\r\n\t\t\t", wind->speed);
 #endif
-		chprintf((BaseSequentialStream*)&SD1, "\"rssi\":%d,\r\n\t\t\t", 0);
-		//	chprintf((BaseSequentialStream*)&SD1, "\"accel_raw\":%d; %d; %d,\r\n\t\t\t", bno055->accel_raw.x, bno055->accel_raw.y, bno055->accel_raw.z);
-	//	chprintf((BaseSequentialStream*)&SD1, "\"gyro_raw\":%d; %d; %d,\r\n\t\t\t", bno055->gyro_raw.x, bno055->gyro_raw.y, bno055->gyro_raw.z);
-	//	chprintf((BaseSequentialStream*)&SD1, "\"magn_raw\":%d; %d; %d,\r\n\t\t\t", bno055->mag_raw.x, bno055->mag_raw.y, bno055->mag_raw.z);
-	//	chprintf((BaseSequentialStream*)&SD1, "\"magn_cal\":%d,\r\n\t\t\t", bno055->magn_cal);
-	//	chprintf((BaseSequentialStream*)&SD1, "\"accel_cal\":%d,\r\n\t\t\t", bno055->accel_cal);
-	//	chprintf((BaseSequentialStream*)&SD1, "\"gyro_cal\":%d,\r\n\t\t\t", bno055->gyro_cal);
-		chprintf((BaseSequentialStream*)&SD1, "\"bat\":0\r\n\t\t\t");
-		chprintf((BaseSequentialStream*)&SD1, "}\r\n\t}");
+		chprintf(SHELL_IFACE, "\"rssi\":%d,\r\n\t\t\t", 0);
+		//	chprintf(SHELL_IFACE, "\"accel_raw\":%d; %d; %d,\r\n\t\t\t", bno055->accel_raw.x, bno055->accel_raw.y, bno055->accel_raw.z);
+	//	chprintf(SHELL_IFACE, "\"gyro_raw\":%d; %d; %d,\r\n\t\t\t", bno055->gyro_raw.x, bno055->gyro_raw.y, bno055->gyro_raw.z);
+	//	chprintf(SHELL_IFACE, "\"magn_raw\":%d; %d; %d,\r\n\t\t\t", bno055->mag_raw.x, bno055->mag_raw.y, bno055->mag_raw.z);
+
+		chprintf(SHELL_IFACE, "\"bat\":0\r\n\t\t\t");
+		chprintf(SHELL_IFACE, "}\r\n\t}");
 		chSemSignal(&usart1_semaph);
 }
 
@@ -222,6 +251,8 @@ void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]) {
 	stop_all_tests();
 	chprintf(chp, "Stopped all outputs\n\r");
 }
+
+
 
 void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
@@ -339,15 +370,6 @@ void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]) {
 	chprintf(chp, "Usage: ublox lpf|slas|sbas|rtk|stat\n\r");
 }
 
-void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]) {
-	if (argc != 0) {
-		if (strcmp(argv[0], "params") == 0) {
-			return;
-		}
-	}
-	chprintf(chp, "Usage: start params|||\n\r");
-}
-
 #ifdef USE_XBEE_868_MODULE
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
@@ -394,26 +416,38 @@ void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
 }
 #endif
 void toggle_test_output(void) {
-	//output->test = 1;
+	output->type = OUTPUT_TEST;
+#ifdef USE_BNO055_MODULE
+	bno055->read_type = OUTPUT_TEST;
+#endif
+	output->service = 0;
+	output->test = (~output->test) & 0x01;
 }
 
 void toggle_gps_output(void) {
-	//output->gps = (~output->gps) & 0x01;
+	output->service = 0;
+	output->gps = (~output->gps) & 0x01;
 }
 
 void toggle_ypr_output(void) {
-	//output->ypr = (~output->ypr) & 0x01;
+	output->service =  0;
+	output->ypr = (~output->ypr) & 0x01;
 }
 
 void toggle_gyro_output(void) {
-	//output->gyro = (~output->gyro) & 0x01;
+	output->service = 0;
+	output->gyro = (~output->gyro) & 0x01;
 }
 
 void stop_all_tests(void) {
-	/*output->test = 0;
-	output->gps = 0;
-	output->ypr = 0;
-	output->gyro = 0;*/
+	if (output->type == OUTPUT_ALL_CALIB){
+		output->type = OUTPUT_SERVICE;
+	}else{
+		output->type = OUTPUT_NONE;
+#ifdef USE_BNO055_MODULE
+		bno055->read_type = OUTPUT_NONE;
+#endif
+	}
 }
 
 

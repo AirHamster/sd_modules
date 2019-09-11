@@ -5,7 +5,8 @@
 #include "hal.h"
 #include "chprintf.h"
 #include <string.h>
-#define SHELL_SD         SD1
+
+
 #define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(1024)
 
 #define SHELL_UBX_COG_STATUS		1
@@ -13,20 +14,28 @@
 #define SHELL_UBX_RATE_SET			3
 
 enum output_threads{
-	GPS = 0,
-	YPR,
-	GYRO
+	OUTPUT_NONE = 0,
+	OUTPUT_TEST,
+	OUTPUT_SERVICE,
+	OUTPUT_MAGN_CALIB,
+	OUTPUT_GYRO_CALIB,
+	OUTPUT_ACCEL_CALIB,
+	OUTPUT_ALL_CALIB,
+
 };
 
 typedef struct{
+	uint8_t type;
 	uint8_t suspend_state;
 	uint8_t test;
 	uint8_t gps;
 	uint8_t ypr;
 	uint8_t gyro;
 	uint8_t xbee;
+	uint8_t service;
 
-}output_struct_t;
+}output_t;
+
 thread_t *cmd_init(void);
 
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]);
@@ -36,8 +45,12 @@ void cmd_start(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_help(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]);
-void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]);
+
+uint8_t output_magn_calib(void);
+uint8_t output_accel_calib(void);
+uint8_t output_gyro_calib(void);
+uint8_t output_all_calib(void);
 void start_json_module(void);
 void toggle_test_output(void);
 void toggle_gps_output(void);

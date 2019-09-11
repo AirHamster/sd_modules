@@ -11,6 +11,12 @@ SD_SRC += ./sd_modules/sd_shell_cmd/sd_shell_cmd.c
 SD_INC += ./sd_modules/sd_shell_cmd
 endif
 
+#Service mode - manual configuration via shell
+ifeq ($(USE_SERVICE_MODE), TRUE)
+SD_SRC += ./sd_modules/sd_shell_cmd/service_mode.c
+SD_INC += ./sd_modules/sd_shell_cmd
+endif
+
 #MPU9250 - 9-axis accel/gyro/magn chip
 ifeq ($(USE_MPU_9250_MODULE), TRUE)
 SD_SRC += ./sd_modules/mpu9250/mpu9250.c
@@ -39,11 +45,23 @@ SD_SRC += ./sd_modules/eeprom/eeprom.c
 SD_INC += ./sd_modules/eeprom
 endif
 
+#BLE
+ifeq ($(USE_BLE_MODULE), TRUE)
+SD_SRC += ./sd_modules/nina-b3/nina-b3.c
+SD_INC += ./sd_modules/nina-b3
+endif
+
 #BNO055
 ifeq ($(USE_BNO055_MODULE), TRUE)
 SD_SRC += ./sd_modules/bno055/bno055.c
 SD_SRC += ./sd_modules/bno055/bno055_i2c.c
 SD_INC += ./sd_modules/bno055
+endif
+
+#LAG
+ifeq ($(USE_LAG_MODULE), TRUE)
+SD_SRC += ./sd_modules/lag/lag.c
+SD_INC += ./sd_modules/lag
 endif
 
 #FATFS
@@ -62,6 +80,11 @@ SD_SRC += ./sd_modules/windsensor/windsensor.c
 SD_INC += ./sd_modules/windsensor
 endif
 
+#ADC module
+ifeq (${USE_ADC_MODULE}, TRUE)
+SD_SRC += ./sd_modules/adc/adc.c
+SD_INC += ./sd_modules/adc
+endif
 # Shared variables
 ALLCSRC += $(SD_SRC)
 ALLINC  += $(SD_INC)
