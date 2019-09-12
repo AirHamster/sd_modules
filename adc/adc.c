@@ -26,6 +26,9 @@ extern bno055_t *bno055;
 #include "windsensor.h"
 extern windsensor_t *wind;
 #endif
+#ifdef USE_EEPROM_MODULE
+#include "eeprom.h"
+#endif
 rudder_t *rudder;
 
 #define IR_ADC_GRP1_NUM_CHANNELS 1
@@ -103,14 +106,37 @@ void start_adc_module(void){
 }
 
 void adc_convert_to_rudder(uint16_t tmp, rudder_t *rud) {
-	if (tmp < rud->min_native) {
-		rud->native = rud->min_native;
-	} else if (tmp > rud->max_native) {
-		rud->native = rud->max_native;
+	//Workaround situation when sensor was instaled in mirrored position
+	if (rud->min_native <= rud->max_native) {
+
+		if (tmp < rud->min_native) {
+			rud->native = rud->min_native;
+		} else if (tmp > rud->max_native) {
+			rud->native = rud->max_native;
+		} else {
+			rud->native = tmp;
+		}
 	} else {
-		rud->native = tmp;
+		if (tmp < rud->max_native) {
+			rud->native = rud->max_native;
+		} else if (tmp > rud->min_native) {
+			rud->native = rud->min_native;
+		} else {
+			rud->native = tmp;
+		}
 	}
-	rud->percent = ((float) (rud->native - 100)
-			/ (float) rud->native_full_scale * 100.0);
+	rud->percent = ((float) (rud->native - 100) / (float) rud->native_full_scale * 100.0);
 	rud->degrees = ((float) rud->percent / 100.0 * 180.0 - 90.0);
+}
+void adc_update_rudder_struct(rudder_t *rud){
+	eeprom_read(EEPROM_RUDDER_CALIB_LEFT, (uint8_t*)&rud->min_native, 2);
+	eeprom_read(EEPROM_RUDDER_CALIB_RIGHT, (uint8_t*)&rud->max_native, 2);
+}
+void adc_print_rudder_info(rudder_t *rud){
+	chprintf((BaseSequentialStream*) &SD1, "ADC native:  %d\r\n",
+			(uint16_t) rud->native);
+	chprintf((BaseSequentialStream*) &SD1, "ADC percent: %f\r\n",
+			rud->percent);
+	chprintf((BaseSequentialStream*) &SD1, "ADC degrees: %f\r\n",
+			rud->degrees);
 }

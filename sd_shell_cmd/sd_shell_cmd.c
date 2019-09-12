@@ -30,6 +30,10 @@ extern windsensor_t *wind;
 #ifdef USE_SERVICE_MODE
 #include "service_mode.h"
 #endif
+#ifdef USE_ADC_MODULE
+#include "adc.h"
+extern rudder_t *rudder;
+#endif
 extern struct ch_semaphore usart1_semaph;
 
 output_t *output;
@@ -102,6 +106,18 @@ static THD_FUNCTION(output_thread, arg) {
 			break;
 		case OUTPUT_ALL_CALIB:
 			output_all_calib();
+			break;
+		default:
+			break;
+		}
+#endif
+
+#ifdef USE_RUDDER_MODULE
+		switch (output->type){
+		case OUTPUT_NONE:
+			break;
+		case OUTPUT_RUDDER_CALIB:
+			adc_print_rudder_info(rudder);
 			break;
 		default:
 			break;
