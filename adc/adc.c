@@ -26,6 +26,7 @@ extern bno055_t *bno055;
 #include "windsensor.h"
 extern windsensor_t *wind;
 #endif
+rudder_t *rudder;
 
 #define IR_ADC_GRP1_NUM_CHANNELS 1
 #define IR_ADC_GRP1_BUF_DEPTH 4
@@ -74,16 +75,23 @@ static THD_FUNCTION( adc_thread, p) {
 	uint32_t tmp;
 	chRegSetThreadName("ADC Thd");
 	systime_t prev = chVTGetSystemTime(); // Current system time.
-
+	rudder->min_native = 100;
+	rudder->max_native = 4000;
+	rudder->native_full_scale = rudder->max_native - rudder->min_native;
 	while (true) {
-		chprintf((BaseSequentialStream*) &SD1, "ADC: %d\r\n", tmp);
 		adcConvert(&ADCD1, &adcgrpcfg, irSamples, IR_ADC_GRP1_BUF_DEPTH);
-		for (i = 0; i < IR_ADC_GRP1_BUF_DEPTH; i++){
+		tmp = 0;
+		for (i = 0; i < IR_ADC_GRP1_BUF_DEPTH; i++) {
 			tmp += irSamples[i];
 		}
-		tmp /= IR_ADC_GRP1_BUF_DEPTH;
-		chprintf((BaseSequentialStream*) &SD1, "ADC: %d\r\n", (uint16_t)tmp);
-		tmp = 0;
+		tmp = tmp / IR_ADC_GRP1_BUF_DEPTH;
+		adc_convert_to_rudder(tmp, rudder);
+		chprintf((BaseSequentialStream*) &SD1, "ADC native:  %d\r\n",
+				(uint16_t) rudder->native);
+		chprintf((BaseSequentialStream*) &SD1, "ADC percent: %f\r\n",
+				rudder->percent);
+		chprintf((BaseSequentialStream*) &SD1, "ADC degrees: %f\r\n",
+				rudder->degrees);
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 	}
 }
@@ -92,4 +100,17 @@ void start_adc_module(void){
 	adcStart(&ADCD1, NULL);
 	adcSTM32EnableVREF(&ADCD1);
 	chThdCreateStatic(adc_thread_wa, sizeof(adc_thread_wa), NORMALPRIO, adc_thread, NULL);
+}
+
+void adc_convert_to_rudder(uint16_t tmp, rudder_t *rud) {
+	if (tmp < rud->min_native) {
+		rud->native = rud->min_native;
+	} else if (tmp > rud->max_native) {
+		rud->native = rud->max_native;
+	} else {
+		rud->native = tmp;
+	}
+	rud->percent = ((float) (rud->native - 100)
+			/ (float) rud->native_full_scale * 100.0);
+	rud->degrees = ((float) rud->percent / 100.0 * 180.0 - 90.0);
 }
