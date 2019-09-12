@@ -20,6 +20,8 @@ typedef struct{
 	uint16_t max_native;
 	uint16_t native_full_scale;
 }rudder_t;
+void adc_print_rudder_info(rudder_t *rud);
+void adc_convert_to_rudder(uint16_t tmp, rudder_t *rud);
 void start_adc_module(void);
 
 #endif /* SD_MODULES_ADC_ADC_H_ */
