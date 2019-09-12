@@ -8,9 +8,18 @@
 #define SD_MODULES_ADC_ADC_H_
 
 #include "stdint.h"
+#include <string.h>
+#include <stdlib.h>
 #include "ch.h"
 #include "hal.h"
-
+typedef struct{
+	float degrees;
+	float percent;
+	uint16_t native;
+	uint16_t min_native;
+	uint16_t max_native;
+	uint16_t native_full_scale;
+}rudder_t;
 void start_adc_module(void);
 
 #endif /* SD_MODULES_ADC_ADC_H_ */
