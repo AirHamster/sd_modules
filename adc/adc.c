@@ -89,12 +89,12 @@ static THD_FUNCTION( adc_thread, p) {
 		}
 		tmp = tmp / IR_ADC_GRP1_BUF_DEPTH;
 		adc_convert_to_rudder(tmp, rudder);
-		chprintf((BaseSequentialStream*) &SD1, "ADC native:  %d\r\n",
+	/*	chprintf((BaseSequentialStream*) &SD1, "ADC native:  %d\r\n",
 				(uint16_t) rudder->native);
 		chprintf((BaseSequentialStream*) &SD1, "ADC percent: %f\r\n",
 				rudder->percent);
 		chprintf((BaseSequentialStream*) &SD1, "ADC degrees: %f\r\n",
-				rudder->degrees);
+				rudder->degrees);*/
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 	}
 }
