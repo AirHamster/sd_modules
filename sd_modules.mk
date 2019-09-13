@@ -85,6 +85,12 @@ ifeq (${USE_ADC_MODULE}, TRUE)
 SD_SRC += ./sd_modules/adc/adc.c
 SD_INC += ./sd_modules/adc
 endif
+
+#BQ2560x charging module
+ifeq (${USE_CHARGER_MODULE}, TRUE)
+SD_SRC += ./sd_modules/bq2560x/bq2560x.c
+SD_INC += ./sd_modules/bq2560x
+endif
 # Shared variables
 ALLCSRC += $(SD_SRC)
 ALLINC  += $(SD_INC)
