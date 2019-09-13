@@ -8,10 +8,34 @@
 #ifndef SD_MODULES_BQ2560X_BQ2560X_H_
 #define SD_MODULES_BQ2560X_BQ2560X_H_
 
+#include "config.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "ch.h"
+#include "hal.h"
+#include "shell.h"
+#include "chprintf.h"
+
 #define CHARGER_ADDRESS				0x6B
 
+typedef struct{
+	uint8_t reg00;
+	uint8_t reg01;
+	uint8_t reg02;
+	uint8_t reg03;
+	uint8_t reg04;
+	uint8_t reg05;
+	uint8_t reg06;
+	uint8_t reg07;
+	uint8_t reg08;
+	uint8_t reg09;
+	uint8_t reg0A;
+	uint8_t reg0B;
+}charger_t;
+
 void start_charger_module(void);
-uint8_t charger_read_register(uint8_t reg_addr);
+uint8_t charger_read_register(uint8_t reg_addr, uint8_t *buf);
 
 
 /* Register 00h */
