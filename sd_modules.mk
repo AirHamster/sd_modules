@@ -58,6 +58,12 @@ SD_SRC += ./sd_modules/bno055/bno055_i2c.c
 SD_INC += ./sd_modules/bno055
 endif
 
+#LAG
+ifeq ($(USE_LAG_MODULE), TRUE)
+SD_SRC += ./sd_modules/lag/lag.c
+SD_INC += ./sd_modules/lag
+endif
+
 #FATFS
 ifeq ($(USE_MICROSD_MODULE), TRUE)
 #SD_SRC += ./sd_modules/microsd/diskio.c
@@ -74,6 +80,17 @@ SD_SRC += ./sd_modules/windsensor/windsensor.c
 SD_INC += ./sd_modules/windsensor
 endif
 
+#ADC module
+ifeq (${USE_ADC_MODULE}, TRUE)
+SD_SRC += ./sd_modules/adc/adc.c
+SD_INC += ./sd_modules/adc
+endif
+
+#BQ2560x charging module
+ifeq (${USE_CHARGER_MODULE}, TRUE)
+SD_SRC += ./sd_modules/bq2560x/bq2560x.c
+SD_INC += ./sd_modules/bq2560x
+endif
 # Shared variables
 ALLCSRC += $(SD_SRC)
 ALLINC  += $(SD_INC)

@@ -17,22 +17,18 @@
 #ifdef USE_UBLOX_GPS_MODULE
 #include "neo-m8.h"
 extern ubx_nav_pvt_t *pvt_box;
-#endif
+#endif //USE_UBLOX_GPS_MODULE
 #ifdef USE_SD_SHELL
 #include "sd_shell_cmds.h"
 extern output_t *output;
-#endif
-#ifdef USE_BNO055_MODULE
-#include "bno055_i2c.h"
-extern bno055_t *bno055;
-#endif
+#endif //USE_SD_SHELL
 #ifdef USE_MICROSD_MODULE
 #include "microsd.h"
-#endif
+#endif //USE_MICROSD_MODULE
 #ifdef USE_WINDSENSOR_MODULE
 #include "windsensor.h"
 extern windsensor_t *wind;
-#endif
+#endif //USE_WINDSENSOR_MODULE
 #ifdef USE_BNO055_MODULE
 #include "bno055_i2c.h"
 #include "bno055.h"
@@ -41,7 +37,15 @@ extern bno055_t *bno055;
 #ifdef USE_BLE_MODULE
 #include "nina-b3.h"
 extern ble_t *ble;
-#endif
+#endif //USE_BNO055_MODULE
+#ifdef USE_ADC_MODULE
+#include "adc.h"
+extern rudder_t *rudder;
+#endif //USE_ADC_MODULE
+#ifdef USE_EEPROM_MODULE
+#include "eeprom.h"
+#endif //USE_EEPROM_MODULE
+
 extern struct ch_semaphore usart1_semaph;
 
 void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]) {
@@ -262,11 +266,18 @@ void cmd_rudder(BaseSequentialStream* chp, int argc, char* argv[]) {
 					"Usage: - rudder calibrate|left|middle|right\n\r");
 		} else if (strcmp(argv[0], "calibrate") == 0) {
 			chprintf(chp, "Starting rudder calibration procedure\r\n");
+			output->type = OUTPUT_RUDDER_CALIB;
 		} else if (strcmp(argv[0], "left") == 0) {
+			eeprom_write(EEPROM_RUDDER_CALIB_LEFT, (uint8_t*)&rudder->native, 2);
+			adc_update_rudder_struct(rudder);
 			chprintf(chp, "Saved left position\r\n");
-		} else if (strcmp(argv[0], "middle") == 0) {
-			chprintf(chp, "Saved middle position\r\n");
+		} else if (strcmp(argv[0], "center") == 0) {
+			eeprom_write(EEPROM_RUDDER_CALIB_CENTER, (uint8_t*)&rudder->native, 2);
+			adc_update_rudder_struct(rudder);
+			chprintf(chp, "Saved center position\r\n");
 		} else if (strcmp(argv[0], "right") == 0) {
+			eeprom_write(EEPROM_RUDDER_CALIB_RIGHT, (uint8_t*)&rudder->native, 2);
+			adc_update_rudder_struct(rudder);
 			chprintf(chp, "Saved right position\r\n");
 		}
 	}

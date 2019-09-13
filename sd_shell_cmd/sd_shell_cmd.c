@@ -33,6 +33,10 @@ extern windsensor_t *wind;
 #ifdef USE_BLE_MODULE
 #include "nina-b3.h"
 #endif
+#ifdef USE_ADC_MODULE
+#include "adc.h"
+extern rudder_t *rudder;
+#endif
 extern struct ch_semaphore usart1_semaph;
 
 output_t *output;
@@ -70,7 +74,7 @@ static const ShellCommand commands[] = {
 		{ "write", cmd_write },
 #endif
 #ifdef USE_ADC_MODULE
-		{"adc", cmd_adc },
+		//{"adc", cmd_adc },
 #endif
 		{ NULL, NULL }
 };
@@ -101,6 +105,7 @@ static THD_FUNCTION(output_thread, arg) {
 		//wdgReset(&WDGD1);
 		palToggleLine(LINE_GREEN_LED);
 		chThdSleepMilliseconds(5);
+#ifdef USE_BNO055_MODULE
 		switch (output->type){
 		case OUTPUT_NONE:
 			break;
@@ -115,10 +120,24 @@ static THD_FUNCTION(output_thread, arg) {
 		default:
 			break;
 		}
+#endif
+
+#ifdef USE_RUDDER_MODULE
+		switch (output->type){
+		case OUTPUT_NONE:
+			break;
+		case OUTPUT_RUDDER_CALIB:
+			adc_print_rudder_info(rudder);
+			break;
+		default:
+			break;
+		}
+#endif
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 	}
 }
 
+#ifdef USE_BNO055_MODULE
 uint8_t output_all_calib(void){
 	chSemWait(&usart1_semaph);
 	chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"calib_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
@@ -132,7 +151,7 @@ uint8_t output_all_calib(void){
 	chprintf(SHELL_IFACE, "}\r\n\t}");
 	chSemSignal(&usart1_semaph);
 }
-
+#endif
 
 /*
 void send_data(uint8_t stream){
@@ -256,7 +275,6 @@ void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]) {
 	(void) argc;
 	(void) argv;
 	stop_all_tests();
-	bno055->check_calib_coefs = 0;
 	chprintf(chp, "Stopped all outputs\n\r");
 }
 
@@ -425,7 +443,9 @@ void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
 #endif
 void toggle_test_output(void) {
 	output->type = OUTPUT_TEST;
+#ifdef USE_BNO055_MODULE
 	bno055->read_type = OUTPUT_TEST;
+#endif
 	output->service = 0;
 	output->test = (~output->test) & 0x01;
 }
@@ -450,7 +470,9 @@ void stop_all_tests(void) {
 		output->type = OUTPUT_SERVICE;
 	}else{
 		output->type = OUTPUT_NONE;
+#ifdef USE_BNO055_MODULE
 		bno055->read_type = OUTPUT_NONE;
+#endif
 	}
 }
 

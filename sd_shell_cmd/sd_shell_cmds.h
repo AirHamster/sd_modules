@@ -21,7 +21,7 @@ enum output_threads{
 	OUTPUT_GYRO_CALIB,
 	OUTPUT_ACCEL_CALIB,
 	OUTPUT_ALL_CALIB,
-
+	OUTPUT_RUDDER_CALIB
 };
 
 typedef struct{
