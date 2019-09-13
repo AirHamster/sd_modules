@@ -16,23 +16,18 @@
 #include "shell.h"
 #include "chprintf.h"
 
+ble_t *ble;
 static const SerialConfig nina_config =
 		{ 115200, 0, USART_CR2_STOP1_BITS, 0 };
 
 static void nina_init_module(void);
-static void nina_get_discoverable_status(void);
 static THD_WORKING_AREA(ble_thread_wa, 4096);
 static THD_FUNCTION(ble_thread, arg);
-
-static void nina_get_discoverable_status(void){
-	chprintf(NINA_IFACE, "at\r");
-}
 
 void start_ble_module(void){
 	chThdCreateStatic(ble_thread_wa, sizeof(ble_thread_wa), NORMALPRIO + 1,
 			ble_thread, NULL);
 }
-
 
 /*
  * Thread to process data collection and filtering from NEO-M8P
@@ -44,7 +39,7 @@ static THD_FUNCTION(ble_thread, arg) {
 	chRegSetThreadName("BLE Thread");
 
 	nina_init_module();
-	systime_t prev = chVTGetSystemTime(); // Current system time.
+	//systime_t prev = chVTGetSystemTime(); // Current system time.
 	while (true) {
 		token = sdGet(&NINA_IF);
 		chprintf((BaseSequentialStream*) &SD1, "Token: %c\r\n", token);
@@ -53,12 +48,10 @@ static THD_FUNCTION(ble_thread, arg) {
 	}
 }
 
+void nina_send_at(void){
+	chprintf(NINA_IFACE, "AT\r");
+}
+
 static void nina_init_module(void){
-	chThdSleepMilliseconds(500);
 	sdStart(&NINA_IF, &nina_config);
-	palSetLine(LINE_ORANGE_LED);
-	chThdSleepMilliseconds(500);
-	//palClearLine(LINE_ORANGE_LED);
-	chThdSleepMilliseconds(500);
-	nina_get_discoverable_status();
 }

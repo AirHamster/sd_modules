@@ -33,6 +33,10 @@ extern windsensor_t *wind;
 #include "bno055_i2c.h"
 #include "bno055.h"
 extern bno055_t *bno055;
+#endif
+#ifdef USE_BLE_MODULE
+#include "nina-b3.h"
+extern ble_t *ble;
 #endif //USE_BNO055_MODULE
 #ifdef USE_ADC_MODULE
 #include "adc.h"
@@ -41,6 +45,7 @@ extern rudder_t *rudder;
 #ifdef USE_EEPROM_MODULE
 #include "eeprom.h"
 #endif //USE_EEPROM_MODULE
+
 extern struct ch_semaphore usart1_semaph;
 
 void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]) {
@@ -56,6 +61,9 @@ void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]) {
 #endif
 #ifdef USE_MICROSD_MODULE
 			chprintf(chp, "  - microsd info|mount|umount|mkfs|ls|tree|cat\n\r");
+#endif
+#ifdef USE_BLE_MODULE
+			chprintf(chp, "  - ble AT|NULL|NULL\n\r");
 #endif
 #ifdef USE_WINDSENSOR_MODULE
 			chprintf(chp, "  - wind\n\r");
@@ -190,6 +198,29 @@ void cmd_gps(BaseSequentialStream* chp, int argc, char* argv[]) {
 }
 #endif
 
+#ifdef USE_BLE_MODULE
+void cmd_ble(BaseSequentialStream* chp, int argc, char* argv[]) {
+	if (output->type != OUTPUT_SERVICE) {
+		return;
+	}
+
+	if (argc != 0) {
+			if (strcmp(argv[0], "help") == 0) {
+				chprintf(chp,
+						"Usage: gyro status|calibrate|get_cal_params|write_cal_params\r\n");
+			} else if (strcmp(argv[0], "calibrate") == 0) {
+				chprintf(chp, "Starting gyro calibration routine\r\n");
+				bno055_start_calibration(bno055);
+				output->type = OUTPUT_ALL_CALIB;
+			} else if (strcmp(argv[0], "get_cal_params") == 0) {
+				chprintf(chp, "BNO055 calibration parameters:\r\n");
+			}
+	}
+
+}
+#endif
+
+
 #ifdef USE_MICROSD_MODULE
 void cmd_microsd(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (output->type != OUTPUT_SERVICE) {
@@ -197,10 +228,10 @@ void cmd_microsd(BaseSequentialStream* chp, int argc, char* argv[]) {
 	}
 	if (argc != 0) {
 		if (strcmp(argv[0], "help") == 0) {
-			chprintf(chp,
-					"Usage: - microsd info|mount|umount|mkfs|ls|tree|cat\n\r");
-		} else if (strcmp(argv[0], "info") == 0) {
-			chprintf(chp, "microSD information:\r\n");
+			chprintf(chp, "Usage: - ble AT|NULL|NULL\n\r");
+		} else if (strcmp(argv[0], "AT") == 0) {
+			chprintf(chp, "Sending AT request:\r\n");
+			nina_send_at();
 		} else if (strcmp(argv[0], "mount") == 0) {
 			chprintf(chp, "Trying to mount SD card...\r\n");
 		} else if (strcmp(argv[0], "umount") == 0) {

@@ -30,6 +30,9 @@ extern windsensor_t *wind;
 #ifdef USE_SERVICE_MODE
 #include "service_mode.h"
 #endif
+#ifdef USE_BLE_MODULE
+#include "nina-b3.h"
+#endif
 #ifdef USE_ADC_MODULE
 #include "adc.h"
 extern rudder_t *rudder;
@@ -48,10 +51,17 @@ static const ShellCommand commands[] = {
 		{ "start", cmd_start },
 		{ "c", cmd_c },
 #ifdef USE_SERVICE_MODE
-	/*	{ "service", cmd_service },
+		{ "service", cmd_service },
+#ifdef USE_BNO055_MODULE
 		{ "gyro", cmd_gyro },
-		{ "microsd", cmd_microsd },*/
-#endif
+#endif //USE_BNO055_MODULE
+#ifdef USE_MICROSD_MODULE
+		{ "microsd", cmd_microsd },
+#endif //USE_MICROSD_MODULE
+#ifdef USE_BLE_MODULE
+		{ "ble", cmd_ble },
+#endif //USE_BLE_MODULE
+#endif //USE_SERVICE_MODE
 
 #ifdef USE_XBEE_868_MODULE
 		{ "xbee", cmd_xbee },
