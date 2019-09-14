@@ -10,7 +10,7 @@
 #include "shell.h"
 #include "chprintf.h"
 
-#ifdef COACH_MODULE
+#ifdef SD_MODULE_TRAINER
 #define EEPROM_ADDRESS 0x57
 #endif
 
