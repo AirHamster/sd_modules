@@ -51,7 +51,7 @@ static const ShellCommand commands[] = {
 		{ "start", cmd_start },
 		{ "c", cmd_c },
 #ifdef USE_SERVICE_MODE
-		//{ "service", cmd_service },
+		{ "service", cmd_service },
 #ifdef USE_BNO055_MODULE
 		{ "gyro", cmd_gyro },
 #endif //USE_BNO055_MODULE
@@ -59,7 +59,7 @@ static const ShellCommand commands[] = {
 		{ "microsd", cmd_microsd },
 #endif //USE_MICROSD_MODULE
 #ifdef USE_BLE_MODULE
-	//	{ "ble", cmd_ble },
+		{ "ble", cmd_ble },
 #endif //USE_BLE_MODULE
 #endif //USE_SERVICE_MODE
 
