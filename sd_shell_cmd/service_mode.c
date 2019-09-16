@@ -207,13 +207,13 @@ void cmd_ble(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
 			if (strcmp(argv[0], "help") == 0) {
 				chprintf(chp,
-						"Usage: gyro status|calibrate|get_cal_params|write_cal_params\r\n");
-			} else if (strcmp(argv[0], "calibrate") == 0) {
-				chprintf(chp, "Starting gyro calibration routine\r\n");
-				bno055_start_calibration(bno055);
-				output->type = OUTPUT_ALL_CALIB;
-			} else if (strcmp(argv[0], "get_cal_params") == 0) {
-				chprintf(chp, "BNO055 calibration parameters:\r\n");
+						"Usage: ble at|init\r\n");
+			} else if (strcmp(argv[0], "at") == 0) {
+				chprintf(chp, "sending AT request\r\n");
+				nina_send_at();
+			} else if (strcmp(argv[0], "init") == 0) {
+				chprintf(chp, "Initialization NINA module\r\n");
+				nina_init_module();
 			}
 	}
 
