@@ -97,7 +97,7 @@ void start_json_module(void){
 
 static THD_FUNCTION(output_thread, arg) {
 	(void)arg;
-
+	uint8_t i = 0;
 	chRegSetThreadName("Data output");
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 
@@ -116,6 +116,9 @@ static THD_FUNCTION(output_thread, arg) {
 			break;
 		case OUTPUT_ALL_CALIB:
 			output_all_calib();
+			break;
+		case OUTPUT_BLE:
+			nina_send_one(i++);
 			break;
 		default:
 			break;
@@ -450,6 +453,11 @@ void toggle_test_output(void) {
 	output->test = (~output->test) & 0x01;
 }
 
+void toggle_ble_output(void) {
+	output->service = 0;
+	output->type = OUTPUT_BLE;
+}
+
 void toggle_gps_output(void) {
 	output->service = 0;
 	output->gps = (~output->gps) & 0x01;
@@ -464,6 +472,8 @@ void toggle_gyro_output(void) {
 	output->service = 0;
 	output->gyro = (~output->gyro) & 0x01;
 }
+
+
 
 void stop_all_tests(void) {
 	if (output->type == OUTPUT_ALL_CALIB){

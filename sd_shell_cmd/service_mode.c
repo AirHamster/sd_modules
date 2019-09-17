@@ -207,13 +207,22 @@ void cmd_ble(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
 			if (strcmp(argv[0], "help") == 0) {
 				chprintf(chp,
-						"Usage: ble at|init\r\n");
+						"Usage: ble at|init|one|two\r\n");
 			} else if (strcmp(argv[0], "at") == 0) {
 				chprintf(chp, "sending AT request\r\n");
 				nina_send_at();
 			} else if (strcmp(argv[0], "init") == 0) {
 				chprintf(chp, "Initialization NINA module\r\n");
 				nina_init_module();
+			} else if (strcmp(argv[0], "one") == 0) {
+				chprintf(chp, "Sending one\r\n");
+				nina_send_one(1);
+			}else if (strcmp(argv[0], "two") == 0) {
+				chprintf(chp, "sending two\r\n");
+				nina_send_two();
+			}else if (strcmp(argv[0], "start") == 0) {
+				chprintf(chp, "starting\r\n");
+				toggle_ble_output();
 			}
 	}
 
