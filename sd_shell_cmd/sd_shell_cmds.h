@@ -21,7 +21,8 @@ enum output_threads{
 	OUTPUT_GYRO_CALIB,
 	OUTPUT_ACCEL_CALIB,
 	OUTPUT_ALL_CALIB,
-	OUTPUT_RUDDER_CALIB
+	OUTPUT_RUDDER_CALIB,
+	OUTPUT_BLE
 };
 
 typedef struct{
@@ -53,6 +54,7 @@ uint8_t output_gyro_calib(void);
 uint8_t output_all_calib(void);
 void start_json_module(void);
 void toggle_test_output(void);
+void toggle_ble_output(void);
 void toggle_gps_output(void);
 void toggle_ypr_output(void);
 void toggle_gyro_output(void);

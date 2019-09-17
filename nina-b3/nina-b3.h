@@ -26,10 +26,19 @@ typedef struct{
 	uint8_t max_lenth;
 }ble_charac_t;
 
+typedef struct {
+	uint16_t value_handle;
+	uint16_t cccd_handle;
+	uint8_t parsed;
+} ble_temp_charac_t;
+
 #define NUM_OF_CHARACTS 10
 void start_ble_module(void);
 void nina_send_at(void);
 void nina_init_module(void);
+void nina_fill_memory(void);
+void nina_send_one(uint8_t data);
+void nina_send_two(void);
 uint8_t nina_parse_command(int8_t *strp);
 uint8_t nina_init_services(void);
 uint8_t nina_wait_response(int8_t *at_command);
