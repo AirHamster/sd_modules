@@ -171,7 +171,7 @@ static THD_FUNCTION(output_thread, arg) {
 		case OUTPUT_NONE:
 			break;
 		case OUTPUT_LAG_CALIB:
-			adc_print_rudder_info(lag);
+			//adc_print_rudder_info(lag);
 			break;
 		case OUTPUT_LAG_BLE:
 			send_lag_over_ble(lag);
@@ -263,8 +263,10 @@ uint32_t convert_to_ble_type(float value){
 }
 
 void copy_to_ble(void){
+#ifdef SD_MODULE_TRAINER
 	hdg->value = convert_to_ble_type(bno055->d_euler_hpr.h);
 	heel->value = convert_to_ble_type(bno055->d_euler_hpr.r);
+#endif
 }
 
 

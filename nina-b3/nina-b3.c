@@ -211,6 +211,7 @@ uint8_t nina_parse_command(int8_t *strp) {
 }
 
 void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t value){
+#ifdef SD_MODULE_TRAINER
 	if ((remote_lag->is_connected == 1) && (remote_lag->conn_handle == conn_handle)){
 		r_lag->meters = (float)((value >> 8) + ((float)(value & 0xFF) / 100.0));
 		bs->value = value;
@@ -222,6 +223,7 @@ void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t v
 	//	chprintf((BaseSequentialStream*) &SD1, "R rdr %f\r\n", r_rudder->degrees);
 	//	chSemSignal(&usart1_semaph);
 	}
+#endif
 }
 
 void nina_connect(uint8_t *addr, uint8_t type){
@@ -257,6 +259,7 @@ void nina_unregister_peer(uint8_t conn_handle){
 }
 
 void nina_register_remote_dev(uint8_t conn_handle, uint8_t type, int8_t *addr){
+#ifdef SD_MODULE_TRAINER
 	if (strcmp(addr, "CCF95781688F") == 0){
 		remote_lag->conn_handle = conn_handle;
 
@@ -276,6 +279,9 @@ void nina_register_remote_dev(uint8_t conn_handle, uint8_t type, int8_t *addr){
 	else{
 		nina_register_peer(conn_handle, type, addr);
 	}
+#else
+	nina_register_peer(conn_handle, type, addr);
+#endif
 }
 
 void nina_get_remote_characs(uint16_t handle, uint16_t uuid){
@@ -290,6 +296,7 @@ void nina_get_remote_characs(uint16_t handle, uint16_t uuid){
 
 void nina_unregister_remote_dev(uint8_t conn_handle){
 	(void)conn_handle;
+#ifdef SD_MODULE_TRAINER
 	if (remote_lag->conn_handle == conn_handle) {
 		chprintf((BaseSequentialStream*) &SD1, "Disconnected to %d %d %s\r\n",
 				remote_lag->conn_handle, remote_lag->type);
@@ -306,6 +313,7 @@ void nina_unregister_remote_dev(uint8_t conn_handle){
 		remote_rudder->is_connected = 0;
 		remote_rudder->type = 0;
 	}
+#endif
 }
 
 void nina_fill_memory(void){
@@ -579,8 +587,10 @@ uint8_t nina_init_services(void){
 }
 #endif
 void nina_send_all(ble_peer_t *peer){
+#ifdef SD_MODULE_TRAINER
 	if (peer->is_connected == 1){
 		chSemWait(&usart1_semaph);
+
 	chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle, bs->cccd_handle, bs->value);
 	chSemSignal(&usart1_semaph);
 	chThdSleepMilliseconds(5);
@@ -596,6 +606,7 @@ void nina_send_all(ble_peer_t *peer){
 	chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle, rdr->cccd_handle, heel->value);
 	chSemSignal(&usart1_semaph);
 }
+#endif
 }
 void nina_send_two(void){
 	chprintf(NINA_IFACE, "AT+UBTGSN=3,32,FF00FF\r");
