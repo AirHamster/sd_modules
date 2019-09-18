@@ -252,13 +252,29 @@ void send_data(uint8_t stream){
 	xbee_send_rf_message(xbee, databuff, 34);
 }
 */
-uint32_t convert_to_ble_type(float value){
-	uint32_t val;
-	uint16_t cel;
+int32_t convert_to_ble_type(float value){
+	int32_t val;
+	int16_t cel;
 	uint8_t drob;
-	cel = (uint16_t)value;
+
+	if(value < 0.0){
+		value = value * -1;
+		cel = (int16_t)(value);
+		drob = (uint8_t)((value - (float)cel) * 100);
+		chprintf(SHELL_IFACE, "cel %x\r\n", cel);
+			chprintf(SHELL_IFACE, "drob %x\r\n", drob);
+		cel = cel * -1;
+		val = cel << 8 | drob;
+		val &= 0xFFFFFF;
+	}else{
+		cel = (int16_t)(value);
 	drob = (uint8_t)((value - (float)cel) * 100);
 	val = cel << 8 | drob;
+	}
+
+
+
+	chprintf(SHELL_IFACE, "val %x\r\n", val);
 	return val;
 }
 

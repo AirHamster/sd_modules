@@ -235,7 +235,7 @@ void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr){
 	peer->type = type;
 	memcpy(peer->addr, addr, 12);
 	peer->is_connected = 1;
-	chprintf((BaseSequentialStream*) &SD1, "Connected %d %d %s\r\n", peer->conn_handle, peer->type, peer->addr);
+	chprintf((BaseSequentialStream*) &SD1, "Connected peer %d %d %s\r\n", peer->conn_handle, peer->type, peer->addr);
 #ifdef SD_MODULE_TRAINER
 	output->type = OUTPUT_BLE;
 #endif
@@ -312,6 +312,14 @@ void nina_unregister_remote_dev(uint8_t conn_handle){
 
 		remote_rudder->is_connected = 0;
 		remote_rudder->type = 0;
+	}else
+	{
+		chprintf((BaseSequentialStream*) &SD1, "Disconnected peer %d %d %s\r\n", peer->conn_handle, peer->type, peer->addr);
+		peer->is_connected = 0;
+		peer->conn_handle = 0;
+		peer->type = 0;
+		memset(peer->addr, 0, 12);
+		output->type = OUTPUT_NONE;
 	}
 #endif
 }
@@ -392,6 +400,7 @@ uint8_t nina_add_charac(ble_charac_t *charac, uint16_t uuid, uint8_t properties,
 			sec_read, sec_write, def_val, read_auth, max_len);
 	while(timeout++ < 100){
 		if (charac_temporary->parsed == 1){
+			chprintf((BaseSequentialStream*) &SD1, "Handlers %d %d\r\n", charac_temporary->cccd_handle, charac_temporary->value_handle);
 			charac->cccd_handle = charac_temporary->cccd_handle;
 			charac->value_handle = charac_temporary->value_handle;
 			charac_temporary->parsed = 0;
@@ -535,7 +544,7 @@ uint8_t nina_init_services(void){
 	chThdSleepMilliseconds(50);
 	//# TWA_TG - uuid 3A07
 	//# Response +UBTGCHA:TWD_HAND,CCCD_HAND (zero if not use)
-	nina_add_charac(thdg, 0x3A07, 10, 1, 1, 0x0F00FF, 0, 3);
+	nina_add_charac(twa_tg, 0x3A07, 10, 1, 1, 0x0F00FF, 0, 3);
 	/*
 	chprintf(NINA_IFACE, "AT+UBTGCHA=3A07,10,1,1,0F00FF,0,3\r");
 	if (nina_wait_response("+UBTGCHA\r") != NINA_SUCCESS) {
@@ -545,7 +554,7 @@ uint8_t nina_init_services(void){
 	chThdSleepMilliseconds(50);
 	//# BS_TG - uuid 3A08
 	//# Response +UBTGCHA:TWD_HAND,CCCD_HAND (zero if not use)
-	nina_add_charac(thdg, 0x3A08, 10, 1, 1, 0x0F00FF, 0, 3);
+	nina_add_charac(bs_tg, 0x3A08, 10, 1, 1, 0x0F00FF, 0, 3);
 	/*
 	chprintf(NINA_IFACE, "AT+UBTGCHA=3A08,10,1,1,0F00FF,0,3\r");
 	if (nina_wait_response("+UBTGCHA\r") != NINA_SUCCESS) {
@@ -555,7 +564,7 @@ uint8_t nina_init_services(void){
 	chThdSleepMilliseconds(50);
 	//# HDG - uuid 3A09
 	//# Response +UBTGCHA:TWD_HAND,CCCD_HAND (zero if not use)
-	nina_add_charac(thdg, 0x3A09, 10, 1, 1, 0x0F00FF, 0, 3);
+	nina_add_charac(hdg, 0x3A09, 10, 1, 1, 0x0F00FF, 0, 3);
 	/*
 	chprintf(NINA_IFACE, "AT+UBTGCHA=3A09,10,1,1,0F00FF,0,3\r");
 	if (nina_wait_response("+UBTGCHA\r") != NINA_SUCCESS) {
@@ -565,7 +574,7 @@ uint8_t nina_init_services(void){
 	chThdSleepMilliseconds(50);
 	//# HEEL - uuid 3A0A
 		//# Response +UBTGCHA:TWD_HAND,CCCD_HAND (zero if not use)
-	nina_add_charac(thdg, 0x3A0A, 10, 1, 1, 0x0F00FF, 0, 3);
+	nina_add_charac(heel, 0x3A0A, 10, 1, 1, 0x0F00FF, 0, 3);
 	/*
 		chprintf(NINA_IFACE, "AT+UBTGCHA=3A0A,10,1,1,0F00FF,0,3\r");
 		if (nina_wait_response("+UBTGCHA\r") != NINA_SUCCESS) {
@@ -599,11 +608,11 @@ void nina_send_all(ble_peer_t *peer){
 	chSemSignal(&usart1_semaph);
 	chThdSleepMilliseconds(5);
 	chSemWait(&usart1_semaph);
-	chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle, rdr->cccd_handle, hdg->value);
+	chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle, hdg->cccd_handle, hdg->value);
 	chSemSignal(&usart1_semaph);
 	chThdSleepMilliseconds(5);
 	chSemWait(&usart1_semaph);
-	chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle, rdr->cccd_handle, heel->value);
+	chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle, heel->cccd_handle, heel->value);
 	chSemSignal(&usart1_semaph);
 }
 #endif

@@ -27,7 +27,7 @@ typedef struct{
 	uint16_t value_handle;
 	uint16_t cccd_handle;
 	uint16_t uuid;
-	uint32_t value;
+	int32_t value;
 	uint8_t properties;
 	uint8_t security_read;
 	uint8_t security_write;
