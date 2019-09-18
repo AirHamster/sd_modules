@@ -32,10 +32,20 @@ extern windsensor_t *wind;
 #endif
 #ifdef USE_BLE_MODULE
 #include "nina-b3.h"
+
+#endif
+#ifdef SD_SENSOR_BOX_RUDDER
+extern ble_charac_t *ble_rudder;
+extern rudder_t *rudder;
+#endif
+#ifdef SD_SENSOR_BOX_LAG
+#include "lag.h"
+extern ble_charac_t *ble_lag;
+extern lag_t *lag;
 #endif
 #ifdef USE_ADC_MODULE
 #include "adc.h"
-extern rudder_t *rudder;
+
 #endif
 extern struct ch_semaphore usart1_semaph;
 
@@ -125,13 +135,28 @@ static THD_FUNCTION(output_thread, arg) {
 		}
 #endif
 
-#ifdef USE_RUDDER_MODULE
+#ifdef SD_SENSOR_BOX_RUDDER
 		switch (output->type){
 		case OUTPUT_NONE:
 			break;
 		case OUTPUT_RUDDER_CALIB:
 			adc_print_rudder_info(rudder);
 			break;
+		case OUTPUT_RUDDER_BLE:
+			send_rudder_over_ble(rudder);
+		default:
+			break;
+		}
+#endif
+#ifdef SD_SENSOR_BOX_LAG
+		switch (output->type) {
+		case OUTPUT_NONE:
+			break;
+		case OUTPUT_LAG_CALIB:
+			adc_print_rudder_info(lag);
+			break;
+		case OUTPUT_LAG_BLE:
+			send_lag_over_ble(lag);
 		default:
 			break;
 		}
@@ -249,6 +274,28 @@ void send_json(void)
 		chprintf(SHELL_IFACE, "}\r\n\t}");
 		chSemSignal(&usart1_semaph);
 }
+
+#ifdef SD_SENSOR_BOX_LAG
+void send_lag_over_ble(lag_t *lag){
+	uint16_t spd_cel;
+	uint8_t spd_drob;
+	spd_cel = (uint16_t)lag->meters;
+	spd_drob = (uint8_t)((lag->meters - (float)spd_cel) * 100);
+	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x  ", spd_cel, spd_drob, spd_cel, spd_drob);
+	nina_notify(ble_lag, spd_cel, spd_drob);
+}
+#endif
+
+#ifdef SD_SENSOR_BOX_RUDDER
+void send_rudder_over_ble(rudder_t *rudder){
+	uint16_t degrees_cel;
+	uint8_t degrees_drob;
+	degrees_cel = (uint16_t)rudder->degrees;
+	degrees_drob = (uint8_t)((rudder->degrees - (float)degrees_cel) * 100);
+	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x", degrees_cel, degrees_drob, degrees_cel, degrees_drob);
+	nina_notify(ble_rudder, degrees_cel, degrees_drob);
+}
+#endif
 
 void cmd_start(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {

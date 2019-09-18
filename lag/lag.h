@@ -8,9 +8,10 @@
 #ifndef SD_MODULES_LAG_LAG_H_
 #define SD_MODULES_LAG_LAG_H_
 
+#define LAG_MAGIC_CONST		0.1f
 typedef struct{
 	uint16_t hz;
-	uint16_t meters;
+	float meters;
 	uint16_t millis;
 	uint8_t update_flag;
 	uint8_t rtc_cnt;

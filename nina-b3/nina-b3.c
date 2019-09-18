@@ -15,6 +15,7 @@
 #include "hal.h"
 #include "shell.h"
 #include "chprintf.h"
+#include "sd_shell_cmds.h"
 
 #ifdef SD_MODULE_TRAINER
 	ble_charac_t *thdg;
@@ -27,22 +28,25 @@
 	ble_charac_t *bs_tg;
 	ble_charac_t *hdg;
 	ble_charac_t *heel;
-	ble_temp_charac_t *charac_temporary;
 	ble_charac_t *charac_array[NUM_OF_CHARACTS];
 #endif
 
 #ifdef SD_SENSOR_BOX_RUDDER
-
+	ble_charac_t *ble_rudder;
+	ble_charac_t *charac_array[NUM_OF_CHARACTS];
 #endif
 
-#ifdef SD_SENSOR_BOX_LOG
-
+#ifdef SD_SENSOR_BOX_LAG
+	ble_charac_t *ble_lag;
+	ble_charac_t *charac_array[NUM_OF_CHARACTS];
 #endif
 
 #ifdef SD_SENSOR_BOX_WIND
 
 #endif
-
+	extern output_t *output;
+	ble_temp_charac_t *charac_temporary;
+ble_peer_t *peer;
 ble_t *ble;
 static const SerialConfig nina_config =
 		{ 115200, 0, USART_CR2_STOP1_BITS, 0 };
@@ -99,7 +103,7 @@ static THD_FUNCTION(ble_thread, arg) {
 	uint8_t token;
 	chRegSetThreadName("BLE Conrol Thread");
 	nina_fill_memory();
-
+	nina_init_services();
 	//systime_t prev = chVTGetSystemTime(); // Current system time.
 	while (true) {
 		chThdSleepMilliseconds(1000);
@@ -112,8 +116,8 @@ uint8_t nina_parse_command(int8_t *strp) {
 	uint8_t scan_res;
 	uint8_t scanned_vals[32];
 	uint32_t val;
-	uint64_t addr;
-	//chprintf((BaseSequentialStream*) &SD1, "Parsing\r\n");
+	int8_t addr[16] = {0};
+	//chprintf((BaseSequentialStream*) &SD1, "Parsing %s\r\n", strp);
 	scan_res = sscanf(strp, "+UBTGSN:%d,%d,%x\r", &scanned_vals[0], &scanned_vals[1],	&val);
 	if (scan_res == 1) {
 
@@ -142,22 +146,33 @@ uint8_t nina_parse_command(int8_t *strp) {
 
 		return 1;
 	}
-	scan_res = sscanf(strp, "+UUBTACLC:%d,%d,%xr\r", &scanned_vals[0],
-			&scanned_vals[1], &addr);
+
+/*	if (strstr(strp, "UUBTACLC:") != NULL){
+		chprintf((BaseSequentialStream*) &SD1, "Scanned %s\r\n", strp+12);
+		strncpy(addr, strp+(strlen(strp)-1), 12);
+		chprintf((BaseSequentialStream*) &SD1, "Copied %s\r\n", addr);
+		scanned_vals[0] = atoi(strp+12);
+		chprintf((BaseSequentialStream*) &SD1, "scanned vla 0 %d\r\n", scanned_vals[0]);
+		scanned_vals[1] = atoi(strp+11);
+				chprintf((BaseSequentialStream*) &SD1, "scanned vla 1 %d\r\n", scanned_vals[1]);
+		return 1;
+	}*/
+
+	scan_res = sscanf(strp, "\r\n+UUBTACLC:%d,%d,%[^r]r\r\n", &scanned_vals[0], &scanned_vals[1], addr);
+	//chprintf((BaseSequentialStream*) &SD1, "Scanned %d\r\n", scan_res);
 	if (scan_res == 3) {
-		chprintf((BaseSequentialStream*) &SD1, "Scanned connected dev %d %d %x\r\n", scanned_vals[0], scanned_vals[1], addr);
+		chprintf((BaseSequentialStream*) &SD1, "Scanned connected dev %d %d %s\r\n", scanned_vals[0], scanned_vals[1], addr);
 		nina_register_peer(scanned_vals[0], scanned_vals[1], addr);
 		return 1;
 	}
-	scan_res = sscanf(strp, "+UUBTACLC:%d,%d,%xp\r", &scanned_vals[0],
-			&scanned_vals[1], &addr);
+	scan_res = sscanf(strp, "\r\n+UUBTACLC:%d,%d,%[^p]p\r\n", &scanned_vals[0], &scanned_vals[1], addr);
 	if (scan_res == 3) {
-		chprintf((BaseSequentialStream*) &SD1, "Scanned connected dev %d %d %x\r\n", scanned_vals[0], scanned_vals[1], addr);
+	//	chprintf((BaseSequentialStream*) &SD1, "Scanned connected dev %d %d %s\r\n", scanned_vals[0], scanned_vals[1], addr);
 		nina_register_peer(scanned_vals[0], scanned_vals[1], addr);
 		return 1;
 	}
 
-	scan_res = sscanf(strp, "+UUBTACLD:%d\r", &scanned_vals[0]);
+	scan_res = sscanf(strp, "\r\n+UUBTACLD:%d\r", &scanned_vals[0]);
 	if (scan_res == 1) {
 		nina_unregister_peer(scanned_vals[0]);
 		return 1;
@@ -178,15 +193,34 @@ uint8_t nina_parse_command(int8_t *strp) {
 	return -1;
 }
 
-void nina_register_peer(uint8_t conn_handle, uint8_t type, uint64_t addr){
+void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr){
+	peer->conn_handle = conn_handle;
+	peer->type = type;
+	memcpy(peer->addr, addr, 12);
+	peer->is_connected = 1;
+	chprintf((BaseSequentialStream*) &SD1, "Connected %d %d %s\r\n", peer->conn_handle, peer->type, peer->addr);
+#ifdef SD_SENSOR_BOX_RUDDER
+	output->type = OUTPUT_RUDDER_BLE;
+#endif
+#ifdef SD_SENSOR_BOX_LAG
+	output->type = OUTPUT_LAG_BLE;
+#endif
 
 }
 
 void nina_unregister_peer(uint8_t conn_handle){
-
+	(void)conn_handle;
+	chprintf((BaseSequentialStream*) &SD1, "Disconnected %d %d %s\r\n", peer->conn_handle, peer->type, peer->addr);
+	peer->is_connected = 0;
+	peer->conn_handle = 0;
+	peer->type = 0;
+	memset(peer->addr, 0, 12);
+	output->type = OUTPUT_NONE;
 }
 
 void nina_fill_memory(void){
+	charac_temporary = calloc(1, sizeof(ble_temp_charac_t));
+	peer = calloc(1, sizeof(ble_peer_t));
 #ifdef SD_MODULE_TRAINER
 	thdg = calloc(1, sizeof(ble_charac_t));
 	rdr = calloc(1, sizeof(ble_charac_t));
@@ -198,7 +232,7 @@ void nina_fill_memory(void){
 	bs_tg = calloc(1, sizeof(ble_charac_t));
 	hdg = calloc(1, sizeof(ble_charac_t));
 	heel = calloc(1, sizeof(ble_charac_t));
-	charac_temporary = calloc(1, sizeof(ble_temp_charac_t));
+
 
 	charac_array[0] = thdg;
 	charac_array[1] = rdr;
@@ -214,11 +248,13 @@ void nina_fill_memory(void){
 #endif
 
 #ifdef SD_SENSOR_BOX_RUDDER
-
+	ble_rudder = calloc(1, sizeof(ble_charac_t));
+	charac_array[0] = ble_rudder;
 #endif
 
-#ifdef SD_SENSOR_BOX_LOG
-
+#ifdef SD_SENSOR_BOX_LAG
+	ble_lag = calloc(1, sizeof(ble_charac_t));
+	charac_array[0] = ble_lag;
 #endif
 
 #ifdef SD_SENSOR_BOX_WIND
@@ -265,6 +301,9 @@ uint8_t nina_add_charac(ble_charac_t *charac, uint16_t uuid, uint8_t properties,
 	//nina_wait_charac_handlers(charac);
 }
 
+void nina_notify(ble_charac_t *ble_rudder, int16_t cel, uint8_t drob){
+	chprintf(NINA_IFACE, "AT+UBTGSN=%d,%02d,%04x%02x\r", peer->conn_handle, ble_rudder->cccd_handle, cel, drob);
+}
 
 void nina_wait_charac_handlers(ble_charac_t *charac){
 	uint16_t val_handle;
@@ -339,7 +378,7 @@ uint8_t nina_init_services(void){
 	chprintf(NINA_IFACE, "AT+UBTGCHA=3A01,10,1,1,0F00FF,0,3\r");
 	if (nina_wait_response("+UBTGCHA\r") != NINA_SUCCESS) {
 		return -1;
-	}
+	}uint8_t
 	*/
 	chThdSleepMilliseconds(200);
 	//# RDR - uuid 3A02
@@ -454,7 +493,7 @@ void nina_send_two(void){
 }
 
 #ifdef SD_SENSOR_BOX_RUDDER
-void nina_init_services(void){
+uint8_t nina_init_services(void){
 	chprintf(NINA_IFACE, "AT+UBTLE=2\r");
 	if (nina_wait_response("+UBTLE\r") != NINA_SUCCESS) {
 		return -1;
@@ -470,7 +509,7 @@ void nina_init_services(void){
 		return -1;
 	}
 
-	chThdSleepMilliseconds(200);
+	chThdSleepMilliseconds(1000);
 	chprintf(NINA_IFACE, "AT+UBTLN=FastSkipper-RUDDER\r");
 	if (nina_wait_response("+UBTLN\r") != NINA_SUCCESS) {
 		return -1;
@@ -508,14 +547,15 @@ void nina_init_services(void){
 */
 	//# RDR - uuid 5A01
 	//# Response +UBTGCHA:THDG_HAND,CCCD_HAND (zero if not use)
-	chprintf(NINA_IFACE, "AT+UBTGCHA=5A01,10,1,1,0F00FF,0,3\r");
+	nina_add_charac(ble_rudder, 0x5A01, 10, 1, 1, 0x0F00FF, 0, 3);
+	/*chprintf(NINA_IFACE, "AT+UBTGCHA=5A01,10,1,1,0F00FF,0,3\r");
 	if (nina_wait_response("+UBTGCHA\r") != NINA_SUCCESS) {
 		return -1;
-	}
+	}*/
 	chThdSleepMilliseconds(200);
 
 		//# Save settings and reboot
-		chprintf(NINA_IFACE, "AT&W\r");
+	/*	chprintf(NINA_IFACE, "AT&W\r");
 		if (nina_wait_response("AT&W\r") != NINA_SUCCESS) {
 			return -1;
 		}
@@ -524,12 +564,12 @@ void nina_init_services(void){
 		if (nina_wait_response("+CPWROFF\r") != NINA_SUCCESS) {
 			return -1;
 		}
-		chThdSleepMilliseconds(200);
+		chThdSleepMilliseconds(200);*/
 }
 #endif
 
 #ifdef SD_SENSOR_BOX_LAG
-void nina_init_services(void){
+uint8_t nina_init_services(void){
 	chprintf(NINA_IFACE, "AT+UBTLE=2\r");
 	if (nina_wait_response("+UBTLE\r") != NINA_SUCCESS) {
 		return -1;
@@ -545,7 +585,7 @@ void nina_init_services(void){
 		return -1;
 	}
 
-	chThdSleepMilliseconds(200);
+	chThdSleepMilliseconds(1000);
 	chprintf(NINA_IFACE, "AT+UBTLN=FastSkipper-LOG\r");
 	if (nina_wait_response("+UBTLN\r") != NINA_SUCCESS) {
 		return -1;
@@ -583,14 +623,15 @@ void nina_init_services(void){
 */
 	//# LOG - uuid 4A01
 	//# Response +UBTGCHA:THDG_HAND,CCCD_HAND (zero if not use)
-	chprintf(NINA_IFACE, "AT+UBTGCHA=4A01,10,1,1,0F00FF,0,3\r");
+	nina_add_charac(ble_lag, 0x4A01, 10, 1, 1, 0x0F00FF, 0, 3);
+/*	chprintf(NINA_IFACE, "AT+UBTGCHA=4A01,10,1,1,0F00FF,0,3\r");
 	if (nina_wait_response("+UBTGCHA\r") != NINA_SUCCESS) {
 		return -1;
-	}
-	chThdSleepMilliseconds(200);
+	}*/
+	//chThdSleepMilliseconds(200);
 
 		//# Save settings and reboot
-		chprintf(NINA_IFACE, "AT&W\r");
+/*		chprintf(NINA_IFACE, "AT&W\r");
 		if (nina_wait_response("AT&W\r") != NINA_SUCCESS) {
 			return -1;
 		}
@@ -598,8 +639,8 @@ void nina_init_services(void){
 		chprintf(NINA_IFACE, "AT+CPWROFF\r");
 		if (nina_wait_response("+CPWROFF\r") != NINA_SUCCESS) {
 			return -1;
-		}
-		chThdSleepMilliseconds(200);
+		}*/
+		//chThdSleepMilliseconds(200);
 }
 #endif
 
