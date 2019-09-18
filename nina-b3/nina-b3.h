@@ -27,7 +27,7 @@ typedef struct{
 	uint16_t value_handle;
 	uint16_t cccd_handle;
 	uint16_t uuid;
-	uint32_t value;
+	int32_t value;
 	uint8_t properties;
 	uint8_t security_read;
 	uint8_t security_write;
@@ -35,6 +35,20 @@ typedef struct{
 	uint8_t max_lenth;
 }ble_charac_t;
 
+typedef struct{
+	uint16_t conn_handle;
+	uint16_t attr_handle;
+	uint16_t properties;
+	uint16_t value_handle;
+	uint16_t uuid;
+}ble_remote_charac_t;
+
+typedef struct{
+	ble_remote_charac_t charac;
+	uint8_t is_connected;
+	uint8_t type;
+	uint16_t conn_handle;
+}ble_remote_t;
 typedef struct {
 	uint16_t value_handle;
 	uint16_t cccd_handle;
@@ -59,11 +73,16 @@ void start_ble_module(void);
 void nina_send_at(void);
 void nina_init_module(void);
 void nina_fill_memory(void);
-void nina_send_one(uint8_t data);
+void nina_send_all(ble_peer_t *peer);
 void nina_send_two(void);
 void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr);
 void nina_unregister_peer(uint8_t conn_handle);
-void nina_notify(ble_charac_t *ble_rudder, int16_t cel, uint8_t drob);
+void nina_notify(ble_charac_t *ble_rudder, int32_t val);
+void nina_connect(uint8_t *addr, uint8_t type);
+void nina_register_remote_dev(uint8_t conn_handle, uint8_t type, int8_t *addr);
+void nina_unregister_remote_dev(uint8_t conn_handle);
+void nina_get_remote_characs(uint16_t handle, uint16_t uuid);
+void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t value);
 uint8_t nina_parse_command(int8_t *strp);
 uint8_t nina_init_services(void);
 uint8_t nina_wait_response(int8_t *at_command);

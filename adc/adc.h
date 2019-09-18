@@ -23,5 +23,5 @@ typedef struct{
 void adc_print_rudder_info(rudder_t *rud);
 void adc_convert_to_rudder(uint16_t tmp, rudder_t *rud);
 void start_adc_module(void);
-
+void adc_update_rudder_struct(rudder_t *rud);
 #endif /* SD_MODULES_ADC_ADC_H_ */

@@ -32,7 +32,7 @@ extern windsensor_t *wind;
 #endif
 #ifdef USE_BLE_MODULE
 #include "nina-b3.h"
-
+extern ble_peer_t *peer;
 #endif
 #ifdef SD_SENSOR_BOX_RUDDER
 extern ble_charac_t *ble_rudder;
@@ -48,6 +48,17 @@ extern lag_t *lag;
 
 #endif
 extern struct ch_semaphore usart1_semaph;
+
+extern ble_charac_t *thdg;
+extern ble_charac_t *rdr;
+extern ble_charac_t *twd;
+extern ble_charac_t *tws;
+extern ble_charac_t *twa;
+extern ble_charac_t *bs;
+extern ble_charac_t *twa_tg;
+extern ble_charac_t *bs_tg;
+extern ble_charac_t *hdg;
+extern ble_charac_t *heel;
 
 output_t *output;
 char *complete_buffer[16];
@@ -71,6 +82,9 @@ static const ShellCommand commands[] = {
 #ifdef USE_BLE_MODULE
 		{ "ble", cmd_ble },
 #endif //USE_BLE_MODULE
+#ifdef SD_SENSOR_BOX_LAG
+		{ "lag", cmd_lag },
+#endif
 #endif //USE_SERVICE_MODE
 
 #ifdef USE_XBEE_868_MODULE
@@ -83,8 +97,8 @@ static const ShellCommand commands[] = {
 		{ "open", cmd_open },
 		{ "write", cmd_write },
 #endif
-#ifdef USE_ADC_MODULE
-		//{"adc", cmd_adc },
+#ifdef USE_RUDDER_MODULE
+		{"rudder", cmd_rudder },
 #endif
 		{ NULL, NULL }
 };
@@ -98,7 +112,7 @@ thread_t *cmd_init(void) {
 }
 
 void start_json_module(void){
-	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO, output_thread, NULL);
+	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO + 2, output_thread, NULL);
 }
 
 /*
@@ -121,6 +135,10 @@ static THD_FUNCTION(output_thread, arg) {
 			break;
 		case OUTPUT_TEST:
 			send_json();
+			if (i++ == 10) {
+				nina_send_all(peer);
+				i = 0;
+			}
 			break;
 		case OUTPUT_SERVICE:
 			break;
@@ -128,7 +146,10 @@ static THD_FUNCTION(output_thread, arg) {
 			output_all_calib();
 			break;
 		case OUTPUT_BLE:
-			nina_send_one(i++);
+			if (i++ == 10){
+			//nina_send_all(peer);
+			i = 0;
+			}
 			break;
 		default:
 			break;
@@ -153,7 +174,7 @@ static THD_FUNCTION(output_thread, arg) {
 		case OUTPUT_NONE:
 			break;
 		case OUTPUT_LAG_CALIB:
-			adc_print_rudder_info(lag);
+			//adc_print_rudder_info(lag);
 			break;
 		case OUTPUT_LAG_BLE:
 			send_lag_over_ble(lag);
@@ -234,9 +255,44 @@ void send_data(uint8_t stream){
 	xbee_send_rf_message(xbee, databuff, 34);
 }
 */
+int32_t convert_to_ble_type(float value){
+	int32_t val;
+	int16_t cel;
+	uint8_t drob;
+
+	if(value < 0.0){
+		value = value * -1;
+		cel = (int16_t)(value);
+		drob = (uint8_t)((value - (float)cel) * 100);
+		//chprintf(SHELL_IFACE, "cel %x\r\n", cel);
+		//	chprintf(SHELL_IFACE, "drob %x\r\n", drob);
+		cel = cel * -1;
+		val = cel << 8 | drob;
+		val &= 0xFFFFFF;
+	}else{
+		cel = (int16_t)(value);
+	drob = (uint8_t)((value - (float)cel) * 100);
+	val = cel << 8 | drob;
+	}
+
+
+
+	//chprintf(SHELL_IFACE, "val %x\r\n", val);
+	return val;
+}
+
+void copy_to_ble(void){
+#ifdef SD_MODULE_TRAINER
+	hdg->value = convert_to_ble_type(bno055->d_euler_hpr.h);
+	heel->value = convert_to_ble_type(bno055->d_euler_hpr.r);
+#endif
+}
+
 
 void send_json(void)
 {
+	copy_to_ble();
+	return;
 	chSemWait(&usart1_semaph);
 	chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
 #ifdef USE_UBLOX_GPS_MODULE
@@ -288,12 +344,14 @@ void send_lag_over_ble(lag_t *lag){
 
 #ifdef SD_SENSOR_BOX_RUDDER
 void send_rudder_over_ble(rudder_t *rudder){
-	uint16_t degrees_cel;
+	int32_t val;
+	/*uint16_t degrees_cel;
 	uint8_t degrees_drob;
 	degrees_cel = (uint16_t)rudder->degrees;
 	degrees_drob = (uint8_t)((rudder->degrees - (float)degrees_cel) * 100);
-	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x", degrees_cel, degrees_drob, degrees_cel, degrees_drob);
-	nina_notify(ble_rudder, degrees_cel, degrees_drob);
+	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x", degrees_cel, degrees_drob, degrees_cel, degrees_drob);*/
+	val = convert_to_ble_type(rudder->degrees);
+	nina_notify(ble_rudder, val);
 }
 #endif
 

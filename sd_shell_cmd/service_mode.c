@@ -45,6 +45,10 @@ extern rudder_t *rudder;
 #ifdef USE_EEPROM_MODULE
 #include "eeprom.h"
 #endif //USE_EEPROM_MODULE
+#ifdef SD_SENSOR_BOX_LAG
+#include "lag.h"
+extern lag_t *lag;
+#endif
 
 extern struct ch_semaphore usart1_semaph;
 
@@ -216,13 +220,19 @@ void cmd_ble(BaseSequentialStream* chp, int argc, char* argv[]) {
 				nina_init_module();
 			} else if (strcmp(argv[0], "one") == 0) {
 				chprintf(chp, "Sending one\r\n");
-				nina_send_one(1);
+				//nina_send_one(1);
 			}else if (strcmp(argv[0], "two") == 0) {
 				chprintf(chp, "sending two\r\n");
 				nina_send_two();
 			}else if (strcmp(argv[0], "start") == 0) {
 				chprintf(chp, "starting\r\n");
 				toggle_ble_output();
+			}else if (strcmp(argv[0], "conn_lag") == 0){
+				chprintf(chp, "Connecting to lag module\r\n");
+				nina_connect("CCF95781688F", 0);
+			}else if (strcmp(argv[0], "conn_rudder") == 0){
+				chprintf(chp, "Connecting to rudder module\r\n");
+				nina_connect("CCF957816647", 0);
 			}
 	}
 
@@ -292,6 +302,32 @@ void cmd_rudder(BaseSequentialStream* chp, int argc, char* argv[]) {
 	}
 }
 
+#endif
+
+#ifdef SD_SENSOR_BOX_LAG
+void cmd_lag(BaseSequentialStream* chp, int argc, char* argv[]) {
+	float calib_val;
+	if (output->type != OUTPUT_SERVICE) {
+		return;
+	}
+	if (argc != 0) {
+		if (strcmp(argv[0], "help") == 0) {
+			chprintf(chp,
+					"Usage: - lag write <float> - float number which\t\n\tmultiply hz measures.\n\r");
+		} else if (strcmp(argv[0], "write") == 0) {
+			if (strlen(argv[1]) != 0){
+				calib_val = atof(argv[1]);
+				chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				eeprom_write(EEPROM_LAG_CALIB_NUMBER, (uint8_t*)&calib_val, 4);
+				lag->calib_num = calib_val;
+			}
+		} else if (strcmp(argv[0], "calibrate") == 0){
+			eeprom_read(EEPROM_LAG_CALIB_NUMBER, (uint8_t*)&calib_val, 4);
+			chprintf(chp, "Readed calib number: %f\r\n", calib_val);
+
+		}
+	}
+}
 #endif
 
 
