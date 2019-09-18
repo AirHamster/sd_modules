@@ -7,6 +7,7 @@
 #include <string.h>
 #include "adc.h"
 #include "config.h"
+#include "lag.h"
 
 #define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(1024)
 
@@ -53,6 +54,9 @@ void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]);
 #ifdef SD_SENSOR_BOX_RUDDER
 void send_rudder_over_ble(rudder_t *rudder);
+#endif
+#ifdef SD_SENSOR_BOX_LAG
+void send_lag_over_ble(lag_t *lag);
 #endif
 uint8_t output_magn_calib(void);
 uint8_t output_accel_calib(void);

@@ -48,7 +48,8 @@ static THD_FUNCTION(lag_thread, arg) {
 
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 		lag->hz = (uint16_t)(1000.0 / lag->millis);
-		chprintf((BaseSequentialStream*) &SD1, "LAG: %d, %d\r\n", lag->millis, lag->hz);
+		lag->meters = (float)lag->hz * LAG_MAGIC_CONST;
+		//chprintf((BaseSequentialStream*) &SD1, "LAG: %f, %d\r\n", lag->meters, lag->hz);
 	}
 }
 

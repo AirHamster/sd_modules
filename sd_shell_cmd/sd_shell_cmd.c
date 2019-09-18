@@ -280,9 +280,9 @@ void send_lag_over_ble(lag_t *lag){
 	uint16_t spd_cel;
 	uint8_t spd_drob;
 	spd_cel = (uint16_t)lag->meters;
-//	spd_drob = (uint8_t)((rudder->degrees - (float)degrees_cel) * 100);
-//	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x", degrees_cel, degrees_drob, degrees_cel, degrees_drob);
-//	nina_notify(ble_rudder, degrees_cel, degrees_drob);
+	spd_drob = (uint8_t)((lag->meters - (float)spd_cel) * 100);
+	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x  ", spd_cel, spd_drob, spd_cel, spd_drob);
+	nina_notify(ble_lag, spd_cel, spd_drob);
 }
 #endif
 

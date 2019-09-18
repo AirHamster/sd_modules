@@ -199,7 +199,12 @@ void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr){
 	memcpy(peer->addr, addr, 12);
 	peer->is_connected = 1;
 	chprintf((BaseSequentialStream*) &SD1, "Connected %d %d %s\r\n", peer->conn_handle, peer->type, peer->addr);
+#ifdef SD_SENSOR_BOX_RUDDER
 	output->type = OUTPUT_RUDDER_BLE;
+#endif
+#ifdef SD_SENSOR_BOX_LAG
+	output->type = OUTPUT_LAG_BLE;
+#endif
 
 }
 
