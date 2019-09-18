@@ -5,7 +5,8 @@
 #include "hal.h"
 #include "chprintf.h"
 #include <string.h>
-
+#include "adc.h"
+#include "config.h"
 
 #define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(1024)
 
@@ -22,6 +23,9 @@ enum output_threads{
 	OUTPUT_ACCEL_CALIB,
 	OUTPUT_ALL_CALIB,
 	OUTPUT_RUDDER_CALIB,
+	OUTPUT_RUDDER_BLE,
+	OUTPUT_LAG_CALIB,
+	OUTPUT_LAG_BLE,
 	OUTPUT_BLE
 };
 
@@ -47,7 +51,9 @@ void cmd_help(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]);
-
+#ifdef SD_SENSOR_BOX_RUDDER
+void send_rudder_over_ble(rudder_t *rudder);
+#endif
 uint8_t output_magn_calib(void);
 uint8_t output_accel_calib(void);
 uint8_t output_gyro_calib(void);
