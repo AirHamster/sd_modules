@@ -33,6 +33,7 @@ rudder_t *rudder;
 
 #define IR_ADC_GRP1_NUM_CHANNELS 1
 #define IR_ADC_GRP1_BUF_DEPTH 4
+#ifdef SD_SENSOR_BOX_RUDDER
 static void adcendcallback(ADCDriver *adcp);
 static adcsample_t irSamples[IR_ADC_GRP1_NUM_CHANNELS * IR_ADC_GRP1_BUF_DEPTH];
 
@@ -140,3 +141,4 @@ void adc_print_rudder_info(rudder_t *rud){
 	chprintf((BaseSequentialStream*) &SD1, "ADC degrees: %f\r\n",
 			rud->degrees);
 }
+#endif

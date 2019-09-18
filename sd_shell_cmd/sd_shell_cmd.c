@@ -32,7 +32,7 @@ extern windsensor_t *wind;
 #endif
 #ifdef USE_BLE_MODULE
 #include "nina-b3.h"
-
+extern ble_peer_t *peer;
 #endif
 #ifdef SD_SENSOR_BOX_RUDDER
 extern ble_charac_t *ble_rudder;
@@ -48,6 +48,17 @@ extern lag_t *lag;
 
 #endif
 extern struct ch_semaphore usart1_semaph;
+
+extern ble_charac_t *thdg;
+extern ble_charac_t *rdr;
+extern ble_charac_t *twd;
+extern ble_charac_t *tws;
+extern ble_charac_t *twa;
+extern ble_charac_t *bs;
+extern ble_charac_t *twa_tg;
+extern ble_charac_t *bs_tg;
+extern ble_charac_t *hdg;
+extern ble_charac_t *heel;
 
 output_t *output;
 char *complete_buffer[16];
@@ -98,7 +109,7 @@ thread_t *cmd_init(void) {
 }
 
 void start_json_module(void){
-	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO, output_thread, NULL);
+	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO + 2, output_thread, NULL);
 }
 
 /*
@@ -121,6 +132,10 @@ static THD_FUNCTION(output_thread, arg) {
 			break;
 		case OUTPUT_TEST:
 			send_json();
+			if (i++ == 10) {
+				nina_send_all(peer);
+				i = 0;
+			}
 			break;
 		case OUTPUT_SERVICE:
 			break;
@@ -128,7 +143,10 @@ static THD_FUNCTION(output_thread, arg) {
 			output_all_calib();
 			break;
 		case OUTPUT_BLE:
-			nina_send_one(i++);
+			if (i++ == 10){
+			//nina_send_all(peer);
+			i = 0;
+			}
 			break;
 		default:
 			break;
@@ -234,9 +252,26 @@ void send_data(uint8_t stream){
 	xbee_send_rf_message(xbee, databuff, 34);
 }
 */
+uint32_t convert_to_ble_type(float value){
+	uint32_t val;
+	uint16_t cel;
+	uint8_t drob;
+	cel = (uint16_t)value;
+	drob = (uint8_t)((value - (float)cel) * 100);
+	val = cel << 8 | drob;
+	return val;
+}
+
+void copy_to_ble(void){
+	hdg->value = convert_to_ble_type(bno055->d_euler_hpr.h);
+	heel->value = convert_to_ble_type(bno055->d_euler_hpr.r);
+}
+
 
 void send_json(void)
 {
+	copy_to_ble();
+	return;
 	chSemWait(&usart1_semaph);
 	chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
 #ifdef USE_UBLOX_GPS_MODULE

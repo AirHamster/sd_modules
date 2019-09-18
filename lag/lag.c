@@ -69,8 +69,10 @@ static void lag_callback(void *arg) {
 
 static void lag_init_pins(void){
 	/* Enabling event on falling edge of PA0 signal.*/
+#ifdef SD_SENSOR_BOX_LAG
 	  palEnablePadEvent(GPIOA, GPIOA_ADC_IN1, PAL_EVENT_MODE_RISING_EDGE);
 
 	 /* Assigning a callback to PA0 passing no arguments.*/
 	  palSetPadCallback(GPIOA, GPIOA_ADC_IN1, lag_callback, NULL);
+#endif
 }

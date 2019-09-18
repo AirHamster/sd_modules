@@ -216,7 +216,7 @@ void cmd_ble(BaseSequentialStream* chp, int argc, char* argv[]) {
 				nina_init_module();
 			} else if (strcmp(argv[0], "one") == 0) {
 				chprintf(chp, "Sending one\r\n");
-				nina_send_one(1);
+				//nina_send_one(1);
 			}else if (strcmp(argv[0], "two") == 0) {
 				chprintf(chp, "sending two\r\n");
 				nina_send_two();
