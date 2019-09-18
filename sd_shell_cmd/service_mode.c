@@ -223,6 +223,12 @@ void cmd_ble(BaseSequentialStream* chp, int argc, char* argv[]) {
 			}else if (strcmp(argv[0], "start") == 0) {
 				chprintf(chp, "starting\r\n");
 				toggle_ble_output();
+			}else if (strcmp(argv[0], "conn_lag") == 0){
+				chprintf(chp, "Connecting to lag module\r\n");
+				nina_connect("CCF95781688F", 0);
+			}else if (strcmp(argv[0], "conn_rudder") == 0){
+				chprintf(chp, "Connecting to rudder module\r\n");
+				nina_connect("CCF957816647", 0);
 			}
 	}
 

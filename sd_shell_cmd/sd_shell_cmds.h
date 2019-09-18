@@ -5,9 +5,13 @@
 #include "hal.h"
 #include "chprintf.h"
 #include <string.h>
+#ifdef USE_ADC_MODULE
 #include "adc.h"
+#endif
 #include "config.h"
+#ifdef SD_SENSOR_BOX_LAG
 #include "lag.h"
+#endif
 
 #define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(1024)
 

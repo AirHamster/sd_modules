@@ -29,6 +29,10 @@
 	ble_charac_t *hdg;
 	ble_charac_t *heel;
 	ble_charac_t *charac_array[NUM_OF_CHARACTS];
+
+	ble_remote_t *remote_lag;
+	ble_remote_t *remote_rudder;
+	ble_remote_t *remote_wind;
 #endif
 
 #ifdef SD_SENSOR_BOX_RUDDER
@@ -81,7 +85,7 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		megastring[i] = token;
 		i++;
 		chprintf((BaseSequentialStream*) &SD1, "%c", token);
-		if (token == '+'){
+		if (token == '\r' || token == '+'){
 			str_flag = 1;
 		}else if ((token == '\n') && (str_flag == 1)){
 			nina_parse_command(megastring);
@@ -157,22 +161,23 @@ uint8_t nina_parse_command(int8_t *strp) {
 				chprintf((BaseSequentialStream*) &SD1, "scanned vla 1 %d\r\n", scanned_vals[1]);
 		return 1;
 	}*/
+	scan_res = sscanf(strp, "+UUBTACLC:%d,%d,%12sp\r\n", &scanned_vals[0], &scanned_vals[1], addr);
+	if (scan_res == 3) {
+		chprintf((BaseSequentialStream*) &SD1, "Scanned connected to dev %d %d %s\r\n", scanned_vals[0], scanned_vals[1], addr);
+		nina_register_remote_dev(scanned_vals[0], scanned_vals[1], addr);
+		return 1;
+	}
 
-	scan_res = sscanf(strp, "\r\n+UUBTACLC:%d,%d,%[^r]r\r\n", &scanned_vals[0], &scanned_vals[1], addr);
+	scan_res = sscanf(strp, "+UUBTACLC:%d,%d,%12sr\r\n", &scanned_vals[0], &scanned_vals[1], addr);
 	//chprintf((BaseSequentialStream*) &SD1, "Scanned %d\r\n", scan_res);
 	if (scan_res == 3) {
 		chprintf((BaseSequentialStream*) &SD1, "Scanned connected dev %d %d %s\r\n", scanned_vals[0], scanned_vals[1], addr);
 		nina_register_peer(scanned_vals[0], scanned_vals[1], addr);
 		return 1;
 	}
-	scan_res = sscanf(strp, "\r\n+UUBTACLC:%d,%d,%[^p]p\r\n", &scanned_vals[0], &scanned_vals[1], addr);
-	if (scan_res == 3) {
-	//	chprintf((BaseSequentialStream*) &SD1, "Scanned connected dev %d %d %s\r\n", scanned_vals[0], scanned_vals[1], addr);
-		nina_register_peer(scanned_vals[0], scanned_vals[1], addr);
-		return 1;
-	}
 
-	scan_res = sscanf(strp, "\r\n+UUBTACLD:%d\r", &scanned_vals[0]);
+
+	scan_res = sscanf(strp, "+UUBTACLD:%d\r", &scanned_vals[0]);
 	if (scan_res == 1) {
 		nina_unregister_peer(scanned_vals[0]);
 		return 1;
@@ -191,6 +196,10 @@ uint8_t nina_parse_command(int8_t *strp) {
 		return 1;
 	}
 	return -1;
+}
+
+void nina_connect(uint8_t *addr, uint8_t type){
+	chprintf(NINA_IFACE, "AT+UBTACLC=%s,%d\r", addr, type);
 }
 
 void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr){
@@ -218,6 +227,58 @@ void nina_unregister_peer(uint8_t conn_handle){
 	output->type = OUTPUT_NONE;
 }
 
+void nina_register_remote_dev(uint8_t conn_handle, uint8_t type, int8_t *addr){
+	if (strcmp(addr, "CCF95781688F") == 0){
+		remote_lag->conn_handle = conn_handle;
+
+	remote_lag->is_connected = 1;
+	remote_lag->type = type;
+	chprintf((BaseSequentialStream*) &SD1, "Connected to %d %d %s\r\n", remote_lag->conn_handle, remote_lag->type, addr);
+	nina_get_remote_characs(remote_lag->conn_handle, 0x4A01);
+	}
+	if (strcmp(addr, "CCF957816647") == 0){
+			remote_rudder->conn_handle = conn_handle;
+
+		remote_rudder->is_connected = 1;
+		remote_rudder->type = type;
+		chprintf((BaseSequentialStream*) &SD1, "Connected to %d %d %s\r\n", remote_rudder->conn_handle, remote_rudder->type, addr);
+		nina_get_remote_characs(remote_lag->conn_handle, 0x5A01);
+		}
+	else{
+		nina_register_peer(conn_handle, type, addr);
+	}
+}
+
+void nina_get_remote_characs(uint16_t handle, uint16_t uuid){
+	//chprintf(NINA_IFACE, "AT+UBTGDP=%d\r", handle);
+	//chThdSleepMilliseconds(300);
+	//chprintf(NINA_IFACE, "AT+UBTGDCS=%d,%d,%d\r", handle, 30, 65535);
+	//chThdSleepMilliseconds(300);
+	//chprintf(NINA_IFACE, "AT+UBTGDCD=%d,%d,%d\r", handle, 32, 65535);
+	//chThdSleepMilliseconds(300);
+	chprintf(NINA_IFACE, "AT+UBTGWC=%d,%d,%d\r", handle, 33, 1);
+}
+
+void nina_unregister_remote_dev(uint8_t conn_handle){
+	(void)conn_handle;
+	if (remote_lag->conn_handle == conn_handle) {
+		chprintf((BaseSequentialStream*) &SD1, "Disconnected to %d %d %s\r\n",
+				remote_lag->conn_handle, remote_lag->type);
+		remote_lag->conn_handle = 0;
+
+		remote_lag->is_connected = 0;
+		remote_lag->type = 0;
+	}
+	if (remote_rudder->conn_handle == conn_handle) {
+		chprintf((BaseSequentialStream*) &SD1, "Disconnected to %d %d %s\r\n",
+				remote_rudder->conn_handle, remote_rudder->type);
+		remote_rudder->conn_handle = 0;
+
+		remote_rudder->is_connected = 0;
+		remote_rudder->type = 0;
+	}
+}
+
 void nina_fill_memory(void){
 	charac_temporary = calloc(1, sizeof(ble_temp_charac_t));
 	peer = calloc(1, sizeof(ble_peer_t));
@@ -232,7 +293,9 @@ void nina_fill_memory(void){
 	bs_tg = calloc(1, sizeof(ble_charac_t));
 	hdg = calloc(1, sizeof(ble_charac_t));
 	heel = calloc(1, sizeof(ble_charac_t));
-
+	remote_lag = calloc(1, sizeof(ble_remote_t));
+	remote_rudder = calloc(1, sizeof(ble_remote_t));
+	remote_wind = calloc(1, sizeof(ble_remote_t));
 
 	charac_array[0] = thdg;
 	charac_array[1] = rdr;
