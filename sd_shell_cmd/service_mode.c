@@ -45,6 +45,10 @@ extern rudder_t *rudder;
 #ifdef USE_EEPROM_MODULE
 #include "eeprom.h"
 #endif //USE_EEPROM_MODULE
+#ifdef SD_SENSOR_BOX_LAG
+#include "lag.h"
+extern lag_t *lag;
+#endif
 
 extern struct ch_semaphore usart1_semaph;
 
@@ -298,6 +302,32 @@ void cmd_rudder(BaseSequentialStream* chp, int argc, char* argv[]) {
 	}
 }
 
+#endif
+
+#ifdef SD_SENSOR_BOX_LAG
+void cmd_lag(BaseSequentialStream* chp, int argc, char* argv[]) {
+	float calib_val;
+	if (output->type != OUTPUT_SERVICE) {
+		return;
+	}
+	if (argc != 0) {
+		if (strcmp(argv[0], "help") == 0) {
+			chprintf(chp,
+					"Usage: - lag write <float> - float number which\t\n\tmultiply hz measures.\n\r");
+		} else if (strcmp(argv[0], "write") == 0) {
+			if (strlen(argv[1]) != 0){
+				calib_val = atof(argv[1]);
+				chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				eeprom_write(EEPROM_LAG_CALIB_NUMBER, (uint8_t*)&calib_val, 4);
+				lag->calib_num = calib_val;
+			}
+		} else if (strcmp(argv[0], "calibrate") == 0){
+			eeprom_read(EEPROM_LAG_CALIB_NUMBER, (uint8_t*)&calib_val, 4);
+			chprintf(chp, "Readed calib number: %f\r\n", calib_val);
+
+		}
+	}
+}
 #endif
 
 

@@ -82,6 +82,9 @@ static const ShellCommand commands[] = {
 #ifdef USE_BLE_MODULE
 		{ "ble", cmd_ble },
 #endif //USE_BLE_MODULE
+#ifdef SD_SENSOR_BOX_LAG
+		{ "lag", cmd_lag },
+#endif
 #endif //USE_SERVICE_MODE
 
 #ifdef USE_XBEE_868_MODULE
@@ -94,8 +97,8 @@ static const ShellCommand commands[] = {
 		{ "open", cmd_open },
 		{ "write", cmd_write },
 #endif
-#ifdef USE_ADC_MODULE
-		//{"adc", cmd_adc },
+#ifdef USE_RUDDER_MODULE
+		{"rudder", cmd_rudder },
 #endif
 		{ NULL, NULL }
 };
@@ -261,8 +264,8 @@ int32_t convert_to_ble_type(float value){
 		value = value * -1;
 		cel = (int16_t)(value);
 		drob = (uint8_t)((value - (float)cel) * 100);
-		chprintf(SHELL_IFACE, "cel %x\r\n", cel);
-			chprintf(SHELL_IFACE, "drob %x\r\n", drob);
+		//chprintf(SHELL_IFACE, "cel %x\r\n", cel);
+		//	chprintf(SHELL_IFACE, "drob %x\r\n", drob);
 		cel = cel * -1;
 		val = cel << 8 | drob;
 		val &= 0xFFFFFF;
@@ -274,7 +277,7 @@ int32_t convert_to_ble_type(float value){
 
 
 
-	chprintf(SHELL_IFACE, "val %x\r\n", val);
+	//chprintf(SHELL_IFACE, "val %x\r\n", val);
 	return val;
 }
 
@@ -341,12 +344,14 @@ void send_lag_over_ble(lag_t *lag){
 
 #ifdef SD_SENSOR_BOX_RUDDER
 void send_rudder_over_ble(rudder_t *rudder){
-	uint16_t degrees_cel;
+	int32_t val;
+	/*uint16_t degrees_cel;
 	uint8_t degrees_drob;
 	degrees_cel = (uint16_t)rudder->degrees;
 	degrees_drob = (uint8_t)((rudder->degrees - (float)degrees_cel) * 100);
-	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x", degrees_cel, degrees_drob, degrees_cel, degrees_drob);
-	nina_notify(ble_rudder, degrees_cel, degrees_drob);
+	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x", degrees_cel, degrees_drob, degrees_cel, degrees_drob);*/
+	val = convert_to_ble_type(rudder->degrees);
+	nina_notify(ble_rudder, val);
 }
 #endif
 

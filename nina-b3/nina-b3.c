@@ -126,9 +126,10 @@ uint8_t nina_parse_command(int8_t *strp) {
 	uint8_t scan_res;
 	uint8_t scanned_vals[32];
 	uint32_t val, scanned_32;
-	int8_t addr[16] = {0};
+	int8_t addr[16] = { 0 };
 	//chprintf((BaseSequentialStream*) &SD1, "Parsing %s\r\n", strp);
-	scan_res = sscanf(strp, "+UBTGSN:%d,%d,%x\r", &scanned_vals[0], &scanned_vals[1],	&val);
+	scan_res = sscanf(strp, "+UBTGSN:%d,%d,%x\r", &scanned_vals[0],
+			&scanned_vals[1], &val);
 	if (scan_res == 1) {
 
 		return 1;
@@ -140,7 +141,9 @@ uint8_t nina_parse_command(int8_t *strp) {
 		charac_temporary->cccd_handle = scanned_vals[0];
 		charac_temporary->value_handle = scanned_vals[1];
 		charac_temporary->parsed = 1;
-		chprintf((BaseSequentialStream*) &SD1, "Scanned charac descript %d %d\r\n", scanned_vals[0], scanned_vals[1]);
+		chprintf((BaseSequentialStream*) &SD1,
+				"Scanned charac descript %d %d\r\n", scanned_vals[0],
+				scanned_vals[1]);
 		return 1;
 	}
 
@@ -157,37 +160,41 @@ uint8_t nina_parse_command(int8_t *strp) {
 		return 1;
 	}
 	scan_res = sscanf(strp, "+UUBTGN:%d,%d,%x\r", &scanned_vals[0],
-				&scanned_vals[1], &scanned_32);
-		if (scan_res == 3) {
-			nina_parse_notification(scanned_vals[0],
-				scanned_vals[1], scanned_32);
-			return 1;
-		}
-/*	if (strstr(strp, "UUBTACLC:") != NULL){
-		chprintf((BaseSequentialStream*) &SD1, "Scanned %s\r\n", strp+12);
-		strncpy(addr, strp+(strlen(strp)-1), 12);
-		chprintf((BaseSequentialStream*) &SD1, "Copied %s\r\n", addr);
-		scanned_vals[0] = atoi(strp+12);
-		chprintf((BaseSequentialStream*) &SD1, "scanned vla 0 %d\r\n", scanned_vals[0]);
-		scanned_vals[1] = atoi(strp+11);
-				chprintf((BaseSequentialStream*) &SD1, "scanned vla 1 %d\r\n", scanned_vals[1]);
-		return 1;
-	}*/
-	scan_res = sscanf(strp, "+UUBTACLC:%d,%d,%12sp\r\n", &scanned_vals[0], &scanned_vals[1], addr);
+			&scanned_vals[1], &scanned_32);
 	if (scan_res == 3) {
-		chprintf((BaseSequentialStream*) &SD1, "Scanned connected to dev %d %d %s\r\n", scanned_vals[0], scanned_vals[1], addr);
+		nina_parse_notification(scanned_vals[0], scanned_vals[1], scanned_32);
+		return 1;
+	}
+	/*	if (strstr(strp, "UUBTACLC:") != NULL){
+	 chprintf((BaseSequentialStream*) &SD1, "Scanned %s\r\n", strp+12);
+	 strncpy(addr, strp+(strlen(strp)-1), 12);
+	 chprintf((BaseSequentialStream*) &SD1, "Copied %s\r\n", addr);
+	 scanned_vals[0] = atoi(strp+12);
+	 chprintf((BaseSequentialStream*) &SD1, "scanned vla 0 %d\r\n", scanned_vals[0]);
+	 scanned_vals[1] = atoi(strp+11);
+	 chprintf((BaseSequentialStream*) &SD1, "scanned vla 1 %d\r\n", scanned_vals[1]);
+	 return 1;
+	 }*/
+	scan_res = sscanf(strp, "+UUBTACLC:%d,%d,%12sp\r\n", &scanned_vals[0],
+			&scanned_vals[1], addr);
+	if (scan_res == 3) {
+		chprintf((BaseSequentialStream*) &SD1,
+				"Scanned connected to dev %d %d %s\r\n", scanned_vals[0],
+				scanned_vals[1], addr);
 		nina_register_remote_dev(scanned_vals[0], scanned_vals[1], addr);
 		return 1;
 	}
 
-	scan_res = sscanf(strp, "+UUBTACLC:%d,%d,%12sr\r\n", &scanned_vals[0], &scanned_vals[1], addr);
+	scan_res = sscanf(strp, "+UUBTACLC:%d,%d,%12sr\r\n", &scanned_vals[0],
+			&scanned_vals[1], addr);
 	//chprintf((BaseSequentialStream*) &SD1, "Scanned %d\r\n", scan_res);
 	if (scan_res == 3) {
-		chprintf((BaseSequentialStream*) &SD1, "Scanned connected dev %d %d %s\r\n", scanned_vals[0], scanned_vals[1], addr);
+		chprintf((BaseSequentialStream*) &SD1,
+				"Scanned connected dev %d %d %s\r\n", scanned_vals[0],
+				scanned_vals[1], addr);
 		nina_register_peer(scanned_vals[0], scanned_vals[1], addr);
 		return 1;
 	}
-
 
 	scan_res = sscanf(strp, "+UUBTACLD:%d\r", &scanned_vals[0]);
 	if (scan_res == 1) {
@@ -200,11 +207,11 @@ uint8_t nina_parse_command(int8_t *strp) {
 
 		return 1;
 	}
-	if (strstr(strp, "OK") != NULL){
+	if (strstr(strp, "OK") != NULL) {
 
 		return 1;
 	}
-	if (strstr(strp, "ERROR") != NULL){
+	if (strstr(strp, "ERROR") != NULL) {
 		return 1;
 	}
 	return -1;
@@ -412,8 +419,8 @@ uint8_t nina_add_charac(ble_charac_t *charac, uint16_t uuid, uint8_t properties,
 	//nina_wait_charac_handlers(charac);
 }
 
-void nina_notify(ble_charac_t *ble_rudder, int16_t cel, uint8_t drob){
-	chprintf(NINA_IFACE, "AT+UBTGSN=%d,%02d,%04x%02x\r", peer->conn_handle, ble_rudder->cccd_handle, cel, drob);
+void nina_notify(ble_charac_t *ble_rudder, int32_t val){
+	chprintf(NINA_IFACE, "AT+UBTGSN=%d,%02d,%06x\r", peer->conn_handle, ble_rudder->cccd_handle, val);
 }
 
 void nina_wait_charac_handlers(ble_charac_t *charac){

@@ -45,11 +45,10 @@ static THD_FUNCTION(lag_thread, arg) {
 	lag_init_pins();
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 	while (true) {
-
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 		lag->hz = (uint16_t)(1000.0 / lag->millis);
-		lag->meters = (float)lag->hz * LAG_MAGIC_CONST;
-		//chprintf((BaseSequentialStream*) &SD1, "LAG: %f, %d\r\n", lag->meters, lag->hz);
+		lag->meters = (float)lag->hz * lag->calib_num;
+		chprintf((BaseSequentialStream*) &SD1, "LAG: %03f, %d\r\n", lag->meters, lag->hz);
 	}
 }
 
@@ -70,6 +69,8 @@ static void lag_callback(void *arg) {
 static void lag_init_pins(void){
 	/* Enabling event on falling edge of PA0 signal.*/
 #ifdef SD_SENSOR_BOX_LAG
+	eeprom_read(EEPROM_LAG_CALIB_NUMBER, (uint8_t*)&lag->calib_num, 4);
+	chprintf((BaseSequentialStream*) &SD1, "Readed calib number: %f\r\n", lag->calib_num);
 	  palEnablePadEvent(GPIOA, GPIOA_ADC_IN1, PAL_EVENT_MODE_RISING_EDGE);
 
 	 /* Assigning a callback to PA0 passing no arguments.*/

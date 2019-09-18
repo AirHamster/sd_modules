@@ -77,7 +77,7 @@ void nina_send_all(ble_peer_t *peer);
 void nina_send_two(void);
 void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr);
 void nina_unregister_peer(uint8_t conn_handle);
-void nina_notify(ble_charac_t *ble_rudder, int16_t cel, uint8_t drob);
+void nina_notify(ble_charac_t *ble_rudder, int32_t val);
 void nina_connect(uint8_t *addr, uint8_t type);
 void nina_register_remote_dev(uint8_t conn_handle, uint8_t type, int8_t *addr);
 void nina_unregister_remote_dev(uint8_t conn_handle);

@@ -9,7 +9,9 @@
 #define SD_MODULES_LAG_LAG_H_
 
 #define LAG_MAGIC_CONST		0.1f
+
 typedef struct{
+	float calib_num;
 	uint16_t hz;
 	float meters;
 	uint16_t millis;
