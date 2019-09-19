@@ -46,6 +46,7 @@ typedef struct{
 typedef struct{
 	ble_remote_charac_t charac;
 	uint8_t is_connected;
+	uint8_t is_avalible;
 	uint8_t type;
 	uint16_t conn_handle;
 }ble_remote_t;

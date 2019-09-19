@@ -134,11 +134,11 @@ static THD_FUNCTION(output_thread, arg) {
 		case OUTPUT_NONE:
 			break;
 		case OUTPUT_TEST:
-			send_json();
-			if (i++ == 10) {
-				nina_send_all(peer);
-				i = 0;
-			}
+			//send_json();
+	//		if (i++ == 10) {
+		//		nina_send_all(peer);
+		//		i = 0;
+		//	}
 			break;
 		case OUTPUT_SERVICE:
 			break;
@@ -146,16 +146,42 @@ static THD_FUNCTION(output_thread, arg) {
 			output_all_calib();
 			break;
 		case OUTPUT_BLE:
-			if (i++ == 10){
+		//	if (i++ == 10){
 			//nina_send_all(peer);
-			i = 0;
-			}
+		//	i = 0;
+		//	}
 			break;
 		default:
 			break;
 		}
 #endif
 
+#ifdef USE_BLE_MODULE
+		switch (output->type){
+				case OUTPUT_NONE:
+					break;
+				case OUTPUT_TEST:
+					if (i++ == 10) {
+						copy_to_ble();
+						nina_send_all(peer);
+						i = 0;
+					}
+					break;
+				case OUTPUT_SERVICE:
+					break;
+				case OUTPUT_ALL_CALIB:
+					output_all_calib();
+					break;
+				case OUTPUT_BLE:
+		/*			if (i++ == 10){
+					nina_send_all(peer);
+					i = 0;
+					}*/
+					break;
+				default:
+					break;
+				}
+#endif
 #ifdef SD_SENSOR_BOX_RUDDER
 		switch (output->type){
 		case OUTPUT_NONE:
@@ -291,8 +317,8 @@ void copy_to_ble(void){
 
 void send_json(void)
 {
-	copy_to_ble();
-	return;
+
+	//return;
 	chSemWait(&usart1_semaph);
 	chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
 #ifdef USE_UBLOX_GPS_MODULE
@@ -333,12 +359,14 @@ void send_json(void)
 
 #ifdef SD_SENSOR_BOX_LAG
 void send_lag_over_ble(lag_t *lag){
-	uint16_t spd_cel;
+	/*uint16_t spd_cel;
 	uint8_t spd_drob;
 	spd_cel = (uint16_t)lag->meters;
 	spd_drob = (uint8_t)((lag->meters - (float)spd_cel) * 100);
-	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x  ", spd_cel, spd_drob, spd_cel, spd_drob);
-	nina_notify(ble_lag, spd_cel, spd_drob);
+	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x  ", spd_cel, spd_drob, spd_cel, spd_drob);*/
+	int32_t val;
+	val = convert_to_ble_type(lag->meters);
+	nina_notify(ble_lag, val);
 }
 #endif
 
@@ -551,6 +579,7 @@ void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
 #endif
 void toggle_test_output(void) {
 	output->type = OUTPUT_TEST;
+	output->ble = OUTPUT_TEST;
 #ifdef USE_BNO055_MODULE
 	bno055->read_type = OUTPUT_TEST;
 #endif
@@ -585,6 +614,7 @@ void stop_all_tests(void) {
 		output->type = OUTPUT_SERVICE;
 	}else{
 		output->type = OUTPUT_NONE;
+		output->ble = OUTPUT_NONE;
 #ifdef USE_BNO055_MODULE
 		bno055->read_type = OUTPUT_NONE;
 #endif

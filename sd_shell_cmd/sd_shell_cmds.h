@@ -36,7 +36,7 @@ enum output_threads{
 
 typedef struct{
 	uint8_t type;
-	uint8_t suspend_state;
+	uint8_t ble;
 	uint8_t test;
 	uint8_t gps;
 	uint8_t ypr;
