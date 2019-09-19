@@ -47,6 +47,14 @@ extern lag_t *lag;
 #include "adc.h"
 
 #endif
+
+#include "sailDataMath.h"
+
+extern float lastFilterValues[10][FILTER_BUFFER_SIZE];
+extern float windAngleTarget;
+extern float lastSensorValues[SIZE_BUFFER_VALUES];
+extern float hullSpeedTarget;
+extern float velocityMadeGoodTarget;
 extern struct ch_semaphore usart1_semaph;
 
 extern ble_charac_t *thdg;
@@ -134,7 +142,7 @@ static THD_FUNCTION(output_thread, arg) {
 		case OUTPUT_NONE:
 			break;
 		case OUTPUT_TEST:
-			//send_json();
+			send_json();
 	//		if (i++ == 10) {
 		//		nina_send_all(peer);
 		//		i = 0;
@@ -309,8 +317,20 @@ int32_t convert_to_ble_type(float value){
 
 void copy_to_ble(void){
 #ifdef SD_MODULE_TRAINER
-	hdg->value = convert_to_ble_type(bno055->d_euler_hpr.h);
-	heel->value = convert_to_ble_type(bno055->d_euler_hpr.r);
+	thdg->value = convert_to_ble_type(lastFilterValues[1][FILTER_BUFFER_SIZE - 1]);
+	//rdr->value = convert_to_ble_type(lastFilterValues[1][0])
+	twd->value = convert_to_ble_type(lastFilterValues[4][FILTER_BUFFER_SIZE - 1]);
+	tws->value = convert_to_ble_type(lastFilterValues[5][FILTER_BUFFER_SIZE - 1]);
+	twa->value = convert_to_ble_type(lastFilterValues[6][FILTER_BUFFER_SIZE - 1]);
+	//bs
+	twa_tg->value = convert_to_ble_type(windAngleTarget);
+	bs_tg->value = convert_to_ble_type(hullSpeedTarget);
+	hdg->value = convert_to_ble_type(lastSensorValues[HDM]);
+	heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
+
+	//hdg->value = convert_to_ble_type(lastFilterValues[0][0]);
+	//heel->value = convert_to_ble_type(lastFilterValues[2][0]);
+
 #endif
 }
 

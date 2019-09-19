@@ -27,8 +27,11 @@ extern bno055_t *bno055;
 #include "windsensor.h"
 extern windsensor_t *wind;
 #endif
+#include "lag.h"
+#include "adc.h"
 
-
+extern lag_t *r_lag;
+extern rudder_t *r_rudder;
 
 static FRESULT scan_files(BaseSequentialStream *chp, char *path);
 static void microsd_show_tree(BaseSequentialStream *chp);
@@ -269,10 +272,10 @@ static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
 	int written = 0;
 	uint8_t megastring[256];
 	memset(megastring, 0, 256);
-	sprintf((char*)megastring, "%d-%d,%d,%d,%d,%f,%f,%f,%d,%d,%f,%f,%d,%f,%d\r\n",
+	sprintf((char*)megastring, "%d-%d,%d,%d,%d,%f,%f,%f,%d,%d,%f,%f,%d,%f,%d,%f,%f\r\n",
 			pvt_box->month, pvt_box->day, pvt_box->hour, pvt_box->min, pvt_box->sec, pvt_box->lat / 10000000.0f, pvt_box->lon / 10000000.0f,
 			(float) (pvt_box->gSpeed * 0.0036), (uint16_t) (pvt_box->headMot / 100000), (uint16_t)bno055->d_euler_hpr.h, bno055->d_euler_hpr.r,
-			bno055->d_euler_hpr.p, wind->direction, wind->speed, pvt_box->numSV);
+			bno055->d_euler_hpr.p, wind->direction, wind->speed, pvt_box->numSV, r_rudder->degrees, r_lag->meters);
 
 	f_lseek(&logfile, f_size(&logfile));
 	written = f_puts((char*)megastring, &logfile);
@@ -293,7 +296,7 @@ static void microsd_write_logfile_header(BaseSequentialStream *chp) {
 	int written;
 	f_lseek(&logfile, f_size(&logfile));
 	written =
-			f_printf(&logfile, "DATE,HOUR,MIN,SEC,LAT,LON,SPD,COG_GPS,YAW,PITCH,ROLL,WIND_DIR,WIND_SPD,SAT\r\n");
+			f_printf(&logfile, "DATE,HOUR,MIN,SEC,LAT,LON,SPD,COG_GPS,YAW,PITCH,ROLL,WIND_DIR,WIND_SPD,SAT,RDR,LOG\r\n");
 
 	if (written == -1) {
 		chprintf(chp, "FS: f_puts(\"Hello World\",\"hello.txt\") failed\r\n");
