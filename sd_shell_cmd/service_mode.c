@@ -78,8 +78,7 @@ void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]) {
 	}
 	stop_all_tests();
 	output->type = OUTPUT_SERVICE;
-	chprintf(chp,
-			"\r\nService mode activated. Write <service help> to get more info\n\r");
+	chprintf(chp,"\r\nService mode activated. Write <service help> to get more info\n\r");
 }
 
 #ifdef USE_BNO055_MODULE
@@ -223,7 +222,7 @@ void cmd_ble(BaseSequentialStream* chp, int argc, char* argv[]) {
 				//nina_send_one(1);
 			}else if (strcmp(argv[0], "two") == 0) {
 				chprintf(chp, "sending two\r\n");
-				nina_send_two();
+			//	nina_send_two();
 			}else if (strcmp(argv[0], "start") == 0) {
 				chprintf(chp, "starting\r\n");
 				toggle_ble_output();
