@@ -21,7 +21,7 @@
 //int16_t
 #define EEPROM_INFO_MEMORY_START		0x0000	//32 bytes for info
 #define EEPROM_FLAGS_MEMORY_START		0x001F	//32 bytes for flags
-#define EEPROM_CALIB_MEMORY_START		0x003F
+#define EEPROM_CALIB_MEMORY_START		0x003F	//all other for calibrations
 
 //int16_t
 #define EEPROM_HW_VER_ADDR 				EEPROM_INFO_MEMORY_START
@@ -29,6 +29,7 @@
 
 //int16_t
 #define EEPROM_STATIC_CALIB_FLAG_ADDR	EEPROM_FLAGS_MEMORY_START
+
 
 //int16_t
 #define EEPROM_MAGN_X_OFFSET_ADDR		EEPROM_CALIB_MEMORY_START
@@ -55,11 +56,25 @@
 //float value
 #define EEPROM_LAG_CALIB_NUMBER			EEPROM_CALIB_MEMORY_START + 28
 
+//float values
+#define EEPROM_MATH_COMPASS_CORRECTION			EEPROM_CALIB_MEMORY_START + 32
+#define EEPROM_MATH_HSP_CORRECTION				EEPROM_CALIB_MEMORY_START + 36
+#define EEPROM_MATH_HEEL_CORRECTION				EEPROM_CALIB_MEMORY_START + 40
+#define EEPROM_MATH_DECLANATION_CORRECTION		EEPROM_CALIB_MEMORY_START + 44
+#define EEPROM_MATH_PITCH_CORRECTION			EEPROM_CALIB_MEMORY_START + 48
+#define EEPROM_MATH_RUDDER_CORRECTION			EEPROM_CALIB_MEMORY_START + 52
+#define EEPROM_MATH_WIND_CORRECTION				EEPROM_CALIB_MEMORY_START + 56
+
+//uint8_t values
+#define EEPROM_MATH_WINSIZE1_CORRECTION			EEPROM_CALIB_MEMORY_START + 60
+#define EEPROM_MATH_WINSIZE2_CORRECTION			EEPROM_CALIB_MEMORY_START + 61
+#define EEPROM_MATH_WINSIZE3_CORRECTION			EEPROM_CALIB_MEMORY_START + 62
+
 
 #define BNO055_ADDRESS	0x28
 
-int8_t eeprom_write(uint16_t byte_addr, const int8_t *txbuf, size_t txbytes);
-int8_t eeprom_read(uint16_t byte_addr, int8_t *rxbuf, size_t rxbytes);
+int8_t eeprom_write(uint16_t byte_addr, const uint8_t *txbuf, size_t txbytes);
+int8_t eeprom_read(uint16_t byte_addr, uint8_t *rxbuf, size_t rxbytes);
 void eeprom_check_i2c_bus(void);
 void eeprom_read_hw_version(void);
 void eeprom_write_hw_version(void);

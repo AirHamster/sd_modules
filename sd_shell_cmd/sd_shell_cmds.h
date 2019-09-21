@@ -50,7 +50,8 @@ thread_t *cmd_init(void);
 
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_attn(BaseSequentialStream* chp, int argc, char* argv[]);
-
+void cmd_reset(BaseSequentialStream* chp, int argc, char* argv[]);
+void cmd_boot(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_start(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_help(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]);

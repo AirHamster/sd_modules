@@ -1,7 +1,7 @@
 /*
  * sailDataMath.c
  *
- *  Created on: .
+ *  Created on: 13 сент. 2019 г.
  *      Author: Weld
  */
 #include "sailDataMath.h"
@@ -279,8 +279,8 @@ void calculateTargets(
 	float instantHSP = 0.0;
 	float instantVMG = 0.0;
 	float minimumTWA = 10.0;
-	float windSpeed = lastFilterValues[5][0];
-	float windAngle = lastFilterValues[6][0];
+	float windSpeed = lastSensorValues[TWS];//lastFilterValues[5][0];
+	float windAngle = lastSensorValues[TWA];//lastFilterValues[6][0];
 
 	if(fabs(windAngle)> 90.0)
 	{

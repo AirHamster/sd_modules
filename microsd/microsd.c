@@ -30,6 +30,7 @@ extern windsensor_t *wind;
 #include "lag.h"
 #include "adc.h"
 
+microsd_t *microsd;
 extern lag_t *r_lag;
 extern rudder_t *r_rudder;
 
@@ -72,6 +73,39 @@ static bool fs_ready = FALSE;
 
 /* Generic large buffer.*/
 static uint8_t fbuff[1024];
+
+static THD_WORKING_AREA(microsd_thread_wa, 4096*2);
+static THD_FUNCTION( microsd_thread, p) {
+	(void) p;
+	msg_t msg;
+	chRegSetThreadName("MicroSD Thd");
+	mmcObjectInit(&MMCD1);
+	mmcStart(&MMCD1, &mmccfg);   // Configures and activates the MMC peripheral.
+	microsd_mount_fs();
+	//microsd_open_logfile((BaseSequentialStream*) &SD1);
+	//microsd_write_logfile_header((BaseSequentialStream*) &SD1);
+	wdgReset(&WDGD1);
+	chThdSleepMilliseconds(110);
+	systime_t prev = chVTGetSystemTime(); // Current system time.
+	while (true) {
+		wdgReset(&WDGD1);
+		switch (microsd->cmd_req){
+		case MICROSD_NONE:
+			break;
+		case MICROSD_LS:
+			//scan_files(SHELL_IFACE, "./");
+			break;
+		case MICROSD_WRITE_LOG:
+			microsd_write_sensor_log_line((BaseSequentialStream*) &SD1);
+			break;
+		case MICROSD_FREE:
+			break;
+		default:
+			break;
+		}
+		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
+	}
+}
 
 FRESULT scan_files(BaseSequentialStream *chp, char *path) {
 	FRESULT res;
@@ -163,6 +197,26 @@ FRESULT scan_files(BaseSequentialStream *chp, char *path) {
 	return res;
 }
 
+void cmd_mkfs(BaseSequentialStream *chp, int argc, char *argv[]) {
+	FRESULT err;
+	int partition;
+	if (argc!=1) {
+		chprintf(chp, "Usage: mkfs [partition]\r\n");
+		chprintf(chp, "       Formats partition [partition]\r\n");
+		return;
+	}
+	partition=atoi(argv[0]);
+	chprintf(chp, "FS: f_mkfs(%d,0,0) Started\r\n",partition);
+	err = f_mkfs(argv[0], FM_ANY, 0, NULL, 0);
+	if (err != FR_OK) {
+		chprintf(chp, "FS: f_mkfs() failed\r\n");
+		verbose_error(chp, err);
+		return;
+	}
+	chprintf(chp, "FS: f_mkfs() Finished\r\n");
+	return;
+}
+
 void microsd_card_insert(void){
 	microsd_mount_fs();
 
@@ -201,70 +255,119 @@ FRESULT err;
 	}
 
 void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]) {
-	(void) argv;
-	(void) argc;
-	(void) chp;
-//	chSysLock();
-	chThdResume(&microsd_trp, (msg_t) MICROSD_SHOW_TREE); /* Resuming the thread with message.*/
-//	chSysUnlock();
+	(void)argv;
+	(void)argc;
+	/*
+	 * Set the file path buffer to 0
+	 */
+	memset(fbuff,0,sizeof(fbuff));
+	scan_files(chp, fbuff);
+}
+
+/*
+ * Print a text file to screen
+ */
+void cmd_cat(BaseSequentialStream *chp, int argc, char *argv[]) {
+	FRESULT err;
+	FIL fsrc;   /* file object */
+	char Buffer[255];
+	UINT ByteToRead=sizeof(Buffer);
+	UINT ByteRead;
+	/*
+	 * Print usage
+	 */
+	if (argc != 1) {
+		chprintf(chp, "Usage: cat filename\r\n");
+		chprintf(chp, "       Echos filename (no spaces)\r\n");
+		return;
+	}
+	/*
+	 * Attempt to open the file, error out if it fails.
+	 */
+	err=f_open(&fsrc, argv[0], FA_READ);
+	if (err != FR_OK) {
+		chprintf(chp, "FS: f_open(%s) failed.\r\n",argv[0]);
+		verbose_error(chp, err);
+		return;
+	}
+	/*
+	 * Do while the number of bytes read is equal to the number of bytes to read
+	 * (the buffer is filled)
+	 */
+	do {
+		/*
+		 * Clear the buffer.
+		 */
+		memset(Buffer,0,sizeof(Buffer));
+		/*
+		 * Read the file.
+		 */
+		err=f_read(&fsrc,Buffer,ByteToRead,&ByteRead);
+		if (err != FR_OK) {
+			chprintf(chp, "FS: f_read() failed\r\n");
+			verbose_error(chp, err);
+			f_close(&fsrc);
+			return;
+		}
+		chprintf(chp, "%s", Buffer);
+	} while (ByteRead>=ByteToRead);
+	chprintf(chp,"\r\n");
+	/*
+	 * Close the file.
+	 */
+	f_close(&fsrc);
+	return;
 }
 
 void cmd_open(BaseSequentialStream *chp, int argc, char *argv[]) {
 	(void) argv;
 	(void) argc;
 	(void) chp;
-//	chSysLock();
 	chThdResume(&microsd_trp, (msg_t) MICROSD_OPEN_FILE); /* Resuming the thread with message.*/
-//	chSysUnlock();
 }
 
 void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
 	(void) argv;
 	(void) argc;
 	(void) chp;
-//	chSysLock();
 	chThdResume(&microsd_trp, (msg_t) MICROSD_WRITE_FILE); /* Resuming the thread with message.*/
-//	chSysUnlock();
 }
 
 void cmd_free(BaseSequentialStream *chp, int argc, char *argv[]) {
-	(void) argv;
-	(void) argc;
-	(void) chp;
-	//	chSysLock();
-	chThdResume(&microsd_trp, (msg_t) MICROSD_SHOW_FREE); /* Resuming the thread with message.*/
-	//	chSysUnlock();
+	FRESULT err;
+	uint32_t clusters;
+	FATFS *fsp;
+	(void)argc;
+	(void)argv;
+
+	err = f_getfree("/", &clusters, &fsp);
+	if (err != FR_OK) {
+		chprintf(chp, "FS: f_getfree() failed\r\n");
+		return;
+	}
+	/*
+	 * Print the number of free clusters and size free in B, KiB and MiB.
+	 */
+	chprintf(chp,"FS: %lu free clusters\r\n    %lu sectors per cluster\r\n",
+		clusters, (uint32_t)SDC_FS.csize);
+	chprintf(chp,"%lu B free\r\n",
+		clusters * (uint32_t)SDC_FS.csize * (uint32_t)MMCSD_BLOCK_SIZE);
+	chprintf(chp,"%lu KB free\r\n",
+		(clusters * (uint32_t)SDC_FS.csize * (uint32_t)MMCSD_BLOCK_SIZE)/(1024));
+	chprintf(chp,"%lu MB free\r\n",
+		(clusters * (uint32_t)SDC_FS.csize * (uint32_t)MMCSD_BLOCK_SIZE)/(1024*1024));
 }
+
 /*
  * Card insertion event.
  */
 void cmd_mount(BaseSequentialStream *chp, int argc, char *argv[]) {
 	(void)argv;
 	(void)argc;
-//	chSysLock();
 	chThdResume(&microsd_trp, (msg_t)MICROSD_MOUNT_FS);  /* Resuming the thread with message.*/
-//	chSysUnlock();
 }
 
-static THD_WORKING_AREA(microsd_thread_wa, 4096*2);
-static THD_FUNCTION( microsd_thread, p) {
-	(void) p;
-	msg_t msg;
-	chRegSetThreadName("MicroSD Thd");
-	mmcObjectInit(&MMCD1);
-	mmcStart(&MMCD1, &mmccfg);   // Configures and activates the MMC peripheral.
-	microsd_mount_fs();
-	microsd_open_logfile((BaseSequentialStream*) &SD1);
-	microsd_write_logfile_header((BaseSequentialStream*) &SD1);
-	wdgReset(&WDGD1);
-	chThdSleepMilliseconds(110);
-	systime_t prev = chVTGetSystemTime(); // Current system time.
-	while (true) {
-		wdgReset(&WDGD1);
-		microsd_write_sensor_log_line((BaseSequentialStream*) &SD1);
-		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
-	}
-}
+
 
 static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
 	FRESULT res;
@@ -274,8 +377,8 @@ static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
 	memset(megastring, 0, 256);
 	sprintf((char*)megastring, "%d-%d,%d,%d,%d,%f,%f,%f,%d,%d,%f,%f,%d,%f,%d,%f,%f\r\n",
 			pvt_box->month, pvt_box->day, pvt_box->hour, pvt_box->min, pvt_box->sec, pvt_box->lat / 10000000.0f, pvt_box->lon / 10000000.0f,
-			(float) (pvt_box->gSpeed * 0.0036), (uint16_t) (pvt_box->headMot / 100000), (uint16_t)bno055->d_euler_hpr.h, bno055->d_euler_hpr.r,
-			bno055->d_euler_hpr.p, wind->direction, wind->speed, pvt_box->numSV, r_rudder->degrees, r_lag->meters);
+			(float) (pvt_box->gSpeed * 0.0036), (uint16_t) (pvt_box->headMot / 100000), (uint16_t)bno055->d_euler_hpr.h, bno055->d_euler_hpr.p,
+			bno055->d_euler_hpr.r, wind->direction, wind->speed, pvt_box->numSV, r_rudder->degrees, r_lag->meters);
 
 	f_lseek(&logfile, f_size(&logfile));
 	written = f_puts((char*)megastring, &logfile);

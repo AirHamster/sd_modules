@@ -118,6 +118,7 @@ static THD_FUNCTION(ble_thread, arg) {
 	nina_init_services();
 	chThdSleepMilliseconds(500);
 #ifdef SD_MODULE_TRAINER
+/*
 	chprintf((BaseSequentialStream*) &SD1, "Connecting to lag module\r\n");
 	nina_connect("CCF95781688F", 0); //LAG
 	chThdSleepMilliseconds(2000);
@@ -130,6 +131,7 @@ static THD_FUNCTION(ble_thread, arg) {
 	if (remote_rudder->is_connected == 1) {
 		nina_get_remote_characs(remote_rudder->conn_handle, 0x5A01);
 	}
+	*/
 	chThdSleepMilliseconds(2500);
 #endif
 	//systime_t prev = chVTGetSystemTime(); // Current system time.

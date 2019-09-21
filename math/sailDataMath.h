@@ -1,7 +1,7 @@
 /*
  * sailDataMath.h
  *
- *  Created on: 13 .
+ *  Created on: 13 сент. 2019 г.
  *      Author: Weld
  */
 
@@ -13,7 +13,7 @@
 #include <stdint.h>
 #include "filters.h"
 
-#define FILTER_BUFFER_SIZE 100
+#define FILTER_BUFFER_SIZE 150
 #define SIZE_POLYNOMS_ROW 16
 #define SIZE_POLYNOMS_COLS 6
 static const float pi = 3.1415926535798932384626433;

@@ -25,6 +25,7 @@
 #include "filters.h"
 #include "sailDataMath.h"
 #include "sd_math.h"
+#include "eeprom.h"
 
 extern windsensor_t *wind;
 extern bno055_t *bno055;
@@ -59,13 +60,20 @@ static THD_FUNCTION( math_thread, p) {
 }
 
 void math_init_calibration_params(CalibrationParmDef *param) {
-	paramSD.CompassCorrection = 0.0;
-	paramSD.HSPCorrection = 0.0;
-	paramSD.HeelCorrection = 0.0;
-	paramSD.MagneticDeclanation = 0.0;
-	paramSD.PitchCorrection = 0.0;
-	paramSD.RudderCorrection = 0.0;
-	paramSD.WindCorrection = 0.0;
+	eeprom_read(EEPROM_MATH_COMPASS_CORRECTION, (uint8_t*)&paramSD.CompassCorrection, 4);
+	//paramSD.CompassCorrection = 0.0;
+	eeprom_read(EEPROM_MATH_HSP_CORRECTION, (uint8_t*)&paramSD.HSPCorrection, 4);
+	//paramSD.HSPCorrection = 0.0;
+	eeprom_read(EEPROM_MATH_HEEL_CORRECTION, (uint8_t*)&paramSD.HeelCorrection, 4);
+	//paramSD.HeelCorrection = -4.75;
+	eeprom_read(EEPROM_MATH_DECLANATION_CORRECTION, (uint8_t*)&paramSD.MagneticDeclanation, 4);
+	//paramSD.MagneticDeclanation = 0.0;
+	eeprom_read(EEPROM_MATH_PITCH_CORRECTION, (uint8_t*)&paramSD.PitchCorrection, 4);
+	//paramSD.PitchCorrection = -6.5625;
+	eeprom_read(EEPROM_MATH_RUDDER_CORRECTION, (uint8_t*)&paramSD.RudderCorrection, 4);
+	//paramSD.RudderCorrection = 0.0;
+	eeprom_read(EEPROM_MATH_WIND_CORRECTION, (uint8_t*)&paramSD.WindCorrection, 4);
+	//paramSD.WindCorrection = -4.0;
 }
 
 void math_copy_sensor_values(float *lastSensorValues) {
