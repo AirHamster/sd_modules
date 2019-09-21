@@ -82,8 +82,9 @@ static THD_FUNCTION( microsd_thread, p) {
 	mmcObjectInit(&MMCD1);
 	mmcStart(&MMCD1, &mmccfg);   // Configures and activates the MMC peripheral.
 	microsd_mount_fs();
-	//microsd_open_logfile((BaseSequentialStream*) &SD1);
-	//microsd_write_logfile_header((BaseSequentialStream*) &SD1);
+	microsd_open_logfile((BaseSequentialStream*) &SD1);
+	microsd_write_logfile_header((BaseSequentialStream*) &SD1);
+	microsd->cmd_req = MICROSD_WRITE_LOG;
 	wdgReset(&WDGD1);
 	chThdSleepMilliseconds(110);
 	systime_t prev = chVTGetSystemTime(); // Current system time.
