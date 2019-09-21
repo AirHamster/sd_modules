@@ -468,11 +468,14 @@ void cmd_boot(BaseSequentialStream* chp, int argc, char* argv[]) {
 	chprintf(chp, ".");
 	chThdSleepMilliseconds(500);
 	chprintf(chp, "\r\n");
-	// *((unsigned long *)(SYMVAL(__ram0_end__) - 4)) = 0xDEADBEEF; // set magic flag => reset handler will jump into boot loader
 
-	 *((unsigned long *) BKPSRAM_BASE) = 0xDEADBEEF;
-	 if (*((unsigned long *) BKPSRAM_BASE) == MAGIC_BOOTLOADER_NUMBER) {
-	 chprintf(chp, "Writed to the end of RAM %x, reset\r\n", *((unsigned long *) BKPSRAM_BASE));
+	// *((unsigned long *)(SYMVAL(__ram0_end__) - 4)) = 0xDEADBEEF;
+
+	 //*((unsigned long *) BKPSRAM_BASE) = 0xDEADBEEF;
+	 RTC->BKP0R = MAGIC_BOOTLOADER_NUMBER;	// set magic flag => reset handler will jump into boot loader
+
+	 if (RTC->BKP0R == MAGIC_BOOTLOADER_NUMBER) {
+	 chprintf(chp, "Writed to the end of RAM %x, reset\r\n", RTC->BKP0R);
 	 chThdSleepMilliseconds(500);
 	 NVIC_SystemReset();
 	 }else{

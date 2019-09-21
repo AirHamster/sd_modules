@@ -24,7 +24,9 @@
 static void lag_init_pins(void);
 extern struct ch_semaphore usart1_semaph;
 lag_t *lag;
+
 extern time_measurement_t time;
+
 
 static THD_WORKING_AREA(lag_thread_wa, 512);
 static THD_FUNCTION(lag_thread, arg);
