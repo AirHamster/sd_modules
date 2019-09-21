@@ -22,11 +22,27 @@
 #define MICROSD_SHOW_FREE		7
 #define MICROSD_WRITE_SENSOR_LOG_LINE 8
 
+enum microsd_commands{
+	MICROSD_NONE = 0,
+	MICROSD_MKFS,
+	MICROSD_TREE,
+	MICROSD_LS,
+	MICROSD_CAT,
+	MICROSD_WRITE_LOG,
+	MICROSD_FREE
+};
+
+typedef struct{
+	uint8_t cmd_req;
+}microsd_t;
+
 void cmd_open(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_mount(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_free(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]);
+void cmd_mkfs(BaseSequentialStream *chp, int argc, char *argv[]);
+void cmd_cat(BaseSequentialStream *chp, int argc, char *argv[]);
 //DWORD get_fattime (void);
 
 void start_microsd_module(void);

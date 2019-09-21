@@ -47,6 +47,14 @@ extern lag_t *lag;
 #include "adc.h"
 
 #endif
+
+#include "sailDataMath.h"
+
+extern float lastFilterValues[10][FILTER_BUFFER_SIZE];
+extern float windAngleTarget;
+extern float lastSensorValues[SIZE_BUFFER_VALUES];
+extern float hullSpeedTarget;
+extern float velocityMadeGoodTarget;
 extern struct ch_semaphore usart1_semaph;
 
 extern ble_charac_t *thdg;
@@ -59,7 +67,7 @@ extern ble_charac_t *twa_tg;
 extern ble_charac_t *bs_tg;
 extern ble_charac_t *hdg;
 extern ble_charac_t *heel;
-
+extern uint32_t __ram0_end__;
 output_t *output;
 char *complete_buffer[16];
 char history_buffer[128];
@@ -71,13 +79,20 @@ static THD_FUNCTION(output_thread, arg);
 static const ShellCommand commands[] = {
 		{ "start", cmd_start },
 		{ "c", cmd_c },
+		{ "boot", cmd_boot },
+		{ "reset", cmd_reset },
 #ifdef USE_SERVICE_MODE
 		{ "service", cmd_service },
+		{ "load_math_calib", cmd_load_math_cal },
+		{ "get_math_calib", cmd_get_math_cal },
 #ifdef USE_BNO055_MODULE
 		{ "gyro", cmd_gyro },
 #endif //USE_BNO055_MODULE
 #ifdef USE_MICROSD_MODULE
 		{ "microsd", cmd_microsd },
+		{ "tree", cmd_tree },
+		{ "cat", cmd_cat },
+		{ "mkfs", cmd_mkfs },
 #endif //USE_MICROSD_MODULE
 #ifdef USE_BLE_MODULE
 		{ "ble", cmd_ble },
@@ -107,12 +122,12 @@ static const ShellConfig shell_cfg1 = { (BaseSequentialStream*) &SHELL_SD,
 		commands, history_buffer, 32, complete_buffer };
 
 thread_t *cmd_init(void) {
-	return chThdCreateFromHeap(NULL, SHELL_WA_SIZE, "shell", NORMALPRIO,
+	return chThdCreateFromHeap(NULL, SHELL_WA_SIZE, "shell", NORMALPRIO + 4,
 			shellThread, (void *) &shell_cfg1);
 }
 
 void start_json_module(void){
-	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO + 2, output_thread, NULL);
+	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO, output_thread, NULL);
 }
 
 /*
@@ -134,7 +149,7 @@ static THD_FUNCTION(output_thread, arg) {
 		case OUTPUT_NONE:
 			break;
 		case OUTPUT_TEST:
-			//send_json();
+			send_json();
 	//		if (i++ == 10) {
 		//		nina_send_all(peer);
 		//		i = 0;
@@ -309,8 +324,20 @@ int32_t convert_to_ble_type(float value){
 
 void copy_to_ble(void){
 #ifdef SD_MODULE_TRAINER
-	hdg->value = convert_to_ble_type(bno055->d_euler_hpr.h);
-	heel->value = convert_to_ble_type(bno055->d_euler_hpr.r);
+	thdg->value = convert_to_ble_type(lastFilterValues[1][FILTER_BUFFER_SIZE - 1]);
+	//rdr->value = convert_to_ble_type(lastFilterValues[1][0])
+	twd->value = convert_to_ble_type(lastFilterValues[4][FILTER_BUFFER_SIZE - 1]);
+	tws->value = convert_to_ble_type(lastFilterValues[5][FILTER_BUFFER_SIZE - 1]);
+	twa->value = convert_to_ble_type(lastFilterValues[6][FILTER_BUFFER_SIZE - 1]);
+	//bs
+	twa_tg->value = convert_to_ble_type(windAngleTarget);
+	bs_tg->value = convert_to_ble_type(hullSpeedTarget);
+	hdg->value = convert_to_ble_type(lastSensorValues[HDM]);
+	heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
+
+	//hdg->value = convert_to_ble_type(lastFilterValues[0][0]);
+	//heel->value = convert_to_ble_type(lastFilterValues[2][0]);
+
 #endif
 }
 
@@ -414,7 +441,45 @@ void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]) {
 	chprintf(chp, "Stopped all outputs\n\r");
 }
 
+void cmd_reset(BaseSequentialStream* chp, int argc, char* argv[]){
+	(void) argc;
+	(void) argv;
+	chprintf(chp, "\r\nReset system");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, ".");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, ".");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, ".");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, "\r\n");
+	NVIC_SystemReset();
+}
 
+void cmd_boot(BaseSequentialStream* chp, int argc, char* argv[]) {
+	(void) argc;
+	(void) argv;
+	chprintf(chp, "Entering bootloader after system reset");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, ".");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, ".");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, ".");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, "\r\n");
+	// *((unsigned long *)(SYMVAL(__ram0_end__) - 4)) = 0xDEADBEEF; // set magic flag => reset handler will jump into boot loader
+
+	 *((unsigned long *) BKPSRAM_BASE) = 0xDEADBEEF;
+	 if (*((unsigned long *) BKPSRAM_BASE) == MAGIC_BOOTLOADER_NUMBER) {
+	 chprintf(chp, "Writed to the end of RAM %x, reset\r\n", *((unsigned long *) BKPSRAM_BASE));
+	 chThdSleepMilliseconds(500);
+	 NVIC_SystemReset();
+	 }else{
+		 chprintf(chp, "Comparsion failed\r\n");
+	 }
+
+}
 
 void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {

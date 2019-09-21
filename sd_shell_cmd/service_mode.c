@@ -50,10 +50,14 @@ extern rudder_t *rudder;
 extern lag_t *lag;
 #endif
 
+#include "sailDataMath.h"
+#include "sd_math.h"
+extern CalibrationParmDef paramSD;
 extern struct ch_semaphore usart1_semaph;
 
 void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
+		chSemWait(&usart1_semaph);
 		if (strcmp(argv[0], "help") == 0) {
 			chprintf(chp, "\r\nActive modules and available commands:\n\r");
 #ifdef USE_UBLOX_GPS_MODULE
@@ -75,10 +79,13 @@ void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]) {
 			return;
 		}
 		chprintf(chp, "Usage: service <help>\n\r");
+	chSemSignal(&usart1_semaph);
 	}
 	stop_all_tests();
 	output->type = OUTPUT_SERVICE;
+	chSemWait(&usart1_semaph);
 	chprintf(chp,"\r\nService mode activated. Write <service help> to get more info\n\r");
+	chSemSignal(&usart1_semaph);
 }
 
 #ifdef USE_BNO055_MODULE
@@ -90,7 +97,7 @@ void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
 		if (strcmp(argv[0], "help") == 0) {
 			chprintf(chp,
-					"Usage: gyro status|calibrate|get_cal_params|write_cal_params\r\n");
+					"Usage: gyro status|calibrate|get_cal_params|write_cal_params|set_static_cal|get_static_cal\r\n");
 		} else if (strcmp(argv[0], "calibrate") == 0) {
 			chprintf(chp, "Starting gyro calibration routine\r\n");
 			bno055_start_calibration(bno055);
@@ -101,7 +108,7 @@ void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]) {
 			bno055_check_calib_coefs(bno055);
 			chSemWait(&usart1_semaph);
 			chprintf(SHELL_IFACE,
-					"\r\n{\"msg_type\":\"calib_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
+					"\r\n{\"msg_type\":\"gyro_calib_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
 			chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t",
 					bno055->calib_stat.magn);
 			chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t",
@@ -139,7 +146,7 @@ void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]) {
 			chSemWait(&usart1_semaph);
 			chprintf(chp, "Writing calibration parameters to EEPROM:\r\n");
 			chprintf(SHELL_IFACE,
-					"\r\n{\"msg_type\":\"calib_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
+					"\r\n{\"msg_type\":\"gyro_calib_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
 			chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t",
 					bno055->calib_stat.magn);
 			chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t",
@@ -176,16 +183,31 @@ void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]) {
 		} else if (strcmp(argv[0], "set_static_cal") == 0) {
 			if (argc == 2) {
 				if (strcmp(argv[1], "1") == 0) {
-					bno055_set_static_calib(bno055);
+					if (bno055_set_static_calib(bno055) == -1){
+						chprintf(chp, "Error writing parameters to EEPROM\n\r");
+					}else{
+						chprintf(chp, "Static calibration set\n\r");
+					}
 				} else if (strcmp(argv[1], "0") == 0) {
-					bno055_set_dynamic_calib(bno055);
+					if (bno055_set_dynamic_calib(bno055) == -1){
+						chprintf(chp, "Error writing parameters to EEPROM\n\r");
+					}else{
+						chprintf(chp, "Dynamic calibration set\n\r");
+					}
 				} else {
 					chprintf(chp, "Usage: gyro set_static_cal [0, 1]\n\r");
 				}
 			} else {
 				chprintf(chp, "Usage: gyro set_static_cal [0, 1]\n\r");
 			}
-		} else if (strcmp(argv[0], "status") == 0) {
+		}else if (strcmp(argv[0], "get_static_cal") == 0) {
+			if (bno955_read_static_flag_from_eeprom(bno055) == -1){
+				chprintf(chp, "Error reading parameters from EEPROM\n\r");
+			}else{
+				chprintf(chp, "Static calibration flag: %d\n\r", bno055->static_calib);
+			}
+
+		}else if (strcmp(argv[0], "status") == 0) {
 			chprintf(chp,
 					"BNO055 status:\r\n\t- compass: \r\n\t- gyro: \r\n\t- accel: \r\n\t- system: \r\n");
 		}
@@ -246,16 +268,14 @@ void cmd_microsd(BaseSequentialStream* chp, int argc, char* argv[]) {
 	}
 	if (argc != 0) {
 		if (strcmp(argv[0], "help") == 0) {
-			chprintf(chp, "Usage: - ble AT|NULL|NULL\n\r");
-		} else if (strcmp(argv[0], "AT") == 0) {
-			chprintf(chp, "Sending AT request:\r\n");
-			nina_send_at();
+			chprintf(chp, "Usage: - microsd mount|umount|mkfs|tree|ls\n\r");
 		} else if (strcmp(argv[0], "mount") == 0) {
 			chprintf(chp, "Trying to mount SD card...\r\n");
 		} else if (strcmp(argv[0], "umount") == 0) {
 			chprintf(chp, "Trying to umount SD card...\r\n");
 		} else if (strcmp(argv[0], "mkfs") == 0) {
 			chprintf(chp, "Formatting SD card... \r\n");
+
 		} else if (strcmp(argv[0], "tree") == 0) {
 			chprintf(chp, "Tree \r\n");
 		} else if (strcmp(argv[0], "ls") == 0) {
@@ -264,6 +284,158 @@ void cmd_microsd(BaseSequentialStream* chp, int argc, char* argv[]) {
 	}
 }
 #endif
+
+void cmd_get_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
+	chSemWait(&usart1_semaph);
+	chprintf(SHELL_IFACE,
+			"\r\n{\"msg_type\":\"math_calib_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
+	chprintf(SHELL_IFACE, "\"CompassCorrection\":%f,\r\n\t\t\t",
+			paramSD.CompassCorrection);
+	chprintf(SHELL_IFACE, "\"HSPCorrection\":%f,\r\n\t\t\t",
+			paramSD.HSPCorrection);
+	chprintf(SHELL_IFACE, "\"HeelCorrection\":%f,\r\n\t\t\t",
+			paramSD.HeelCorrection);
+	chprintf(SHELL_IFACE, "\"MagneticDeclanation\":%f,\r\n\t\t\t",
+			paramSD.MagneticDeclanation);
+	chprintf(SHELL_IFACE, "\"PitchCorrection\":%f,\r\n\t\t\t",
+			paramSD.PitchCorrection);
+	chprintf(SHELL_IFACE, "\"RudderCorrection\":%f,\r\n\t\t\t",
+			paramSD.RudderCorrection);
+	chprintf(SHELL_IFACE, "\"WindCorrection\":%f,\r\n\t\t\t",
+			paramSD.WindCorrection);
+	chprintf(SHELL_IFACE, "\"WindowSize1\":%d,\r\n\t\t\t",
+			paramSD.WindowSize1);
+	chprintf(SHELL_IFACE, "\"WindowSize2\":%d,\r\n\t\t\t",
+			paramSD.WindowSize2);
+	chprintf(SHELL_IFACE, "\"WindowSize3\":%d,\r\n\t\t\t",
+			paramSD.WindowSize3);
+	chprintf(SHELL_IFACE, "}\r\n\t}\r\n");
+	chSemSignal(&usart1_semaph);
+}
+
+void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
+	float calib_val;
+	uint8_t calib_val_i;
+	if (argc != 0) {
+		if (strcmp(argv[0], "help") == 0) {
+			chprintf(chp,
+					"Usage: - load_math_calib CompassCorrection|HSPCorrection|HeelCorrection|MagneticDeclanation|PitchCorrection|RudderCorrection|WindCorrection <float>\n\r");
+		} else if (strcmp(argv[0], "CompassCorrection") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val = atof(argv[1]);
+				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				eeprom_write(EEPROM_MATH_COMPASS_CORRECTION,
+						(uint8_t*) &calib_val, 4);
+			}
+			chprintf(chp, "Saved CompassCorrection value: %f\r\n", calib_val);
+			paramSD.CompassCorrection = calib_val;
+
+		} else if (strcmp(argv[0], "HSPCorrection") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val = atof(argv[1]);
+				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				eeprom_write(EEPROM_MATH_HSP_CORRECTION, (uint8_t*) &calib_val,
+						4);
+			}
+			chprintf(chp, "Saved HSPCorrection value: %f\r\n", calib_val);
+			paramSD.HSPCorrection = calib_val;
+		} else if (strcmp(argv[0], "HeelCorrection") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val = atof(argv[1]);
+				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				eeprom_write(EEPROM_MATH_HEEL_CORRECTION, (uint8_t*) &calib_val,
+						4);
+			}
+			chprintf(chp, "Saved HeelCorrection value: %f\r\n", calib_val);
+			paramSD.HeelCorrection = calib_val;
+		} else if (strcmp(argv[0], "MagneticDeclanation") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val = atof(argv[1]);
+				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				eeprom_write(EEPROM_MATH_DECLANATION_CORRECTION,
+						(uint8_t*) &calib_val, 4);
+			}
+			chprintf(chp, "Saved MagneticDeclanation value: %f\r\n", calib_val);
+			paramSD.MagneticDeclanation = calib_val;
+		} else if (strcmp(argv[0], "PitchCorrection") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val = atof(argv[1]);
+				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				eeprom_write(EEPROM_MATH_PITCH_CORRECTION,
+						(uint8_t*) &calib_val, 4);
+			}
+			chprintf(chp, "Saved PitchCorrection value: %f\r\n", calib_val);
+			paramSD.PitchCorrection = calib_val;
+		} else if (strcmp(argv[0], "RudderCorrection") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val = atof(argv[1]);
+				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				eeprom_write(EEPROM_MATH_RUDDER_CORRECTION,
+						(uint8_t*) &calib_val, 4);
+			}
+			chprintf(chp, "Saved RudderCorrection value: %f\r\n", calib_val);
+			paramSD.RudderCorrection = calib_val;
+		} else if (strcmp(argv[0], "WindCorrection") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val = atof(argv[1]);
+				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				eeprom_write(EEPROM_MATH_WIND_CORRECTION, (uint8_t*) &calib_val,
+						4);
+			}
+			chprintf(chp, "Saved WindCorrection value: %f\r\n", calib_val);
+			paramSD.WindCorrection = calib_val;
+		} else if (strcmp(argv[0], "WindowSize1") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val_i = atoi(argv[1]);
+				if (calib_val_i <= FILTER_BUFFER_SIZE) {
+					//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+					eeprom_write(EEPROM_MATH_WINSIZE1_CORRECTION,
+							(uint8_t*) &calib_val_i, 1);
+					chprintf(chp, "Saved WindowSize1 value: %d\r\n",
+							calib_val_i);
+					paramSD.WindowSize1 = calib_val_i;
+				} else {
+					chprintf(chp,
+							"Saving WindowSize1 error: value is greater than FILTER_BUFFER_SIZE\r\n");
+				}
+			}
+
+		} else if (strcmp(argv[0], "WindowSize2") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val_i = atoi(argv[1]);
+				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				if (calib_val_i <= FILTER_BUFFER_SIZE) {
+					eeprom_write(EEPROM_MATH_WINSIZE2_CORRECTION,
+							(uint8_t*) &calib_val_i, 1);
+					chprintf(chp, "Saved WindowSize2 value: %d\r\n",
+							calib_val_i);
+					paramSD.WindowSize2 = calib_val_i;
+				} else {
+					chprintf(chp,
+							"Saving WindowSize2 error: value is greater than FILTER_BUFFER_SIZE\r\n");
+				}
+			}
+
+		} else if (strcmp(argv[0], "WindowSize3") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val_i = atoi(argv[1]);
+
+				if (calib_val_i <= FILTER_BUFFER_SIZE) {
+					//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+					eeprom_write(EEPROM_MATH_WINSIZE3_CORRECTION,
+							(uint8_t*) &calib_val_i, 1);
+					chprintf(chp, "Saved WindowSize3 value: %d\r\n",
+							calib_val_i);
+					paramSD.WindowSize3 = calib_val_i;
+				} else {
+					chprintf(chp,
+							"Saving WindowSize3 error: value is greater than FILTER_BUFFER_SIZE\r\n");
+				}
+			}
+
+		}
+	}
+}
 
 #ifdef USE_WINDSENSOR_MODULE
 void cmd_wind(BaseSequentialStream* chp, int argc, char* argv[]) {

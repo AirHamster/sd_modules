@@ -74,6 +74,12 @@ SD_SRC += ./sd_modules/microsd/microsd.c
 SD_INC += ./sd_modules/microsd
 endif
 
+ifeq ($(USE_MATH_MODULE), TRUE)
+SD_SRC += ./sd_modules/math/sailDataMath.c
+SD_SRC += ./sd_modules/math/sd_math.c
+SD_INC += ./sd_modules/math
+endif
+
 #WIND sensor
 ifeq ($(USE_WINDSENSOR_MODULE), TRUE)
 SD_SRC += ./sd_modules/windsensor/windsensor.c

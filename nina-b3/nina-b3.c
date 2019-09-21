@@ -18,6 +18,7 @@
 #include "sd_shell_cmds.h"
 #include "lag.h"
 #include "adc.h"
+struct ch_semaphore usart_nina;
 extern struct ch_semaphore usart1_semaph;
 #ifdef SD_MODULE_TRAINER
 	ble_charac_t *thdg;
@@ -113,9 +114,11 @@ static THD_FUNCTION(ble_thread, arg) {
 	uint8_t token;
 	chRegSetThreadName("BLE Conrol Thread");
 	nina_fill_memory();
+	chSemObjectInit(&usart_nina, 1);
 	nina_init_services();
 	chThdSleepMilliseconds(500);
 #ifdef SD_MODULE_TRAINER
+/*
 	chprintf((BaseSequentialStream*) &SD1, "Connecting to lag module\r\n");
 	nina_connect("CCF95781688F", 0); //LAG
 	chThdSleepMilliseconds(2000);
@@ -128,6 +131,7 @@ static THD_FUNCTION(ble_thread, arg) {
 	if (remote_rudder->is_connected == 1) {
 		nina_get_remote_characs(remote_rudder->conn_handle, 0x5A01);
 	}
+	*/
 	chThdSleepMilliseconds(2500);
 #endif
 	//systime_t prev = chVTGetSystemTime(); // Current system time.
@@ -170,7 +174,7 @@ uint8_t nina_parse_command(int8_t *strp) {
 	int8_t addr[16] = { 0 };
 	int8_t tmpstr[64] = { 0 };
 	int8_t tmpstr2[64] = { 0 };
-	//chprintf((BaseSequentialStream*) &SD1, "%s\r\n", strp);
+	//chprintf((BaseSequentialStream*) &SD1, "%s", strp);
 	scan_res = sscanf(strp, "+UBTGSN:%d,%d,%x\r", &scanned_vals[0],
 			&scanned_vals[1], &val);
 	if (scan_res == 1) {
@@ -573,7 +577,7 @@ uint8_t nina_init_services(void){
 	if (nina_wait_response("+UBTGSER\r") != NINA_SUCCESS) {
 		return -1;
 	}
-	chThdSleepMilliseconds(50);
+	chThdSleepMilliseconds(200);
 	/*
 # Create characteristic for service (values, witch coach complex send to tablet)
 # Parametrs command:
@@ -594,7 +598,7 @@ uint8_t nina_init_services(void){
 		return -1;
 	}uint8_t
 	*/
-	chThdSleepMilliseconds(50);
+	chThdSleepMilliseconds(100);
 	//# RDR - uuid 3A02
 	//# Response +UBTGCHA:RDR_HAND,CCCD_HAND (zero if not use)
 	nina_add_charac(rdr, 0x3A02, 10, 1, 1, 0x0F00FF, 0, 3);
@@ -604,17 +608,17 @@ uint8_t nina_init_services(void){
 		return -1;
 	}
 	*/
-	chThdSleepMilliseconds(50);
+	chThdSleepMilliseconds(100);
 	//# TWD - uuid 3A03
 	//# Response +UBTGCHA:TWD_HAND,CCCD_HAND (zero if not use)
-	nina_add_charac(thdg, 0x3A03, 10, 1, 1, 0x0F00FF, 0, 3);
+	nina_add_charac(twd, 0x3A03, 10, 1, 1, 0x0F00FF, 0, 3);
 	/*
 	chprintf(NINA_IFACE, "AT+UBTGCHA=3A03,10,1,1,0F00FF,0,3\r");
 	if (nina_wait_response("+UBTGCHA\r") != NINA_SUCCESS) {
 		return -1;
 	}
 	*/
-	chThdSleepMilliseconds(50);
+	chThdSleepMilliseconds(100);
 	//# TWS - uuid 3A04
 	//# Response +UBTGCHA:TWS_HAND,CCCD_HAND (zero if not use)
 	nina_add_charac(tws, 0x3A04, 10, 1, 1, 0x0F00FF, 0, 3);
@@ -624,7 +628,7 @@ uint8_t nina_init_services(void){
 		return -1;
 	}
 	*/
-	chThdSleepMilliseconds(50);
+	chThdSleepMilliseconds(100);
 	//# TWA - uuid 3A05
 	//# Response +UBTGCHA:TWD_HAND,CCCD_HAND (zero if not use)
 	nina_add_charac(twa, 0x3A05, 10, 1, 1, 0x0F00FF, 0, 3);
@@ -634,7 +638,7 @@ uint8_t nina_init_services(void){
 		return -1;
 	}
 	*/
-	chThdSleepMilliseconds(50);
+	chThdSleepMilliseconds(100);
 	//# BS - uuid 3A06
 	//# Response +UBTGCHA:TWD_HAND,CCCD_HAND (zero if not use)
 	nina_add_charac(bs, 0x3A06, 10, 1, 1, 0x0F00FF, 0, 3);
@@ -644,7 +648,7 @@ uint8_t nina_init_services(void){
 		return -1;
 	}
 	*/
-	chThdSleepMilliseconds(50);
+	chThdSleepMilliseconds(100);
 	//# TWA_TG - uuid 3A07
 	//# Response +UBTGCHA:TWD_HAND,CCCD_HAND (zero if not use)
 	nina_add_charac(twa_tg, 0x3A07, 10, 1, 1, 0x0F00FF, 0, 3);
@@ -654,7 +658,7 @@ uint8_t nina_init_services(void){
 		return -1;
 	}
 	*/
-	chThdSleepMilliseconds(50);
+	chThdSleepMilliseconds(100);
 	//# BS_TG - uuid 3A08
 	//# Response +UBTGCHA:TWD_HAND,CCCD_HAND (zero if not use)
 	nina_add_charac(bs_tg, 0x3A08, 10, 1, 1, 0x0F00FF, 0, 3);
@@ -664,7 +668,7 @@ uint8_t nina_init_services(void){
 		return -1;
 	}
 	*/
-	chThdSleepMilliseconds(50);
+	chThdSleepMilliseconds(100);
 	//# HDG - uuid 3A09
 	//# Response +UBTGCHA:TWD_HAND,CCCD_HAND (zero if not use)
 	nina_add_charac(hdg, 0x3A09, 10, 1, 1, 0x0F00FF, 0, 3);
@@ -674,7 +678,7 @@ uint8_t nina_init_services(void){
 		return -1;
 	}
 	*/
-	chThdSleepMilliseconds(50);
+	chThdSleepMilliseconds(100);
 	//# HEEL - uuid 3A0A
 		//# Response +UBTGCHA:TWD_HAND,CCCD_HAND (zero if not use)
 	nina_add_charac(heel, 0x3A0A, 10, 1, 1, 0x0F00FF, 0, 3);
@@ -684,7 +688,7 @@ uint8_t nina_init_services(void){
 			return -1;
 		}
 		*/
-		chThdSleepMilliseconds(50);
+		chThdSleepMilliseconds(100);
 		//# Save settings and reboot
 /*		chprintf(NINA_IFACE, "AT&W\r");
 		if (nina_wait_response("AT&W\r") != NINA_SUCCESS) {
@@ -700,24 +704,77 @@ uint8_t nina_init_services(void){
 #endif
 void nina_send_all(ble_peer_t *peer){
 #ifdef SD_MODULE_TRAINER
-	if (peer->is_connected == 1){
-		chSemWait(&usart1_semaph);
+	if (peer->is_connected == 1) {
 
-	chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle, bs->cccd_handle, bs->value);
-	chSemSignal(&usart1_semaph);
-	chThdSleepMilliseconds(5);
-	chSemWait(&usart1_semaph);
-	chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle, rdr->cccd_handle, rdr->value);
-	chSemSignal(&usart1_semaph);
-	chThdSleepMilliseconds(5);
-	chSemWait(&usart1_semaph);
-	chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle, hdg->cccd_handle, hdg->value);
-	chSemSignal(&usart1_semaph);
-	chThdSleepMilliseconds(5);
-	chSemWait(&usart1_semaph);
-	chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle, heel->cccd_handle, heel->value);
-	chSemSignal(&usart1_semaph);
-}
+		chSemWait(&usart_nina);
+		chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle,
+				thdg->cccd_handle, thdg->value);
+		chSemSignal(&usart_nina);
+
+		chThdSleepMilliseconds(30);
+
+		chSemWait(&usart_nina);
+		chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle,
+				rdr->cccd_handle, rdr->value);
+		chSemSignal(&usart_nina);
+
+		chThdSleepMilliseconds(30);
+
+		chSemWait(&usart_nina);
+		chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle,
+				twd->cccd_handle, twd->value);
+		chSemSignal(&usart_nina);
+
+		chThdSleepMilliseconds(30);
+
+		chSemWait(&usart_nina);
+		chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle,
+				tws->cccd_handle, tws->value);
+		chSemSignal(&usart_nina);
+
+		chThdSleepMilliseconds(30);
+
+		chSemWait(&usart_nina);
+		chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle,
+				twa->cccd_handle, twa->value);
+		chSemSignal(&usart_nina);
+
+		chThdSleepMilliseconds(30);
+
+		chSemWait(&usart_nina);
+		chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle,
+				bs->cccd_handle, bs->value);
+		chSemSignal(&usart_nina);
+
+		chThdSleepMilliseconds(30);
+
+		chSemWait(&usart_nina);
+		chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle,
+				twa_tg->cccd_handle, twa_tg->value);
+		chSemSignal(&usart_nina);
+
+		chThdSleepMilliseconds(30);
+
+		chSemWait(&usart_nina);
+		chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle,
+				bs_tg->cccd_handle, bs_tg->value);
+		chSemSignal(&usart_nina);
+
+		chThdSleepMilliseconds(30);
+
+		chSemWait(&usart_nina);
+		chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle,
+				hdg->cccd_handle, hdg->value);
+		chSemSignal(&usart_nina);
+
+		chThdSleepMilliseconds(30);
+
+		chSemWait(&usart_nina);
+		chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle,
+				heel->cccd_handle, heel->value);
+		chSemSignal(&usart_nina);
+
+	}
 #endif
 }
 

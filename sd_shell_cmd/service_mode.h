@@ -16,4 +16,6 @@ void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_ble(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_rudder(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_lag(BaseSequentialStream* chp, int argc, char* argv[]);
+void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]);
+void cmd_get_math_cal(BaseSequentialStream* chp, int argc, char* argv[]);
 #endif /* SD_MODULES_SD_SHELL_CMD_SERVICE_MODE_H_ */

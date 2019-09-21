@@ -27,7 +27,7 @@ const I2CConfig eeprom_i2c_cfg = {
 };
 #endif
 
-int8_t eeprom_write(uint16_t byte_addr, const int8_t *txbuf, size_t txbytes) {
+int8_t eeprom_write(uint16_t byte_addr, const uint8_t *txbuf, size_t txbytes) {
 	int8_t buff[txbytes + 2];
 	msg_t status;
 	buff[0] = byte_addr >> 8;
@@ -47,7 +47,7 @@ int8_t eeprom_write(uint16_t byte_addr, const int8_t *txbuf, size_t txbytes) {
 	return 0;
 }
 
-int8_t eeprom_read(uint16_t byte_addr, int8_t *rxbuf, size_t rxbytes) {
+int8_t eeprom_read(uint16_t byte_addr, uint8_t *rxbuf, size_t rxbytes) {
 	uint8_t buff[2];
 	msg_t status;
 	buff[0] = byte_addr >> 8;
