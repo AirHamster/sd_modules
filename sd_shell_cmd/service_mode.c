@@ -50,9 +50,11 @@ extern rudder_t *rudder;
 extern lag_t *lag;
 #endif
 
+#ifdef SD_MODULE_TRAINER
 #include "sailDataMath.h"
 #include "sd_math.h"
 extern CalibrationParmDef paramSD;
+#endif
 extern struct ch_semaphore usart1_semaph;
 
 void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]) {
@@ -285,6 +287,7 @@ void cmd_microsd(BaseSequentialStream* chp, int argc, char* argv[]) {
 }
 #endif
 
+#ifdef SD_MODULE_TRAINER
 void cmd_get_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 	chSemWait(&usart1_semaph);
 	chprintf(SHELL_IFACE,
@@ -436,6 +439,7 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 		}
 	}
 }
+#endif
 
 #ifdef USE_WINDSENSOR_MODULE
 void cmd_wind(BaseSequentialStream* chp, int argc, char* argv[]) {

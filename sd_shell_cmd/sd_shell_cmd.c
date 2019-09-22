@@ -48,15 +48,16 @@ extern lag_t *lag;
 
 #endif
 
+#ifdef SD_MODULE_TRAINER
 #include "sailDataMath.h"
-
 extern float lastFilterValues[10][FILTER_BUFFER_SIZE];
 extern float windAngleTarget;
 extern float lastSensorValues[SIZE_BUFFER_VALUES];
 extern float hullSpeedTarget;
 extern float velocityMadeGoodTarget;
-extern struct ch_semaphore usart1_semaph;
+#endif
 
+extern struct ch_semaphore usart1_semaph;
 extern ble_charac_t *thdg;
 extern ble_charac_t *rdr;
 extern ble_charac_t *twd;
@@ -83,8 +84,10 @@ static const ShellCommand commands[] = {
 		{ "reset", cmd_reset },
 #ifdef USE_SERVICE_MODE
 		{ "service", cmd_service },
+#ifdef SD_MODULE_TRAINER
 		{ "load_math_calib", cmd_load_math_cal },
 		{ "get_math_calib", cmd_get_math_cal },
+#endif // SD_MODULE_TRAINER
 #ifdef USE_BNO055_MODULE
 		{ "gyro", cmd_gyro },
 #endif //USE_BNO055_MODULE
@@ -183,9 +186,6 @@ static THD_FUNCTION(output_thread, arg) {
 					}
 					break;
 				case OUTPUT_SERVICE:
-					break;
-				case OUTPUT_ALL_CALIB:
-					output_all_calib();
 					break;
 				case OUTPUT_BLE:
 		/*			if (i++ == 10){
