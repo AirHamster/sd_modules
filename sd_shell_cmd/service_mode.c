@@ -451,28 +451,76 @@ void cmd_wind(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 #ifdef USE_RUDDER_MODULE
 void cmd_rudder(BaseSequentialStream* chp, int argc, char* argv[]) {
+	float deg;
+	uint8_t temp;
 	if (output->type != OUTPUT_SERVICE) {
 		return;
 	}
 	if (argc != 0) {
 		if (strcmp(argv[0], "help") == 0) {
-			chprintf(chp,
-					"Usage: - rudder calibrate|left|middle|right\n\r");
+			chprintf(chp, "Usage: - rudder calibrate|left|middle|right\n\r");
 		} else if (strcmp(argv[0], "calibrate") == 0) {
 			chprintf(chp, "Starting rudder calibration procedure\r\n");
 			output->type = OUTPUT_RUDDER_CALIB;
 		} else if (strcmp(argv[0], "left") == 0) {
-			eeprom_write(EEPROM_RUDDER_CALIB_LEFT, (uint8_t*)&rudder->native, 2);
-			adc_update_rudder_struct(rudder);
-			chprintf(chp, "Saved left position\r\n");
+			if (strlen(argv[1]) != 0) {
+				deg = atof(argv[1]);
+				eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_LEFT,
+						(uint8_t*) &rudder->native, 4);
+				eeprom_write(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*) &deg,
+						4);
+				temp = 1;
+				eeprom_read(EEPROM_RUDDER_CALIB_FLAG_ADDR, &temp, 1);
+				adc_update_rudder_struct(rudder);
+				chprintf(chp, "Saved left position\r\n");
+			} else {
+				chprintf(chp, "Error: invalid value\r\n");
+			}
 		} else if (strcmp(argv[0], "center") == 0) {
-			eeprom_write(EEPROM_RUDDER_CALIB_CENTER, (uint8_t*)&rudder->native, 2);
-			adc_update_rudder_struct(rudder);
-			chprintf(chp, "Saved center position\r\n");
+			if (strlen(argv[1]) != 0) {
+				deg = atof(argv[1]);
+				eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_CENTER,
+						(uint8_t*) &rudder->native, 4);
+				eeprom_write(EEPROM_RUDDER_CALIB_DEGREES_CENTER,
+						(uint8_t*) &deg, 4);
+				temp = 1;
+				eeprom_read(EEPROM_RUDDER_CALIB_FLAG_ADDR, &temp, 1);
+				adc_update_rudder_struct(rudder);
+				chprintf(chp, "Saved center position\r\n");
+			} else {
+				chprintf(chp, "Error: invalid value\r\n");
+			}
 		} else if (strcmp(argv[0], "right") == 0) {
-			eeprom_write(EEPROM_RUDDER_CALIB_RIGHT, (uint8_t*)&rudder->native, 2);
-			adc_update_rudder_struct(rudder);
-			chprintf(chp, "Saved right position\r\n");
+			if (strlen(argv[1]) != 0) {
+				deg = atof(argv[1]);
+				eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_RIGHT,
+						(uint8_t*) &rudder->native, 4);
+				eeprom_write(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*) &deg,
+						4);
+				temp = 1;
+				eeprom_read(EEPROM_RUDDER_CALIB_FLAG_ADDR, &temp, 1);
+				adc_update_rudder_struct(rudder);
+				chprintf(chp, "Saved right position\r\n");
+			} else {
+				chprintf(chp, "Error: invalid value\r\n");
+			}
+		} else if (strcmp(argv[0], "get") == 0) {
+			eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_LEFT,
+					(uint8_t*) &deg, 4);
+			chprintf(chp, "Rudder left native: %f\r\n", deg);
+			eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*) &deg, 4);
+			chprintf(chp, "Rudder left deg: %f\r\n", deg);
+			eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_CENTER,
+					(uint8_t*) &deg, 4);
+			chprintf(chp, "Rudder center native: %f\r\n", deg);
+			eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*) &deg, 4);
+			chprintf(chp, "Rudder center native: %f\r\n", deg);
+			eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_RIGHT,
+					(uint8_t*) &deg, 4);
+			chprintf(chp, "Rudder right native: %f\r\n", deg);
+			eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*) &deg, 4);
+			chprintf(chp, "Rudder right native: %f\r\n", deg);
+
 		}
 	}
 }

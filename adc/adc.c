@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 #include "ch.h"
 #include "hal.h"
 #include "shell.h"
@@ -30,6 +31,8 @@ extern windsensor_t *wind;
 #include "eeprom.h"
 #endif
 rudder_t *rudder;
+dots_t *dots;
+coefs_t *coefs;
 
 #define IR_ADC_GRP1_NUM_CHANNELS 1
 #define IR_ADC_GRP1_BUF_DEPTH 4
@@ -100,6 +103,29 @@ static THD_FUNCTION( adc_thread, p) {
 	}
 }
 
+void init_coefs(dots_t *dots, coefs_t *coefs){
+	uint8_t temp;
+	eeprom_read(EEPROM_RUDDER_CALIB_FLAG_ADDR, &temp, 1);
+	if (temp == 0){
+		dots->x1 = 100.0;
+		dots->x2 = 1950.0;
+		dots->x3 = 4000.0;
+
+		dots->y1 = -90.0;
+		dots->y2 = 0.0;
+		dots->y2 = 90.0;
+	}else{
+		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_LEFT, (uint8_t*)&dots->x1, 4);
+		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_CENTER, (uint8_t*)&dots->x2, 4);
+		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*)&dots->x3, 4);
+
+		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*)&dots->y1, 4);
+		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*)&dots->y2, 4);
+		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*)&dots->y3, 4);
+	}
+	calculate_polynom_coefs(dots, coefs);
+}
+
 void start_adc_module(void){
 	adcStart(&ADCD1, NULL);
 	adcSTM32EnableVREF(&ADCD1);
@@ -130,8 +156,9 @@ void adc_convert_to_rudder(uint16_t tmp, rudder_t *rud) {
 	rud->degrees = ((float) rud->percent / 100.0 * 180.0 - 90.0);
 }
 void adc_update_rudder_struct(rudder_t *rud){
-	eeprom_read(EEPROM_RUDDER_CALIB_LEFT, (uint8_t*)&rud->min_native, 2);
-	eeprom_read(EEPROM_RUDDER_CALIB_RIGHT, (uint8_t*)&rud->max_native, 2);
+//	eeprom_read(EEPROM_RUDDER_CALIB_LEFT, (uint8_t*)&rud->min_native, 2);
+//	eeprom_read(EEPROM_RUDDER_CALIB_RIGHT, (uint8_t*)&rud->max_native, 2);
+	calculate_polynom_coefs(dots, coefs);
 }
 void adc_print_rudder_info(rudder_t *rud){
 	chprintf((BaseSequentialStream*) &SD1, "ADC native:  %d\r\n",
@@ -142,3 +169,30 @@ void adc_print_rudder_info(rudder_t *rud){
 			rud->degrees);
 }
 #endif
+
+float get_polynom_degrees(float x, coefs_t *coefs){
+	float y = 0.0;
+	y = coefs->a*x*x+coefs->b*x+coefs->c;
+	return y;
+}
+
+// http://accel.ru/inform/edu/algorithms/begin_numeth-pr2013/index.php?fname=_1_2_simple_itpl_poly.php
+void calculate_polynom_coefs(dots_t *dots, coefs_t *coefs){
+    float x0 = dots->x1;
+    float x1 = dots->x2;
+    float x2 = dots->x3;
+    float y0 = dots->y1;
+    float y1 = dots->y2;
+    float y2 = dots->y3;
+
+    float a0 = 0.0;
+    float a1 = 0.0;
+    float a2 = 0.0;
+
+    a0 = (1/(x1*(x2-x0))*(x0*((y2*x1*x1-y1*x2*x2)/(x2-x1))-x2*((y1*x0*x0-y0*x1*x1)/(x1-x0))));
+    a1 = -(1/((x2-x0))*((((y2-y1)*(x1+x0))/(x2-x1))-(((y1-y0)*(x2+x1))/(x1-x0))));
+     a2 = (1/((x2-x0))*((((y2-y1))/(x2-x1))-(((y1-y0))/(x1-x0))));
+     coefs->a = a2;
+     coefs->b = a1;
+     coefs->c = a0;
+}
