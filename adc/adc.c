@@ -85,6 +85,7 @@ static THD_FUNCTION( adc_thread, p) {
 	rudder->min_native = 100;
 	rudder->max_native = 4000;
 	rudder->native_full_scale = rudder->max_native - rudder->min_native;
+	init_coefs(dots, coefs);
 	while (true) {
 		adcConvert(&ADCD1, &adcgrpcfg, irSamples, IR_ADC_GRP1_BUF_DEPTH);
 		tmp = 0;
@@ -116,13 +117,23 @@ void init_coefs(dots_t *dots, coefs_t *coefs){
 		dots->y2 = 90.0;
 	}else{
 		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_LEFT, (uint8_t*)&dots->x1, 4);
+		rudder->min_native = dots->x1;
+		chThdSleepMilliseconds(5);
 		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_CENTER, (uint8_t*)&dots->x2, 4);
+		chThdSleepMilliseconds(5);
 		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*)&dots->x3, 4);
+		rudder->max_native = dots->x3;
+		chThdSleepMilliseconds(5);
 
 		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*)&dots->y1, 4);
+		rudder->min_degrees = dots->y1;
+		chThdSleepMilliseconds(5);
 		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*)&dots->y2, 4);
+		chThdSleepMilliseconds(5);
 		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*)&dots->y3, 4);
+		rudder->max_degrees = dots->y3;
 	}
+	rudder->native_full_scale = rudder->max_native - rudder->min_native;
 	calculate_polynom_coefs(dots, coefs);
 }
 
@@ -134,26 +145,37 @@ void start_adc_module(void){
 
 void adc_convert_to_rudder(uint16_t tmp, rudder_t *rud) {
 	//Workaround situation when sensor was instaled in mirrored position
-	if (rud->min_native <= rud->max_native) {
+	/*if (rud->min_native <= rud->max_native) {
 
-		if (tmp < rud->min_native) {
-			rud->native = rud->min_native;
-		} else if (tmp > rud->max_native) {
-			rud->native = rud->max_native;
-		} else {
-			rud->native = tmp;
-		}
-	} else {
-		if (tmp < rud->max_native) {
-			rud->native = rud->max_native;
-		} else if (tmp > rud->min_native) {
-			rud->native = rud->min_native;
-		} else {
-			rud->native = tmp;
-		}
+	 if (tmp < rud->min_native) {
+	 rud->native = rud->min_native;
+	 } else if (tmp > rud->max_native) {
+	 rud->native = rud->max_native;
+	 } else {
+	 rud->native = tmp;
+	 }
+	 } else*/
+	/*
+	 {
+	 if (tmp < rud->max_native) {
+	 rud->native = rud->max_native;
+	 } else if (tmp > rud->min_native) {
+	 rud->native = rud->min_native;
+	 } else {
+	 rud->native = tmp;
+	 }
+	 }
+	 */
+	rud->native = tmp;
+	//rud->percent = ((float) (rud->native - 100) / (float) rud->native_full_scale * 100.0);
+	rud->degrees = get_polynom_degrees(rud->native, coefs);
+	if (rud->degrees < rud->min_degrees) {
+		rud->degrees = rud->min_degrees;
+	} else if (rud->degrees > rud->max_degrees) {
+		rud->degrees = rud->max_degrees;
 	}
-	rud->percent = ((float) (rud->native - 100) / (float) rud->native_full_scale * 100.0);
-	rud->degrees = ((float) rud->percent / 100.0 * 180.0 - 90.0);
+
+	//rud->degrees = ((float) rud->percent / 100.0 * 180.0 - 90.0);
 }
 void adc_update_rudder_struct(rudder_t *rud){
 //	eeprom_read(EEPROM_RUDDER_CALIB_LEFT, (uint8_t*)&rud->min_native, 2);
@@ -189,10 +211,21 @@ void calculate_polynom_coefs(dots_t *dots, coefs_t *coefs){
     float a1 = 0.0;
     float a2 = 0.0;
 
-    a0 = (1/(x1*(x2-x0))*(x0*((y2*x1*x1-y1*x2*x2)/(x2-x1))-x2*((y1*x0*x0-y0*x1*x1)/(x1-x0))));
-    a1 = -(1/((x2-x0))*((((y2-y1)*(x1+x0))/(x2-x1))-(((y1-y0)*(x2+x1))/(x1-x0))));
-     a2 = (1/((x2-x0))*((((y2-y1))/(x2-x1))-(((y1-y0))/(x1-x0))));
-     coefs->a = a2;
-     coefs->b = a1;
-     coefs->c = a0;
+	if ((x2 == x0) || (x2 == x1) || (x1 == x0)) {
+		coefs->a = 0;
+		coefs->b = 0;
+		coefs->c = 0;
+	} else {
+		a0 = (1 / (x1 * (x2 - x0))
+				* (x0 * ((y2 * x1 * x1 - y1 * x2 * x2) / (x2 - x1))
+						- x2 * ((y1 * x0 * x0 - y0 * x1 * x1) / (x1 - x0))));
+		a1 = -(1 / ((x2 - x0))
+				* ((((y2 - y1) * (x1 + x0)) / (x2 - x1))
+						- (((y1 - y0) * (x2 + x1)) / (x1 - x0))));
+		a2 = (1 / ((x2 - x0))
+				* ((((y2 - y1)) / (x2 - x1)) - (((y1 - y0)) / (x1 - x0))));
+		coefs->a = a2;
+		coefs->b = a1;
+		coefs->c = a0;
+	}
 }

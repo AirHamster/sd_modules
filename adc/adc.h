@@ -19,6 +19,8 @@ typedef struct{
 	float min_native;
 	float max_native;
 	float native_full_scale;
+	float min_degrees;
+	float max_degrees;
 }rudder_t;
 
 typedef struct {
@@ -42,4 +44,5 @@ void start_adc_module(void);
 void adc_update_rudder_struct(rudder_t *rud);
 float get_polynom_degrees(float x, coefs_t *coefs);
 void calculate_polynom_coefs(dots_t *dots, coefs_t *coefs);
+void init_coefs(dots_t *dots, coefs_t *coefs);
 #endif /* SD_MODULES_ADC_ADC_H_ */
