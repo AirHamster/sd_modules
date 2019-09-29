@@ -146,19 +146,15 @@ static THD_FUNCTION(ble_thread, arg) {
 			if (remote_lag->is_connected == 0 && remote_lag->is_avalible == 1) {
 
 				nina_connect("CCF95781688F", 0); //LAG
-				chThdSleepMilliseconds(2500);
-				if (remote_lag->is_connected == 1) {
-					nina_get_remote_characs(remote_lag->conn_handle, 0x4A01);
-				}
+				chThdSleepMilliseconds(1500);
+
 			}
 			if (remote_rudder->is_connected == 0
 					&& remote_rudder->is_avalible == 1) {
 
 				nina_connect("CCF957816647", 0); //Rudder
-				chThdSleepMilliseconds(2500);
-				if (remote_rudder->is_connected == 1) {
-					nina_get_remote_characs(remote_rudder->conn_handle, 0x5A01);
-				}
+				chThdSleepMilliseconds(1500);
+
 			}
 		}
 #endif
@@ -308,7 +304,7 @@ void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t v
 		bs->value = value;
 		//chprintf((BaseSequentialStream*) &SD1, "R lag %f\r\n", r_lag->meters);
 	}else if ((remote_rudder->is_connected == 1) && (remote_rudder->conn_handle == conn_handle)){
-		r_rudder->degrees = (float)((value >> 8) + ((float)(value & 0xFF) / 100.0));
+		r_rudder->degrees = (float)((int16_t)((value >> 8) & 0x0000FFFF) + ((float)(value & 0x000000FF) / 100.0));
 		rdr->value = value;
 	//	chSemWait(&usart1_semaph);
 	//	chprintf((BaseSequentialStream*) &SD1, "R rdr %f\r\n", r_rudder->degrees);
@@ -374,6 +370,8 @@ void nina_register_remote_dev(uint8_t conn_handle, uint8_t type, int8_t *addr){
 	remote_lag->is_connected = 1;
 	remote_lag->type = type;
 	chprintf((BaseSequentialStream*) &SD1, "Connected to lag %d %d %s\r\n", remote_lag->conn_handle, remote_lag->type, addr);
+	chThdSleepMilliseconds(2500);
+	nina_get_remote_characs(remote_lag->conn_handle, 0x4A01);
 	//nina_get_remote_characs(remote_lag->conn_handle, 0x4A01);
 	}else if (strcmp(addr, "CCF957816647") == 0){
 			remote_rudder->conn_handle = conn_handle;
@@ -381,6 +379,8 @@ void nina_register_remote_dev(uint8_t conn_handle, uint8_t type, int8_t *addr){
 		remote_rudder->is_connected = 1;
 		remote_rudder->type = type;
 		chprintf((BaseSequentialStream*) &SD1, "Connected to rudder %d %d %s\r\n", remote_rudder->conn_handle, remote_rudder->type, addr);
+		chThdSleepMilliseconds(2500);
+		nina_get_remote_characs(remote_rudder->conn_handle, 0x5A01);
 		//nina_get_remote_characs(remote_lag->conn_handle, 0x5A01);
 		}
 	else{

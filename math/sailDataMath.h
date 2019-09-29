@@ -1,7 +1,7 @@
 /*
  * sailDataMath.h
  *
- *  Created on: 13 сент. 2019 г.
+ *  Created on: 13.
  *      Author: Weld
  */
 
@@ -241,3 +241,4 @@ float velocityMadeGood(
 
 
 #endif /* SAILDATAMATH_H_ */
+

@@ -324,7 +324,7 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
 		if (strcmp(argv[0], "help") == 0) {
 			chprintf(chp,
-					"Usage: - load_math_calib CompassCorrection|HSPCorrection|HeelCorrection|MagneticDeclanation|PitchCorrection|RudderCorrection|WindCorrection <float>\n\r");
+					"Usage: - load_math_calib CompassCorrection|HSPCorrection|HeelCorrection|MagneticDeclanation|PitchCorrection|RudderCorrection|WindCorrection|WindowSize1|WindowSize2|WindowSize3 <float>\n\r");
 		} else if (strcmp(argv[0], "CompassCorrection") == 0) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);

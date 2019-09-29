@@ -1,11 +1,13 @@
 /*
  * sailDataMath.c
  *
- *  Created on: 13 сент. 2019 г.
+ *  Created on: 13.
  *      Author: Weld
  */
 #include "sailDataMath.h"
-
+#include "hal.h"
+#include "chprintf.h"
+#include "config.h"
 #define COUNT_FILTERS 10
 float lastSensorValues[SIZE_BUFFER_VALUES] = {0.0};
 float bufferValues[COUNT_FILTERS][FILTER_BUFFER_SIZE] = {{0.0}};
@@ -20,9 +22,9 @@ void correctApparentWind(
 {
 	float angle = radiansFromDegrees(*apparentWindAngle);
 	float x = *apparentWindSpeed * sin(angle)
-		/ cos(radiansFromDegrees(HEEL));
+		/ cos(radiansFromDegrees(heel));
 	float y = *apparentWindSpeed * cos(angle)
-		/ cos(radiansFromDegrees(PITCH));
+		/ cos(radiansFromDegrees(pitch));
 	*apparentWindSpeed = sqrt(x * x + y * y);
 	*apparentWindAngle = angleCalc(degreesFromRadians(atan2(x, y)));
 }
@@ -77,8 +79,8 @@ float trueWindDirection(
 	return direction(
 		courseMadeGood
 		+ degreesFromRadians(pi
-		- atan2(apparentWindSpeed * sin(angleValue),
-		speedOverGround - apparentWindSpeed * cos(angleValue))));
+		- atan2(speedOverGround - apparentWindSpeed * cos(angleValue),
+				apparentWindSpeed * sin(angleValue))));
 }
 
 float trueWindAngle(
@@ -123,8 +125,8 @@ float set(
 		return direction(
 			trueHeading
 			+ degreesFromRadians(pi
-			- atan2(speedOverGround * sin(angleValue),
-			hullSpeed - speedOverGround * cos(angleValue))));
+			- atan2(hullSpeed - speedOverGround * cos(angleValue),
+					speedOverGround * sin(angleValue))));
 }
 
 float velocityMadeGood(
@@ -191,7 +193,7 @@ void calculateValues(CalibrationParmDef *calibParam)
 			lastSensorValues[AWS],
 			lastSensorValues[CMG],
 			lastSensorValues[SOG]);
-
+	//lastSensorValues[TWD] = direction(lastSensorValues[TWD]);
 	lastSensorValues[TWA] = trueWindAngle(
 			lastSensorValues[TWD],
 			lastSensorValues[HDT]);

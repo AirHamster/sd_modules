@@ -2,6 +2,7 @@
 #include "sd_shell_cmds.h"
 #include <hal.h>
 #include "shellconf.h"
+#include "math.h"
 #include <shell.h>
 #include <string.h>
 #include <stdlib.h>
@@ -32,6 +33,8 @@ extern windsensor_t *wind;
 #endif
 #ifdef USE_BLE_MODULE
 #include "nina-b3.h"
+#include "lag.h"
+#include "adc.h"
 extern ble_peer_t *peer;
 #endif
 #ifdef SD_SENSOR_BOX_RUDDER
@@ -47,6 +50,9 @@ extern lag_t *lag;
 #include "adc.h"
 
 #endif
+
+extern lag_t *r_lag;
+extern rudder_t *r_rudder;
 
 #ifdef SD_MODULE_TRAINER
 #include "sailDataMath.h"
@@ -332,8 +338,10 @@ void copy_to_ble(void){
 	//bs
 	twa_tg->value = convert_to_ble_type(windAngleTarget);
 	bs_tg->value = convert_to_ble_type(hullSpeedTarget);
-	hdg->value = convert_to_ble_type(lastSensorValues[HDM]);
+
+	hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
 	heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
+	//heel->value = convert_to_ble_type(bno055->d_euler_hpr.r);
 
 	//hdg->value = convert_to_ble_type(lastFilterValues[0][0]);
 	//heel->value = convert_to_ble_type(lastFilterValues[2][0]);
@@ -361,15 +369,17 @@ void send_json(void)
 		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
 		chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
 		chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", bno055->d_euler_hpr.r);
-		chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t", bno055->calib_stat.magn);
-		chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t", bno055->calib_stat.accel);
-		chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t", bno055->calib_stat.gyro);
-		chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t", bno055->calib_stat.system);
+	//	chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t", bno055->calib_stat.magn);
+	//	chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t", bno055->calib_stat.accel);
+	//	chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t", bno055->calib_stat.gyro);
+	//	chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t", bno055->calib_stat.system);
 #endif
 #ifdef USE_UBLOX_GPS_MODULE
 		chprintf(SHELL_IFACE, "\"headMot\":%d,\r\n\t\t\t", (uint16_t)(pvt_box->headMot / 100000));
 		chprintf(SHELL_IFACE, "\"sat\":%d,\r\n\t\t\t", pvt_box->numSV);
 #endif
+		chprintf(SHELL_IFACE, "\"rudder\":%f,\r\n\t\t\t", r_rudder->degrees);
+		chprintf(SHELL_IFACE, "\"log\":%f,\r\n\t\t\t", r_lag->meters);
 #ifdef USE_WINDSENSOR_MODULE
 		chprintf(SHELL_IFACE, "\"wind_dir\":%d,\r\n\t\t\t", wind->direction);
 		chprintf(SHELL_IFACE, "\"wind_spd\":%f,\r\n\t\t\t", wind->speed);
