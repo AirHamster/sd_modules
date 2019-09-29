@@ -63,6 +63,7 @@ ifeq ($(USE_BMX160_MODULE), TRUE)
 SD_SRC += ./sd_modules/bmx160/bmx160_i2c.c
 SD_SRC += ./sd_modules/bmx160/bmi160.c
 SD_SRC += ./sd_modules/bmx160/bmm150.c
+SD_INC += ./sd_modules/bmx160/bsx_lite/Inc
 SD_INC += ./sd_modules/bmx160
 endif
 

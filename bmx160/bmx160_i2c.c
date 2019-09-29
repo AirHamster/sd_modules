@@ -19,11 +19,112 @@
 #include "bmx160_i2c.h"
 #include "sd_shell_cmds.h"
 #include "eeprom.h"
+
+
+#include "BsxFusionLibrary.h"
+#include "BsxLibraryCalibConstants.h"
+#include "BsxLibraryConstants.h"
+#include "BsxLibraryDataTypes.h"
+#include "BsxLibraryErrorConstants.h"
+
+BSX_U8 bsxLibConfAcc[] = { 37, 0, 3, 1, 0, 9, 12, 150, 0, 16, 60, 0, 1, 0, 1, 0,
+		176, 4, 82, 3, 0, 0, 64, 65, 1, 1, 1, 1, 2, 2, 2, 3, 3, 1, 1, 180, 115 };
+BSX_U8 bsxLibConfMag[] = { 39, 0, 2, 1, 20, 5, 20, 5, 196, 9, 6, 9, 112, 23, 0,
+		0, 128, 61, 205, 204, 76, 63, 0, 0, 224, 64, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 134, 84 };
+BSX_U8 bsxLibConfGyro[] = { 14, 0, 1, 1, 3, 9, 12, 136, 19, 16, 1, 1, 129, 46 };
+BSX_U8 bsxLibConf[] = { 116, 6, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128,
+		63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 51, 51, 179,
+		62, 205, 204, 12, 63, 205, 204, 12, 63, 51, 51, 51, 63, 51, 51, 51, 63,
+		205, 204, 76, 63, 1, 0, 9, 4, 2, 23, 183, 209, 56, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 183, 209, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 23, 183, 209, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 189, 55, 134, 53, 189, 55, 134, 53, 189, 55,
+		134, 53, 0, 0, 0, 0, 0, 0, 16, 66, 232, 3, 5, 0, 45, 0, 132, 3, 176, 4,
+		150, 0, 8, 150, 0, 13, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128,
+		63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 51, 51, 179,
+		62, 205, 204, 12, 63, 205, 204, 12, 63, 51, 51, 51, 63, 51, 51, 51, 63,
+		205, 204, 76, 62, 1, 6, 4, 1, 0, 5, 0, 65, 1, 64, 1, 36, 0, 120, 0, 4,
+		1, 20, 20, 2, 2, 0, 4, 0, 0, 128, 63, 205, 204, 204, 61, 154, 153, 153,
+		63, 205, 204, 204, 62, 205, 204, 204, 61, 1, 0, 20, 0, 16, 4, 120, 0, 8,
+		0, 0, 5, 154, 153, 25, 63, 154, 153, 25, 63, 80, 0, 9, 0, 30, 0, 232, 3,
+		80, 0, 65, 0, 4, 0, 4, 0, 0, 128, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 128, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 128, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 128, 64, 181, 254, 22, 55, 181, 254, 22, 55, 181, 254, 22, 55, 139,
+		222, 169, 56, 0, 0, 224, 64, 13, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 205, 204, 204, 61,
+		1, 9, 9, 3, 19, 50, 163, 4, 205, 12, 100, 40, 4, 13, 0, 1, 154, 153,
+		153, 62, 154, 153, 153, 62, 205, 204, 204, 62, 154, 153, 25, 63, 154,
+		153, 153, 62, 0, 0, 128, 62, 154, 153, 153, 62, 236, 81, 184, 62, 205,
+		204, 76, 63, 205, 204, 76, 63, 205, 204, 76, 63, 205, 204, 76, 63, 205,
+		204, 76, 62, 205, 204, 76, 62, 205, 204, 76, 62, 205, 204, 76, 62, 0,
+		194, 184, 178, 62, 53, 250, 142, 60, 10, 0, 10, 0, 0, 2, 0, 10, 0, 80,
+		119, 86, 61, 13, 0, 0, 128, 62, 143, 194, 245, 60, 10, 215, 163, 60,
+		100, 128, 52, 45, 70, 1, 10, 0, 80, 0, 0, 0, 192, 63, 0, 0, 0, 64, 9, 2,
+		0, 0, 200, 65, 0, 0, 128, 66, 0, 0, 128, 65, 0, 0, 192, 63, 205, 204,
+		76, 61, 194, 184, 178, 61, 50, 37, 59, 24, 71, 0, 0, 160, 64, 154, 153,
+		25, 63, 80, 119, 86, 61, 0, 1, 205, 204, 76, 63, 0, 0, 96, 64, 0, 0, 32,
+		64, 205, 204, 204, 61, 4, 143, 194, 245, 60, 2, 1, 2, 3, 4, 1, 10, 176,
+		4, 88, 2, 10, 215, 35, 60, 10, 0, 10, 0, 0, 0, 250, 67, 0, 0, 122, 68,
+		0, 0, 160, 63, 0, 0, 72, 66, 0, 0, 128, 63, 0, 0, 128, 62, 205, 204,
+		204, 61, 0, 0, 32, 66, 0, 0, 128, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 128, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 62, 0,
+		36, 116, 73, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 36, 116, 73, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 36, 116, 73, 0, 0, 192, 64, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 192,
+		64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 192, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 128, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 64, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 64, 0, 0,
+		128, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 128, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 64, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 64, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 128, 64, 10, 215, 35, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 215, 35, 60, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 215, 35, 60, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23,
+		183, 209, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 23, 183, 209, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 183, 209, 56, 0, 0, 128, 63, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 172, 197, 39, 55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 172, 197, 39, 55, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 172, 197,
+		39, 55, 0, 36, 116, 73, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 36, 116, 73, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 36, 116, 73, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 4, 3, 0, 0, 0, 0, 0, 0, 10, 3, 4, 25,
+		64, 18, 24, 0, 64, 114, 8, 0, 13, 226, 109 };
+
+initParam_t s_input;
+ts_workingModes s_workingmodes;
+ts_HWsensorSwitchList HWsensorSwitchList;
+libraryinput_t libraryInput_ts;
+ts_dataxyzf32 accRawData;
+
 extern struct ch_semaphore usart1_semaph;
 struct ch_semaphore i2c1_semaph;
 int8_t rslt = BMI160_OK;
 struct bmi160_sensor_data accel;
 struct bmi160_sensor_data gyro;
+uint32_t sensortime_1 = 0;
 //static bmx160_t bmx160_struct;
 //bmx160_t *bmx160 = &bmx160_struct;
 //bmx160_t *bmx160;
@@ -84,17 +185,57 @@ static THD_FUNCTION(bmx160_thread, arg) {
 	chThdSleepMilliseconds(500);
 	i2cStart(&GYRO_IF, &bmx160_i2c_cfg);
 	bmx160_full_init();
+
+	s_input.accelspec = (BSX_U8 *)&bsxLibConfAcc;
+	s_input.magspec = (BSX_U8 *)&bsxLibConfMag;
+	s_input.gyrospec = (BSX_U8 *)&bsxLibConfGyro;
+	s_input.usecase = (BSX_U8 *)&bsxLibConf;
+
+
+	if (bsx_init(&s_input) == 0){
+	chprintf(SHELL_IFACE, "\r\nBSX library initialized\r\n");
+	s_workingmodes.opMode = BSX_WORKINGMODE_NDOF_GEORV_FMC_OFF;
+	bsx_set_workingmode(&s_workingmodes);
+	//HWsensorSwitchList.acc
+	bsx_get_hwdependency(s_workingmodes, &HWsensorSwitchList);
+	}else{
+		chprintf(SHELL_IFACE, "\r\nBSX library NOT initialized\r\n");
+	}
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 	while (true) {
 		/* To read both Accel and Gyro data */
 		bmi160_get_sensor_data((BMI160_ACCEL_SEL | BMI160_GYRO_SEL), &accel, &gyro, &bmi);
 		rslt = bmm150_read_mag_data(&bmm);
 
+
+		libraryInput_ts.acc.data.x = accel.x;
+		libraryInput_ts.acc.data.y = accel.y;
+		libraryInput_ts.acc.data.z = accel.z;
+	//	libraryInput_ts.acc.time_stamp = accel.sensortime*39; // <- timestamp resolution on BMX160 is 39us, hence multiplying by 39
+		libraryInput_ts.acc.time_stamp = sensortime_1; // <- timestamp resolution on BMX160 is 39us, hence multiplying by 39
+
+		libraryInput_ts.gyro.data.x = gyro.x;
+		libraryInput_ts.gyro.data.y = gyro.y;
+		libraryInput_ts.gyro.data.z = gyro.z;
+		libraryInput_ts.gyro.time_stamp = sensortime_1;
+
+		libraryInput_ts.mag.data.x = bmm.data.x;
+		libraryInput_ts.mag.data.y = bmm.data.y;
+		libraryInput_ts.mag.data.z = bmm.data.z;
+		libraryInput_ts.mag.time_stamp = sensortime_1;
+		sensortime_1 += 39*10*1000;
+		bsx_dostep(&libraryInput_ts);
+		if (bsx_get_accrawdata(&accRawData) == 0){
+
+		chprintf(SHELL_IFACE, "ACC X: %f, Y: %f, Z: %f\r\n", accRawData.x, accRawData.y, accRawData.z);
+		}else{
+			chprintf(SHELL_IFACE, "BSX flow failed\r\n");
+		}
 			/* Print the Mag data */
 			//chprintf("\n Magnetometer data \n");
 
-		chprintf(SHELL_IFACE, "\r\nReaded from BMX160 accel %d %d %d\r\n", accel.x, accel.y, accel.z);
-		chprintf(SHELL_IFACE, "Readed from BMX160 gyro  %d %d %d\r\n", gyro.x, gyro.y, gyro.z);
+		chprintf(SHELL_IFACE, "\r\nReaded from BMX160 accel %d %d %d %d\r\n", accel.x, accel.y, accel.z, accel.sensortime);
+		chprintf(SHELL_IFACE, "Readed from BMX160 gyro  %d %d %d %d\r\n", gyro.x, gyro.y, gyro.z, gyro.sensortime);
 		chprintf(SHELL_IFACE, "Readed from BMX160 magn  %02f %02f %02f\r\n", bmm.data.x, bmm.data.y, bmm.data.z);
 	/*	switch (bmx160->read_type) {
 		case OUTPUT_NONE:
@@ -116,7 +257,7 @@ static THD_FUNCTION(bmx160_thread, arg) {
 		default:
 			break;
 		}*/
-		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
+		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(10));
 	}
 }
 
