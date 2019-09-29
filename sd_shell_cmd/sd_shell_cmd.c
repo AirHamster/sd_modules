@@ -55,12 +55,14 @@ extern lag_t *r_lag;
 extern rudder_t *r_rudder;
 
 #ifdef SD_MODULE_TRAINER
+#ifdef USE_MATH_MODULE
 #include "sailDataMath.h"
 extern float lastFilterValues[10][FILTER_BUFFER_SIZE];
 extern float windAngleTarget;
 extern float lastSensorValues[SIZE_BUFFER_VALUES];
 extern float hullSpeedTarget;
 extern float velocityMadeGoodTarget;
+#endif
 #endif
 
 extern struct ch_semaphore usart1_semaph;
@@ -91,8 +93,10 @@ static const ShellCommand commands[] = {
 #ifdef USE_SERVICE_MODE
 		{ "service", cmd_service },
 #ifdef SD_MODULE_TRAINER
+#ifdef USE_MATH_MODULE
 		{ "load_math_calib", cmd_load_math_cal },
 		{ "get_math_calib", cmd_get_math_cal },
+#endif
 #endif // SD_MODULE_TRAINER
 #ifdef USE_BNO055_MODULE
 		{ "gyro", cmd_gyro },
@@ -330,6 +334,7 @@ int32_t convert_to_ble_type(float value){
 
 void copy_to_ble(void){
 #ifdef SD_MODULE_TRAINER
+#ifdef USE_MATH_MODULE
 	thdg->value = convert_to_ble_type(lastFilterValues[1][FILTER_BUFFER_SIZE - 1]);
 	//rdr->value = convert_to_ble_type(lastFilterValues[1][0])
 	twd->value = convert_to_ble_type(lastFilterValues[4][FILTER_BUFFER_SIZE - 1]);
@@ -341,6 +346,7 @@ void copy_to_ble(void){
 
 	hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
 	heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
+#endif
 	//heel->value = convert_to_ble_type(bno055->d_euler_hpr.r);
 
 	//hdg->value = convert_to_ble_type(lastFilterValues[0][0]);
