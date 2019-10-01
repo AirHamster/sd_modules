@@ -19,7 +19,8 @@
 #include "bmx160_i2c.h"
 #include "sd_shell_cmds.h"
 #include "eeprom.h"
-
+//#include "MadgwickAHRS.h"
+#include "quaternionFilters.h"
 
 #include "BsxFusionLibrary.h"
 #include "BsxLibraryCalibConstants.h"
@@ -117,17 +118,29 @@ initParam_t s_input;
 ts_workingModes s_workingmodes;
 ts_HWsensorSwitchList HWsensorSwitchList;
 libraryinput_t libraryInput_ts;
-ts_dataxyzf32 accRawData;
+
+float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};
+extern volatile float q0;
+extern volatile float q1;
+extern volatile float q2;
+extern volatile float q3;
 
 extern struct ch_semaphore usart1_semaph;
-struct ch_semaphore i2c1_semaph;
+extern struct ch_semaphore i2c1_semaph;
 int8_t rslt = BMI160_OK;
 struct bmi160_sensor_data accel;
 struct bmi160_sensor_data gyro;
 uint32_t sensortime_1 = 0;
+ts_dataeulerf32 orientEuler_rad;
+
+ts_dataxyzf32 rawGyroData;
+ts_dataxyzf32 rawAccData;
+ts_dataxyzf32 rawMagData;
+
 //static bmx160_t bmx160_struct;
 //bmx160_t *bmx160 = &bmx160_struct;
 //bmx160_t *bmx160;
+
 
 
 /* Macros for frames to be read */
@@ -144,8 +157,8 @@ uint32_t sensortime_1 = 0;
 
 struct bmi160_dev bmi;
 struct bmm150_dev bmm;
-
-uint8_t fifo_buff[FIFO_SIZE];
+bmx160_t bmx160;
+//uint8_t fifo_buff[FIFO_SIZE];
 struct bmi160_fifo_frame fifo_frame;
 struct bmi160_aux_data aux_data[MAG_FRAMES];
 struct bmm150_mag_data mag_data[MAG_FRAMES];
@@ -160,6 +173,8 @@ int8_t bmm150_aux_write(uint8_t id, uint8_t reg_addr, uint8_t *aux_data, uint16_
 
 static THD_WORKING_AREA(bmx160_thread_wa, 4096*2);
 static THD_FUNCTION(bmx160_thread, arg);
+static THD_WORKING_AREA(bmx160_calib_thread_wa, 4096*2);
+static THD_FUNCTION(bmx160_calib_thread, arg);
 const I2CConfig bmx160_i2c_cfg = {
   0x30420F13,
 		//0x20E7112A,
@@ -171,6 +186,7 @@ const I2CConfig bmx160_i2c_cfg = {
 void start_bmx160_module(void){
 
 	chThdCreateStatic(bmx160_thread_wa, sizeof(bmx160_thread_wa), NORMALPRIO + 3, bmx160_thread, NULL);
+	chThdCreateStatic(bmx160_calib_thread_wa, sizeof(bmx160_calib_thread_wa), NORMALPRIO, bmx160_calib_thread, NULL);
 }
 
 /*
@@ -181,15 +197,20 @@ static THD_FUNCTION(bmx160_thread, arg) {
 
 	(void) arg;
 	uint8_t static_cal_update_cnt = 0;
+	BSX_U8 usecasetick;
+	BSX_U8 calibtick;
+	BSX_U8 magAcc;
+
 	chRegSetThreadName("bmx160 Thread");
 	chThdSleepMilliseconds(500);
 	i2cStart(&GYRO_IF, &bmx160_i2c_cfg);
 	bmx160_full_init();
+	chThdSleepMilliseconds(2500);
+	s_input.accelspec = (BSX_U8 *) &bsxLibConfAcc;
+	s_input.magspec = (BSX_U8 *) &bsxLibConfMag;
+	s_input.gyrospec = (BSX_U8 *) &bsxLibConfGyro;
+	s_input.usecase = (BSX_U8 *) &bsxLibConf;
 
-	s_input.accelspec = (BSX_U8 *)&bsxLibConfAcc;
-	s_input.magspec = (BSX_U8 *)&bsxLibConfMag;
-	s_input.gyrospec = (BSX_U8 *)&bsxLibConfGyro;
-	s_input.usecase = (BSX_U8 *)&bsxLibConf;
 
 
 	if (bsx_init(&s_input) == 0){
@@ -201,11 +222,17 @@ static THD_FUNCTION(bmx160_thread, arg) {
 	}else{
 		chprintf(SHELL_IFACE, "\r\nBSX library NOT initialized\r\n");
 	}
+
+
 	systime_t prev = chVTGetSystemTime(); // Current system time.
+
+
 	while (true) {
 		/* To read both Accel and Gyro data */
 		bmi160_get_sensor_data((BMI160_ACCEL_SEL | BMI160_GYRO_SEL), &accel, &gyro, &bmi);
 		rslt = bmm150_read_mag_data(&bmm);
+		/* check for the mag calibration status */
+		bsx_get_magcalibaccuracy(&magAcc);
 
 
 		libraryInput_ts.acc.data.x = accel.x;
@@ -223,44 +250,106 @@ static THD_FUNCTION(bmx160_thread, arg) {
 		libraryInput_ts.mag.data.y = bmm.data.y;
 		libraryInput_ts.mag.data.z = bmm.data.z;
 		libraryInput_ts.mag.time_stamp = sensortime_1;
-		sensortime_1 += 39*10*1000;
+		sensortime_1 += 10*1000;
 		bsx_dostep(&libraryInput_ts);
-		if (bsx_get_accrawdata(&accRawData) == 0){
+		//bsx_get_orientdata_euler_rad(&orientEuler_rad);
+		bsx_get_accrawdata(&rawAccData);
+		bsx_get_magrawdata(&rawMagData);
+		bsx_get_gyrorawdata_rps(&rawGyroData);
 
-		chprintf(SHELL_IFACE, "ACC X: %f, Y: %f, Z: %f\r\n", accRawData.x, accRawData.y, accRawData.z);
+		bmx160.gx = rawGyroData.x;
+		bmx160.gy = rawGyroData.y;
+		bmx160.gz = rawGyroData.z;
+
+		bmx160.ax = rawAccData.x / 9.8f;
+		bmx160.ay = rawAccData.y / 9.8f;
+		bmx160.az = rawAccData.z / 9.8f;
+
+		bmx160.mx = rawMagData.x;
+		bmx160.my = rawMagData.y;
+		bmx160.mz = rawMagData.z;
+		if (bsx_get_orientdata_euler_rad(&orientEuler_rad) == 0){
+
+		chprintf(SHELL_IFACE, "Orient: %04f, %04f, %04f, %d %d\r\n", orientEuler_rad.h*180/3.1415, orientEuler_rad.r*180/3.1415, orientEuler_rad.p*180/3.1415, magAcc, accel.sensortime);
 		}else{
 			chprintf(SHELL_IFACE, "BSX flow failed\r\n");
 		}
+
+		//MadgwickAHRSupdate(bmx160.gx, bmx160.gy, bmx160.gz, bmx160.ax, bmx160.ay, bmx160.az, bmx160.mx, bmx160.my, bmx160.mz);
+		//FreeIMUAHRSupdate(bmx160.gx, bmx160.gy, bmx160.gz, bmx160.ax, bmx160.ay, bmx160.az, bmx160.mx, bmx160.my, bmx160.mz);
+		MadgwickQuaternionUpdate(bmx160.gx, bmx160.gy, bmx160.gz, bmx160.ax, bmx160.ay, -bmx160.az, bmx160.mx, bmx160.my, -bmx160.mz, 0.01f);
+		//MadgwickAHRSupdate(0, 0, 0, bmx160.ax, bmx160.ay, bmx160.az, 0, 0, 0);
+
+		bmx160.yaw   = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
+		bmx160.pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
+		bmx160.roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
+		bmx160.pitch *= 180.0f / PI;
+
+		bmx160.yaw   *= 180.0f / PI;
+
+		//bmx160.yaw   += 10.942f; // Declination
+
+		bmx160.roll  *= 180.0f / PI;
+		/*
+		bmx160.yaw   = atan2(2.0f * (q1 * q2 + q0 * q3), q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3);
+			bmx160.roll = -asin(2.0f * (q1 * q3 - q0 * q2));
+			bmx160.pitch  = atan2(2.0f * (q0 * q1 + q2 * q3), q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3);
+
+			bmx160.pitch *= 180.0f / PI;
+
+			bmx160.yaw   *= 180.0f / PI;
+
+			//bmx160.yaw   += 10.942f; // Declination
+
+			bmx160.roll  *= 180.0f / PI;
+			*/
+			//tx_box->yaw = bmx160.yaw;
+			//tx_box->pitch = bmx160.pitch;
+			//tx_box->roll = bmx160.roll;
+			chprintf(SHELL_IFACE, "\r\nYPR %f %f %f\r\n", bmx160.yaw, bmx160.pitch, bmx160.roll);
+			chprintf(SHELL_IFACE, "Q %f %f %f %f\r\n", q0, q1, q2, q3);
+			chprintf(SHELL_IFACE, "\r\nG %f %f %f\r\n", bmx160.gx, bmx160.gy, bmx160.gz);
+			chprintf(SHELL_IFACE, "A %f %f %f\r\n", bmx160.ax, bmx160.ay, bmx160.az);
+			chprintf(SHELL_IFACE, "M %f %f %f\r\n", bmx160.mx, bmx160.my, bmx160.mz);
 			/* Print the Mag data */
 			//chprintf("\n Magnetometer data \n");
 
-		chprintf(SHELL_IFACE, "\r\nReaded from BMX160 accel %d %d %d %d\r\n", accel.x, accel.y, accel.z, accel.sensortime);
-		chprintf(SHELL_IFACE, "Readed from BMX160 gyro  %d %d %d %d\r\n", gyro.x, gyro.y, gyro.z, gyro.sensortime);
-		chprintf(SHELL_IFACE, "Readed from BMX160 magn  %02f %02f %02f\r\n", bmm.data.x, bmm.data.y, bmm.data.z);
-	/*	switch (bmx160->read_type) {
-		case OUTPUT_NONE:
-			break;
-		case OUTPUT_TEST:
-			bmx160_read_euler(bmx160);
-			bmx160_read_status(bmx160);
-			if (bmx160->static_calib == 1){
-				if (static_cal_update_cnt++ >=200){
-					bmx160_apply_calib_to_chip(bmx160);
-					static_cal_update_cnt = 0;
-				}
-			}
-			break;
-		case OUTPUT_ALL_CALIB:
-			bmx160_read_status(bmx160);
-			bmx160_read_euler(bmx160);
-			break;
-		default:
-			break;
-		}*/
+	//	chprintf(SHELL_IFACE, "\r\nReaded from BMX160 accel %d %d %d %d\r\n", accel.x, accel.y, accel.z, accel.sensortime);
+	//	chprintf(SHELL_IFACE, "Readed from BMX160 gyro  %d %d %d %d\r\n", gyro.x, gyro.y, gyro.z, gyro.sensortime);
+	//	chprintf(SHELL_IFACE, "Readed from BMX160 magn  %02f %02f %02f\r\n", bmm.data.x, bmm.data.y, bmm.data.z);
+
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(10));
 	}
 }
 
+static THD_FUNCTION(bmx160_calib_thread, arg) {
+
+	(void) arg;
+	uint8_t static_cal_update_cnt = 0;
+	BSX_U8 usecasetick;
+	BSX_U8 calibtick;
+	BSX_U8 magAcc;
+
+	chRegSetThreadName("Calib Thread");
+	chThdSleepMilliseconds(500);
+
+	systime_t prev = chVTGetSystemTime(); // Current system time.
+
+
+	while (true) {
+/*
+		// Calling do calibration
+		bsx_get_calibrationcalltick(&calibtick);
+		//If calib tick is enabled, call do calibration
+		if(calibtick)
+		{
+			chprintf(SHELL_IFACE, "\r\n Calibraion  \r\n");
+		bsx_docalibration();
+		}else{*/
+			chThdSleepMilliseconds(2000);
+		}
+
+}
 int8_t bmx160_full_init(void) {
 	 /* Initialize your host interface to the BMI160 */
 
@@ -556,14 +645,14 @@ int8_t bmx160_I2C_bus_read(uint8_t dev_addr, uint8_t reg_addr, uint8_t *reg_data
 		*(reg_data + stringpos) = array[stringpos];
 	return 0;
 }
-
+/*
 void i2c_restart(I2CDriver *i2cp)
 {
 	i2cStop(i2cp);
 	chThdSleepMilliseconds(1);
 	i2cStart (i2cp, &bmx160_i2c_cfg);
 }
-
+*/
 /* Auxiliary function definitions */
 int8_t bmm150_aux_read(uint8_t id, uint8_t reg_addr, uint8_t *reg_data, uint16_t len) {
 

@@ -1460,7 +1460,8 @@ static float compensate_x(int16_t mag_data_x, uint16_t data_rhall, const struct 
 			process_comp_x2 = process_comp_x1 + retval * ((float)dev->trim_data.dig_xy1) / 16384.0f;
 			process_comp_x3 = ((float)dev->trim_data.dig_x2) + 160.0f;
 			process_comp_x4 = mag_data_x * ((process_comp_x2 + 256.0f) * process_comp_x3);
-			retval = ((process_comp_x4 / 8192.0f) + (((float)dev->trim_data.dig_x1) * 8.0f)) / 16.0f;
+			//retval = ((process_comp_x4 / 8192.0f) + (((float)dev->trim_data.dig_x1) * 8.0f)) / 16.0f;
+			retval = ((process_comp_x4 / 8192.0f) + (((float)dev->trim_data.dig_x1) * 8.0f));
 	} else {
 		/* overflow, set output to 0.0f */
 		retval = BMM150_OVERFLOW_OUTPUT_FLOAT;
@@ -1492,7 +1493,8 @@ static float compensate_y(int16_t mag_data_y, uint16_t data_rhall, const struct 
 			process_comp_y2 = process_comp_y1 + retval * ((float)dev->trim_data.dig_xy1) / 16384.0f;
 			process_comp_y3 = ((float)dev->trim_data.dig_y2) + 160.0f;
 			process_comp_y4 = mag_data_y * (((process_comp_y2) + 256.0f) * process_comp_y3);
-			retval = ((process_comp_y4 / 8192.0f) + (((float)dev->trim_data.dig_y1) * 8.0f)) / 16.0f;
+			//retval = ((process_comp_y4 / 8192.0f) + (((float)dev->trim_data.dig_y1) * 8.0f)) / 16.0f;
+			retval = ((process_comp_y4 / 8192.0f) + (((float)dev->trim_data.dig_y1) * 8.0f));
 	} else {
 		/* overflow, set output to 0.0f */
 		retval = BMM150_OVERFLOW_OUTPUT_FLOAT;
@@ -1526,7 +1528,8 @@ static float compensate_z(int16_t mag_data_z, uint16_t data_rhall, const struct 
 			process_comp_z3 = ((float)dev->trim_data.dig_z1) * ((float)data_rhall) / 32768.0f;
 			process_comp_z4 = ((float)dev->trim_data.dig_z2) + process_comp_z3;
 			process_comp_z5 = (process_comp_z0 * 131072.0f) - process_comp_z2;
-			retval = (process_comp_z5 / ((process_comp_z4) * 4.0f)) / 16.0f;
+			//retval = (process_comp_z5 / ((process_comp_z4) * 4.0f)) / 16.0f;
+			retval = (process_comp_z5 / ((process_comp_z4) * 4.0f));
 	} else {
 		/* overflow, set output to 0.0f */
 		retval = BMM150_OVERFLOW_OUTPUT_FLOAT;
