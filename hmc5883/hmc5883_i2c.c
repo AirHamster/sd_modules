@@ -64,53 +64,64 @@ int16_t true_mag_z;
 	i2cStart(&GYRO_IF, &hmc5883_i2c_cfg);
 	hmc5883_full_init();
 	chThdSleepMilliseconds(2500);
-	hmc5883_calibration(dest1, dest2);
+	//hmc5883_calibration(dest1, dest2);
 	systime_t prev = chVTGetSystemTime(); // Current system time.
-
+	chprintf(SHELL_IFACE, "MAGx,MAGy,MAGz,TRUE_MAGx,TRUE_MAGy,ROLL,PITCH,HDG,TRUE_HDG\r\n");
 
 	while (true) {
 	//	hmc5883_read_data(hmc5883);
 	//	chprintf(SHELL_IFACE, "Magnetic: %d %d %d %x\r\n", hmc5883->x, hmc5883->y, hmc5883->z, hmc5883->status_reg);
 
 		read_data_HMC5883L(&result);
-		chprintf(SHELL_IFACE, "\r\nX: %d\tY: %d\tZ: %d\tvalid: %d\r\n",
-						 result.x , result.y + 55, result.z, result.valid);
-		hmc5883->x = result.x ;
-		hmc5883->y = result.y + 55;
+
+		hmc5883->x = result.x + 41;
+		hmc5883->y = result.y*0.94 + 58;
 		hmc5883->z = result.z;
-		temp = atan2((hmc5883->y),(hmc5883->x)) * 180.0/3.1415;
+		/*temp = atan2((hmc5883->y),(hmc5883->x)) * 180.0/3.1415;
+		temp += 50;
 		if(temp < 0){
 			temp += 360.0;
 		}
-		hmc5883->yaw = temp;
+		hmc5883->yaw = temp;*/
 		cos_roll = cos(bno055->d_euler_hpr.r * 3.1415/180.0);
 		sin_roll = sin(bno055->d_euler_hpr.r * 3.1415/180.0);
 		cos_pitch = cos(bno055->d_euler_hpr.p * 3.1415/180.0);
 		sin_pitch = sin(bno055->d_euler_hpr.p * 3.1415/180.0);
 
-		true_mag_x = hmc5883->x * cos(bno055->d_euler_hpr.p * 3.1415/180.0) - hmc5883->y * sin(bno055->d_euler_hpr.r * 3.1415/180.0)*sin(bno055->d_euler_hpr.p * 3.1415/180.0) - hmc5883->z * cos(bno055->d_euler_hpr.r * 3.1415/180.0)*sin(bno055->d_euler_hpr.p * 3.1415/180.0);
-		true_mag_y = hmc5883->y * cos(bno055->d_euler_hpr.r * 3.1415/180.0) + hmc5883->z * sin(bno055->d_euler_hpr.r * 3.1415/180.0);
+		//my_solution
+		//true_mag_x = hmc5883->x * cos_pitch - hmc5883->y * sin_roll*sin_pitch - hmc5883->z * cos_roll*cos_pitch;
+		//true_mag_y = hmc5883->y * cos_roll + hmc5883->z * sin_roll;
+
+		//Egor's solution
+		true_mag_x = hmc5883->x * cos_pitch - hmc5883->y * sin_roll*sin_pitch + hmc5883->z * cos_roll*sin_pitch;
+		true_mag_y = hmc5883->y * cos_roll + hmc5883->z * sin_roll;
+
 
 		//true_mag_x = hmc5883->x * cos_pitch + hmc5883->z * sin_pitch;
 		//true_mag_y = hmc5883->x * sin_roll * sin_pitch + hmc5883->y * cos_roll - hmc5883->z * sin_roll * cos_pitch;
 
-		temp = atan2((-true_mag_y),(true_mag_x)) * 180.0/3.1415;
+		temp = atan2((true_mag_y),(true_mag_x)) * 180.0/3.1415;
+		temp += 30;
 				if(temp < 0){
 					temp += 360.0;
 				}
-				hmc5883->yaw = temp;
-
-		chprintf(SHELL_IFACE, "TRUE: %f, %f\r\n", true_mag_x, true_mag_y);
+		hmc5883->yaw = temp;
+		//hmc5883->yaw = atan2((hmc5883->y),(hmc5883->x)) * 180.0/3.1415;
+		/*chprintf(SHELL_IFACE, "\r\nX: %d\tY: %d\tZ: %d\tvalid: %d\r\n",
+										 result.x , result.y + 55, result.z, result.valid);
 		chprintf(SHELL_IFACE, "HEADING1: %f, %f, %f\r\n", hmc5883->yaw, bno055->d_euler_hpr.r, bno055->d_euler_hpr.p);
+		chprintf(SHELL_IFACE, "TRUE: %f, %f\r\n", true_mag_x, true_mag_y);
+		chprintf(SHELL_IFACE, "TRUE_HDG: %f\r\n", temp);*/
+				//chprintf(SHELL_IFACE, "%d,%d,%d,%f,%f,%f,%f,%f,%f\r\n", result.x , result.y + 55, result.z, true_mag_x, true_mag_y, bno055->d_euler_hpr.r, bno055->d_euler_hpr.p, hmc5883->yaw, temp);
 
-		temp = atan2((true_mag_y),(true_mag_x)) * 180.0/3.1415;
+/*		temp = atan2((true_mag_y),(true_mag_x)) * 180.0/3.1415;
 						if(temp < 0){
 							temp += 360.0;
 						}
 						hmc5883->yaw = temp;
 
 				chprintf(SHELL_IFACE, "HEADING2: %f, %f, %f\r\n", hmc5883->yaw, bno055->d_euler_hpr.r, bno055->d_euler_hpr.p);
-
+*/
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 	}
 }

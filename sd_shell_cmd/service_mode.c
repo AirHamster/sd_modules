@@ -51,7 +51,7 @@ extern rudder_t *rudder;
 #include "lag.h"
 extern lag_t *lag;
 #endif
-
+#include "hmc5883_i2c.h"
 #ifdef SD_MODULE_TRAINER
 #ifdef USE_MATH_MODULE
 #include "sailDataMath.h"
@@ -96,7 +96,8 @@ void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 #ifdef USE_BNO055_MODULE
 void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]) {
-
+	float dest1[3];
+	float dest2[3];
 	if (output->type != OUTPUT_SERVICE) {
 		return;
 	}
@@ -106,8 +107,9 @@ void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]) {
 					"Usage: gyro status|calibrate|get_cal_params|write_cal_params|set_static_cal|get_static_cal\r\n");
 		} else if (strcmp(argv[0], "calibrate") == 0) {
 			chprintf(chp, "Starting gyro calibration routine\r\n");
-			bno055_start_calibration(bno055);
-			output->type = OUTPUT_ALL_CALIB;
+			//bno055_start_calibration(bno055);
+			//output->type = OUTPUT_ALL_CALIB;
+			hmc5883_calibration(dest1, dest2);
 		} else if (strcmp(argv[0], "get_cal_params") == 0) {
 			chprintf(chp, "BNO055 calibration parameters:\r\n");
 			bno055_set_operation_mode(BNO055_OPERATION_MODE_CONFIG);

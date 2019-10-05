@@ -51,6 +51,8 @@ extern lag_t *lag;
 
 #endif
 
+#include "hmc5883_i2c.h"
+extern hmc5883_t *hmc5883;
 extern lag_t *r_lag;
 extern rudder_t *r_rudder;
 
@@ -335,17 +337,28 @@ int32_t convert_to_ble_type(float value){
 void copy_to_ble(void){
 #ifdef SD_MODULE_TRAINER
 #ifdef USE_MATH_MODULE
+	/*
 	thdg->value = convert_to_ble_type(lastFilterValues[1][FILTER_BUFFER_SIZE - 1]);
-	//rdr->value = convert_to_ble_type(lastFilterValues[1][0])
 	twd->value = convert_to_ble_type(lastFilterValues[4][FILTER_BUFFER_SIZE - 1]);
 	tws->value = convert_to_ble_type(lastFilterValues[5][FILTER_BUFFER_SIZE - 1]);
 	twa->value = convert_to_ble_type(lastFilterValues[6][FILTER_BUFFER_SIZE - 1]);
-	//bs
 	twa_tg->value = convert_to_ble_type(windAngleTarget);
 	bs_tg->value = convert_to_ble_type(hullSpeedTarget);
 
 	hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
+	//hdg->value = convert_to_ble_type(lastFilterValues[0][FILTER_BUFFER_SIZE - 1]);
 	heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
+	*/
+	thdg->value = convert_to_ble_type(lastSensorValues[HDT]);
+		twd->value = convert_to_ble_type(lastSensorValues[TWD]);
+		tws->value = convert_to_ble_type(lastSensorValues[TWS]);
+		twa->value = convert_to_ble_type(lastSensorValues[TWA]);
+		twa_tg->value = convert_to_ble_type(lastSensorValues[TWA_TGT]);
+		bs_tg->value = convert_to_ble_type(lastSensorValues[VMG_TGT]);
+
+		hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
+		//hdg->value = convert_to_ble_type(lastFilterValues[0][FILTER_BUFFER_SIZE - 1]);
+		heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
 #endif
 	//heel->value = convert_to_ble_type(bno055->d_euler_hpr.r);
 
@@ -372,7 +385,8 @@ void send_json(void)
 		chprintf(SHELL_IFACE, "\"dist\":%d,\r\n\t\t\t", (uint16_t)odo_box->distance);
 #endif
 #ifdef USE_BNO055_MODULE
-		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
+		//chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
+		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc5883->yaw);
 		chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
 		chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", bno055->d_euler_hpr.r);
 	//	chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t", bno055->calib_stat.magn);

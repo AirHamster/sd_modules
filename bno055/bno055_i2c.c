@@ -16,12 +16,14 @@
 #include "bno055.h"
 #include "bno055_i2c.h"
 #include "sd_shell_cmds.h"
+#include "hmc5883_i2c.h"
 #include "eeprom.h"
 extern struct ch_semaphore usart1_semaph;
 struct ch_semaphore i2c1_semaph;
 //static bno055_t bno055_struct;
 //bno055_t *bno055 = &bno055_struct;
 bno055_t *bno055;
+extern hmc5883_t *hmc5883;
 
 static THD_WORKING_AREA(bno055_thread_wa, 4096*2);
 static THD_FUNCTION(bno055_thread, arg);
@@ -199,6 +201,7 @@ int8_t bno055_read_euler(bno055_t *bno055){
 	//euler_data[0] = BNO055_EULER_H_LSB_VALUEH_REG;
 	//bno055_read(bno055->dev_addr, euler_data, 6);
 	comres += bno055_convert_float_euler_hpr_deg(&bno055->d_euler_hpr);
+	bno055->d_euler_hpr.h = hmc5883->yaw;
 	//bno055->d_euler_hpr.h = (float)(((int16_t)(euler_data[0] | euler_data[1] << 8))/BNO055_EULER_DIV_DEG);
 	//bno055->d_euler_hpr.r = (float)(((int16_t)(euler_data[2] | euler_data[3] << 8))/BNO055_EULER_DIV_DEG);
 	//bno055->d_euler_hpr.p = (float)(((int16_t)(euler_data[4] | euler_data[5] << 8))/BNO055_EULER_DIV_DEG);
