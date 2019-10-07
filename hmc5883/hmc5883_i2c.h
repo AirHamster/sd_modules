@@ -33,9 +33,9 @@
 #define PI 3.1415f
 typedef struct {
 	float yaw;
-	int16_t x;
-	int16_t y;
-	int16_t z;
+	float x;
+	float y;
+	float z;
 	uint8_t config_reg_a;
 	uint8_t config_reg_b;
 	uint8_t mode_reg;
@@ -59,6 +59,6 @@ int8_t hmc5883_read(uint8_t dev_addr, uint8_t *reg_data, uint8_t r_len);
 int8_t hmc5883_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len);
 int8_t hmc5883_I2C_bus_write(uint8_t dev_addr, uint8_t reg_addr, uint8_t *reg_data, uint8_t cnt);
 int8_t hmc5883_I2C_bus_read(uint8_t dev_addr, uint8_t reg_addr, uint8_t *reg_data, uint8_t cnt);
-
+void hmc5883_calculate(void);
 void hmc5883_delay_ms(uint16_t msec);
 #endif /* SD_MODULES_hmc5883_hmc5883_I2C_H_ */

@@ -59,12 +59,13 @@ static THD_FUNCTION(bno055_thread, arg) {
 		case OUTPUT_TEST:
 			bno055_read_euler(bno055);
 			bno055_read_status(bno055);
-			if (bno055->static_calib == 1){
+			//hmc5883_calculate();
+			/*if (bno055->static_calib == 1){
 				if (static_cal_update_cnt++ >=200){
 					bno055_apply_calib_to_chip(bno055);
 					static_cal_update_cnt = 0;
 				}
-			}
+			}*/
 			break;
 		case OUTPUT_ALL_CALIB:
 			bno055_read_status(bno055);

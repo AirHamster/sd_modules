@@ -53,8 +53,9 @@ static THD_FUNCTION( math_thread, p) {
 		math_copy_sensor_values(lastSensorValues);
 		calculateValues(&paramSD);
 		dataFiltering(&paramSD);
-				calculateTargets(&windAngleTarget, &hullSpeedTarget,
-				&velocityMadeGoodTarget);
+		calculateTargets();
+				//calculateTargets(&windAngleTarget, &hullSpeedTarget,
+				//&velocityMadeGoodTarget);
 /*		chprintf(SHELL_IFACE, "\r\nAfter targets\r\n");
 		chprintf(SHELL_IFACE, "AWA: %f\r\n", lastSensorValues[AWA]);
 		chprintf(SHELL_IFACE, "AWS: %f\r\n", lastSensorValues[AWS]);

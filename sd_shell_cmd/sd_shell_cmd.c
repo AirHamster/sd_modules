@@ -355,7 +355,8 @@ void copy_to_ble(void){
 		twa->value = convert_to_ble_type(lastSensorValues[TWA]);
 		twa_tg->value = convert_to_ble_type(lastSensorValues[TWA_TGT]);
 		bs_tg->value = convert_to_ble_type(lastSensorValues[VMG_TGT]);
-
+		bs->value = convert_to_ble_type((float)(pvt_box->gSpeed * 0.0036 / 1.852));
+		heel->value = convert_to_ble_type(bno055->d_euler_hpr.h);
 		hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
 		//hdg->value = convert_to_ble_type(lastFilterValues[0][FILTER_BUFFER_SIZE - 1]);
 		heel->value = convert_to_ble_type(lastSensorValues[HEEL]);

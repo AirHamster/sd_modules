@@ -186,7 +186,7 @@ const I2CConfig bmx160_i2c_cfg = {
 void start_bmx160_module(void){
 
 	chThdCreateStatic(bmx160_thread_wa, sizeof(bmx160_thread_wa), NORMALPRIO + 3, bmx160_thread, NULL);
-	chThdCreateStatic(bmx160_calib_thread_wa, sizeof(bmx160_calib_thread_wa), NORMALPRIO, bmx160_calib_thread, NULL);
+	//chThdCreateStatic(bmx160_calib_thread_wa, sizeof(bmx160_calib_thread_wa), NORMALPRIO, bmx160_calib_thread, NULL);
 }
 
 /*
@@ -200,7 +200,11 @@ static THD_FUNCTION(bmx160_thread, arg) {
 	BSX_U8 usecasetick;
 	BSX_U8 calibtick;
 	BSX_U8 magAcc;
-
+	float temp;
+	float filter[20];
+	float summ = 0.0;
+	uint8_t filter_index = 0;
+	uint8_t i;
 	chRegSetThreadName("bmx160 Thread");
 	chThdSleepMilliseconds(500);
 	i2cStart(&GYRO_IF, &bmx160_i2c_cfg);
@@ -265,15 +269,37 @@ static THD_FUNCTION(bmx160_thread, arg) {
 		bmx160.ay = rawAccData.y / 9.8f;
 		bmx160.az = rawAccData.z / 9.8f;
 
-		bmx160.mx = rawMagData.x;
-		bmx160.my = rawMagData.y;
+		bmx160.mx = rawMagData.x + 3;
+		bmx160.my = (rawMagData.y - 14.5) * 1.44;
 		bmx160.mz = rawMagData.z;
 		if (bsx_get_orientdata_euler_rad(&orientEuler_rad) == 0){
 
-		chprintf(SHELL_IFACE, "Orient: %04f, %04f, %04f, %d %d\r\n", orientEuler_rad.h*180/3.1415, orientEuler_rad.r*180/3.1415, orientEuler_rad.p*180/3.1415, magAcc, accel.sensortime);
+		//chprintf(SHELL_IFACE, "Orient: %04f, %04f, %04f, %d %d\r\n", orientEuler_rad.h*180/3.1415, orientEuler_rad.r*180/3.1415, orientEuler_rad.p*180/3.1415, magAcc, accel.sensortime);
 		}else{
 			chprintf(SHELL_IFACE, "BSX flow failed\r\n");
 		}
+
+		//temp = atan2((bmx160.my),(bmx160.mx)) * 180.0/3.1415;
+		temp = atan2((bmm.data.y - 175),(bmm.data.x)) * 180.0/3.1415;
+		//temp += 30;
+		if(temp < 0){
+				temp += 360.0;
+		}
+
+		filter[filter_index++] = temp;
+
+		if (filter_index == 20)
+		{
+			filter_index = 0;
+		}
+
+		for (i = 0; i < 20; i++){
+			summ += filter[i];
+		}
+		summ /= 20.0;
+		//hmc5883->yaw = temp;
+		//chprintf(SHELL_IFACE, "%f,%f,%f,%f\r\n", bmx160.mx, bmx160.my, bmx160.mz, temp);
+		chprintf(SHELL_IFACE, "%f,%f,%f,%f\r\n", bmm.data.x, bmm.data.y - 175, bmm.data.z, summ);
 
 		//MadgwickAHRSupdate(bmx160.gx, bmx160.gy, bmx160.gz, bmx160.ax, bmx160.ay, bmx160.az, bmx160.mx, bmx160.my, bmx160.mz);
 		//FreeIMUAHRSupdate(bmx160.gx, bmx160.gy, bmx160.gz, bmx160.ax, bmx160.ay, bmx160.az, bmx160.mx, bmx160.my, bmx160.mz);
@@ -306,11 +332,11 @@ static THD_FUNCTION(bmx160_thread, arg) {
 			//tx_box->yaw = bmx160.yaw;
 			//tx_box->pitch = bmx160.pitch;
 			//tx_box->roll = bmx160.roll;
-			chprintf(SHELL_IFACE, "\r\nYPR %f %f %f\r\n", bmx160.yaw, bmx160.pitch, bmx160.roll);
-			chprintf(SHELL_IFACE, "Q %f %f %f %f\r\n", q0, q1, q2, q3);
-			chprintf(SHELL_IFACE, "\r\nG %f %f %f\r\n", bmx160.gx, bmx160.gy, bmx160.gz);
-			chprintf(SHELL_IFACE, "A %f %f %f\r\n", bmx160.ax, bmx160.ay, bmx160.az);
-			chprintf(SHELL_IFACE, "M %f %f %f\r\n", bmx160.mx, bmx160.my, bmx160.mz);
+		//	chprintf(SHELL_IFACE, "\r\nYPR %f %f %f\r\n", bmx160.yaw, bmx160.pitch, bmx160.roll);
+		//	chprintf(SHELL_IFACE, "Q %f %f %f %f\r\n", q0, q1, q2, q3);
+		//	chprintf(SHELL_IFACE, "\r\nG %f %f %f\r\n", bmx160.gx, bmx160.gy, bmx160.gz);
+		//	chprintf(SHELL_IFACE, "A %f %f %f\r\n", bmx160.ax, bmx160.ay, bmx160.az);
+		//	chprintf(SHELL_IFACE, "M %f %f %f\r\n", bmx160.mx, bmx160.my, bmx160.mz);
 			/* Print the Mag data */
 			//chprintf("\n Magnetometer data \n");
 
