@@ -5,9 +5,7 @@
  *      Author: Weld
  */
 #include "sailDataMath.h"
-#include "hal.h"
-#include "chprintf.h"
-#include "config.h"
+
 #define COUNT_FILTERS 10
 float lastSensorValues[SIZE_BUFFER_VALUES] = {0.0};
 float bufferValues[COUNT_FILTERS][FILTER_BUFFER_SIZE] = {{0.0}};
@@ -61,13 +59,15 @@ float trueWindSpeed(
 }
 
 float trueWindDirection(
-		const float apparentWindDirection,
+		const float apparentWindAngle,
 		const float apparentWindSpeed,
+		const float trueHeading,
 		const float courseMadeGood,
 		const float speedOverGround)
 {
 	const float angleValue = radiansFromDegrees(
-	            apparentWindDirection - courseMadeGood);
+	            trueHeading - apparentWindAngle - courseMadeGood
+	);
 
 	if(
 		epsilon > apparentWindSpeed
@@ -78,9 +78,10 @@ float trueWindDirection(
 
 	return direction(
 		courseMadeGood
+		+ 90
 		+ degreesFromRadians(pi
-		- atan2(speedOverGround - apparentWindSpeed * cos(angleValue),
-				apparentWindSpeed * sin(angleValue))));
+		- atan2(apparentWindSpeed * sin(angleValue),
+		speedOverGround - apparentWindSpeed * cos(angleValue))));
 }
 
 float trueWindAngle(
@@ -92,12 +93,12 @@ float trueWindAngle(
 
 float hullSpeed(
 		const float speedOverGround,
-		const float trueHedaing,
+		const float trueHeading,
 		const float courseMadeGood)
 {
 	return speedOverGround * cos(
 			radiansFromDegrees(
-			trueHedaing - courseMadeGood));
+			trueHeading - courseMadeGood));
 }
 
 float drift(
@@ -125,8 +126,8 @@ float set(
 		return direction(
 			trueHeading
 			+ degreesFromRadians(pi
-			- atan2(hullSpeed - speedOverGround * cos(angleValue),
-					speedOverGround * sin(angleValue))));
+			- atan2(speedOverGround * sin(angleValue),
+			hullSpeed - speedOverGround * cos(angleValue))));
 }
 
 float velocityMadeGood(
@@ -189,11 +190,12 @@ void calculateValues(CalibrationParmDef *calibParam)
 			lastSensorValues[SOG]);
 
 	lastSensorValues[TWD] = trueWindDirection(
-			lastSensorValues[AWD],
+			lastSensorValues[AWA],
 			lastSensorValues[AWS],
+			lastSensorValues[HDT],
 			lastSensorValues[CMG],
 			lastSensorValues[SOG]);
-	//lastSensorValues[TWD] = direction(lastSensorValues[TWD]);
+
 	lastSensorValues[TWA] = trueWindAngle(
 			lastSensorValues[TWD],
 			lastSensorValues[HDT]);
@@ -271,12 +273,7 @@ void dataFiltering(
 
 }
 
-void calculateTargets(
-		//float windSpeed,
-		//float windAngle,
-		float *windAngleTarget,
-		float *hullSpeedTarget,
-		float *velocityMadeGoodTarget)
+void calculateTargets(void)
 {
 	float instantHSP = 0.0;
 	float instantVMG = 0.0;
@@ -288,9 +285,9 @@ void calculateTargets(
 	{
 		minimumTWA = 100.0;
 	}
-	*windAngleTarget = 0.0;
-	*hullSpeedTarget = 0.0;
-	*velocityMadeGoodTarget = 0.0;
+	lastSensorValues[TWA_TGT] = 0.0;
+	lastSensorValues[HSP_TGT] = 0.0;
+	lastSensorValues[VMG_TGT] = 0.0;
 
 	if(windSpeed < polynoms[0][0]){
 		windSpeed = polynoms[0][0];
@@ -315,10 +312,10 @@ void calculateTargets(
 				}
 
 				instantVMG = instantHSP * fabs(cos(radiansFromDegrees(instantTWA)));
-				if(instantVMG > *velocityMadeGoodTarget){
-					*velocityMadeGoodTarget = instantVMG;
-					*hullSpeedTarget = instantHSP;
-					*windAngleTarget = instantTWA;
+				if(instantVMG > lastSensorValues[VMG_TGT]){
+					lastSensorValues[TWA_TGT] = instantTWA;
+					lastSensorValues[HSP_TGT] = instantHSP;
+					lastSensorValues[VMG_TGT] = instantVMG;
 				}
 			}
 			break;
@@ -344,11 +341,11 @@ void calculateTargets(
 
 					instantVMG = instantHSP * fabs(cos(radiansFromDegrees(instantTWA)));
 
-					if(instantVMG > *velocityMadeGoodTarget)
+					if(instantVMG > lastSensorValues[VMG_TGT])
 					{
-						*velocityMadeGoodTarget = instantVMG;
-						*hullSpeedTarget = instantHSP;
-						*windAngleTarget = instantTWA;
+						lastSensorValues[TWA_TGT] = instantTWA;
+						lastSensorValues[HSP_TGT] = instantHSP;
+						lastSensorValues[VMG_TGT] = instantVMG;
 					}
 				}
 				break;

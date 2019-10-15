@@ -139,22 +139,21 @@ static THD_FUNCTION(ble_thread, arg) {
 #ifdef SD_MODULE_TRAINER
 		remote_lag->is_avalible = 0;
 		remote_rudder->is_avalible = 0;
-		if (remote_lag->is_connected == 0 || remote_rudder->is_connected == 0) {
-
+		//if (remote_lag->is_connected == 0 || remote_rudder->is_connected == 0) {
+			if (remote_rudder->is_connected == 0) {
 			chprintf(NINA_IFACE, "AT+UBTD=2,1,2000\r");
 			chThdSleepMilliseconds(2500);
-			if (remote_lag->is_connected == 0 && remote_lag->is_avalible == 1) {
+			/*if (remote_lag->is_connected == 0 && remote_lag->is_avalible == 1) {
 
 				nina_connect("CCF95781688F", 0); //LAG
 				chThdSleepMilliseconds(1500);
 
-			}
+			}*/
 			if (remote_rudder->is_connected == 0
 					&& remote_rudder->is_avalible == 1) {
 
 				nina_connect("CCF957816647", 0); //Rudder
 				chThdSleepMilliseconds(1500);
-
 			}
 		}
 #endif
@@ -337,14 +336,14 @@ void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr){
 
 void nina_unregister_peer(uint8_t conn_handle){
 #ifdef SD_MODULE_TRAINER
-	if (remote_lag->conn_handle == conn_handle) {
+	/*if (remote_lag->conn_handle == conn_handle) {
 		chprintf((BaseSequentialStream*) &SD1, "Disconnected to lag %d %d\r\n",
 				remote_lag->conn_handle, remote_lag->type);
 		remote_lag->conn_handle = 0;
 
 		remote_lag->is_connected = 0;
 		remote_lag->type = 0;
-	}else if (remote_rudder->conn_handle == conn_handle) {
+	}else*/ if (remote_rudder->conn_handle == conn_handle) {
 		chprintf((BaseSequentialStream*) &SD1, "Disconnected to rudder %d %d\r\n",
 				remote_rudder->conn_handle, remote_rudder->type);
 		remote_rudder->conn_handle = 0;

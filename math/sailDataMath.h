@@ -174,12 +174,7 @@ void dataFiltering(
 void calculateValues(
 		CalibrationParmDef *calibParam);
 
-void calculateTargets(
-		//float windSpeed,
-		//float windAngle,
-		float *windAngleTarget,
-		float *hullSpeedTarget,
-		float *velocityMadeGoodTarget);
+void calculateTargets(void);
 
 void correctSensorValues(
 		CalibrationParmDef *calibParam);
@@ -206,8 +201,9 @@ float trueWindSpeed(
 		const float speedOverGround);
 
 float trueWindDirection(
-		const float apparentWindDirection,
+		const float apparentWindAngle,
 		const float apparentWindSpeed,
+		const float trueHeading,
 		const float courseMadeGood,
 		const float speedOverGround);
 

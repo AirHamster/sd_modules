@@ -67,6 +67,7 @@ uint8_t output_magn_calib(void);
 uint8_t output_accel_calib(void);
 uint8_t output_gyro_calib(void);
 uint8_t output_all_calib(void);
+void copy_to_ble(void);
 void start_json_module(void);
 void toggle_test_output(void);
 void toggle_ble_output(void);
