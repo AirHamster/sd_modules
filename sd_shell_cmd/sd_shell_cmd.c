@@ -51,8 +51,16 @@ extern lag_t *lag;
 
 #endif
 
+#ifdef USE_HMC5883_MODULE
 #include "hmc5883_i2c.h"
 extern hmc5883_t *hmc5883;
+#endif
+
+#ifdef USE_HMC6343_MODULE
+#include "hmc6343_i2c.h"
+extern hmc6343_t *hmc6343;
+#endif
+
 extern lag_t *r_lag;
 extern rudder_t *r_rudder;
 
@@ -387,7 +395,8 @@ void send_json(void)
 #endif
 #ifdef USE_BNO055_MODULE
 		//chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
-		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc5883->yaw);
+		//chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc5883->yaw);
+		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc6343->yaw);
 		chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
 		chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", bno055->d_euler_hpr.r);
 	//	chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t", bno055->calib_stat.magn);
