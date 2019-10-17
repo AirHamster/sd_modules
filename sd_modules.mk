@@ -31,6 +31,12 @@ SD_SRC += ./sd_modules/hmc5883/hmc5883_i2c.c
 SD_INC += ./sd_modules/hmc5883
 endif
 
+#HMC6343 - 6 - axis magnetoresistive chip
+ifeq ($(USE_HMC6343_MODULE), TRUE)
+SD_SRC += ./sd_modules/hmc6343/hmc6343_i2c.c
+SD_INC += ./sd_modules/hmc6343
+endif
+
 #UBLOX NEO-M8 GPS modules series
 ifeq ($(USE_UBLOX_GPS_MODULE), TRUE)
 SD_SRC += ./sd_modules/neo-m8/neo-m8.c
