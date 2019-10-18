@@ -2,6 +2,7 @@
 #include "sd_shell_cmds.h"
 #include <hal.h>
 #include "shellconf.h"
+#include "math.h"
 #include <shell.h>
 #include <string.h>
 #include <stdlib.h>
@@ -30,8 +31,62 @@ extern windsensor_t *wind;
 #ifdef USE_SERVICE_MODE
 #include "service_mode.h"
 #endif
-extern struct ch_semaphore usart1_semaph;
+#ifdef USE_BLE_MODULE
+#include "nina-b3.h"
+#include "lag.h"
+#include "adc.h"
+extern ble_peer_t *peer;
+#endif
+#ifdef SD_SENSOR_BOX_RUDDER
+extern ble_charac_t *ble_rudder;
+extern rudder_t *rudder;
+#endif
+#ifdef SD_SENSOR_BOX_LAG
+#include "lag.h"
+extern ble_charac_t *ble_lag;
+extern lag_t *lag;
+#endif
+#ifdef USE_ADC_MODULE
+#include "adc.h"
 
+#endif
+
+#ifdef USE_HMC5883_MODULE
+#include "hmc5883_i2c.h"
+extern hmc5883_t *hmc5883;
+#endif
+
+#ifdef USE_HMC6343_MODULE
+#include "hmc6343_i2c.h"
+extern hmc6343_t *hmc6343;
+#endif
+
+extern lag_t *r_lag;
+extern rudder_t *r_rudder;
+
+#ifdef SD_MODULE_TRAINER
+#ifdef USE_MATH_MODULE
+#include "sailDataMath.h"
+extern float lastFilterValues[10][FILTER_BUFFER_SIZE];
+extern float windAngleTarget;
+extern float lastSensorValues[SIZE_BUFFER_VALUES];
+extern float hullSpeedTarget;
+extern float velocityMadeGoodTarget;
+#endif
+#endif
+
+extern struct ch_semaphore usart1_semaph;
+extern ble_charac_t *thdg;
+extern ble_charac_t *rdr;
+extern ble_charac_t *twd;
+extern ble_charac_t *tws;
+extern ble_charac_t *twa;
+extern ble_charac_t *bs;
+extern ble_charac_t *twa_tg;
+extern ble_charac_t *bs_tg;
+extern ble_charac_t *hdg;
+extern ble_charac_t *heel;
+extern uint32_t __ram0_end__;
 output_t *output;
 char *complete_buffer[16];
 char history_buffer[128];
@@ -43,11 +98,35 @@ static THD_FUNCTION(output_thread, arg);
 static const ShellCommand commands[] = {
 		{ "start", cmd_start },
 		{ "c", cmd_c },
+		{ "boot", cmd_boot },
+		{ "reset", cmd_reset },
 #ifdef USE_SERVICE_MODE
-	/*	{ "service", cmd_service },
-		{ "gyro", cmd_gyro },
-		{ "microsd", cmd_microsd },*/
+		{ "service", cmd_service },
+#ifdef SD_MODULE_TRAINER
+#ifdef USE_MATH_MODULE
+		{ "load_math_calib", cmd_load_math_cal },
+		{ "get_math_calib", cmd_get_math_cal },
 #endif
+#endif // SD_MODULE_TRAINER
+#ifdef USE_HMC6343_MODULE
+		{ "compass", cmd_compass },
+#endif
+#ifdef USE_BNO055_MODULE
+		{ "bno055", cmd_bno055 },
+#endif //USE_BNO055_MODULE
+#ifdef USE_MICROSD_MODULE
+		{ "microsd", cmd_microsd },
+		{ "tree", cmd_tree },
+		{ "cat", cmd_cat },
+		{ "mkfs", cmd_mkfs },
+#endif //USE_MICROSD_MODULE
+#ifdef USE_BLE_MODULE
+		{ "ble", cmd_ble },
+#endif //USE_BLE_MODULE
+#ifdef SD_SENSOR_BOX_LAG
+		{ "lag", cmd_lag },
+#endif
+#endif //USE_SERVICE_MODE
 
 #ifdef USE_XBEE_868_MODULE
 		{ "xbee", cmd_xbee },
@@ -59,8 +138,8 @@ static const ShellCommand commands[] = {
 		{ "open", cmd_open },
 		{ "write", cmd_write },
 #endif
-#ifdef USE_ADC_MODULE
-		//{"adc", cmd_adc },
+#ifdef USE_RUDDER_MODULE
+		{"rudder", cmd_rudder },
 #endif
 		{ NULL, NULL }
 };
@@ -69,7 +148,7 @@ static const ShellConfig shell_cfg1 = { (BaseSequentialStream*) &SHELL_SD,
 		commands, history_buffer, 32, complete_buffer };
 
 thread_t *cmd_init(void) {
-	return chThdCreateFromHeap(NULL, SHELL_WA_SIZE, "shell", NORMALPRIO,
+	return chThdCreateFromHeap(NULL, SHELL_WA_SIZE, "shell", NORMALPRIO + 4,
 			shellThread, (void *) &shell_cfg1);
 }
 
@@ -83,7 +162,7 @@ void start_json_module(void){
 
 static THD_FUNCTION(output_thread, arg) {
 	(void)arg;
-
+	uint8_t i = 0;
 	chRegSetThreadName("Data output");
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 
@@ -97,12 +176,75 @@ static THD_FUNCTION(output_thread, arg) {
 			break;
 		case OUTPUT_TEST:
 			send_json();
+	//		if (i++ == 10) {
+		//		nina_send_all(peer);
+		//		i = 0;
+		//	}
 			break;
 		case OUTPUT_SERVICE:
 			break;
 		case OUTPUT_ALL_CALIB:
 			output_all_calib();
 			break;
+		case OUTPUT_BLE:
+		//	if (i++ == 10){
+			//nina_send_all(peer);
+		//	i = 0;
+		//	}
+			break;
+		default:
+			break;
+		}
+#endif
+
+#ifdef USE_BLE_MODULE
+		switch (output->type){
+				case OUTPUT_NONE:
+					break;
+				case OUTPUT_TEST:
+					if (i++ == 10) {
+						copy_to_ble();
+						nina_send_all(peer);
+						i = 0;
+					}
+					break;
+				case OUTPUT_RUDDER_CALIB:
+							adc_print_rudder_info(rudder);
+							break;
+				case OUTPUT_SERVICE:
+					break;
+				case OUTPUT_BLE:
+		/*			if (i++ == 10){
+					nina_send_all(peer);
+					i = 0;
+					}*/
+					break;
+				default:
+					break;
+				}
+#endif
+#ifdef SD_SENSOR_BOX_RUDDER
+		switch (output->ble){
+		case OUTPUT_NONE:
+			break;
+		case OUTPUT_RUDDER_CALIB:
+			adc_print_rudder_info(rudder);
+			break;
+		case OUTPUT_RUDDER_BLE:
+			send_rudder_over_ble(rudder);
+		default:
+			break;
+		}
+#endif
+#ifdef SD_SENSOR_BOX_LAG
+		switch (output->ble) {
+		case OUTPUT_NONE:
+			break;
+		case OUTPUT_LAG_CALIB:
+			//adc_print_rudder_info(lag);
+			break;
+		case OUTPUT_LAG_BLE:
+			send_lag_over_ble(lag);
 		default:
 			break;
 		}
@@ -114,6 +256,7 @@ static THD_FUNCTION(output_thread, arg) {
 #ifdef USE_BNO055_MODULE
 uint8_t output_all_calib(void){
 	chSemWait(&usart1_semaph);
+#ifndef USE_HMC6343_MODULE
 	chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"calib_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
 	chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
 	chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
@@ -123,6 +266,11 @@ uint8_t output_all_calib(void){
 	chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t", bno055->calib_stat.gyro);
 	chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t", bno055->calib_stat.system);
 	chprintf(SHELL_IFACE, "}\r\n\t}");
+#else
+	chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"calib_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
+	chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc6343->yaw);
+	chprintf(SHELL_IFACE, "}\r\n\t}");
+#endif
 	chSemSignal(&usart1_semaph);
 }
 #endif
@@ -180,9 +328,72 @@ void send_data(uint8_t stream){
 	xbee_send_rf_message(xbee, databuff, 34);
 }
 */
+int32_t convert_to_ble_type(float value){
+	int32_t val;
+	int16_t cel;
+	uint8_t drob;
+
+	if(value < 0.0){
+		value = value * -1;
+		cel = (int16_t)(value);
+		drob = (uint8_t)((value - (float)cel) * 100);
+		//chprintf(SHELL_IFACE, "cel %x\r\n", cel);
+		//	chprintf(SHELL_IFACE, "drob %x\r\n", drob);
+		cel = cel * -1;
+		val = cel << 8 | drob;
+		val &= 0xFFFFFF;
+	}else{
+		cel = (int16_t)(value);
+	drob = (uint8_t)((value - (float)cel) * 100);
+	val = cel << 8 | drob;
+	}
+
+
+
+	//chprintf(SHELL_IFACE, "val %x\r\n", val);
+	return val;
+}
+
+void copy_to_ble(void){
+#ifdef SD_MODULE_TRAINER
+#ifdef USE_MATH_MODULE
+	/*
+	thdg->value = convert_to_ble_type(lastFilterValues[1][FILTER_BUFFER_SIZE - 1]);
+	twd->value = convert_to_ble_type(lastFilterValues[4][FILTER_BUFFER_SIZE - 1]);
+	tws->value = convert_to_ble_type(lastFilterValues[5][FILTER_BUFFER_SIZE - 1]);
+	twa->value = convert_to_ble_type(lastFilterValues[6][FILTER_BUFFER_SIZE - 1]);
+	twa_tg->value = convert_to_ble_type(windAngleTarget);
+	bs_tg->value = convert_to_ble_type(hullSpeedTarget);
+
+	hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
+	//hdg->value = convert_to_ble_type(lastFilterValues[0][FILTER_BUFFER_SIZE - 1]);
+	heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
+	*/
+	thdg->value = convert_to_ble_type(lastSensorValues[HDT]);
+		twd->value = convert_to_ble_type(lastSensorValues[TWD]);
+		tws->value = convert_to_ble_type(lastSensorValues[TWS]);
+		twa->value = convert_to_ble_type(lastSensorValues[TWA]);
+		twa_tg->value = convert_to_ble_type(lastSensorValues[TWA_TGT]);
+		bs_tg->value = convert_to_ble_type(lastSensorValues[VMG_TGT]);
+		bs->value = convert_to_ble_type((float)(pvt_box->gSpeed * 0.0036 / 1.852));
+		heel->value = convert_to_ble_type(bno055->d_euler_hpr.h);
+		hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
+		//hdg->value = convert_to_ble_type(lastFilterValues[0][FILTER_BUFFER_SIZE - 1]);
+		heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
+#endif
+	//heel->value = convert_to_ble_type(bno055->d_euler_hpr.r);
+
+	//hdg->value = convert_to_ble_type(lastFilterValues[0][0]);
+	//heel->value = convert_to_ble_type(lastFilterValues[2][0]);
+
+#endif
+}
+
 
 void send_json(void)
 {
+
+	//return;
 	chSemWait(&usart1_semaph);
 	chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
 #ifdef USE_UBLOX_GPS_MODULE
@@ -195,18 +406,22 @@ void send_json(void)
 		chprintf(SHELL_IFACE, "\"dist\":%d,\r\n\t\t\t", (uint16_t)odo_box->distance);
 #endif
 #ifdef USE_BNO055_MODULE
-		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
+		//chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
+		//chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc5883->yaw);
+		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc6343->yaw);
 		chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
 		chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", bno055->d_euler_hpr.r);
-		chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t", bno055->calib_stat.magn);
-		chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t", bno055->calib_stat.accel);
-		chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t", bno055->calib_stat.gyro);
-		chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t", bno055->calib_stat.system);
+	//	chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t", bno055->calib_stat.magn);
+	//	chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t", bno055->calib_stat.accel);
+	//	chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t", bno055->calib_stat.gyro);
+	//	chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t", bno055->calib_stat.system);
 #endif
 #ifdef USE_UBLOX_GPS_MODULE
 		chprintf(SHELL_IFACE, "\"headMot\":%d,\r\n\t\t\t", (uint16_t)(pvt_box->headMot / 100000));
 		chprintf(SHELL_IFACE, "\"sat\":%d,\r\n\t\t\t", pvt_box->numSV);
 #endif
+		chprintf(SHELL_IFACE, "\"rudder\":%f,\r\n\t\t\t", r_rudder->degrees);
+		chprintf(SHELL_IFACE, "\"log\":%f,\r\n\t\t\t", r_lag->meters);
 #ifdef USE_WINDSENSOR_MODULE
 		chprintf(SHELL_IFACE, "\"wind_dir\":%d,\r\n\t\t\t", wind->direction);
 		chprintf(SHELL_IFACE, "\"wind_spd\":%f,\r\n\t\t\t", wind->speed);
@@ -220,6 +435,32 @@ void send_json(void)
 		chprintf(SHELL_IFACE, "}\r\n\t}");
 		chSemSignal(&usart1_semaph);
 }
+
+#ifdef SD_SENSOR_BOX_LAG
+void send_lag_over_ble(lag_t *lag){
+	/*uint16_t spd_cel;
+	uint8_t spd_drob;
+	spd_cel = (uint16_t)lag->meters;
+	spd_drob = (uint8_t)((lag->meters - (float)spd_cel) * 100);
+	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x  ", spd_cel, spd_drob, spd_cel, spd_drob);*/
+	int32_t val;
+	val = convert_to_ble_type(lag->meters);
+	nina_notify(ble_lag, val);
+}
+#endif
+
+#ifdef SD_SENSOR_BOX_RUDDER
+void send_rudder_over_ble(rudder_t *rudder){
+	int32_t val;
+	/*uint16_t degrees_cel;
+	uint8_t degrees_drob;
+	degrees_cel = (uint16_t)rudder->degrees;
+	degrees_drob = (uint8_t)((rudder->degrees - (float)degrees_cel) * 100);
+	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x", degrees_cel, degrees_drob, degrees_cel, degrees_drob);*/
+	val = convert_to_ble_type(rudder->degrees);
+	nina_notify(ble_rudder, val);
+}
+#endif
 
 void cmd_start(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
@@ -252,7 +493,48 @@ void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]) {
 	chprintf(chp, "Stopped all outputs\n\r");
 }
 
+void cmd_reset(BaseSequentialStream* chp, int argc, char* argv[]){
+	(void) argc;
+	(void) argv;
+	chprintf(chp, "\r\nReset system");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, ".");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, ".");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, ".");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, "\r\n");
+	NVIC_SystemReset();
+}
 
+void cmd_boot(BaseSequentialStream* chp, int argc, char* argv[]) {
+	(void) argc;
+	(void) argv;
+	chprintf(chp, "Entering bootloader after system reset");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, ".");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, ".");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, ".");
+	chThdSleepMilliseconds(500);
+	chprintf(chp, "\r\n");
+
+	// *((unsigned long *)(SYMVAL(__ram0_end__) - 4)) = 0xDEADBEEF;
+
+	 //*((unsigned long *) BKPSRAM_BASE) = 0xDEADBEEF;
+	 RTC->BKP0R = MAGIC_BOOTLOADER_NUMBER;	// set magic flag => reset handler will jump into boot loader
+
+	 if (RTC->BKP0R == MAGIC_BOOTLOADER_NUMBER) {
+	 chprintf(chp, "Writed to the end of RAM %x, reset\r\n", RTC->BKP0R);
+	 chThdSleepMilliseconds(500);
+	 NVIC_SystemReset();
+	 }else{
+		 chprintf(chp, "Comparsion failed\r\n");
+	 }
+
+}
 
 void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
@@ -417,11 +699,17 @@ void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]) {
 #endif
 void toggle_test_output(void) {
 	output->type = OUTPUT_TEST;
+	output->ble = OUTPUT_TEST;
 #ifdef USE_BNO055_MODULE
 	bno055->read_type = OUTPUT_TEST;
 #endif
 	output->service = 0;
 	output->test = (~output->test) & 0x01;
+}
+
+void toggle_ble_output(void) {
+	output->service = 0;
+	output->type = OUTPUT_BLE;
 }
 
 void toggle_gps_output(void) {
@@ -439,11 +727,15 @@ void toggle_gyro_output(void) {
 	output->gyro = (~output->gyro) & 0x01;
 }
 
+
+
 void stop_all_tests(void) {
 	if (output->type == OUTPUT_ALL_CALIB){
 		output->type = OUTPUT_SERVICE;
+		hmc6343_stop_calibration(hmc6343);
 	}else{
 		output->type = OUTPUT_NONE;
+		output->ble = OUTPUT_NONE;
 #ifdef USE_BNO055_MODULE
 		bno055->read_type = OUTPUT_NONE;
 #endif

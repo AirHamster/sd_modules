@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 #include "ch.h"
 #include "hal.h"
 #include "shell.h"
@@ -26,9 +27,16 @@ extern bno055_t *bno055;
 #include "windsensor.h"
 extern windsensor_t *wind;
 #endif
+#ifdef USE_EEPROM_MODULE
+#include "eeprom.h"
+#endif
+rudder_t *rudder;
+dots_t *dots;
+coefs_t *coefs;
 
 #define IR_ADC_GRP1_NUM_CHANNELS 1
 #define IR_ADC_GRP1_BUF_DEPTH 4
+#ifdef SD_SENSOR_BOX_RUDDER
 static void adcendcallback(ADCDriver *adcp);
 static adcsample_t irSamples[IR_ADC_GRP1_NUM_CHANNELS * IR_ADC_GRP1_BUF_DEPTH];
 
@@ -74,22 +82,150 @@ static THD_FUNCTION( adc_thread, p) {
 	uint32_t tmp;
 	chRegSetThreadName("ADC Thd");
 	systime_t prev = chVTGetSystemTime(); // Current system time.
-
+	rudder->min_native = 100;
+	rudder->max_native = 4000;
+	rudder->native_full_scale = rudder->max_native - rudder->min_native;
+	init_coefs(dots, coefs);
 	while (true) {
-		chprintf((BaseSequentialStream*) &SD1, "ADC: %d\r\n", tmp);
 		adcConvert(&ADCD1, &adcgrpcfg, irSamples, IR_ADC_GRP1_BUF_DEPTH);
-		for (i = 0; i < IR_ADC_GRP1_BUF_DEPTH; i++){
+		tmp = 0;
+		for (i = 0; i < IR_ADC_GRP1_BUF_DEPTH; i++) {
 			tmp += irSamples[i];
 		}
-		tmp /= IR_ADC_GRP1_BUF_DEPTH;
-		chprintf((BaseSequentialStream*) &SD1, "ADC: %d\r\n", (uint16_t)tmp);
-		tmp = 0;
+		tmp = tmp / IR_ADC_GRP1_BUF_DEPTH;
+		adc_convert_to_rudder(tmp, rudder);
+	/*	chprintf((BaseSequentialStream*) &SD1, "ADC native:  %d\r\n",
+				(uint16_t) rudder->native);
+		chprintf((BaseSequentialStream*) &SD1, "ADC percent: %f\r\n",
+				rudder->percent);
+		chprintf((BaseSequentialStream*) &SD1, "ADC degrees: %f\r\n",
+				rudder->degrees);*/
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 	}
+}
+
+void init_coefs(dots_t *dots, coefs_t *coefs){
+	uint8_t temp;
+	eeprom_read(EEPROM_RUDDER_CALIB_FLAG_ADDR, &temp, 1);
+	if (temp == 0){
+		dots->x1 = 100.0;
+		dots->x2 = 1950.0;
+		dots->x3 = 4000.0;
+
+		dots->y1 = -90.0;
+		dots->y2 = 0.0;
+		dots->y2 = 90.0;
+	}else{
+		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_LEFT, (uint8_t*)&dots->x1, 4);
+		rudder->min_native = dots->x1;
+		chThdSleepMilliseconds(5);
+		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_CENTER, (uint8_t*)&dots->x2, 4);
+		chThdSleepMilliseconds(5);
+		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*)&dots->x3, 4);
+		rudder->max_native = dots->x3;
+		chThdSleepMilliseconds(5);
+
+		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*)&dots->y1, 4);
+		rudder->min_degrees = dots->y1;
+		chThdSleepMilliseconds(5);
+		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*)&dots->y2, 4);
+		chThdSleepMilliseconds(5);
+		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*)&dots->y3, 4);
+		rudder->max_degrees = dots->y3;
+	}
+	rudder->native_full_scale = rudder->max_native - rudder->min_native;
+	calculate_polynom_coefs(dots, coefs);
 }
 
 void start_adc_module(void){
 	adcStart(&ADCD1, NULL);
 	adcSTM32EnableVREF(&ADCD1);
 	chThdCreateStatic(adc_thread_wa, sizeof(adc_thread_wa), NORMALPRIO, adc_thread, NULL);
+}
+
+void adc_convert_to_rudder(uint16_t tmp, rudder_t *rud) {
+	//Workaround situation when sensor was instaled in mirrored position
+	/*if (rud->min_native <= rud->max_native) {
+
+	 if (tmp < rud->min_native) {
+	 rud->native = rud->min_native;
+	 } else if (tmp > rud->max_native) {
+	 rud->native = rud->max_native;
+	 } else {
+	 rud->native = tmp;
+	 }
+	 } else*/
+	/*
+	 {
+	 if (tmp < rud->max_native) {
+	 rud->native = rud->max_native;
+	 } else if (tmp > rud->min_native) {
+	 rud->native = rud->min_native;
+	 } else {
+	 rud->native = tmp;
+	 }
+	 }
+	 */
+	rud->native = tmp;
+	//rud->percent = ((float) (rud->native - 100) / (float) rud->native_full_scale * 100.0);
+	rud->degrees = get_polynom_degrees(rud->native, coefs);
+	if (rud->degrees < rud->min_degrees) {
+		rud->degrees = rud->min_degrees;
+	} else if (rud->degrees > rud->max_degrees) {
+		rud->degrees = rud->max_degrees;
+	}
+
+	//rud->degrees = ((float) rud->percent / 100.0 * 180.0 - 90.0);
+}
+void adc_update_rudder_struct(rudder_t *rud){
+//	eeprom_read(EEPROM_RUDDER_CALIB_LEFT, (uint8_t*)&rud->min_native, 2);
+//	eeprom_read(EEPROM_RUDDER_CALIB_RIGHT, (uint8_t*)&rud->max_native, 2);
+	calculate_polynom_coefs(dots, coefs);
+}
+void adc_print_rudder_info(rudder_t *rud){
+	chprintf((BaseSequentialStream*) &SD1, "ADC native:  %d\r\n",
+			(uint16_t) rud->native);
+	chprintf((BaseSequentialStream*) &SD1, "ADC percent: %f\r\n",
+			rud->percent);
+	chprintf((BaseSequentialStream*) &SD1, "ADC degrees: %f\r\n",
+			rud->degrees);
+}
+#endif
+
+float get_polynom_degrees(float x, coefs_t *coefs){
+	float y = 0.0;
+	y = coefs->a*x*x+coefs->b*x+coefs->c;
+	return y;
+}
+
+// http://accel.ru/inform/edu/algorithms/begin_numeth-pr2013/index.php?fname=_1_2_simple_itpl_poly.php
+void calculate_polynom_coefs(dots_t *dots, coefs_t *coefs){
+    float x0 = dots->x1;
+    float x1 = dots->x2;
+    float x2 = dots->x3;
+    float y0 = dots->y1;
+    float y1 = dots->y2;
+    float y2 = dots->y3;
+
+    float a0 = 0.0;
+    float a1 = 0.0;
+    float a2 = 0.0;
+
+	if ((x2 == x0) || (x2 == x1) || (x1 == x0)) {
+		coefs->a = 0;
+		coefs->b = 0;
+		coefs->c = 0;
+	} else {
+		a0 = (1 / (x1 * (x2 - x0))
+				* (x0 * ((y2 * x1 * x1 - y1 * x2 * x2) / (x2 - x1))
+						- x2 * ((y1 * x0 * x0 - y0 * x1 * x1) / (x1 - x0))));
+		a1 = -(1 / ((x2 - x0))
+				* ((((y2 - y1) * (x1 + x0)) / (x2 - x1))
+						- (((y1 - y0) * (x2 + x1)) / (x1 - x0))));
+		a2 = (1 / ((x2 - x0))
+				* ((((y2 - y1)) / (x2 - x1)) - (((y1 - y0)) / (x1 - x0))));
+		coefs->a = a2;
+		coefs->b = a1;
+		coefs->c = a0;
+	}
 }

@@ -25,6 +25,18 @@ SD_SRC += ./sd_modules/mpu9250/MadgwickAHRS.c
 SD_INC += ./sd_modules/mpu9250
 endif
 
+#HMC5883 - 3- axis magnetoresistive chip
+ifeq ($(USE_HMC5883_MODULE), TRUE)
+SD_SRC += ./sd_modules/hmc5883/hmc5883_i2c.c
+SD_INC += ./sd_modules/hmc5883
+endif
+
+#HMC6343 - 6 - axis magnetoresistive chip
+ifeq ($(USE_HMC6343_MODULE), TRUE)
+SD_SRC += ./sd_modules/hmc6343/hmc6343_i2c.c
+SD_INC += ./sd_modules/hmc6343
+endif
+
 #UBLOX NEO-M8 GPS modules series
 ifeq ($(USE_UBLOX_GPS_MODULE), TRUE)
 SD_SRC += ./sd_modules/neo-m8/neo-m8.c
@@ -58,6 +70,17 @@ SD_SRC += ./sd_modules/bno055/bno055_i2c.c
 SD_INC += ./sd_modules/bno055
 endif
 
+#BMX160
+ifeq ($(USE_BMX160_MODULE), TRUE)
+SD_SRC += ./sd_modules/bmx160/bmx160_i2c.c
+SD_SRC += ./sd_modules/bmx160/bmi160.c
+SD_SRC += ./sd_modules/bmx160/bmm150.c
+SD_SRC += ./sd_modules/mpu9250/MadgwickAHRS.c
+SD_SRC += ./sd_modules/mpu9250/quaternionFilters.c
+SD_INC += ./sd_modules/bmx160/bsx_lite/Inc
+SD_INC += ./sd_modules/bmx160
+endif
+
 #LAG
 ifeq ($(USE_LAG_MODULE), TRUE)
 SD_SRC += ./sd_modules/lag/lag.c
@@ -74,6 +97,12 @@ SD_SRC += ./sd_modules/microsd/microsd.c
 SD_INC += ./sd_modules/microsd
 endif
 
+ifeq ($(USE_MATH_MODULE), TRUE)
+SD_SRC += ./sd_modules/math/sailDataMath.c
+SD_SRC += ./sd_modules/math/sd_math.c
+SD_INC += ./sd_modules/math
+endif
+
 #WIND sensor
 ifeq ($(USE_WINDSENSOR_MODULE), TRUE)
 SD_SRC += ./sd_modules/windsensor/windsensor.c
@@ -84,6 +113,12 @@ endif
 ifeq (${USE_ADC_MODULE}, TRUE)
 SD_SRC += ./sd_modules/adc/adc.c
 SD_INC += ./sd_modules/adc
+endif
+
+#BQ2560x charging module
+ifeq (${USE_CHARGER_MODULE}, TRUE)
+SD_SRC += ./sd_modules/bq2560x/bq2560x.c
+SD_INC += ./sd_modules/bq2560x
 endif
 # Shared variables
 ALLCSRC += $(SD_SRC)

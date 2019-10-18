@@ -24,7 +24,9 @@
 static void lag_init_pins(void);
 extern struct ch_semaphore usart1_semaph;
 lag_t *lag;
+
 extern time_measurement_t time;
+
 
 static THD_WORKING_AREA(lag_thread_wa, 512);
 static THD_FUNCTION(lag_thread, arg);
@@ -45,10 +47,10 @@ static THD_FUNCTION(lag_thread, arg) {
 	lag_init_pins();
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 	while (true) {
-
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
-		lag->hz = (uint16_t)(1000.0 / lag->millis);
-		chprintf((BaseSequentialStream*) &SD1, "LAG: %d, %d\r\n", lag->millis, lag->hz);
+		lag->hz = (float)(1000.0 / lag->millis);
+		lag->meters = (float)lag->hz * lag->calib_num / 2;
+	//	chprintf((BaseSequentialStream*) &SD1, "LAG: %f, %f\r\n", lag->meters, lag->hz);
 	}
 }
 
@@ -68,8 +70,12 @@ static void lag_callback(void *arg) {
 
 static void lag_init_pins(void){
 	/* Enabling event on falling edge of PA0 signal.*/
-	  palEnablePadEvent(GPIOA, GPIOA_ADC_IN2, PAL_EVENT_MODE_RISING_EDGE);
+#ifdef SD_SENSOR_BOX_LAG
+	eeprom_read(EEPROM_LAG_CALIB_NUMBER, (uint8_t*)&lag->calib_num, 4);
+	chprintf((BaseSequentialStream*) &SD1, "Readed calib number: %f\r\n", lag->calib_num);
+	  palEnablePadEvent(GPIOA, GPIOA_ADC_IN1, PAL_EVENT_MODE_RISING_EDGE);
 
 	 /* Assigning a callback to PA0 passing no arguments.*/
-	  palSetPadCallback(GPIOA, GPIOA_ADC_IN2, lag_callback, NULL);
+	  palSetPadCallback(GPIOA, GPIOA_ADC_IN1, lag_callback, NULL);
+#endif
 }

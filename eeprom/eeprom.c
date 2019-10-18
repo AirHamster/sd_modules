@@ -27,12 +27,18 @@ const I2CConfig eeprom_i2c_cfg = {
 };
 #endif
 
-int8_t eeprom_write(uint16_t byte_addr, const int8_t *txbuf, size_t txbytes) {
+int8_t eeprom_write(uint16_t byte_addr, const uint8_t *txbuf, size_t txbytes) {
+	uint8_t i = 0;
 	int8_t buff[txbytes + 2];
 	msg_t status;
 	buff[0] = byte_addr >> 8;
 	buff[1] = byte_addr & 0xFF;
 	memcpy(&buff[2], txbuf, txbytes);
+	chprintf(SHELL_IFACE, "Wrote into EEPROM %d bytes:\r\n", txbytes);
+	for (i = 0; i < txbytes; i++){
+		chprintf(SHELL_IFACE, " %x\r\n", buff[2 + i]);
+	}
+
 	i2cAcquireBus(&EEPROM_IF);
 	status = i2cMasterTransmitTimeout(&EEPROM_IF, EEPROM_ADDRESS, buff,
 			txbytes + 2, NULL, 0, 1000);
@@ -47,7 +53,7 @@ int8_t eeprom_write(uint16_t byte_addr, const int8_t *txbuf, size_t txbytes) {
 	return 0;
 }
 
-int8_t eeprom_read(uint16_t byte_addr, int8_t *rxbuf, size_t rxbytes) {
+int8_t eeprom_read(uint16_t byte_addr, uint8_t *rxbuf, size_t rxbytes) {
 	uint8_t buff[2];
 	msg_t status;
 	buff[0] = byte_addr >> 8;
