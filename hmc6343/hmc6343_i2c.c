@@ -90,16 +90,15 @@ uint8_t hmc6343_read_data(hmc6343_t *hmc){
 
 int8_t hmc6343_full_init(void) {
 	uint8_t buff[24];
-	uint16_t i = 0;
-	buff[0] = HMC6343_READ_EEPROM_CMD;	//set continuous mode
-	buff[1] = HMC6343_EEPROM_START;
-	buff[2] = 0x19;
-	//hmc6343_write(HMC6343_I2C_ADDR, buff, 3);
+	//uint16_t i = 0;
+	buff[0] = HMC6343_WRITE_EEPROM_CMD;	//set continuous mode
+	buff[1] = HMC6343_EEPROM_OP_MODE2;
+	buff[2] = 1 << 1;
+	hmc6343_write(HMC6343_I2C_ADDR, buff, 3);
 	chThdSleepMilliseconds(1);
 	//hmc6343_read(HMC6343_I2C_ADDR, buff, 1);
-	chprintf(SHELL_IFACE, "EEPROM %x: %x\r\n", i, buff[0]);
-
-
+	//chprintf(SHELL_IFACE, "EEPROM %x: %x\r\n", i, buff[0]);
+/*
 	for (i = 0; i <= 127; i++){
 		//buff[1] = i;
 		hmc6343_write(i, buff, 2);
@@ -108,8 +107,78 @@ int8_t hmc6343_full_init(void) {
 		chprintf(SHELL_IFACE, "EEPROM %x: %x\r\n", i, buff[2]);
 		chThdSleepMilliseconds(100);
 	}
-
+*/
 	return 0;
+}
+
+void hmc6343_start_calibration(hmc6343_t *hmc) {
+	uint8_t buff;
+
+	hmc6343_read_calib_data(hmc);
+
+	buff = HMC6343_ENTER_USER_CALIBRATE_CMD;
+	hmc6343_write(HMC6343_I2C_ADDR, &buff, 1);
+	chThdSleepMilliseconds(1);
+}
+
+void hmc6343_stop_calibration(hmc6343_t *hmc) {
+	uint8_t buff;
+	chprintf(SHELL_IFACE, "Previous calibration parameters:\r\n\r\n");
+	chprintf(SHELL_IFACE, "X_Offset: %x\tY_Offset: %x\tZ_Offset: %x\t\r\n", hmc->x_offset, hmc->y_offset, hmc->z_offset);
+	buff = HMC6343_EXIT_USER_CALIBRATE_CMD;
+	hmc6343_write(HMC6343_I2C_ADDR, &buff, 1);
+	chThdSleepMilliseconds(100);
+
+	hmc6343_read_calib_data(hmc);
+	chprintf(SHELL_IFACE, "New calibration parameters:\r\n\r\n");
+	chprintf(SHELL_IFACE, "X_Offset: %x\tY_Offset: %x\tZ_Offset: %x\t\r\n", hmc->x_offset, hmc->y_offset, hmc->z_offset);
+
+}
+
+void hmc6343_read_calib_data(hmc6343_t *hmc)
+{
+	uint8_t buff[2];
+	buff[0] = HMC6343_READ_EEPROM_CMD;
+	buff[1] = HMC6343_EEPROM_X_OFFSET_LSB;
+	hmc6343_write(HMC6343_I2C_ADDR, buff, 2);
+	chThdSleepMilliseconds(15);
+	hmc6343_read(HMC6343_I2C_ADDR, buff, 1);
+	hmc->x_offset = buff[0];
+
+	buff[0] = HMC6343_READ_EEPROM_CMD;
+	buff[1] = HMC6343_EEPROM_X_OFFSET_MSB;
+	hmc6343_write(HMC6343_I2C_ADDR, buff, 2);
+	chThdSleepMilliseconds(15);
+	hmc6343_read(HMC6343_I2C_ADDR, buff, 1);
+	hmc->x_offset |= buff[0] << 8;
+
+	buff[0] = HMC6343_READ_EEPROM_CMD;
+	buff[1] = HMC6343_EEPROM_Y_OFFSET_LSB;
+	hmc6343_write(HMC6343_I2C_ADDR, buff, 2);
+	chThdSleepMilliseconds(15);
+	hmc6343_read(HMC6343_I2C_ADDR, buff, 1);
+	hmc->y_offset = buff[0];
+
+	buff[0] = HMC6343_READ_EEPROM_CMD;
+	buff[1] = HMC6343_EEPROM_Y_OFFSET_MSB;
+	hmc6343_write(HMC6343_I2C_ADDR, buff, 2);
+	chThdSleepMilliseconds(15);
+	hmc6343_read(HMC6343_I2C_ADDR, buff, 1);
+	hmc->y_offset |= buff[0] << 8;
+
+	buff[0] = HMC6343_READ_EEPROM_CMD;
+	buff[1] = HMC6343_EEPROM_Z_OFFSET_LSB;
+	hmc6343_write(HMC6343_I2C_ADDR, buff, 2);
+	chThdSleepMilliseconds(15);
+	hmc6343_read(HMC6343_I2C_ADDR, buff, 1);
+	hmc->z_offset = buff[0];
+
+	buff[0] = HMC6343_READ_EEPROM_CMD;
+	buff[1] = HMC6343_EEPROM_Z_OFFSET_MSB;
+	hmc6343_write(HMC6343_I2C_ADDR, buff, 2);
+	chThdSleepMilliseconds(15);
+	hmc6343_read(HMC6343_I2C_ADDR, buff, 1);
+	hmc->z_offset |= buff[0] << 8;
 }
 
 void hmc6343_delay_ms(uint16_t msec){
@@ -162,127 +231,6 @@ int8_t hmc6343_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len) {
 	return 0;
 }
 
-int8_t hmc6343_I2C_bus_write(uint8_t dev_addr, uint8_t reg_addr, uint8_t *reg_data, uint8_t cnt)
-{
-	//int32_t hmc6343_iERROR = hmc6343_INIT_VALUE;
-	uint8_t array[I2C_BUFFER_LEN];
-	uint8_t stringpos = 0;
 
-	array[0] = reg_addr;
-	for (stringpos = 0; stringpos < cnt; stringpos++)
-	{
-		array[stringpos + 1] =
-			*(reg_data + stringpos);
-	}
-	/*
-	* Please take the below APIs as your reference for
-	* write the data using I2C communication
-	* "hmc6343_iERROR = I2C_WRITE_STRING(DEV_ADDR, ARRAY, CNT+1)"
-	* add your I2C write APIs here
-	* hmc6343_iERROR is an return value of I2C read API
-	* Please select your valid return value
-	* In the driver hmc6343_SUCCESS defined as 0
-    * and FAILURE defined as -1
-	* Note :
-	* This is a full duplex operation,
-	* The first read data is discarded, for that extra write operation
-	* have to be initiated. For that cnt+1 operation done
-	* in the I2C write string function
-	* For more information please refer data sheet SPI communication:
-	*/
-	hmc6343_write(dev_addr, array, cnt+1);
-	return 0;
-}
 
- /*	\Brief: The API is used as I2C bus read
- *	\Return : Status of the I2C read
- *	\param dev_addr : The device address of the sensor
- *	\param reg_addr : Address of the first register,
- *  will data is going to be read
- *	\param reg_data : This data read from the sensor,
- *   which is hold in an array
- *	\param cnt : The no of byte of data to be read
- */
-int8_t hmc6343_I2C_bus_read(uint8_t dev_addr, uint8_t reg_addr, uint8_t *reg_data, uint8_t cnt)
-{
-	//int32_t hmc6343_iERROR = hmc6343_INIT_VALUE;
-	uint8_t array[I2C_BUFFER_LEN] = {0};
-	uint8_t stringpos = 0;
 
-	array[0] = reg_addr;
-
-	/* Please take the below API as your reference
-	 * for read the data using I2C communication
-	 * add your I2C read API here.
-	 * "hmc6343_iERROR = I2C_WRITE_READ_STRING(DEV_ADDR,
-	 * ARRAY, ARRAY, 1, CNT)"
-	 * hmc6343_iERROR is an return value of SPI write API
-	 * Please select your valid return value
-     * In the driver hmc6343_SUCCESS defined as 0
-     * and FAILURE defined as -1
-	 */
-	hmc6343_read(dev_addr, array, cnt);
-	for (stringpos = 0; stringpos < cnt; stringpos++)
-		*(reg_data + stringpos) = array[stringpos];
-	return 0;
-}
-/*
-void i2c_restart(I2CDriver *i2cp)
-{
-	i2cStop(i2cp);
-	chThdSleepMilliseconds(1);
-	i2cStart (i2cp, &hmc6343_i2c_cfg);
-}
-*/
-
-uint8_t read_data_HMC6343L(HMC6343L_result * dest)
-{
-	uint8_t rx_data[16];
-	uint8_t tx_data[16];
-
-	msg_t status = 0;
-	systime_t tmo = TIME_MS2I(4);
-
-	tx_data[0] = 0x06;
-
-	i2cAcquireBus(&GYRO_IF);
-	status = i2cMasterReceiveTimeout(&GYRO_IF, HMC6343_I2C_ADDR, rx_data, 6, tmo);
-	i2cReleaseBus(&GYRO_IF);
-
-	if (status != 0) {
-		return i2cGetErrors(&GYRO_IF);
-	}
-
-	tx_data[0] = 0x03;
-
-	i2cAcquireBus(&GYRO_IF);
-	status = i2cMasterTransmitTimeout(&GYRO_IF, HMC6343_I2C_ADDR, tx_data,
-									  1, rx_data, 0, tmo);
-	i2cReleaseBus(&GYRO_IF);
-
-	//chThdSleepMilliseconds(67);
-
-	if (status != 0) {
-		return i2cGetErrors(&GYRO_IF);
-	}
-
-	dest->x = (rx_data[0] << 8) | rx_data[1];
-	dest->z = (rx_data[2] << 8) | rx_data[3];
-	dest->y = (rx_data[4] << 8) | rx_data[5];
-
-	/* If overflown, make result invalid (set lower gain /higher GN#/) */
-	if (
-		( dest->x < -2048) || (dest->x > 2047) ||
-		( dest->y < -2048) || (dest->y > 2047) ||
-		( dest->z < -2048) || (dest->z > 2047)
-		)
-	{
-		dest->valid = 0;
-	}
-	else
-	{
-		dest->valid = 1;
-	}
-
-	return 0;
-}

@@ -13,7 +13,8 @@
 #define SD_MODULES_SD_SHELL_CMD_SERVICE_MODE_H_
 void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_microsd(BaseSequentialStream* chp, int argc, char* argv[]);
-void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]);
+void cmd_compass(BaseSequentialStream* chp, int argc, char* argv[]);
+void cmd_bno055(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_ble(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_rudder(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_lag(BaseSequentialStream* chp, int argc, char* argv[]);
