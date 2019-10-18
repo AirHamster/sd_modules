@@ -62,7 +62,6 @@ extern hmc6343_t *hmc6343;
 extern hmc5883_t *hmc6343;
 #endif
 
-
 #ifdef SD_MODULE_TRAINER
 #ifdef USE_MATH_MODULE
 #include "sailDataMath.h"
@@ -79,6 +78,10 @@ void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]) {
 			chprintf(chp, "\r\nActive modules and available commands:\n\r");
 #ifdef USE_UBLOX_GPS_MODULE
 			chprintf(chp, "  - gps\n\r");
+#endif
+#ifdef USE_HMC6343_MODULE
+			chprintf(chp,
+								"  - compass status|calibrate|get_cal_params|write_cal_params\n\r");
 #endif
 #ifdef USE_BNO055_MODULE
 			chprintf(chp,
@@ -105,8 +108,138 @@ void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]) {
 	chSemSignal(&usart1_semaph);
 }
 
+#ifdef USE_HMC6343_MODULE
+void cmd_compass(BaseSequentialStream* chp, int argc, char* argv[]) {
+	float dest1[3];
+	float dest2[3];
+	if (output->type != OUTPUT_SERVICE) {
+		return;
+	}
+	if (argc != 0) {
+		if (strcmp(argv[0], "help") == 0) {
+			chprintf(chp,
+					"Usage: compass status|calibrate|get_cal_params|write_cal_params|set_static_cal|get_static_cal\r\n");
+		} else if (strcmp(argv[0], "calibrate") == 0) {
+			chprintf(chp, "Starting compass calibration routine\r\n");
+			//bno055_start_calibration(bno055);
+			hmc6343_start_calibration(hmc6343);
+			output->type = OUTPUT_ALL_CALIB;
+		//	hmc5883_calibration(dest1, dest2);
+		} else if (strcmp(argv[0], "get_cal_params") == 0) {
+			chprintf(chp, "HMC6343 calibration parameters:\r\n");
+			bno055_set_operation_mode(BNO055_OPERATION_MODE_CONFIG);
+			bno055_check_calib_coefs(bno055);
+			chSemWait(&usart1_semaph);
+			chprintf(SHELL_IFACE,
+					"\r\n{\"msg_type\":\"gyro_calib_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
+			chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.magn);
+			chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.accel);
+			chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.gyro);
+			chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.system);
+			chprintf(SHELL_IFACE, "\"magn_x_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.x);
+			chprintf(SHELL_IFACE, "\"magn_y_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.y);
+			chprintf(SHELL_IFACE, "\"magn_z_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.z);
+			chprintf(SHELL_IFACE, "\"magn_radius\":  %x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.r);
+			chprintf(SHELL_IFACE, "\"gyro_x_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->gyro_offset.x);
+			chprintf(SHELL_IFACE, "\"gyro_y_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->gyro_offset.y);
+			chprintf(SHELL_IFACE, "\"gyro_z_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->gyro_offset.z);
+			chprintf(SHELL_IFACE, "\"accel_x_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.x);
+			chprintf(SHELL_IFACE, "\"accel_y_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.y);
+			chprintf(SHELL_IFACE, "\"accel_z_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.z);
+			chprintf(SHELL_IFACE, "\"accel_radius\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.r);
+			chprintf(SHELL_IFACE, "}\r\n\t}\r\n");
+			chSemSignal(&usart1_semaph);
+			bno055_set_operation_mode(BNO055_OPERATION_MODE_NDOF);
+		} else if (strcmp(argv[0], "save_cal_params") == 0) {
+			chSemWait(&usart1_semaph);
+			chprintf(chp, "Writing calibration parameters to EEPROM:\r\n");
+			chprintf(SHELL_IFACE,
+					"\r\n{\"msg_type\":\"gyro_calib_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
+			chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.magn);
+			chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.accel);
+			chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.gyro);
+			chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t",
+					bno055->calib_stat.system);
+			chprintf(SHELL_IFACE, "\"magn_x_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.x);
+			chprintf(SHELL_IFACE, "\"magn_y_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.y);
+			chprintf(SHELL_IFACE, "\"magn_z_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.z);
+			chprintf(SHELL_IFACE, "\"magn_radius\":  %x,\r\n\t\t\t",
+					(int16_t) bno055->magn_offset.r);
+			chprintf(SHELL_IFACE, "\"gyro_x_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->gyro_offset.x);
+			chprintf(SHELL_IFACE, "\"gyro_y_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->gyro_offset.y);
+			chprintf(SHELL_IFACE, "\"gyro_z_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->gyro_offset.z);
+			chprintf(SHELL_IFACE, "\"accel_x_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.x);
+			chprintf(SHELL_IFACE, "\"accel_y_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.y);
+			chprintf(SHELL_IFACE, "\"accel_z_offset\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.z);
+			chprintf(SHELL_IFACE, "\"accel_radius\":%x,\r\n\t\t\t",
+					(int16_t) bno055->accel_offset.r);
+			chprintf(SHELL_IFACE, "}\r\n\t}\r\n");
+			chSemSignal(&usart1_semaph);
+			bno055_save_calib_to_eeprom(bno055);
+		} else if (strcmp(argv[0], "set_static_cal") == 0) {
+			if (argc == 2) {
+				if (strcmp(argv[1], "1") == 0) {
+					if (bno055_set_static_calib(bno055) == -1){
+						chprintf(chp, "Error writing parameters to EEPROM\n\r");
+					}else{
+						chprintf(chp, "Static calibration set\n\r");
+					}
+				} else if (strcmp(argv[1], "0") == 0) {
+					if (bno055_set_dynamic_calib(bno055) == -1){
+						chprintf(chp, "Error writing parameters to EEPROM\n\r");
+					}else{
+						chprintf(chp, "Dynamic calibration set\n\r");
+					}
+				} else {
+					chprintf(chp, "Usage: gyro set_static_cal [0, 1]\n\r");
+				}
+			} else {
+				chprintf(chp, "Usage: gyro set_static_cal [0, 1]\n\r");
+			}
+		}else if (strcmp(argv[0], "get_static_cal") == 0) {
+			if (bno955_read_static_flag_from_eeprom(bno055) == -1){
+				chprintf(chp, "Error reading parameters from EEPROM\n\r");
+			}else{
+				chprintf(chp, "Static calibration flag: %d\n\r", bno055->static_calib);
+			}
+
+		}else if (strcmp(argv[0], "status") == 0) {
+			chprintf(chp,
+					"BNO055 status:\r\n\t- compass: \r\n\t- gyro: \r\n\t- accel: \r\n\t- system: \r\n");
+		}
+	}
+}
+#endif
+
 #ifdef USE_BNO055_MODULE
-void cmd_gyro(BaseSequentialStream* chp, int argc, char* argv[]) {
+void cmd_bno055(BaseSequentialStream* chp, int argc, char* argv[]) {
 	float dest1[3];
 	float dest2[3];
 	if (output->type != OUTPUT_SERVICE) {

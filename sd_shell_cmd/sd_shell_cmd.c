@@ -108,8 +108,11 @@ static const ShellCommand commands[] = {
 		{ "get_math_calib", cmd_get_math_cal },
 #endif
 #endif // SD_MODULE_TRAINER
+#ifdef USE_HMC6343_MODULE
+		{ "compass", cmd_compass },
+#endif
 #ifdef USE_BNO055_MODULE
-		{ "gyro", cmd_gyro },
+		{ "bno055", cmd_bno055 },
 #endif //USE_BNO055_MODULE
 #ifdef USE_MICROSD_MODULE
 		{ "microsd", cmd_microsd },
@@ -250,6 +253,7 @@ static THD_FUNCTION(output_thread, arg) {
 #ifdef USE_BNO055_MODULE
 uint8_t output_all_calib(void){
 	chSemWait(&usart1_semaph);
+#ifndef USE_HMC6343_MODULE
 	chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"calib_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
 	chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
 	chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
@@ -259,6 +263,11 @@ uint8_t output_all_calib(void){
 	chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t", bno055->calib_stat.gyro);
 	chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t", bno055->calib_stat.system);
 	chprintf(SHELL_IFACE, "}\r\n\t}");
+#else
+	chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"calib_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
+	chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc6343->yaw);
+	chprintf(SHELL_IFACE, "}\r\n\t}");
+#endif
 	chSemSignal(&usart1_semaph);
 }
 #endif
@@ -720,6 +729,7 @@ void toggle_gyro_output(void) {
 void stop_all_tests(void) {
 	if (output->type == OUTPUT_ALL_CALIB){
 		output->type = OUTPUT_SERVICE;
+		hmc6343_stop_calibration(hmc6343);
 	}else{
 		output->type = OUTPUT_NONE;
 		output->ble = OUTPUT_NONE;
