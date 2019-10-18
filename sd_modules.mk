@@ -25,6 +25,18 @@ SD_SRC += ./sd_modules/mpu9250/MadgwickAHRS.c
 SD_INC += ./sd_modules/mpu9250
 endif
 
+#HMC5883 - 3- axis magnetoresistive chip
+ifeq ($(USE_HMC5883_MODULE), TRUE)
+SD_SRC += ./sd_modules/hmc5883/hmc5883_i2c.c
+SD_INC += ./sd_modules/hmc5883
+endif
+
+#HMC6343 - 6 - axis magnetoresistive chip
+ifeq ($(USE_HMC6343_MODULE), TRUE)
+SD_SRC += ./sd_modules/hmc6343/hmc6343_i2c.c
+SD_INC += ./sd_modules/hmc6343
+endif
+
 #UBLOX NEO-M8 GPS modules series
 ifeq ($(USE_UBLOX_GPS_MODULE), TRUE)
 SD_SRC += ./sd_modules/neo-m8/neo-m8.c
@@ -56,6 +68,17 @@ ifeq ($(USE_BNO055_MODULE), TRUE)
 SD_SRC += ./sd_modules/bno055/bno055.c
 SD_SRC += ./sd_modules/bno055/bno055_i2c.c
 SD_INC += ./sd_modules/bno055
+endif
+
+#BMX160
+ifeq ($(USE_BMX160_MODULE), TRUE)
+SD_SRC += ./sd_modules/bmx160/bmx160_i2c.c
+SD_SRC += ./sd_modules/bmx160/bmi160.c
+SD_SRC += ./sd_modules/bmx160/bmm150.c
+SD_SRC += ./sd_modules/mpu9250/MadgwickAHRS.c
+SD_SRC += ./sd_modules/mpu9250/quaternionFilters.c
+SD_INC += ./sd_modules/bmx160/bsx_lite/Inc
+SD_INC += ./sd_modules/bmx160
 endif
 
 #LAG

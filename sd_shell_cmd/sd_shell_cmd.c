@@ -2,6 +2,7 @@
 #include "sd_shell_cmds.h"
 #include <hal.h>
 #include "shellconf.h"
+#include "math.h"
 #include <shell.h>
 #include <string.h>
 #include <stdlib.h>
@@ -32,6 +33,8 @@ extern windsensor_t *wind;
 #endif
 #ifdef USE_BLE_MODULE
 #include "nina-b3.h"
+#include "lag.h"
+#include "adc.h"
 extern ble_peer_t *peer;
 #endif
 #ifdef SD_SENSOR_BOX_RUDDER
@@ -48,13 +51,28 @@ extern lag_t *lag;
 
 #endif
 
+#ifdef USE_HMC5883_MODULE
+#include "hmc5883_i2c.h"
+extern hmc5883_t *hmc5883;
+#endif
+
+#ifdef USE_HMC6343_MODULE
+#include "hmc6343_i2c.h"
+extern hmc6343_t *hmc6343;
+#endif
+
+extern lag_t *r_lag;
+extern rudder_t *r_rudder;
+
 #ifdef SD_MODULE_TRAINER
+#ifdef USE_MATH_MODULE
 #include "sailDataMath.h"
 extern float lastFilterValues[10][FILTER_BUFFER_SIZE];
 extern float windAngleTarget;
 extern float lastSensorValues[SIZE_BUFFER_VALUES];
 extern float hullSpeedTarget;
 extern float velocityMadeGoodTarget;
+#endif
 #endif
 
 extern struct ch_semaphore usart1_semaph;
@@ -85,8 +103,10 @@ static const ShellCommand commands[] = {
 #ifdef USE_SERVICE_MODE
 		{ "service", cmd_service },
 #ifdef SD_MODULE_TRAINER
+#ifdef USE_MATH_MODULE
 		{ "load_math_calib", cmd_load_math_cal },
 		{ "get_math_calib", cmd_get_math_cal },
+#endif
 #endif // SD_MODULE_TRAINER
 #ifdef USE_BNO055_MODULE
 		{ "gyro", cmd_gyro },
@@ -327,16 +347,32 @@ int32_t convert_to_ble_type(float value){
 
 void copy_to_ble(void){
 #ifdef SD_MODULE_TRAINER
+#ifdef USE_MATH_MODULE
+	/*
 	thdg->value = convert_to_ble_type(lastFilterValues[1][FILTER_BUFFER_SIZE - 1]);
-	//rdr->value = convert_to_ble_type(lastFilterValues[1][0])
 	twd->value = convert_to_ble_type(lastFilterValues[4][FILTER_BUFFER_SIZE - 1]);
 	tws->value = convert_to_ble_type(lastFilterValues[5][FILTER_BUFFER_SIZE - 1]);
 	twa->value = convert_to_ble_type(lastFilterValues[6][FILTER_BUFFER_SIZE - 1]);
-	//bs
 	twa_tg->value = convert_to_ble_type(windAngleTarget);
 	bs_tg->value = convert_to_ble_type(hullSpeedTarget);
-	hdg->value = convert_to_ble_type(lastSensorValues[HDM]);
+
+	hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
+	//hdg->value = convert_to_ble_type(lastFilterValues[0][FILTER_BUFFER_SIZE - 1]);
 	heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
+	*/
+	thdg->value = convert_to_ble_type(lastSensorValues[HDT]);
+		twd->value = convert_to_ble_type(lastSensorValues[TWD]);
+		tws->value = convert_to_ble_type(lastSensorValues[TWS]);
+		twa->value = convert_to_ble_type(lastSensorValues[TWA]);
+		twa_tg->value = convert_to_ble_type(lastSensorValues[TWA_TGT]);
+		bs_tg->value = convert_to_ble_type(lastSensorValues[VMG_TGT]);
+		bs->value = convert_to_ble_type((float)(pvt_box->gSpeed * 0.0036 / 1.852));
+		heel->value = convert_to_ble_type(bno055->d_euler_hpr.h);
+		hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
+		//hdg->value = convert_to_ble_type(lastFilterValues[0][FILTER_BUFFER_SIZE - 1]);
+		heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
+#endif
+	//heel->value = convert_to_ble_type(bno055->d_euler_hpr.r);
 
 	//hdg->value = convert_to_ble_type(lastFilterValues[0][0]);
 	//heel->value = convert_to_ble_type(lastFilterValues[2][0]);
@@ -361,18 +397,22 @@ void send_json(void)
 		chprintf(SHELL_IFACE, "\"dist\":%d,\r\n\t\t\t", (uint16_t)odo_box->distance);
 #endif
 #ifdef USE_BNO055_MODULE
-		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
+		//chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
+		//chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc5883->yaw);
+		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc6343->yaw);
 		chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
 		chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", bno055->d_euler_hpr.r);
-		chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t", bno055->calib_stat.magn);
-		chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t", bno055->calib_stat.accel);
-		chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t", bno055->calib_stat.gyro);
-		chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t", bno055->calib_stat.system);
+	//	chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t", bno055->calib_stat.magn);
+	//	chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t", bno055->calib_stat.accel);
+	//	chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t", bno055->calib_stat.gyro);
+	//	chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t", bno055->calib_stat.system);
 #endif
 #ifdef USE_UBLOX_GPS_MODULE
 		chprintf(SHELL_IFACE, "\"headMot\":%d,\r\n\t\t\t", (uint16_t)(pvt_box->headMot / 100000));
 		chprintf(SHELL_IFACE, "\"sat\":%d,\r\n\t\t\t", pvt_box->numSV);
 #endif
+		chprintf(SHELL_IFACE, "\"rudder\":%f,\r\n\t\t\t", r_rudder->degrees);
+		chprintf(SHELL_IFACE, "\"log\":%f,\r\n\t\t\t", r_lag->meters);
 #ifdef USE_WINDSENSOR_MODULE
 		chprintf(SHELL_IFACE, "\"wind_dir\":%d,\r\n\t\t\t", wind->direction);
 		chprintf(SHELL_IFACE, "\"wind_spd\":%f,\r\n\t\t\t", wind->speed);
