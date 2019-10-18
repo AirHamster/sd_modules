@@ -48,9 +48,9 @@ static THD_FUNCTION(lag_thread, arg) {
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 	while (true) {
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
-		lag->hz = (uint16_t)(1000.0 / lag->millis);
-		lag->meters = (float)lag->hz * lag->calib_num;
-		chprintf((BaseSequentialStream*) &SD1, "LAG: %03f, %d\r\n", lag->meters, lag->hz);
+		lag->hz = (float)(1000.0 / lag->millis);
+		lag->meters = (float)lag->hz * lag->calib_num / 2;
+	//	chprintf((BaseSequentialStream*) &SD1, "LAG: %f, %f\r\n", lag->meters, lag->hz);
 	}
 }
 

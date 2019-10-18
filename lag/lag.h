@@ -12,7 +12,7 @@
 
 typedef struct{
 	float calib_num;
-	uint16_t hz;
+	float hz;
 	float meters;
 	uint16_t millis;
 	uint8_t update_flag;

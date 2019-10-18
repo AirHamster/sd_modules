@@ -185,6 +185,9 @@ static THD_FUNCTION(output_thread, arg) {
 						i = 0;
 					}
 					break;
+				case OUTPUT_RUDDER_CALIB:
+							adc_print_rudder_info(rudder);
+							break;
 				case OUTPUT_SERVICE:
 					break;
 				case OUTPUT_BLE:
@@ -198,7 +201,7 @@ static THD_FUNCTION(output_thread, arg) {
 				}
 #endif
 #ifdef SD_SENSOR_BOX_RUDDER
-		switch (output->type){
+		switch (output->ble){
 		case OUTPUT_NONE:
 			break;
 		case OUTPUT_RUDDER_CALIB:
@@ -211,7 +214,7 @@ static THD_FUNCTION(output_thread, arg) {
 		}
 #endif
 #ifdef SD_SENSOR_BOX_LAG
-		switch (output->type) {
+		switch (output->ble) {
 		case OUTPUT_NONE:
 			break;
 		case OUTPUT_LAG_CALIB:

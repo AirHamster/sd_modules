@@ -90,7 +90,7 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		megastring[i] = token;
 		i++;
 		chSemWait(&usart1_semaph);
-	//	chprintf((BaseSequentialStream*) &SD1, "%c", token);
+		chprintf((BaseSequentialStream*) &SD1, "%c", token);
 		chSemSignal(&usart1_semaph);
 		if (token == '\r' || token == '+'){
 			str_flag = 1;
@@ -115,8 +115,16 @@ static THD_FUNCTION(ble_thread, arg) {
 	chRegSetThreadName("BLE Conrol Thread");
 	nina_fill_memory();
 	chSemObjectInit(&usart_nina, 1);
+	chThdSleepMilliseconds(500);
 	nina_init_services();
 	chThdSleepMilliseconds(500);
+/*#ifdef SD_SENSOR_BOX_LAG
+	output->type = OUTPUT_LAG_BLE;
+#endif
+#ifdef SD_SENSOR_BOX_RUDDER
+	output->type = OUTPUT_RUDDER_BLE;
+#endif
+*/
 #ifdef SD_MODULE_TRAINER
 /*
 	chprintf((BaseSequentialStream*) &SD1, "Connecting to lag module\r\n");
@@ -135,6 +143,7 @@ static THD_FUNCTION(ble_thread, arg) {
 	chThdSleepMilliseconds(2500);
 #endif
 	//systime_t prev = chVTGetSystemTime(); // Current system time.
+	output->ble = OUTPUT_RUDDER_BLE;
 	while (true) {
 #ifdef SD_MODULE_TRAINER
 		remote_lag->is_avalible = 0;
@@ -174,7 +183,7 @@ uint8_t nina_parse_command(int8_t *strp) {
 	int8_t addr[16] = { 0 };
 	int8_t tmpstr[64] = { 0 };
 	int8_t tmpstr2[64] = { 0 };
-	//chprintf((BaseSequentialStream*) &SD1, "%s", strp);
+	chprintf(SHELL_IFACE, "%s", strp);
 	scan_res = sscanf(strp, "+UBTGSN:%d,%d,%x\r", &scanned_vals[0],
 			&scanned_vals[1], &val);
 	if (scan_res == 1) {
@@ -780,6 +789,7 @@ void nina_send_all(ble_peer_t *peer){
 
 #ifdef SD_SENSOR_BOX_RUDDER
 uint8_t nina_init_services(void){
+	//chprintf(SHELL_IFACE, "AT+UBTLE=2\r");
 	chprintf(NINA_IFACE, "AT+UBTLE=2\r");
 	if (nina_wait_response("+UBTLE\r") != NINA_SUCCESS) {
 		return -1;
@@ -800,6 +810,10 @@ uint8_t nina_init_services(void){
 	if (nina_wait_response("+UBTLN\r") != NINA_SUCCESS) {
 		return -1;
 	}
+
+//	chThdSleepMilliseconds(200);
+//	chprintf(NINA_IFACE, "AT+UBTCFG=4,8\r");
+
 	chThdSleepMilliseconds(200);
 	chprintf(NINA_IFACE, "AT&W\r");
 	if (nina_wait_response("AT&W\r") != NINA_SUCCESS) {
@@ -820,6 +834,8 @@ uint8_t nina_init_services(void){
 		return -1;
 	}
 	chThdSleepMilliseconds(200);
+
+
 	/*
 # Create characteristic for service (values, witch coach complex send to tablet)
 # Parametrs command:
