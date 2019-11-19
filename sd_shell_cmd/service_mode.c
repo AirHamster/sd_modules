@@ -432,6 +432,7 @@ void cmd_microsd(BaseSequentialStream* chp, int argc, char* argv[]) {
 			chprintf(chp, "Tree \r\n");
 		} else if (strcmp(argv[0], "ls") == 0) {
 			chprintf(chp, "LS \r\n");
+			//cmd_tree(chp);
 		}
 	}
 }
