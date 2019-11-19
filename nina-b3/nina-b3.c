@@ -178,7 +178,7 @@ uint8_t nina_parse_command(int8_t *strp) {
 	int8_t addr[16] = { 0 };
 	int8_t tmpstr[64] = { 0 };
 	int8_t tmpstr2[64] = { 0 };
-	chprintf(SHELL_IFACE, "%s", strp);
+	//chprintf(SHELL_IFACE, "%s", strp);
 	scan_res = sscanf(strp, "+UBTGSN:%d,%d,%x\r", &scanned_vals[0],
 			&scanned_vals[1], &val);
 	if (scan_res == 1) {

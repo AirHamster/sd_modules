@@ -5,6 +5,7 @@
  *      Author: a-h
  */
 #include "config.h"
+#include <inttypes.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -31,16 +32,21 @@ extern windsensor_t *wind;
 #include "adc.h"
 
 microsd_t *microsd;
+microsd_fsm_t *microsd_fsm;
 extern lag_t *r_lag;
 extern rudder_t *r_rudder;
+extern struct ch_semaphore usart1_semaph;
 
 static FRESULT scan_files(BaseSequentialStream *chp, char *path);
-static void microsd_show_tree(BaseSequentialStream *chp);
+//static void microsd_show_tree(BaseSequentialStream *chp);
 static void microsd_write_logfile_header(BaseSequentialStream *chp);
 static void write_test_file(BaseSequentialStream *chp);
 static void microsd_open_logfile(BaseSequentialStream *chp);
 static void verbose_error(BaseSequentialStream *chp, FRESULT err);
+static void cat_file(BaseSequentialStream *chp, uint8_t *path);
+static void get_free_space(BaseSequentialStream *chp);
 static int8_t microsd_create_filename_from_date(uint8_t *name_str);
+static int8_t microsd_create_filename(uint16_t iteration, uint8_t *name_str);
 static uint8_t microsd_mount_fs(void);
 static char* fresult_str(FRESULT stat);
 static int8_t microsd_create_filename_from_date(uint8_t *name_str);
@@ -74,48 +80,71 @@ static bool fs_ready = FALSE;
 /* Generic large buffer.*/
 static uint8_t fbuff[1024];
 
-static THD_WORKING_AREA(microsd_thread_wa, 4096*2);
+static THD_WORKING_AREA(microsd_thread_wa, 4096*3);
 static THD_FUNCTION( microsd_thread, p) {
 	(void) p;
 	msg_t msg;
 	chRegSetThreadName("MicroSD Thd");
 	mmcObjectInit(&MMCD1);
 	mmcStart(&MMCD1, &mmccfg);   // Configures and activates the MMC peripheral.
-	microsd_mount_fs();
-	microsd_open_logfile((BaseSequentialStream*) &SD1);
-	microsd_write_logfile_header((BaseSequentialStream*) &SD1);
-	microsd->cmd_req = MICROSD_WRITE_LOG;
+	//microsd_mount_fs();
+	//microsd_open_logfile((BaseSequentialStream*) &SD1);
+	//microsd_write_logfile_header((BaseSequentialStream*) &SD1);
+	//microsd_fsm->state_new = MICROSD_WRITE_LOG;
+	microsd_fsm->state_prev = MICROSD_NONE;
+	microsd_fsm->state_curr = MICROSD_NONE;
+	microsd_fsm->state_new = MICROSD_NONE;
+	fsm_new_state(MICROSD_MOUNT);
 	wdgReset(&WDGD1);
 	chThdSleepMilliseconds(110);
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 	while (true) {
 		wdgReset(&WDGD1);
-		switch (microsd->cmd_req){
+		if (microsd_fsm->change_req == 1){
+			fsm_change_state(microsd_fsm->state_new);
+		}
+		switch (microsd_fsm->state_curr){
 		case MICROSD_NONE:
 			break;
+		case MICROSD_CAT:
+			cat_file(SHELL_IFACE, microsd->path_to_file);
+			fsm_switch_to_default_state();
+			break;
 		case MICROSD_LS:
-			//scan_files(SHELL_IFACE, "./");
+			memset(fbuff,0,sizeof(fbuff));
+			scan_files(SHELL_IFACE, fbuff);
+			fsm_switch_to_default_state();
 			break;
 		case MICROSD_WRITE_LOG:
-			microsd_write_sensor_log_line((BaseSequentialStream*) &SD1);
+			microsd_write_sensor_log_line(SHELL_IFACE);
 			break;
 		case MICROSD_FREE:
+			get_free_space(SHELL_IFACE);
+			fsm_switch_to_default_state();
+			break;
+		case MICROSD_MOUNT:
+			microsd_mount_fs();
+			fsm_switch_to_default_state();
 			break;
 		default:
+			fsm_switch_to_default_state();
 			break;
 		}
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 	}
 }
 
+/*
+ * Scan Files in a path and print them to the character stream.
+ */
 FRESULT scan_files(BaseSequentialStream *chp, char *path) {
 	FRESULT res;
 	FILINFO fno;
 	DIR dir;
 	int fyear,fmonth,fday,fhour,fminute,fsecond;
-
 	int i;
 	char *fn;
+	FSIZE_t fz;
 
 #if _USE_LFN
 	fno.lfname = 0;
@@ -131,10 +160,13 @@ FRESULT scan_files(BaseSequentialStream *chp, char *path) {
 		 */
 		i = strlen(path);
 		while (true) {
+			//chprintf(chp, "openeddir\r\n", path);
+			//chThdSleepMilliseconds(100);
 			/*
 			 * Read the Directory.
 			 */
 			res = f_readdir(&dir, &fno);
+			//chprintf(chp, "readdir\r\n", path);
 			/*
 			 * If the directory read failed or the
 			 */
@@ -148,6 +180,7 @@ FRESULT scan_files(BaseSequentialStream *chp, char *path) {
 				continue;
 			}
 			fn = fno.fname;
+			fz = fno.fsize;
 			/*
 			 * Extract the date.
 			 */
@@ -189,13 +222,34 @@ FRESULT scan_files(BaseSequentialStream *chp, char *path) {
 				/*
 				 * Otherwise print the path as a file.
 				 */
-				chprintf(chp, "      %s/%s\r\n", path, fn);
+				chprintf(chp, "\t%lu", fz);
+				chprintf(chp, "\t\t%s/%s\r\n", path, fn);
 			}
 		}
 	} else {
 		chprintf(chp, "FS: f_opendir() failed\r\n");
 	}
 	return res;
+}
+
+void microsd_show_tree(BaseSequentialStream *chp){
+	FRESULT err;
+		uint32_t fre_clust;
+		FATFS *fsp;
+
+		if (!fs_ready) {
+			chprintf(chp, "File System not mounted\r\n");
+			return;
+		}
+		err = f_getfree("/", &fre_clust, &fsp);
+		if (err != FR_OK) {
+			chprintf(chp, "FS: f_getfree() failed\r\n");
+			return;
+		}
+		chprintf(chp, "FS: %lu free clusters with %lu sectors (%lu bytes) per cluster\r\n",
+				fre_clust, (uint32_t) fsp->csize, (uint32_t) fsp->csize * 512);
+		fbuff[0] = 0;
+		scan_files(chp, (char *) fbuff);
 }
 
 void cmd_mkfs(BaseSequentialStream *chp, int argc, char *argv[]) {
@@ -261,19 +315,17 @@ void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]) {
 	/*
 	 * Set the file path buffer to 0
 	 */
-	memset(fbuff,0,sizeof(fbuff));
-	scan_files(chp, fbuff);
+	fsm_new_state(MICROSD_LS);
+	//microsd_fsm->state_new = MICROSD_LS;
+	//microsd_show_tree(chp);
+	//memset(fbuff,0,sizeof(fbuff));
+	//scan_files(chp, fbuff);
 }
 
 /*
  * Print a text file to screen
  */
 void cmd_cat(BaseSequentialStream *chp, int argc, char *argv[]) {
-	FRESULT err;
-	FIL fsrc;   /* file object */
-	char Buffer[255];
-	UINT ByteToRead=sizeof(Buffer);
-	UINT ByteRead;
 	/*
 	 * Print usage
 	 */
@@ -282,20 +334,42 @@ void cmd_cat(BaseSequentialStream *chp, int argc, char *argv[]) {
 		chprintf(chp, "       Echos filename (no spaces)\r\n");
 		return;
 	}
+	memset(microsd->path_to_file, 0, sizeof(microsd->path_to_file));
+	memcpy(microsd->path_to_file, argv[0], strlen(argv[0]));
+//	microsd_fsm->state_new = MICROSD_CAT;
+	fsm_new_state(MICROSD_CAT);
+}
+/*
+ * Print a text file to screen
+ */
+static void cat_file(BaseSequentialStream *chp, uint8_t *path) {
+	FRESULT err;
+	FIL fsrc;   /* file object */
+	char Buffer[4095*2];
+	UINT ByteToRead=sizeof(Buffer);
+	UINT ByteRead;
+	systime_t prev, prev2, systime;
+
 	/*
 	 * Attempt to open the file, error out if it fails.
 	 */
-	err=f_open(&fsrc, argv[0], FA_READ);
+	//chprintf(chp, "opening %s\r\n", path);
+	//chThdSleepMilliseconds(110);
+
+	err=f_open(&fsrc, path, FA_READ | FA_WRITE);
 	if (err != FR_OK) {
-		chprintf(chp, "FS: f_open(%s) failed.\r\n",argv[0]);
+		chprintf(chp, "FS: f_open(%s) failed.\r\n", path);
 		verbose_error(chp, err);
 		return;
 	}
+	//chprintf(chp, "opened\r\n");
+	//chThdSleepMilliseconds(110);
 	/*
 	 * Do while the number of bytes read is equal to the number of bytes to read
 	 * (the buffer is filled)
 	 */
 	do {
+	//	prev = chVTGetSystemTime(); // Current system time.
 		/*
 		 * Clear the buffer.
 		 */
@@ -303,6 +377,9 @@ void cmd_cat(BaseSequentialStream *chp, int argc, char *argv[]) {
 		/*
 		 * Read the file.
 		 */
+		//chprintf(chp, "FS: f_read\r\n");
+		//chThdSleepMilliseconds(110);
+
 		err=f_read(&fsrc,Buffer,ByteToRead,&ByteRead);
 		if (err != FR_OK) {
 			chprintf(chp, "FS: f_read() failed\r\n");
@@ -310,7 +387,18 @@ void cmd_cat(BaseSequentialStream *chp, int argc, char *argv[]) {
 			f_close(&fsrc);
 			return;
 		}
+	//	systime = chVTGetSystemTime(); // Current system time.
+	//	prev2 = systime;
+		chSemWait(&usart1_semaph);
 		chprintf(chp, "%s", Buffer);
+		chSemSignal(&usart1_semaph);
+	//	systime = chVTGetSystemTime(); // Current system time.
+//		chprintf(chp, "\r\nRead  Time:\t%lu\tmicroseconds\r\n", TIME_I2US(prev2 - prev));
+	//	chprintf(chp, "Print Time:\t%lu\tmicroseconds\r\n", TIME_I2US(systime - prev2));
+	//	chprintf(chp, "Read  throughput:\t%f\tkB/sec\r\n", 1000000.0/TIME_I2US(prev2 - prev)*8);
+	//	chprintf(chp, "Print  throughput:\t%f\tkB/sec\r\n", 1000000.0/TIME_I2US(systime - prev2)*8);
+
+		//chThdSleepMilliseconds(1000);
 	} while (ByteRead>=ByteToRead);
 	chprintf(chp,"\r\n");
 	/*
@@ -334,12 +422,13 @@ void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
 	chThdResume(&microsd_trp, (msg_t) MICROSD_WRITE_FILE); /* Resuming the thread with message.*/
 }
 
-void cmd_free(BaseSequentialStream *chp, int argc, char *argv[]) {
+static void get_free_space(BaseSequentialStream *chp) {
 	FRESULT err;
+
 	uint32_t clusters;
+	uint64_t bytes;
+	float kbytes, mbytes, gbytes;
 	FATFS *fsp;
-	(void)argc;
-	(void)argv;
 
 	err = f_getfree("/", &clusters, &fsp);
 	if (err != FR_OK) {
@@ -347,16 +436,32 @@ void cmd_free(BaseSequentialStream *chp, int argc, char *argv[]) {
 		return;
 	}
 	/*
+	bytes = clusters * (uint32_t) SDC_FS.csize * (uint32_t) MMCSD_BLOCK_SIZE;
+	kbytes = ((float)bytes) / (1024.0);
+	mbytes = ((float)kbytes) / (1024.0 * 1024.0);
+	gbytes = ((float)mbytes) / (1024.0 * 1024.0 * 1024.0);
+	*/
+	/*
 	 * Print the number of free clusters and size free in B, KiB and MiB.
 	 */
-	chprintf(chp,"FS: %lu free clusters\r\n    %lu sectors per cluster\r\n",
-		clusters, (uint32_t)SDC_FS.csize);
-	chprintf(chp,"%lu B free\r\n",
-		clusters * (uint32_t)SDC_FS.csize * (uint32_t)MMCSD_BLOCK_SIZE);
-	chprintf(chp,"%lu KB free\r\n",
-		(clusters * (uint32_t)SDC_FS.csize * (uint32_t)MMCSD_BLOCK_SIZE)/(1024));
-	chprintf(chp,"%lu MB free\r\n",
-		(clusters * (uint32_t)SDC_FS.csize * (uint32_t)MMCSD_BLOCK_SIZE)/(1024*1024));
+	chprintf(chp, "FS: %lu free clusters\r\n    %lu sectors per cluster\r\n",
+			clusters, (uint32_t) SDC_FS.csize);
+	//chprintf(chp,"%lu B free\r\n",
+	 //clusters * (uint32_t)SDC_FS.csize * (uint32_t)MMCSD_BLOCK_SIZE);
+	 chprintf(chp,"%lu KB free\r\n",
+	 (clusters * (uint32_t)SDC_FS.csize / 1024 * (uint32_t)MMCSD_BLOCK_SIZE));
+	 chprintf(chp,"%lu MB free\r\n",
+	 (clusters * (uint32_t)SDC_FS.csize / (1024*1024) * (uint32_t)MMCSD_BLOCK_SIZE));
+	/*chprintf(chp, "%lu B free\r\n", bytes);
+	chprintf(chp, "%f KB free\r\n", kbytes);
+	chprintf(chp, "%f MB free\r\n", mbytes);
+	chprintf(chp, "%f GB free\r\n", gbytes);*/
+}
+
+void cmd_free(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+	microsd_fsm->state_new = MICROSD_FREE;
+
 }
 
 /*
@@ -365,7 +470,9 @@ void cmd_free(BaseSequentialStream *chp, int argc, char *argv[]) {
 void cmd_mount(BaseSequentialStream *chp, int argc, char *argv[]) {
 	(void)argv;
 	(void)argc;
-	chThdResume(&microsd_trp, (msg_t)MICROSD_MOUNT_FS);  /* Resuming the thread with message.*/
+	microsd_fsm->state_new = MICROSD_MOUNT;
+	//microsd_mount_fs();
+	//chThdResume(&microsd_trp, (msg_t)MICROSD_MOUNT_FS);  /* Resuming the thread with message.*/
 }
 
 
@@ -385,10 +492,10 @@ static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
 	written = f_puts((char*)megastring, &logfile);
 
 	if (written == -1) {
-		chprintf(chp, "\r\nFS: f_puts(\"Hello World\",\"hello.txt\") failed\r\n");
+		chprintf(chp, "\r\nWriting failed. No card inserted or corrupted FS\r\n");
 	} else {
 		palToggleLine(LINE_ORANGE_LED);
-		//chprintf(chp, "FS: f_puts(\"Hello World\",\"%s\") succeeded\r\n", path_to_file);
+		//chprintf(chp, "FS: f_puts %s to %s succeeded\r\n", megastring, path_to_file);
 	}
 
 	f_sync(&logfile);
@@ -403,7 +510,7 @@ static void microsd_write_logfile_header(BaseSequentialStream *chp) {
 			f_printf(&logfile, "DATE,HOUR,MIN,SEC,LAT,LON,SPD,COG_GPS,YAW,PITCH,ROLL,WIND_DIR,WIND_SPD,SAT,RDR,LOG\r\n");
 
 	if (written == -1) {
-		chprintf(chp, "FS: f_puts(\"Hello World\",\"hello.txt\") failed\r\n");
+		chprintf(chp, "\r\nWriting failed. No card inserted or corrupted FS\r\n");
 	} else {
 		//chprintf(chp, "FS: f_puts(\"Hello World\",\"%s\") succeeded\r\n", path_to_file);
 	}
@@ -443,14 +550,34 @@ static void write_test_file(BaseSequentialStream *chp) {
 
 static void microsd_open_logfile(BaseSequentialStream *chp) {
 	FRESULT err;
-	microsd_create_filename_from_date(path_to_file);
-	err = f_open(&logfile, path_to_file, FA_READ | FA_WRITE | FA_OPEN_APPEND);
+	uint16_t i;
+	//microsd_create_filename_from_date(path_to_file);
+	i = 1;
+	if (microsd->file_created == 0) {
+
+		memset(path_to_file, 0, 32);
+		microsd_create_filename(i, path_to_file);
+		//err = f_open(&logfile, path_to_file, FA_READ | FA_WRITE | FA_OPEN_APPEND);
+		err = f_open(&logfile, path_to_file,
+				FA_READ | FA_WRITE | FA_CREATE_NEW);
+
+		while (err == FR_EXIST) {
+			i++;
+			microsd_create_filename(i, path_to_file);
+			err = f_open(&logfile, path_to_file,
+					FA_READ | FA_WRITE | FA_CREATE_NEW);
+		}
+	} else {
+		err = f_open(&logfile, path_to_file,
+				FA_READ | FA_WRITE | FA_OPEN_APPEND);
+	}
 	if (err != FR_OK) {
 		chprintf(chp, "FS: f_open(\"%s\") failed.\r\n", path_to_file);
 		verbose_error(chp, err);
 		return;
 	} else {
 		chprintf(chp, "FS: f_open(\"%s\") succeeded\r\n", path_to_file);
+		microsd->file_created = 1;
 	}
 }
 
@@ -571,6 +698,16 @@ static char* fresult_str(FRESULT stat) {
 	return "";
 }
 
+static int8_t microsd_create_filename(uint16_t iteration, uint8_t *name_str){
+	uint8_t buffer[10];
+	memset(buffer, 0, 10);
+
+	itoa(iteration, (char*) buffer, 10);
+	strcat(buffer, ".csv");
+	memcpy(name_str, buffer, strlen(buffer));
+	return 0;
+}
+
 static int8_t microsd_create_filename_from_date(uint8_t *name_str) {
 
 #ifdef USE_UBLOX_GPS_MODULE
@@ -605,3 +742,262 @@ static int8_t microsd_create_filename_from_date(uint8_t *name_str) {
 	return -1;
 #endif
 }
+
+void fsm_new_state(uint8_t state){
+	microsd_fsm->state_new = state;
+	microsd_fsm->change_req = 1;
+}
+
+void fsm_change_state(uint8_t state) {
+	microsd_fsm->change_req = 0;
+	microsd_fsm->state_prev = microsd_fsm->state_curr;
+	switch (microsd_fsm->state_curr) {
+	case MICROSD_NONE:
+		fsm_from_none(state);
+		break;
+	case MICROSD_MOUNT:
+		fsm_from_mount(state);
+		break;
+	case MICROSD_WRITE_LOG:
+		fsm_from_writing(state);
+		break;
+	case MICROSD_CAT:
+		fsm_from_cat(state);
+		break;
+	case MICROSD_FREE:
+		fsm_from_free(state);
+		break;
+	case MICROSD_LS:
+		fsm_from_ls(state);
+		break;
+	}
+}
+
+void fsm_switch_to_default_state(void){
+	fsm_new_state(MICROSD_DEFAULT_STATE);
+}
+
+void fsm_from_writing(uint8_t new_state) {
+	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
+	switch (new_state) {
+	case MICROSD_NONE: {
+		f_sync(&logfile);
+		f_close(&logfile);
+	}
+		break;
+	case MICROSD_CAT: {
+		f_sync(&logfile);
+		f_close(&logfile);
+	}
+		break;
+	case MICROSD_LS: {
+		f_sync(&logfile);
+		f_close(&logfile);
+	}
+		break;
+	case MICROSD_MKFS: {
+		f_sync(&logfile);
+		f_close(&logfile);
+	}
+		break;
+	case MICROSD_FREE: {
+		f_sync(&logfile);
+		f_close(&logfile);
+	}
+		break;
+	default:
+		break;
+	}
+	microsd_fsm->state_curr = new_state;
+}
+
+void fsm_from_none(uint8_t new_state) {
+	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
+	switch (new_state) {
+	case MICROSD_NONE: {
+	}
+		break;
+	case MICROSD_CAT: {
+	}
+		break;
+	case MICROSD_LS: {
+	}
+		break;
+	case MICROSD_MKFS: {
+	}
+		break;
+	case MICROSD_FREE: {
+	}
+		break;
+	case MICROSD_WRITE_LOG: {
+		microsd_open_logfile((BaseSequentialStream*) &SD1);
+		microsd_write_logfile_header((BaseSequentialStream*) &SD1);
+	}
+		break;
+	default:
+		break;
+	}
+	microsd_fsm->state_curr = new_state;
+}
+
+void fsm_from_ls(uint8_t new_state) {
+	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
+	switch (new_state) {
+	case MICROSD_NONE: {
+	}
+		break;
+	case MICROSD_CAT: {
+	}
+		break;
+	case MICROSD_LS: {
+	}
+		break;
+	case MICROSD_MKFS: {
+	}
+		break;
+	case MICROSD_FREE: {
+	}
+		break;
+	case MICROSD_WRITE_LOG: {
+		microsd_open_logfile((BaseSequentialStream*) &SD1);
+		microsd_write_logfile_header((BaseSequentialStream*) &SD1);
+	}
+		break;
+	default:
+		break;
+	}
+	microsd_fsm->state_curr = new_state;
+}
+
+void fsm_from_mount(uint8_t new_state){
+	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
+	switch (new_state) {
+		case MICROSD_NONE: {
+		}
+			break;
+		case MICROSD_CAT: {
+			f_sync(&logfile);
+			f_close(&logfile);
+		}
+			break;
+		case MICROSD_LS: {
+			f_sync(&logfile);
+			f_close(&logfile);
+		}
+			break;
+		case MICROSD_MKFS: {
+			f_sync(&logfile);
+			f_close(&logfile);
+		}
+			break;
+		case MICROSD_FREE: {
+			f_sync(&logfile);
+			f_close(&logfile);
+		}
+			break;
+		case MICROSD_WRITE_LOG: {
+			microsd_open_logfile((BaseSequentialStream*) &SD1);
+			microsd_write_logfile_header((BaseSequentialStream*) &SD1);
+		}
+			break;
+		default:
+			break;
+		}
+		microsd_fsm->state_curr = new_state;
+}
+
+void fsm_from_free(uint8_t new_state){
+	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
+	switch (new_state) {
+		case MICROSD_NONE: {
+		}
+			break;
+		case MICROSD_CAT: {
+			f_sync(&logfile);
+			f_close(&logfile);
+		}
+			break;
+		case MICROSD_LS: {
+			f_sync(&logfile);
+			f_close(&logfile);
+		}
+			break;
+		case MICROSD_MKFS: {
+			f_sync(&logfile);
+			f_close(&logfile);
+		}
+			break;
+		case MICROSD_FREE: {
+			f_sync(&logfile);
+			f_close(&logfile);
+		}
+			break;
+		case MICROSD_WRITE_LOG: {
+			microsd_open_logfile((BaseSequentialStream*) &SD1);
+			microsd_write_logfile_header((BaseSequentialStream*) &SD1);
+		}
+			break;
+		default:
+			break;
+		}
+		microsd_fsm->state_curr = new_state;
+}
+
+void fsm_from_cat(uint8_t new_state){
+	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
+	switch (new_state) {
+		case MICROSD_NONE: {
+		}
+			break;
+		case MICROSD_CAT: {
+		}
+			break;
+		case MICROSD_LS: {
+		}
+			break;
+		case MICROSD_MKFS: {
+		}
+			break;
+		case MICROSD_FREE: {
+		}
+			break;
+		case MICROSD_WRITE_LOG: {
+			microsd_open_logfile((BaseSequentialStream*) &SD1);
+			microsd_write_logfile_header((BaseSequentialStream*) &SD1);
+		}
+			break;
+		default:
+			break;
+		}
+		microsd_fsm->state_curr = new_state;
+}
+
+void fsm_from_mkfs(uint8_t new_state){
+	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
+	switch (new_state) {
+		case MICROSD_NONE: {
+		}
+			break;
+		case MICROSD_CAT: {
+		}
+			break;
+		case MICROSD_LS: {
+		}
+			break;
+		case MICROSD_MKFS: {
+		}
+			break;
+		case MICROSD_FREE: {
+		}
+			break;
+		case MICROSD_WRITE_LOG: {
+			microsd_open_logfile((BaseSequentialStream*) &SD1);
+			microsd_write_logfile_header((BaseSequentialStream*) &SD1);
+		}
+			break;
+		default:
+			break;
+		}
+		microsd_fsm->state_curr = new_state;
+}
+

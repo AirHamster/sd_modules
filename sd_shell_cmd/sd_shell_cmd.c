@@ -61,8 +61,10 @@ extern hmc5883_t *hmc5883;
 extern hmc6343_t *hmc6343;
 #endif
 
+#ifdef USE_BLE_MODULE
 extern lag_t *r_lag;
 extern rudder_t *r_rudder;
+#endif
 
 #ifdef SD_MODULE_TRAINER
 #ifdef USE_MATH_MODULE
@@ -76,6 +78,7 @@ extern float velocityMadeGoodTarget;
 #endif
 
 extern struct ch_semaphore usart1_semaph;
+#ifdef USE_BLE_MODULE
 extern ble_charac_t *thdg;
 extern ble_charac_t *rdr;
 extern ble_charac_t *twd;
@@ -86,6 +89,7 @@ extern ble_charac_t *twa_tg;
 extern ble_charac_t *bs_tg;
 extern ble_charac_t *hdg;
 extern ble_charac_t *heel;
+#endif
 extern uint32_t __ram0_end__;
 output_t *output;
 char *complete_buffer[16];
@@ -119,6 +123,7 @@ static const ShellCommand commands[] = {
 		{ "tree", cmd_tree },
 		{ "cat", cmd_cat },
 		{ "mkfs", cmd_mkfs },
+		{ "mount", cmd_mount},
 #endif //USE_MICROSD_MODULE
 #ifdef USE_BLE_MODULE
 		{ "ble", cmd_ble },
@@ -175,7 +180,7 @@ static THD_FUNCTION(output_thread, arg) {
 		case OUTPUT_NONE:
 			break;
 		case OUTPUT_TEST:
-			send_json();
+		//	send_json();
 	//		if (i++ == 10) {
 		//		nina_send_all(peer);
 		//		i = 0;
@@ -208,9 +213,6 @@ static THD_FUNCTION(output_thread, arg) {
 						i = 0;
 					}
 					break;
-				case OUTPUT_RUDDER_CALIB:
-							adc_print_rudder_info(rudder);
-							break;
 				case OUTPUT_SERVICE:
 					break;
 				case OUTPUT_BLE:
@@ -232,6 +234,7 @@ static THD_FUNCTION(output_thread, arg) {
 			break;
 		case OUTPUT_RUDDER_BLE:
 			send_rudder_over_ble(rudder);
+			break;
 		default:
 			break;
 		}
@@ -245,6 +248,7 @@ static THD_FUNCTION(output_thread, arg) {
 			break;
 		case OUTPUT_LAG_BLE:
 			send_lag_over_ble(lag);
+			break;
 		default:
 			break;
 		}
@@ -354,6 +358,7 @@ int32_t convert_to_ble_type(float value){
 	return val;
 }
 
+#ifdef USE_BLE_MODULE
 void copy_to_ble(void){
 #ifdef SD_MODULE_TRAINER
 #ifdef USE_MATH_MODULE
@@ -388,6 +393,7 @@ void copy_to_ble(void){
 
 #endif
 }
+#endif
 
 
 void send_json(void)
@@ -420,8 +426,12 @@ void send_json(void)
 		chprintf(SHELL_IFACE, "\"headMot\":%d,\r\n\t\t\t", (uint16_t)(pvt_box->headMot / 100000));
 		chprintf(SHELL_IFACE, "\"sat\":%d,\r\n\t\t\t", pvt_box->numSV);
 #endif
+
+#ifdef USE_BLE_MODULE
 		chprintf(SHELL_IFACE, "\"rudder\":%f,\r\n\t\t\t", r_rudder->degrees);
 		chprintf(SHELL_IFACE, "\"log\":%f,\r\n\t\t\t", r_lag->meters);
+#endif
+
 #ifdef USE_WINDSENSOR_MODULE
 		chprintf(SHELL_IFACE, "\"wind_dir\":%d,\r\n\t\t\t", wind->direction);
 		chprintf(SHELL_IFACE, "\"wind_spd\":%f,\r\n\t\t\t", wind->speed);
