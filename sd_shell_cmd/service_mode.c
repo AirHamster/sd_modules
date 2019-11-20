@@ -81,7 +81,7 @@ void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]) {
 #endif
 #ifdef USE_HMC6343_MODULE
 			chprintf(chp,
-								"  - compass status|calibrate|get_cal_params|write_cal_params\n\r");
+					"  - compass status|calibrate|get_cal_params|write_cal_params\n\r");
 #endif
 #ifdef USE_BNO055_MODULE
 			chprintf(chp,
@@ -99,12 +99,13 @@ void cmd_service(BaseSequentialStream* chp, int argc, char* argv[]) {
 			return;
 		}
 		chprintf(chp, "Usage: service <help>\n\r");
-	chSemSignal(&usart1_semaph);
+		chSemSignal(&usart1_semaph);
 	}
 	stop_all_tests();
 	output->type = OUTPUT_SERVICE;
 	chSemWait(&usart1_semaph);
-	chprintf(chp,"\r\nService mode activated. Write <service help> to get more info\n\r");
+	chprintf(chp,
+			"\r\nService mode activated. Write <service help> to get more info\n\r");
 	chSemSignal(&usart1_semaph);
 }
 
@@ -601,6 +602,8 @@ void cmd_wind(BaseSequentialStream* chp, int argc, char* argv[]) {
 	}
 }
 #endif
+
+
 
 #ifdef USE_RUDDER_MODULE
 void cmd_rudder(BaseSequentialStream* chp, int argc, char* argv[]) {
