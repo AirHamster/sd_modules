@@ -21,44 +21,48 @@
 struct ch_semaphore usart_nina;
 extern struct ch_semaphore usart1_semaph;
 #ifdef SD_MODULE_TRAINER
-	ble_charac_t *thdg;
-	ble_charac_t *rdr;
-	ble_charac_t *twd;
-	ble_charac_t *tws;
-	ble_charac_t *twa;
-	ble_charac_t *bs;
-	ble_charac_t *twa_tg;
-	ble_charac_t *bs_tg;
-	ble_charac_t *hdg;
-	ble_charac_t *heel;
-	ble_charac_t *charac_array[NUM_OF_CHARACTS];
+ble_charac_t *thdg;
+ble_charac_t *rdr;
+ble_charac_t *twd;
+ble_charac_t *tws;
+ble_charac_t *twa;
+ble_charac_t *bs;
+ble_charac_t *twa_tg;
+ble_charac_t *bs_tg;
+ble_charac_t *hdg;
+ble_charac_t *heel;
+ble_charac_t *charac_array[NUM_OF_CHARACTS];
 
-	ble_remote_t *remote_lag;
-	ble_remote_t *remote_rudder;
-	ble_remote_t *remote_wind;
+ble_remote_t *remote_lag;
+ble_remote_t *remote_rudder;
+ble_remote_t *remote_wind;
+
+#include "adc.h"
+extern dots_t *r_rudder_dots;
+extern coefs_t *r_rudder_coefs;
+
 #endif
 
 #ifdef SD_SENSOR_BOX_RUDDER
-	ble_charac_t *ble_rudder;
-	ble_charac_t *charac_array[NUM_OF_CHARACTS];
+ble_charac_t *ble_rudder;
+ble_charac_t *charac_array[NUM_OF_CHARACTS];
 #endif
 
 #ifdef SD_SENSOR_BOX_LAG
-	ble_charac_t *ble_lag;
-	ble_charac_t *charac_array[NUM_OF_CHARACTS];
+ble_charac_t *ble_lag;
+ble_charac_t *charac_array[NUM_OF_CHARACTS];
 #endif
 
 #ifdef SD_SENSOR_BOX_WIND
 
 #endif
-	extern output_t *output;
-	lag_t *r_lag;
-	rudder_t *r_rudder;
-	ble_temp_charac_t *charac_temporary;
+extern output_t *output;
+lag_t *r_lag;
+rudder_t *r_rudder;
+ble_temp_charac_t *charac_temporary;
 ble_peer_t *peer;
 ble_t *ble;
-static const SerialConfig nina_config =
-		{ 115200, 0, USART_CR2_STOP1_BITS, 0 };
+static const SerialConfig nina_config = { 115200, 0, USART_CR2_STOP1_BITS, 0 };
 
 static THD_WORKING_AREA(ble_parsing_thread_wa, 4096);
 static THD_FUNCTION(ble_parsing_thread, arg);
@@ -90,7 +94,7 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		megastring[i] = token;
 		i++;
 		chSemWait(&usart1_semaph);
-		chprintf((BaseSequentialStream*) &SD1, "%c", token);
+	//	chprintf((BaseSequentialStream*) &SD1, "%c", token);
 		chSemSignal(&usart1_semaph);
 		if (token == '\r' || token == '+'){
 			str_flag = 1;
@@ -308,13 +312,25 @@ uint8_t nina_parse_command(int8_t *strp) {
 void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t value){
 #ifdef SD_MODULE_TRAINER
 	if ((remote_lag->is_connected == 1) && (remote_lag->conn_handle == conn_handle)){
-		r_lag->meters = (float)((value >> 8) + ((float)(value & 0xFF) / 100.0));
+#ifdef RAW_BLE_SENSOR_DATA
+		r_lag->millis = (float)(value >> 8);
+		//r_lag->meters =
 		bs->value = value;
+#else
+		r_lag->meters = (float)(value >> 8) + ((float)(value & 0xFF) / 100.0));
+		bs->value = value;
+#endif
 		//chprintf((BaseSequentialStream*) &SD1, "R lag %f\r\n", r_lag->meters);
 	}else if ((remote_rudder->is_connected == 1) && (remote_rudder->conn_handle == conn_handle)){
+#ifdef RAW_BLE_SENSOR_DATA
+		r_rudder->native = (float)((value >> 8) & 0x0000FFFF);
+		r_rudder->degrees = get_polynom_degrees(r_rudder->native, r_rudder_coefs);
+		rdr->value = value;
+#else
 		r_rudder->degrees = (float)((int16_t)((value >> 8) & 0x0000FFFF) + ((float)(value & 0x000000FF) / 100.0));
 		rdr->value = value;
-	//	chSemWait(&usart1_semaph);
+#endif
+		//	chSemWait(&usart1_semaph);
 	//	chprintf((BaseSequentialStream*) &SD1, "R rdr %f\r\n", r_rudder->degrees);
 	//	chSemSignal(&usart1_semaph);
 	}

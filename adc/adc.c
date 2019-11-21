@@ -31,8 +31,8 @@ extern windsensor_t *wind;
 #include "eeprom.h"
 #endif
 rudder_t *rudder;
-dots_t *dots;
-coefs_t *coefs;
+static dots_t *dots;
+static coefs_t *coefs;
 
 #define IR_ADC_GRP1_NUM_CHANNELS 1
 #define IR_ADC_GRP1_BUF_DEPTH 4
@@ -104,38 +104,7 @@ static THD_FUNCTION( adc_thread, p) {
 	}
 }
 
-void init_coefs(dots_t *dots, coefs_t *coefs){
-	uint8_t temp;
-	eeprom_read(EEPROM_RUDDER_CALIB_FLAG_ADDR, &temp, 1);
-	if (temp == 0){
-		dots->x1 = 100.0;
-		dots->x2 = 1950.0;
-		dots->x3 = 4000.0;
 
-		dots->y1 = -90.0;
-		dots->y2 = 0.0;
-		dots->y2 = 90.0;
-	}else{
-		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_LEFT, (uint8_t*)&dots->x1, 4);
-		rudder->min_native = dots->x1;
-		chThdSleepMilliseconds(5);
-		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_CENTER, (uint8_t*)&dots->x2, 4);
-		chThdSleepMilliseconds(5);
-		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*)&dots->x3, 4);
-		rudder->max_native = dots->x3;
-		chThdSleepMilliseconds(5);
-
-		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*)&dots->y1, 4);
-		rudder->min_degrees = dots->y1;
-		chThdSleepMilliseconds(5);
-		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*)&dots->y2, 4);
-		chThdSleepMilliseconds(5);
-		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*)&dots->y3, 4);
-		rudder->max_degrees = dots->y3;
-	}
-	rudder->native_full_scale = rudder->max_native - rudder->min_native;
-	calculate_polynom_coefs(dots, coefs);
-}
 
 void start_adc_module(void){
 	adcStart(&ADCD1, NULL);
@@ -191,6 +160,46 @@ void adc_print_rudder_info(rudder_t *rud){
 			rud->degrees);
 }
 #endif
+
+void init_coefs(dots_t *dots, coefs_t *coefs){
+	uint8_t temp;
+	///wtf???
+	/*eeprom_read(EEPROM_RUDDER_CALIB_FLAG_ADDR, &temp, 1);
+	if (temp == 0){
+		dots->x1 = 100.0;
+		dots->x2 = 1950.0;
+		dots->x3 = 4000.0;
+
+		dots->y1 = -90.0;
+		dots->y2 = 0.0;
+		dots->y2 = 90.0;
+	}else{ */
+		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_LEFT, (uint8_t*)&dots->x1, 4);
+		rudder->min_native = dots->x1;
+		chThdSleepMilliseconds(5);
+		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_CENTER, (uint8_t*)&dots->x2, 4);
+		chThdSleepMilliseconds(5);
+		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*)&dots->x3, 4);
+		rudder->max_native = dots->x3;
+		chThdSleepMilliseconds(5);
+
+		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*)&dots->y1, 4);
+		rudder->min_degrees = dots->y1;
+		chThdSleepMilliseconds(5);
+		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*)&dots->y2, 4);
+		chThdSleepMilliseconds(5);
+		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*)&dots->y3, 4);
+		rudder->max_degrees = dots->y3;
+	//}
+	rudder->native_full_scale = rudder->max_native - rudder->min_native;
+	calculate_polynom_coefs(dots, coefs);
+}
+
+void adc_update_rudder_struct(rudder_t *rud){
+//	eeprom_read(EEPROM_RUDDER_CALIB_LEFT, (uint8_t*)&rud->min_native, 2);
+//	eeprom_read(EEPROM_RUDDER_CALIB_RIGHT, (uint8_t*)&rud->max_native, 2);
+	calculate_polynom_coefs(dots, coefs);
+}
 
 float get_polynom_degrees(float x, coefs_t *coefs){
 	float y = 0.0;

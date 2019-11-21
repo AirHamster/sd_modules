@@ -77,6 +77,10 @@ extern float velocityMadeGoodTarget;
 #endif
 #endif
 
+#include "adc.h"
+dots_t *r_rudder_dots;
+coefs_t *r_rudder_coefs;
+
 extern struct ch_semaphore usart1_semaph;
 #ifdef USE_BLE_MODULE
 extern ble_charac_t *thdg;
@@ -108,8 +112,8 @@ static const ShellCommand commands[] = {
 		{ "service", cmd_service },
 #ifdef SD_MODULE_TRAINER
 #ifdef USE_MATH_MODULE
-		{ "load_math_calib", cmd_load_math_cal },
-		{ "get_math_calib", cmd_get_math_cal },
+		{ "load_calib", cmd_load_math_cal },
+		{ "get_calib", cmd_get_math_cal },
 #endif
 #endif // SD_MODULE_TRAINER
 #ifdef USE_HMC6343_MODULE
@@ -180,11 +184,7 @@ static THD_FUNCTION(output_thread, arg) {
 		case OUTPUT_NONE:
 			break;
 		case OUTPUT_TEST:
-		//	send_json();
-	//		if (i++ == 10) {
-		//		nina_send_all(peer);
-		//		i = 0;
-		//	}
+			send_json();
 			break;
 		case OUTPUT_SERVICE:
 			break;
@@ -192,10 +192,6 @@ static THD_FUNCTION(output_thread, arg) {
 			output_all_calib();
 			break;
 		case OUTPUT_BLE:
-		//	if (i++ == 10){
-			//nina_send_all(peer);
-		//	i = 0;
-		//	}
 			break;
 		default:
 			break;
@@ -454,7 +450,11 @@ void send_lag_over_ble(lag_t *lag){
 	spd_drob = (uint8_t)((lag->meters - (float)spd_cel) * 100);
 	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x  ", spd_cel, spd_drob, spd_cel, spd_drob);*/
 	int32_t val;
+#ifdef RAW_BLE_SENSOR_DATA
+	val = convert_to_ble_type(lag->millis);
+#else
 	val = convert_to_ble_type(lag->meters);
+#endif
 	nina_notify(ble_lag, val);
 }
 #endif
@@ -467,7 +467,11 @@ void send_rudder_over_ble(rudder_t *rudder){
 	degrees_cel = (uint16_t)rudder->degrees;
 	degrees_drob = (uint8_t)((rudder->degrees - (float)degrees_cel) * 100);
 	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x", degrees_cel, degrees_drob, degrees_cel, degrees_drob);*/
+#ifdef RAW_BLE_SENSOR_DATA
+	val = convert_to_ble_type(rudder->native);
+#else
 	val = convert_to_ble_type(rudder->degrees);
+#endif
 	nina_notify(ble_rudder, val);
 }
 #endif
@@ -742,7 +746,9 @@ void toggle_gyro_output(void) {
 void stop_all_tests(void) {
 	if (output->type == OUTPUT_ALL_CALIB){
 		output->type = OUTPUT_SERVICE;
+#ifdef USE_HMC6343_MODULE
 		hmc6343_stop_calibration(hmc6343);
+#endif
 	}else{
 		output->type = OUTPUT_NONE;
 		output->ble = OUTPUT_NONE;
