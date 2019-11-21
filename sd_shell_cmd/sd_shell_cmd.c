@@ -61,8 +61,10 @@ extern hmc5883_t *hmc5883;
 extern hmc6343_t *hmc6343;
 #endif
 
+#ifdef USE_BLE_MODULE
 extern lag_t *r_lag;
 extern rudder_t *r_rudder;
+#endif
 
 #ifdef SD_MODULE_TRAINER
 #ifdef USE_MATH_MODULE
@@ -75,7 +77,12 @@ extern float velocityMadeGoodTarget;
 #endif
 #endif
 
+#include "adc.h"
+dots_t *r_rudder_dots;
+coefs_t *r_rudder_coefs;
+
 extern struct ch_semaphore usart1_semaph;
+#ifdef USE_BLE_MODULE
 extern ble_charac_t *thdg;
 extern ble_charac_t *rdr;
 extern ble_charac_t *twd;
@@ -86,6 +93,7 @@ extern ble_charac_t *twa_tg;
 extern ble_charac_t *bs_tg;
 extern ble_charac_t *hdg;
 extern ble_charac_t *heel;
+#endif
 extern uint32_t __ram0_end__;
 output_t *output;
 char *complete_buffer[16];
@@ -104,8 +112,8 @@ static const ShellCommand commands[] = {
 		{ "service", cmd_service },
 #ifdef SD_MODULE_TRAINER
 #ifdef USE_MATH_MODULE
-		{ "load_math_calib", cmd_load_math_cal },
-		{ "get_math_calib", cmd_get_math_cal },
+		{ "load_calib", cmd_load_math_cal },
+		{ "get_calib", cmd_get_math_cal },
 #endif
 #endif // SD_MODULE_TRAINER
 #ifdef USE_HMC6343_MODULE
@@ -119,6 +127,7 @@ static const ShellCommand commands[] = {
 		{ "tree", cmd_tree },
 		{ "cat", cmd_cat },
 		{ "mkfs", cmd_mkfs },
+		{ "mount", cmd_mount},
 #endif //USE_MICROSD_MODULE
 #ifdef USE_BLE_MODULE
 		{ "ble", cmd_ble },
@@ -176,10 +185,6 @@ static THD_FUNCTION(output_thread, arg) {
 			break;
 		case OUTPUT_TEST:
 			send_json();
-	//		if (i++ == 10) {
-		//		nina_send_all(peer);
-		//		i = 0;
-		//	}
 			break;
 		case OUTPUT_SERVICE:
 			break;
@@ -187,10 +192,6 @@ static THD_FUNCTION(output_thread, arg) {
 			output_all_calib();
 			break;
 		case OUTPUT_BLE:
-		//	if (i++ == 10){
-			//nina_send_all(peer);
-		//	i = 0;
-		//	}
 			break;
 		default:
 			break;
@@ -208,9 +209,6 @@ static THD_FUNCTION(output_thread, arg) {
 						i = 0;
 					}
 					break;
-				case OUTPUT_RUDDER_CALIB:
-							adc_print_rudder_info(rudder);
-							break;
 				case OUTPUT_SERVICE:
 					break;
 				case OUTPUT_BLE:
@@ -232,6 +230,7 @@ static THD_FUNCTION(output_thread, arg) {
 			break;
 		case OUTPUT_RUDDER_BLE:
 			send_rudder_over_ble(rudder);
+			break;
 		default:
 			break;
 		}
@@ -245,6 +244,7 @@ static THD_FUNCTION(output_thread, arg) {
 			break;
 		case OUTPUT_LAG_BLE:
 			send_lag_over_ble(lag);
+			break;
 		default:
 			break;
 		}
@@ -354,6 +354,7 @@ int32_t convert_to_ble_type(float value){
 	return val;
 }
 
+#ifdef USE_BLE_MODULE
 void copy_to_ble(void){
 #ifdef SD_MODULE_TRAINER
 #ifdef USE_MATH_MODULE
@@ -388,6 +389,7 @@ void copy_to_ble(void){
 
 #endif
 }
+#endif
 
 
 void send_json(void)
@@ -420,8 +422,12 @@ void send_json(void)
 		chprintf(SHELL_IFACE, "\"headMot\":%d,\r\n\t\t\t", (uint16_t)(pvt_box->headMot / 100000));
 		chprintf(SHELL_IFACE, "\"sat\":%d,\r\n\t\t\t", pvt_box->numSV);
 #endif
+
+#ifdef USE_BLE_MODULE
 		chprintf(SHELL_IFACE, "\"rudder\":%f,\r\n\t\t\t", r_rudder->degrees);
 		chprintf(SHELL_IFACE, "\"log\":%f,\r\n\t\t\t", r_lag->meters);
+#endif
+
 #ifdef USE_WINDSENSOR_MODULE
 		chprintf(SHELL_IFACE, "\"wind_dir\":%d,\r\n\t\t\t", wind->direction);
 		chprintf(SHELL_IFACE, "\"wind_spd\":%f,\r\n\t\t\t", wind->speed);
@@ -444,7 +450,11 @@ void send_lag_over_ble(lag_t *lag){
 	spd_drob = (uint8_t)((lag->meters - (float)spd_cel) * 100);
 	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x  ", spd_cel, spd_drob, spd_cel, spd_drob);*/
 	int32_t val;
+#ifdef RAW_BLE_SENSOR_DATA
+	val = convert_to_ble_type(lag->millis);
+#else
 	val = convert_to_ble_type(lag->meters);
+#endif
 	nina_notify(ble_lag, val);
 }
 #endif
@@ -457,7 +467,11 @@ void send_rudder_over_ble(rudder_t *rudder){
 	degrees_cel = (uint16_t)rudder->degrees;
 	degrees_drob = (uint8_t)((rudder->degrees - (float)degrees_cel) * 100);
 	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x", degrees_cel, degrees_drob, degrees_cel, degrees_drob);*/
+#ifdef RAW_BLE_SENSOR_DATA
+	val = convert_to_ble_type(rudder->native);
+#else
 	val = convert_to_ble_type(rudder->degrees);
+#endif
 	nina_notify(ble_rudder, val);
 }
 #endif

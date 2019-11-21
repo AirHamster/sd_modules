@@ -50,6 +50,7 @@ typedef struct{
 	uint8_t type;
 	uint16_t conn_handle;
 }ble_remote_t;
+
 typedef struct {
 	uint16_t value_handle;
 	uint16_t cccd_handle;
