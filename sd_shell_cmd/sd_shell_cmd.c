@@ -742,7 +742,9 @@ void toggle_gyro_output(void) {
 void stop_all_tests(void) {
 	if (output->type == OUTPUT_ALL_CALIB){
 		output->type = OUTPUT_SERVICE;
+#ifdef USE_HMC6343_MODULE
 		hmc6343_stop_calibration(hmc6343);
+#endif
 	}else{
 		output->type = OUTPUT_NONE;
 		output->ble = OUTPUT_NONE;
