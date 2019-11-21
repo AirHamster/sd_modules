@@ -36,10 +36,15 @@ microsd_fsm_t *microsd_fsm;
 extern lag_t *r_lag;
 extern rudder_t *r_rudder;
 extern struct ch_semaphore usart1_semaph;
+#include "sailDataMath.h";
+extern CalibrationParmDef paramSD;
 
 static FRESULT scan_files(BaseSequentialStream *chp, char *path);
 //static void microsd_show_tree(BaseSequentialStream *chp);
+static int8_t microsd_open_calibfile(FIL *file);
 static void microsd_write_logfile_header(BaseSequentialStream *chp);
+static int8_t microsd_add_new_calibfile(FIL *file);
+
 static void write_test_file(BaseSequentialStream *chp);
 static void microsd_open_logfile(BaseSequentialStream *chp);
 static void verbose_error(BaseSequentialStream *chp, FRESULT err);
@@ -52,7 +57,12 @@ static char* fresult_str(FRESULT stat);
 static int8_t microsd_create_filename_from_date(uint8_t *name_str);
 static void microsd_write_sensor_log_line(BaseSequentialStream *chp);
 static FIL logfile;   /* file object */
+static FIL calibfile; //file with calibration data update info
+static uint8_t path_to_calibfile[32];
 static uint8_t path_to_file[32];
+
+extern lag_t *r_lag;
+extern rudder_t *r_rudder;
 
 thread_reference_t microsd_trp = NULL;
 /* Maximum speed SPI configuration (18MHz, CPHA=0, CPOL=0, MSb first).*/
@@ -124,6 +134,12 @@ static THD_FUNCTION( microsd_thread, p) {
 			break;
 		case MICROSD_MOUNT:
 			microsd_mount_fs();
+			fsm_switch_to_default_state();
+			break;
+		case MICROSD_UPDATE_CALIBFILE:
+			if (microsd_open_calibfile(&calibfile) == 0) {
+				microsd_add_new_calibfile(&calibfile);
+			}
 			fsm_switch_to_default_state();
 			break;
 		default:
@@ -475,7 +491,9 @@ void cmd_mount(BaseSequentialStream *chp, int argc, char *argv[]) {
 	//chThdResume(&microsd_trp, (msg_t)MICROSD_MOUNT_FS);  /* Resuming the thread with message.*/
 }
 
-
+void microsd_update_calibfile(void){
+	fsm_new_state(MICROSD_UPDATE_CALIBFILE);
+}
 
 static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
 	FRESULT res;
@@ -546,6 +564,64 @@ static void write_test_file(BaseSequentialStream *chp) {
 	 */
 	//f_close(&logfile);
 	//memset(&logfile, 0, sizeof(FIL));
+}
+
+static int8_t microsd_open_calibfile(FIL *file){
+	FRESULT err;
+	int8_t written;
+	memset(path_to_calibfile, 0, 32);
+	memcpy(path_to_calibfile, "calibfile.csv", strlen("calibfile.csv"));
+
+	err = f_open(&calibfile, path_to_calibfile,
+					FA_READ | FA_WRITE | FA_CREATE_NEW);
+	if (err == FR_EXIST){
+		err = f_open(&calibfile, path_to_calibfile,
+							FA_READ | FA_WRITE | FA_OPEN_APPEND);
+	} else if (err == FR_OK){
+		written = f_printf(&calibfile, "YEAR,MONTH,DAY,HOUR,MIN,SEC,COMPASS_CORRECTION,HSP_CORRECTION,DECLANATION_CORRECTION,HEEL_CORRECTION,PITCH_CORRECTION,RUDDER_CORRECTION,WIND_CORRECTION,WINSIZE1_CORRECTION,WINSIZE2_CORRECTION,WINSIZE3_CORRECTION,RDR_NATIVE_LEFT,RDR_NATIVE_CENTER,RDR_NATIVE_RIGHT,RDR_DEGREES_LEFT,RDR_DEGREES_CENTER,RDR_DEGREES_RIGHT,LAG_CALIB_NUMBER\r\n");
+			if (written == -1) {
+				chprintf(SHELL_IFACE, "\r\nWriting failed. No card inserted or corrupted FS\r\n");
+			}else {
+				f_sync(&calibfile);
+			}
+	return 0;
+	}
+	if (err != FR_OK){
+
+		chprintf(SHELL_IFACE, "FS: f_open(\"%s\") failed.\r\n", path_to_calibfile);
+		verbose_error(SHELL_IFACE, err);
+		return -1;
+	}
+
+}
+
+static int8_t microsd_add_new_calibfile(FIL *file) {
+	int8_t written;
+
+	f_lseek(&calibfile, f_size(&calibfile));
+	written =
+			f_printf(&calibfile,
+					"%d,%d,%d,%d,%d,%d,%f,%f,%f,%f,%f,%f,%f,%d,%d,%d,%d,%d,%d,%f,%f,%f,%f\r\n",
+					pvt_box->year, pvt_box->month, pvt_box->day, pvt_box->hour,
+					pvt_box->min, pvt_box->sec, paramSD.CompassCorrection,
+					paramSD.HSPCorrection, paramSD.MagneticDeclanation,
+					paramSD.HeelCorrection, paramSD.PitchCorrection,
+					paramSD.RudderCorrection, paramSD.WindCorrection,
+					paramSD.WindowSize1, paramSD.WindowSize2,
+					paramSD.WindowSize3, r_rudder->min_native,
+					r_rudder->center_native, r_rudder->max_native,
+					r_rudder->min_degrees, r_rudder->center_degrees,
+					r_rudder->max_degrees, r_lag->calib_num);
+
+	if (written == -1) {
+		chprintf(SHELL_IFACE,
+				"\r\nWriting failed. No card inserted or corrupted FS\r\n");
+		return -1;
+	}else{
+		f_sync(&calibfile);
+		f_close(&calibfile);
+	}
+return 0;
 }
 
 static void microsd_open_logfile(BaseSequentialStream *chp) {
@@ -770,11 +846,50 @@ void fsm_change_state(uint8_t state) {
 	case MICROSD_LS:
 		fsm_from_ls(state);
 		break;
+	case MICROSD_UPDATE_CALIBFILE:
+		fsm_from_update_calibfile(state);
+		break;
+	default:
+		break;
 	}
 }
 
 void fsm_switch_to_default_state(void){
 	fsm_new_state(MICROSD_DEFAULT_STATE);
+}
+
+void fsm_from_update_calibfile(uint8_t new_state){
+	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
+		switch (new_state) {
+		case MICROSD_NONE: {
+			f_sync(&logfile);
+			f_close(&logfile);
+		}
+			break;
+		case MICROSD_CAT: {
+			f_sync(&logfile);
+			f_close(&logfile);
+		}
+			break;
+		case MICROSD_LS: {
+			f_sync(&logfile);
+			f_close(&logfile);
+		}
+			break;
+		case MICROSD_MKFS: {
+			f_sync(&logfile);
+			f_close(&logfile);
+		}
+			break;
+		case MICROSD_FREE: {
+			f_sync(&logfile);
+			f_close(&logfile);
+		}
+			break;
+		default:
+			break;
+		}
+		microsd_fsm->state_curr = new_state;
 }
 
 void fsm_from_writing(uint8_t new_state) {

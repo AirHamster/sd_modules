@@ -77,6 +77,10 @@ extern float velocityMadeGoodTarget;
 #endif
 #endif
 
+#include "adc.h"
+dots_t *r_rudder_dots;
+coefs_t *r_rudder_coefs;
+
 extern struct ch_semaphore usart1_semaph;
 #ifdef USE_BLE_MODULE
 extern ble_charac_t *thdg;
