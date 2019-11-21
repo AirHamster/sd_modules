@@ -17,9 +17,11 @@ typedef struct{
 	float percent;
 	float native;
 	float min_native;
+	float center_native;
 	float max_native;
 	float native_full_scale;
 	float min_degrees;
+	float center_degrees;
 	float max_degrees;
 }rudder_t;
 
