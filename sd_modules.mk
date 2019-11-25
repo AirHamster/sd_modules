@@ -120,6 +120,13 @@ ifeq (${USE_CHARGER_MODULE}, TRUE)
 SD_SRC += ./sd_modules/bq2560x/bq2560x.c
 SD_INC += ./sd_modules/bq2560x
 endif
+
+#BQ27441 fuel gauge module
+ifeq (${USE_FUEL_GAUGE_MODULE}, TRUE)
+SD_SRC += ./sd_modules/bq27441/bq27441.c
+SD_INC += ./sd_modules/bq27441
+endif
+
 # Shared variables
 ALLCSRC += $(SD_SRC)
 ALLINC  += $(SD_INC)

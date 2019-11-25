@@ -31,8 +31,8 @@ extern windsensor_t *wind;
 #include "eeprom.h"
 #endif
 rudder_t *rudder;
-static dots_t *dots;
-static coefs_t *coefs;
+dots_t *dots;
+coefs_t *coefs;
 
 #define IR_ADC_GRP1_NUM_CHANNELS 1
 #define IR_ADC_GRP1_BUF_DEPTH 4
@@ -146,11 +146,7 @@ void adc_convert_to_rudder(uint16_t tmp, rudder_t *rud) {
 
 	//rud->degrees = ((float) rud->percent / 100.0 * 180.0 - 90.0);
 }
-void adc_update_rudder_struct(rudder_t *rud){
-//	eeprom_read(EEPROM_RUDDER_CALIB_LEFT, (uint8_t*)&rud->min_native, 2);
-//	eeprom_read(EEPROM_RUDDER_CALIB_RIGHT, (uint8_t*)&rud->max_native, 2);
-	calculate_polynom_coefs(dots, coefs);
-}
+
 void adc_print_rudder_info(rudder_t *rud){
 	chprintf((BaseSequentialStream*) &SD1, "ADC native:  %d\r\n",
 			(uint16_t) rud->native);
