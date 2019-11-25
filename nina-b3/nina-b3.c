@@ -42,7 +42,6 @@ extern dots_t *r_rudder_dots;
 extern coefs_t *r_rudder_coefs;
 
 #endif
-
 #ifdef SD_SENSOR_BOX_RUDDER
 ble_charac_t *ble_rudder;
 ble_charac_t *charac_array[NUM_OF_CHARACTS];
