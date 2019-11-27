@@ -93,7 +93,7 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		megastring[i] = token;
 		i++;
 		chSemWait(&usart1_semaph);
-	//	chprintf((BaseSequentialStream*) &SD1, "%c", token);
+		chprintf((BaseSequentialStream*) &SD1, "%c", token);
 		chSemSignal(&usart1_semaph);
 		if (token == '\r' || token == '+'){
 			str_flag = 1;
@@ -808,6 +808,10 @@ uint8_t nina_init_services(void){
 	if (nina_wait_response("+UBTLE\r") != NINA_SUCCESS) {
 		return -1;
 	}
+	/*chprintf(NINA_IFACE, "AT+UMRS=115200,2,8,1,1,1\r");
+		if (nina_wait_response("+UMRS\r") != NINA_SUCCESS) {
+			return -1;
+		}*/
 	chThdSleepMilliseconds(200);
 	chprintf(NINA_IFACE, "AT&W\r");
 	if (nina_wait_response("AT&W\r") != NINA_SUCCESS) {
