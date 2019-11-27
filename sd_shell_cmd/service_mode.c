@@ -470,7 +470,7 @@ void cmd_get_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			paramSD.WindowSize1);
 	chprintf(SHELL_IFACE, "\"WindowSize2\":%d,\r\n\t\t\t",
 			paramSD.WindowSize2);
-	chprintf(SHELL_IFACE, "\"WindowSize3\":%d,\r\n\t\t\t",
+	chprintf(SHELL_IFACE, "\"WindowSize3\":%d\r\n\t\t\t",
 			paramSD.WindowSize3);
 	chprintf(SHELL_IFACE, "}\r\n\t}\r\n");
 	chSemSignal(&usart1_semaph);
