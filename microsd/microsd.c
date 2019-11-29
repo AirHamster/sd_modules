@@ -161,7 +161,7 @@ FRESULT scan_files(BaseSequentialStream *chp, char *path) {
 	int i;
 	char *fn;
 	FSIZE_t fz;
-
+	chprintf(chp, "\r\n*\n");
 #if _USE_LFN
 	fno.lfname = 0;
 	fno.lfsize = 0;
@@ -245,6 +245,7 @@ FRESULT scan_files(BaseSequentialStream *chp, char *path) {
 	} else {
 		chprintf(chp, "FS: f_opendir() failed\r\n");
 	}
+	chprintf(chp, "\r\n*\n");
 	return res;
 }
 
@@ -492,7 +493,7 @@ void cmd_mount(BaseSequentialStream *chp, int argc, char *argv[]) {
 }
 
 void microsd_update_calibfile(void){
-	fsm_new_state(MICROSD_UPDATE_CALIBFILE);
+	//fsm_new_state(MICROSD_UPDATE_CALIBFILE);
 }
 
 static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
@@ -652,7 +653,7 @@ static void microsd_open_logfile(BaseSequentialStream *chp) {
 		verbose_error(chp, err);
 		return;
 	} else {
-		chprintf(chp, "FS: f_open(\"%s\") succeeded\r\n", path_to_file);
+		//chprintf(chp, "FS: f_open(\"%s\") succeeded\r\n", path_to_file);
 		microsd->file_created = 1;
 	}
 }

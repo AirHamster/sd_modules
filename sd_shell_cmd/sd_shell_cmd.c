@@ -424,7 +424,8 @@ void send_json(void)
 #endif
 
 #ifdef USE_BLE_MODULE
-		chprintf(SHELL_IFACE, "\"rudder\":%f,\r\n\t\t\t", r_rudder->degrees);
+		chprintf(SHELL_IFACE, "\"rudder\":%f,\r\n\t\t\t", r_rudder->native);
+		chprintf(SHELL_IFACE, "\"rudder_deg\":%f,\r\n\t\t\t", r_rudder->degrees);
 		chprintf(SHELL_IFACE, "\"log\":%f,\r\n\t\t\t", r_lag->meters);
 #endif
 

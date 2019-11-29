@@ -94,7 +94,7 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		megastring[i] = token;
 		i++;
 		chSemWait(&usart1_semaph);
-	//	chprintf((BaseSequentialStream*) &SD1, "%c", token);
+		//chprintf((BaseSequentialStream*) &SD1, "%c", token);
 		chSemSignal(&usart1_semaph);
 		if (token == '\r' || token == '+'){
 			str_flag = 1;
@@ -135,7 +135,7 @@ static THD_FUNCTION(ble_thread, arg) {
 	nina_connect("CCF95781688F", 0); //LAG
 	chThdSleepMilliseconds(2000);
 	chprintf((BaseSequentialStream*) &SD1, "Connecting to rudder module\r\n");
-	nina_connect("CCF957816647", 0); //Rudder
+	nina_connect("D4CA6EBAFDA0", 0); //Rudder
 	chThdSleepMilliseconds(1000);
 	if (remote_lag->is_connected == 1) {
 		nina_get_remote_characs(remote_lag->conn_handle, 0x4A01);
@@ -165,7 +165,7 @@ static THD_FUNCTION(ble_thread, arg) {
 			if (remote_rudder->is_connected == 0
 					&& remote_rudder->is_avalible == 1) {
 
-				nina_connect("CCF957816647", 0); //Rudder
+				nina_connect("D4CA6EBAFDA0", 0); //Rudder
 				chThdSleepMilliseconds(1500);
 			}
 		}
@@ -231,21 +231,6 @@ uint8_t nina_parse_command(int8_t *strp) {
 	 return 1;
 	 }*/
 
-	/*
-	scan_res = sscanf(strp, "\r\n+UBTD:%12sr,", addr);
-	if (scan_res == 1) {
-		if (strcmp(addr, "CCF95781688F")){
-			chprintf((BaseSequentialStream*) &SD1,
-								"Scanned avalible lag");
-			remote_lag->is_avalible = 1;
-		}else if (strcmp(addr, "CCF957816647")){
-			chprintf((BaseSequentialStream*) &SD1,
-								"Scanned avalible rudder");
-			remote_rudder->is_avalible = 1;
-		}
-			return 1;
-		}
-*/
 	//scan_res = sscanf(strp, "\r\n+UBTD:%12sp,", addr);
 #ifdef SD_MODULE_TRAINER
 	if (strstr(strp, "+UBTD:") != NULL) {
@@ -257,7 +242,7 @@ uint8_t nina_parse_command(int8_t *strp) {
 			remote_lag->is_avalible = 1;
 			return 1;
 		}
-		scan_res_p = strstr(strp, "CCF957816647");
+		scan_res_p = strstr(strp, "D4CA6EBAFDA0");
 		if (scan_res_p != NULL) {
 			chprintf((BaseSequentialStream*) &SD1,
 					"Scanned available rudder %x\r\n", scan_res_p);
@@ -397,7 +382,7 @@ void nina_register_remote_dev(uint8_t conn_handle, uint8_t type, int8_t *addr){
 	chThdSleepMilliseconds(2500);
 	nina_get_remote_characs(remote_lag->conn_handle, 0x4A01);
 	//nina_get_remote_characs(remote_lag->conn_handle, 0x4A01);
-	}else if (strcmp(addr, "CCF957816647") == 0){
+	}else if (strcmp(addr, "D4CA6EBAFDA0") == 0){
 			remote_rudder->conn_handle = conn_handle;
 
 		remote_rudder->is_connected = 1;

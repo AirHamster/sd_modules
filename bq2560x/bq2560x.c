@@ -59,7 +59,7 @@ static THD_FUNCTION( charger_thread, p) {
 				*(&(charger->reg00) + i));
 	}
 
-/*	charger_read_register(BQ2560X_REG_01, &charger->reg01);
+	charger_read_register(BQ2560X_REG_01, &charger->reg01);
 	chprintf(SHELL_IFACE, "Readed from charger1 %d\r\n", charger->reg01);
 	charger_read_register(BQ2560X_REG_02, &charger->reg02);
 	chprintf(SHELL_IFACE, "Readed from charger2 %d\r\n", charger->reg02);
@@ -80,7 +80,7 @@ static THD_FUNCTION( charger_thread, p) {
 	charger_read_register(BQ2560X_REG_0A, &charger->reg0A);
 	chprintf(SHELL_IFACE, "Readed from chargerA %d\r\n", charger->reg0A);
 	charger_read_register(BQ2560X_REG_0B, &charger->reg0B);
-	chprintf(SHELL_IFACE, "Readed from chargerB %d\r\n", charger->reg0B);*/
+	chprintf(SHELL_IFACE, "Readed from chargerB %d\r\n", charger->reg0B);s
 		systime_t prev = chVTGetSystemTime(); // Current system time.
 	while (true) {
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
@@ -99,7 +99,7 @@ uint8_t charger_read_register(uint8_t reg_addr, uint8_t *buf) {
 	if (status != MSG_OK) {
 		chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*) &SD1,
-				"Shit happened charger: status is %d\r\n", i2cGetErrors(&CHARGER_IF));
+				"Shit happened withs charger: status is %d\r\n", i2cGetErrors(&CHARGER_IF));
 		chSemSignal(&usart1_semaph);
 		return -1;
 	}
