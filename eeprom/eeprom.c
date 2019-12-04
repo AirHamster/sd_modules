@@ -34,10 +34,7 @@ int8_t eeprom_write(uint16_t byte_addr, const uint8_t *txbuf, size_t txbytes) {
 	buff[0] = byte_addr >> 8;
 	buff[1] = byte_addr & 0xFF;
 	memcpy(&buff[2], txbuf, txbytes);
-	chprintf(SHELL_IFACE, "Wrote into EEPROM %d bytes:\r\n", txbytes);
-	for (i = 0; i < txbytes; i++){
-		chprintf(SHELL_IFACE, " %x\r\n", buff[2 + i]);
-	}
+
 
 	i2cAcquireBus(&EEPROM_IF);
 	status = i2cMasterTransmitTimeout(&EEPROM_IF, EEPROM_ADDRESS, buff,
@@ -50,6 +47,10 @@ int8_t eeprom_write(uint16_t byte_addr, const uint8_t *txbuf, size_t txbytes) {
 		chSemSignal(&usart1_semaph);
 		return -1;
 	}
+	chprintf(SHELL_IFACE, "Wrote into EEPROM %d bytes:\r\n", txbytes);
+		for (i = 0; i < txbytes; i++){
+			chprintf(SHELL_IFACE, " %x\r\n", buff[2 + i]);
+		}
 	return 0;
 }
 
@@ -62,6 +63,7 @@ int8_t eeprom_read(uint16_t byte_addr, uint8_t *rxbuf, size_t rxbytes) {
 	status = i2cMasterTransmitTimeout(&EEPROM_IF, EEPROM_ADDRESS, buff, 2,
 			rxbuf, rxbytes, 1000);
 	i2cReleaseBus(&EEPROM_IF);
+
 	if (status != MSG_OK) {
 		chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*) &SD1,
@@ -69,6 +71,7 @@ int8_t eeprom_read(uint16_t byte_addr, uint8_t *rxbuf, size_t rxbytes) {
 		chSemSignal(&usart1_semaph);
 		return -1;
 	}
+	chprintf((BaseSequentialStream*) &SD1, "Readed from eeprom %x %x %x %x\r\n", rxbuf[0], rxbuf[1], rxbuf[2], rxbuf[3]);
 	return 0;
 }
 

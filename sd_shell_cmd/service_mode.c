@@ -466,12 +466,21 @@ void cmd_get_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			paramSD.RudderCorrection);
 	chprintf(SHELL_IFACE, "\"WindCorrection\":%f,\r\n\t\t\t",
 			paramSD.WindCorrection);
-	chprintf(SHELL_IFACE, "\"WindowSize1\":%d,\r\n\t\t\t",
-			paramSD.WindowSize1);
-	chprintf(SHELL_IFACE, "\"WindowSize2\":%d,\r\n\t\t\t",
-			paramSD.WindowSize2);
-	chprintf(SHELL_IFACE, "\"WindowSize3\":%d\r\n\t\t\t",
-			paramSD.WindowSize3);
+	chprintf(SHELL_IFACE, "\"WindowSize1\":%d,\r\n\t\t\t", paramSD.WindowSize1);
+	chprintf(SHELL_IFACE, "\"WindowSize2\":%d,\r\n\t\t\t", paramSD.WindowSize2);
+	chprintf(SHELL_IFACE, "\"WindowSize3\":%d,\r\n\t\t\t", paramSD.WindowSize3);
+	chprintf(SHELL_IFACE, "\"RudderLeftNative\":%d,\r\n\t\t\t",
+			(uint16_t) r_rudder->min_native);
+	chprintf(SHELL_IFACE, "\"RudderLeftDegrees\":%f,\r\n\t\t\t",
+			r_rudder->min_degrees);
+	chprintf(SHELL_IFACE, "\"RudderCenterNative\":%d,\r\n\t\t\t",
+			(uint16_t) r_rudder->center_native);
+	chprintf(SHELL_IFACE, "\"RudderCenterDegrees\":%f,\r\n\t\t\t",
+			r_rudder->center_degrees);
+	chprintf(SHELL_IFACE, "\"RudderRightNative\":%d,\r\n\t\t\t",
+			(uint16_t) r_rudder->max_native);
+	chprintf(SHELL_IFACE, "\"RudderRightDegrees\":%f\r\n\t\t\t",
+			r_rudder->max_degrees);
 	chprintf(SHELL_IFACE, "}\r\n\t}\r\n");
 	chSemSignal(&usart1_semaph);
 }
@@ -650,7 +659,7 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 					r_rudder->min_native = r_rudder->native;
 					r_rudder_dots->x1 = r_rudder->native;
 					r_rudder_dots->y1 = calib_val;
-									r_rudder->min_degrees = calib_val;
+					r_rudder->min_degrees = calib_val;
 					calculate_polynom_coefs(r_rudder_dots, r_rudder_coefs);
 					microsd_update_calibfile();
 
@@ -672,8 +681,10 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 												(uint8_t*) &calib_val, 4);
 					chprintf(chp, "Saved central rudder value: %f native and %f degrees\r\n",
 							r_rudder->native, calib_val);
+					r_rudder->center_native = r_rudder->native;
 					r_rudder_dots->x2 = r_rudder->native;
 					r_rudder_dots->y2 = calib_val;
+					r_rudder->center_degrees = calib_val;
 					calculate_polynom_coefs(r_rudder_dots, r_rudder_coefs);
 					microsd_update_calibfile();
 
@@ -696,9 +707,9 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 					chprintf(chp, "Saved right rudder value: %f native and %f degrees\r\n",
 							r_rudder->native, calib_val);
 					r_rudder->max_native = r_rudder->native;
-					r_rudder_dots->x1 = r_rudder->native;
-					r_rudder_dots->y1 = calib_val;
-									r_rudder->min_degrees = calib_val;
+					r_rudder_dots->x3 = r_rudder->native;
+					r_rudder_dots->y3 = calib_val;
+					r_rudder->max_degrees = calib_val;
 					calculate_polynom_coefs(r_rudder_dots, r_rudder_coefs);
 					microsd_update_calibfile();
 

@@ -21,8 +21,8 @@
 //---------------------------------------------------------------------------------------------------
 // Definitions
 
-#define sampleFreq	100.0f		// sample frequency in Hz
-#define betaDef		1.5f		// 2 * proportional gain
+#define sampleFreq	50.0f		// sample frequency in Hz
+#define betaDef		0.05f		// 2 * proportional gain
 
 //---------------------------------------------------------------------------------------------------
 // Variable definitions
@@ -211,7 +211,7 @@ void MadgwickAHRSupdateIMU(float gx, float gy, float gz, float ax, float ay, flo
 //---------------------------------------------------------------------------------------------------
 // Fast inverse square-root
 // See: http://en.wikipedia.org/wiki/Fast_inverse_square_root
-/*
+
 float invSqrt(float x) {
 	float halfx = 0.5f * x;
 	float y = x;
@@ -221,7 +221,7 @@ float invSqrt(float x) {
 	y = y * (1.5f - (halfx * y * y));
 	return y;
 }
-*/
+
 //====================================================================================================
 // END OF CODE
 //====================================================================================================

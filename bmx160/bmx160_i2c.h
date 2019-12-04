@@ -20,9 +20,10 @@
 #define PI 3.1415f
 typedef struct{
 	uint8_t suspend_state;
+	uint8_t calib_flag;
 	float aRes, gRes, mRes;      // scale resolutions per LSB for the sensors
 	float pitch, yaw, roll;
-	float magCalibration[3], magbias[3];  // Factory mag calibration and mag bias
+	float magCalibration[3], magBias[3], magScale[3];  // Factory mag calibration and mag bias
 	float gyroBias[3], accelBias[3]; // Bias corrections for gyro and accelerometer
 	float ax, ay, az, gx, gy, gz, mx, my, mz; // variables to hold latest sensor data values
 	int16_t accel_data[3];
@@ -31,12 +32,13 @@ typedef struct{
 	float calib[3];
 	int16_t accelCount[3];  // Stores the 16-bit signed accelerometer sensor output
 	int16_t gyroCount[3];   // Stores the 16-bit signed gyro sensor output
-	int16_t magCount[3];    // Stores the 16-bit signed magnetometer sensor output
+	float magCount[3];    // Stores the 16-bit signed magnetometer sensor output
 
 }bmx160_t;
 
 #define I2C_BUFFER_LEN 128
 void start_bmx160_module(void);
+void bmx160_mag_calibration(float * dest1, float * dest2);
 int8_t bmx160_full_init(void);
 int8_t bmx160_i2c_routine(bmx160_t *bmx160);
 int8_t bmx160_read(uint8_t dev_addr, uint8_t *reg_data, uint8_t r_len);
@@ -51,7 +53,7 @@ int8_t bmx160_save_calib_to_eeprom(bmx160_t *bmx160);
 int8_t bmx160_apply_calib_to_chip(bmx160_t *bmx160);
 int8_t bmx160_set_dynamic_calib(bmx160_t *bmx160);
 int8_t bmx160_set_static_calib(bmx160_t *bmx160);
-int8_t bno955_read_static_flag_from_eeprom(bmx160_t *bmx160);
+//int8_t bno955_read_static_flag_from_eeprom(bmx160_t *bmx160);
 int8_t bmx160_read_calib_from_eeprom(bmx160_t *bmx160);
 int8_t bmx160_save_calib_to_eeprom(bmx160_t *bmx160);
 

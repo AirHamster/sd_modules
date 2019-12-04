@@ -132,7 +132,7 @@ static THD_FUNCTION(ble_thread, arg) {
 #ifdef SD_MODULE_TRAINER
 /*
 	chprintf((BaseSequentialStream*) &SD1, "Connecting to lag module\r\n");
-	nina_connect("CCF95781688F", 0); //LAG
+	nina_connect("D4CA6EB91DD3", 0); //LAG
 	chThdSleepMilliseconds(2000);
 	chprintf((BaseSequentialStream*) &SD1, "Connecting to rudder module\r\n");
 	nina_connect("D4CA6EBAFDA0", 0); //Rudder
@@ -152,16 +152,17 @@ static THD_FUNCTION(ble_thread, arg) {
 #ifdef SD_MODULE_TRAINER
 		remote_lag->is_avalible = 0;
 		remote_rudder->is_avalible = 0;
-		//if (remote_lag->is_connected == 0 || remote_rudder->is_connected == 0) {
+		if (remote_lag->is_connected == 0 || remote_rudder->is_connected == 0) {
 			if (remote_rudder->is_connected == 0) {
 			chprintf(NINA_IFACE, "AT+UBTD=2,1,2000\r");
 			chThdSleepMilliseconds(2500);
-			/*if (remote_lag->is_connected == 0 && remote_lag->is_avalible == 1) {
+			}
+			if (remote_lag->is_connected == 0 && remote_lag->is_avalible == 1) {
 
-				nina_connect("CCF95781688F", 0); //LAG
+				nina_connect("D4CA6EB91DD3", 0); //LAG
 				chThdSleepMilliseconds(1500);
 
-			}*/
+			}
 			if (remote_rudder->is_connected == 0
 					&& remote_rudder->is_avalible == 1) {
 
@@ -196,9 +197,9 @@ uint8_t nina_parse_command(int8_t *strp) {
 		charac_temporary->cccd_handle = scanned_vals[0];
 		charac_temporary->value_handle = scanned_vals[1];
 		charac_temporary->parsed = 1;
-		chprintf((BaseSequentialStream*) &SD1,
+	/*	chprintf((BaseSequentialStream*) &SD1,
 				"Scanned charac descript %d %d\r\n", scanned_vals[0],
-				scanned_vals[1]);
+				scanned_vals[1]);*/
 		return 1;
 	}
 
@@ -234,7 +235,7 @@ uint8_t nina_parse_command(int8_t *strp) {
 	//scan_res = sscanf(strp, "\r\n+UBTD:%12sp,", addr);
 #ifdef SD_MODULE_TRAINER
 	if (strstr(strp, "+UBTD:") != NULL) {
-		scan_res_p = strstr(strp, "CCF95781688F");
+		scan_res_p = strstr(strp, "D4CA6EB91DD3");
 		if (scan_res_p != NULL) {
 
 			chprintf((BaseSequentialStream*) &SD1,
@@ -310,7 +311,10 @@ void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t v
 #ifdef RAW_BLE_SENSOR_DATA
 		r_rudder->native = (float)((value >> 8) & 0x0000FFFF);
 		r_rudder->degrees = get_polynom_degrees(r_rudder->native, r_rudder_coefs);
-		rdr->value = value;
+
+		//rdr->value = value;
+		//in value we have native data - need to send degrees
+		rdr->value = convert_to_ble_type(r_rudder->degrees);
 #else
 		r_rudder->degrees = (float)((int16_t)((value >> 8) & 0x0000FFFF) + ((float)(value & 0x000000FF) / 100.0));
 		rdr->value = value;
@@ -373,7 +377,7 @@ void nina_unregister_peer(uint8_t conn_handle){
 
 void nina_register_remote_dev(uint8_t conn_handle, uint8_t type, int8_t *addr){
 #ifdef SD_MODULE_TRAINER
-	if (strcmp(addr, "CCF95781688F") == 0){
+	if (strcmp(addr, "D4CA6EB91DD3") == 0){
 		remote_lag->conn_handle = conn_handle;
 
 	remote_lag->is_connected = 1;
@@ -516,7 +520,7 @@ uint8_t nina_add_charac(ble_charac_t *charac, uint16_t uuid, uint8_t properties,
 			sec_read, sec_write, def_val, read_auth, max_len);
 	while(timeout++ < 100){
 		if (charac_temporary->parsed == 1){
-			chprintf((BaseSequentialStream*) &SD1, "Handlers %d %d\r\n", charac_temporary->cccd_handle, charac_temporary->value_handle);
+			//chprintf((BaseSequentialStream*) &SD1, "Handlers %d %d\r\n", charac_temporary->cccd_handle, charac_temporary->value_handle);
 			charac->cccd_handle = charac_temporary->cccd_handle;
 			charac->value_handle = charac_temporary->value_handle;
 			charac_temporary->parsed = 0;

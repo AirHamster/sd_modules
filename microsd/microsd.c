@@ -49,7 +49,10 @@ static void write_test_file(BaseSequentialStream *chp);
 static void microsd_open_logfile(BaseSequentialStream *chp);
 static void verbose_error(BaseSequentialStream *chp, FRESULT err);
 static void cat_file(BaseSequentialStream *chp, uint8_t *path);
+static void remove_file(BaseSequentialStream *chp, uint8_t *path);
 static void get_free_space(BaseSequentialStream *chp);
+static void fsm_leave_state(uint8_t state_current);
+static void fsm_enter_state(uint8_t state_new);
 static int8_t microsd_create_filename_from_date(uint8_t *name_str);
 static int8_t microsd_create_filename(uint16_t iteration, uint8_t *name_str);
 static uint8_t microsd_mount_fs(void);
@@ -140,6 +143,10 @@ static THD_FUNCTION( microsd_thread, p) {
 			if (microsd_open_calibfile(&calibfile) == 0) {
 				microsd_add_new_calibfile(&calibfile);
 			}
+			fsm_switch_to_default_state();
+			break;
+		case MICROSD_REMOVE:
+			remove_file(SHELL_IFACE, microsd->path_to_file);
 			fsm_switch_to_default_state();
 			break;
 		default:
@@ -356,6 +363,37 @@ void cmd_cat(BaseSequentialStream *chp, int argc, char *argv[]) {
 //	microsd_fsm->state_new = MICROSD_CAT;
 	fsm_new_state(MICROSD_CAT);
 }
+
+void cmd_remove(BaseSequentialStream *chp, int argc, char *argv[]){
+	/*
+		 * Remove usege
+		 */
+		if (argc != 1) {
+			chprintf(chp, "Usage: remove filename\r\n");
+			return;
+		}
+		memset(microsd->path_to_file, 0, sizeof(microsd->path_to_file));
+		memcpy(microsd->path_to_file, argv[0], strlen(argv[0]));
+		fsm_new_state(MICROSD_REMOVE);
+}
+
+static void remove_file(BaseSequentialStream *chp, uint8_t *path){
+	FRESULT err;
+
+	err = f_unlink(path);
+	if (err == FR_OK){
+		chprintf(chp, "FS: f_unlink(%s) succeed.\r\n", path);
+		return;
+	}
+	if (err != FR_OK){
+		if (err == FR_NO_FILE){
+			chprintf(chp, "FS: f_unlink(%s) failed. File not found.\r\n", path);
+		}else{
+			chprintf(chp, "FS: f_unlink(%s) failed.\r\n", path);
+		}
+	}
+	return;
+}
 /*
  * Print a text file to screen
  */
@@ -390,6 +428,9 @@ static void cat_file(BaseSequentialStream *chp, uint8_t *path) {
 		/*
 		 * Clear the buffer.
 		 */
+		if (microsd_fsm->change_req){
+			break;
+		}
 		memset(Buffer,0,sizeof(Buffer));
 		/*
 		 * Read the file.
@@ -476,8 +517,10 @@ static void get_free_space(BaseSequentialStream *chp) {
 }
 
 void cmd_free(BaseSequentialStream *chp, int argc, char *argv[]) {
-
-	microsd_fsm->state_new = MICROSD_FREE;
+	(void)argv;
+	(void)argc;
+	fsm_new_state(MICROSD_FREE);
+	//microsd_fsm->state_new = MICROSD_FREE;
 
 }
 
@@ -825,9 +868,69 @@ void fsm_new_state(uint8_t state){
 	microsd_fsm->change_req = 1;
 }
 
+
+static void fsm_leave_state(uint8_t state_current){
+	switch (state_current) {
+		case MICROSD_NONE:
+			break;
+		case MICROSD_MOUNT:
+			break;
+		case MICROSD_WRITE_LOG:
+			f_sync(&logfile);
+			f_close(&logfile);
+			break;
+		case MICROSD_CAT:
+			break;
+		case MICROSD_MKFS:
+			break;
+		case MICROSD_FREE:
+			break;
+		case MICROSD_LS:
+			break;
+		case MICROSD_UPDATE_CALIBFILE:
+			break;
+		case MICROSD_REMOVE:
+			break;
+		default:
+			break;
+		}
+}
+
+static void fsm_enter_state(uint8_t state_new){
+	switch (state_new) {
+		case MICROSD_NONE:
+			break;
+		case MICROSD_MOUNT:
+			break;
+		case MICROSD_WRITE_LOG:
+			microsd_open_logfile((BaseSequentialStream*) &SD1);
+			microsd_write_logfile_header((BaseSequentialStream*) &SD1);
+			break;
+		case MICROSD_CAT:
+			break;
+		case MICROSD_MKFS:
+			break;
+		case MICROSD_FREE:
+			break;
+		case MICROSD_LS:
+			break;
+		case MICROSD_UPDATE_CALIBFILE:
+			break;
+		case MICROSD_REMOVE:
+			break;
+		default:
+			break;
+		}
+
+}
+
 void fsm_change_state(uint8_t state) {
 	microsd_fsm->change_req = 0;
 	microsd_fsm->state_prev = microsd_fsm->state_curr;
+	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
+	fsm_leave_state(microsd_fsm->state_prev);
+	fsm_enter_state(microsd_fsm->state_new);
+/*
 	switch (microsd_fsm->state_curr) {
 	case MICROSD_NONE:
 		fsm_from_none(state);
@@ -850,270 +953,18 @@ void fsm_change_state(uint8_t state) {
 	case MICROSD_UPDATE_CALIBFILE:
 		fsm_from_update_calibfile(state);
 		break;
+	case MICROSD_REMOVE:
+		fsm_from_remove(state);
+		break;
 	default:
 		break;
 	}
+	*/
+	microsd_fsm->state_curr = state;
 }
 
 void fsm_switch_to_default_state(void){
 	fsm_new_state(MICROSD_DEFAULT_STATE);
 }
 
-void fsm_from_update_calibfile(uint8_t new_state){
-	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
-		switch (new_state) {
-		case MICROSD_NONE: {
-			f_sync(&logfile);
-			f_close(&logfile);
-		}
-			break;
-		case MICROSD_CAT: {
-			f_sync(&logfile);
-			f_close(&logfile);
-		}
-			break;
-		case MICROSD_LS: {
-			f_sync(&logfile);
-			f_close(&logfile);
-		}
-			break;
-		case MICROSD_MKFS: {
-			f_sync(&logfile);
-			f_close(&logfile);
-		}
-			break;
-		case MICROSD_FREE: {
-			f_sync(&logfile);
-			f_close(&logfile);
-		}
-			break;
-		default:
-			break;
-		}
-		microsd_fsm->state_curr = new_state;
-}
-
-void fsm_from_writing(uint8_t new_state) {
-	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
-	switch (new_state) {
-	case MICROSD_NONE: {
-		f_sync(&logfile);
-		f_close(&logfile);
-	}
-		break;
-	case MICROSD_CAT: {
-		f_sync(&logfile);
-		f_close(&logfile);
-	}
-		break;
-	case MICROSD_LS: {
-		f_sync(&logfile);
-		f_close(&logfile);
-	}
-		break;
-	case MICROSD_MKFS: {
-		f_sync(&logfile);
-		f_close(&logfile);
-	}
-		break;
-	case MICROSD_FREE: {
-		f_sync(&logfile);
-		f_close(&logfile);
-	}
-		break;
-	default:
-		break;
-	}
-	microsd_fsm->state_curr = new_state;
-}
-
-void fsm_from_none(uint8_t new_state) {
-	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
-	switch (new_state) {
-	case MICROSD_NONE: {
-	}
-		break;
-	case MICROSD_CAT: {
-	}
-		break;
-	case MICROSD_LS: {
-	}
-		break;
-	case MICROSD_MKFS: {
-	}
-		break;
-	case MICROSD_FREE: {
-	}
-		break;
-	case MICROSD_WRITE_LOG: {
-		microsd_open_logfile((BaseSequentialStream*) &SD1);
-		microsd_write_logfile_header((BaseSequentialStream*) &SD1);
-	}
-		break;
-	default:
-		break;
-	}
-	microsd_fsm->state_curr = new_state;
-}
-
-void fsm_from_ls(uint8_t new_state) {
-	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
-	switch (new_state) {
-	case MICROSD_NONE: {
-	}
-		break;
-	case MICROSD_CAT: {
-	}
-		break;
-	case MICROSD_LS: {
-	}
-		break;
-	case MICROSD_MKFS: {
-	}
-		break;
-	case MICROSD_FREE: {
-	}
-		break;
-	case MICROSD_WRITE_LOG: {
-		microsd_open_logfile((BaseSequentialStream*) &SD1);
-		microsd_write_logfile_header((BaseSequentialStream*) &SD1);
-	}
-		break;
-	default:
-		break;
-	}
-	microsd_fsm->state_curr = new_state;
-}
-
-void fsm_from_mount(uint8_t new_state){
-	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
-	switch (new_state) {
-		case MICROSD_NONE: {
-		}
-			break;
-		case MICROSD_CAT: {
-			f_sync(&logfile);
-			f_close(&logfile);
-		}
-			break;
-		case MICROSD_LS: {
-			f_sync(&logfile);
-			f_close(&logfile);
-		}
-			break;
-		case MICROSD_MKFS: {
-			f_sync(&logfile);
-			f_close(&logfile);
-		}
-			break;
-		case MICROSD_FREE: {
-			f_sync(&logfile);
-			f_close(&logfile);
-		}
-			break;
-		case MICROSD_WRITE_LOG: {
-			microsd_open_logfile((BaseSequentialStream*) &SD1);
-			microsd_write_logfile_header((BaseSequentialStream*) &SD1);
-		}
-			break;
-		default:
-			break;
-		}
-		microsd_fsm->state_curr = new_state;
-}
-
-void fsm_from_free(uint8_t new_state){
-	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
-	switch (new_state) {
-		case MICROSD_NONE: {
-		}
-			break;
-		case MICROSD_CAT: {
-			f_sync(&logfile);
-			f_close(&logfile);
-		}
-			break;
-		case MICROSD_LS: {
-			f_sync(&logfile);
-			f_close(&logfile);
-		}
-			break;
-		case MICROSD_MKFS: {
-			f_sync(&logfile);
-			f_close(&logfile);
-		}
-			break;
-		case MICROSD_FREE: {
-			f_sync(&logfile);
-			f_close(&logfile);
-		}
-			break;
-		case MICROSD_WRITE_LOG: {
-			microsd_open_logfile((BaseSequentialStream*) &SD1);
-			microsd_write_logfile_header((BaseSequentialStream*) &SD1);
-		}
-			break;
-		default:
-			break;
-		}
-		microsd_fsm->state_curr = new_state;
-}
-
-void fsm_from_cat(uint8_t new_state){
-	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
-	switch (new_state) {
-		case MICROSD_NONE: {
-		}
-			break;
-		case MICROSD_CAT: {
-		}
-			break;
-		case MICROSD_LS: {
-		}
-			break;
-		case MICROSD_MKFS: {
-		}
-			break;
-		case MICROSD_FREE: {
-		}
-			break;
-		case MICROSD_WRITE_LOG: {
-			microsd_open_logfile((BaseSequentialStream*) &SD1);
-			microsd_write_logfile_header((BaseSequentialStream*) &SD1);
-		}
-			break;
-		default:
-			break;
-		}
-		microsd_fsm->state_curr = new_state;
-}
-
-void fsm_from_mkfs(uint8_t new_state){
-	microsd_fsm->state_curr = MICROSD_NONE;	//atomic operation below
-	switch (new_state) {
-		case MICROSD_NONE: {
-		}
-			break;
-		case MICROSD_CAT: {
-		}
-			break;
-		case MICROSD_LS: {
-		}
-			break;
-		case MICROSD_MKFS: {
-		}
-			break;
-		case MICROSD_FREE: {
-		}
-			break;
-		case MICROSD_WRITE_LOG: {
-			microsd_open_logfile((BaseSequentialStream*) &SD1);
-			microsd_write_logfile_header((BaseSequentialStream*) &SD1);
-		}
-			break;
-		default:
-			break;
-		}
-		microsd_fsm->state_curr = new_state;
-}
 
