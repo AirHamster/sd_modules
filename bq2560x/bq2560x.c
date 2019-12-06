@@ -54,6 +54,7 @@ static THD_FUNCTION( charger_thread, p) {
 	i2cStart(&CHARGER_IF, &charger_if_cfg);
 
 	systime_t prev = chVTGetSystemTime(); // Current system time.
+
 	while (true) {
 		charger_read_register(BQ2560X_REG_00, &charger_regs->reg00);
 		charger_read_register(BQ2560X_REG_01, &charger_regs->reg01);
@@ -90,7 +91,7 @@ uint8_t charger_read_register(uint8_t reg_addr, uint8_t *buf) {
 	if (status != MSG_OK) {
 		chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*) &SD1,
-				"Shit happened charger: status is %d\r\n", i2cGetErrors(&CHARGER_IF));
+				"Shit happened withs charger: status is %d\r\n", i2cGetErrors(&CHARGER_IF));
 		chSemSignal(&usart1_semaph);
 		return -1;
 	}

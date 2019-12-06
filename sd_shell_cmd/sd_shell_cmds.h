@@ -13,7 +13,7 @@
 #include "lag.h"
 #endif
 
-#define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(1024)
+#define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(2048)
 
 #define SHELL_UBX_COG_STATUS		1
 #define SHELL_UBX_RATE_STATUS		2
@@ -22,6 +22,7 @@
 enum output_threads{
 	OUTPUT_NONE = 0,
 	OUTPUT_TEST,
+	OUTPUT_GYRO_RAW,
 	OUTPUT_SERVICE,
 	OUTPUT_MAGN_CALIB,
 	OUTPUT_GYRO_CALIB,
@@ -57,6 +58,8 @@ void cmd_help(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]);
+void cmd_beta(BaseSequentialStream* chp, int argc, char* argv[]);
+void cmd_mag_calibrate(BaseSequentialStream* chp, int argc, char* argv[]);
 #ifdef SD_SENSOR_BOX_RUDDER
 void send_rudder_over_ble(rudder_t *rudder);
 #endif
@@ -67,7 +70,9 @@ uint8_t output_magn_calib(void);
 uint8_t output_accel_calib(void);
 uint8_t output_gyro_calib(void);
 uint8_t output_all_calib(void);
-void copy_to_ble(void);
+int32_t convert_to_ble_type(float value);
+void output_gyro_raw(void);
+
 void start_json_module(void);
 void toggle_test_output(void);
 void toggle_ble_output(void);

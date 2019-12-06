@@ -50,7 +50,7 @@ static THD_FUNCTION(hmc6343_thread, arg) {
 	(void) arg;
 
 	chRegSetThreadName("hmc6343 Thread");
-	i2cStart(&GYRO_IF, &hmc6343_i2c_cfg);
+	//i2cStart(&GYRO_IF, &hmc6343_i2c_cfg);
 	chThdSleepMilliseconds(500);
 	//hmc6343_full_init();
 	chThdSleepMilliseconds(2500);
@@ -59,15 +59,18 @@ static THD_FUNCTION(hmc6343_thread, arg) {
 	//chprintf(SHELL_IFACE, "MAGx,MAGy,MAGz,TRUE_MAGx,TRUE_MAGy,ROLL,PITCH,HDG,TRUE_HDG\r\n");
 
 	while (true) {
-		hmc6343_read_data(hmc6343);
+		hmc6343_read_hdg_data(hmc6343);
 	//	chprintf(SHELL_IFACE, "Magnetic: %d %d %d %x\r\n", hmc6343->x, hmc6343->y, hmc6343->z, hmc6343->status_reg);
-
+		chThdSleepMilliseconds(1);
+		hmc6343_read_mag_data(hmc6343);
+		chThdSleepMilliseconds(1);
+		hmc6343_read_acc_data(hmc6343);
 	//	hmc6343_calculate();
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 	}
 }
 
-uint8_t hmc6343_read_data(hmc6343_t *hmc){
+uint8_t hmc6343_read_hdg_data(hmc6343_t *hmc){
 	uint8_t buff[7];
 		buff[0] = HMC6343_POST_HEADING_DATA;	//set continuous mode
 		buff[1] = 0;
@@ -83,7 +86,44 @@ uint8_t hmc6343_read_data(hmc6343_t *hmc){
 		hmc->yaw = hmc->yaw16 / 10.0;
 		hmc->pitch = hmc->pitch16 / 10.0;
 		hmc->roll = hmc->roll16 / 10.0;
-//		chprintf(SHELL_IFACE, "YAW: %f %f %f\r\n", hmc->yaw, hmc->pitch, hmc->roll);
+		//chprintf(SHELL_IFACE, "YAW: %f %f %f\r\n", hmc->yaw, hmc->pitch, hmc->roll);
+		//hmc->status_reg = buff[6];
+		return 0;
+}
+
+uint8_t hmc6343_read_acc_data(hmc6343_t *hmc){
+	uint8_t buff[7];
+		buff[0] = HMC6343_POST_ACCEL_CMD;	//set continuous mode
+		buff[1] = 0;
+		//temp = 0;
+		hmc6343_write(HMC6343_I2C_ADDR, buff, 1);
+		chThdSleepMilliseconds(1);
+		hmc6343_read(HMC6343_I2C_ADDR, buff, 6);
+
+		hmc->ax16 = (buff[0] << 8) | buff[1];
+		hmc->ay16 = (buff[2] << 8) | buff[3];
+		hmc->az16 = (buff[4] << 8) | buff[5];
+
+		return 0;
+}
+
+uint8_t hmc6343_read_mag_data(hmc6343_t *hmc){
+	uint8_t buff[7];
+		buff[0] = HMC6343_POST_MAG_CMD;	//set continuous mode
+		buff[1] = 0;
+		//temp = 0;
+		hmc6343_write(HMC6343_I2C_ADDR, buff, 1);
+		chThdSleepMilliseconds(1);
+		hmc6343_read(HMC6343_I2C_ADDR, buff, 6);
+
+		hmc->mx16 = (buff[0] << 8) | buff[1];
+		hmc->my16 = (buff[2] << 8) | buff[3];
+		hmc->mz16 = (buff[4] << 8) | buff[5];
+
+		//hmc->yaw = hmc->yaw16 / 10.0;
+		//hmc->pitch = hmc->pitch16 / 10.0;
+		//hmc->roll = hmc->roll16 / 10.0;
+		//chprintf(SHELL_IFACE, "YAW: %f %f %f\r\n", hmc->yaw, hmc->pitch, hmc->roll);
 		//hmc->status_reg = buff[6];
 		return 0;
 }
