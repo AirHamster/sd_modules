@@ -73,18 +73,18 @@
 #define EEPROM_MATH_WINSIZE3_CORRECTION			EEPROM_CALIB_MEMORY_START + 62
 
 //float
-#define EEPROM_RUDDER_CALIB_NATIVE_LEFT			EEPROM_CALIB_MEMORY_START + 94	//costil adress
-#define EEPROM_RUDDER_CALIB_NATIVE_RIGHT		EEPROM_CALIB_MEMORY_START + 98
-#define EEPROM_RUDDER_CALIB_NATIVE_CENTER		EEPROM_CALIB_MEMORY_START + 102
+#define EEPROM_RUDDER_CALIB_NATIVE_LEFT			EEPROM_CALIB_MEMORY_START + 66 	//costil adress
+#define EEPROM_RUDDER_CALIB_NATIVE_RIGHT		EEPROM_CALIB_MEMORY_START + 70
+#define EEPROM_RUDDER_CALIB_NATIVE_CENTER		EEPROM_CALIB_MEMORY_START + 74
 
-#define EEPROM_RUDDER_CALIB_DEGREES_LEFT		EEPROM_CALIB_MEMORY_START + 106
-#define EEPROM_RUDDER_CALIB_DEGREES_RIGHT		EEPROM_CALIB_MEMORY_START + 110
-#define EEPROM_RUDDER_CALIB_DEGREES_CENTER		EEPROM_CALIB_MEMORY_START + 114
+#define EEPROM_RUDDER_CALIB_DEGREES_LEFT		EEPROM_CALIB_MEMORY_START + 78
+#define EEPROM_RUDDER_CALIB_DEGREES_RIGHT		EEPROM_CALIB_MEMORY_START + 82
+#define EEPROM_RUDDER_CALIB_DEGREES_CENTER		EEPROM_CALIB_MEMORY_START + 86
 
 #define BNO055_ADDRESS	0x28
 
-int8_t eeprom_write(uint16_t byte_addr, const uint8_t *txbuf, size_t txbytes);
-int8_t eeprom_read(uint16_t byte_addr, uint8_t *rxbuf, size_t rxbytes);
+int8_t eeprom_write(uint16_t byte_addr, const uint8_t *txbuf, uint8_t txbytes);
+int8_t eeprom_read(uint16_t byte_addr, uint8_t *rxbuf, uint8_t rxbytes);
 void eeprom_check_i2c_bus(void);
 void eeprom_read_hw_version(void);
 void eeprom_write_hw_version(void);

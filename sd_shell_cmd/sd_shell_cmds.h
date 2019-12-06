@@ -13,7 +13,7 @@
 #include "lag.h"
 #endif
 
-#define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(1024)
+#define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(2048)
 
 #define SHELL_UBX_COG_STATUS		1
 #define SHELL_UBX_RATE_STATUS		2
@@ -72,7 +72,7 @@ uint8_t output_gyro_calib(void);
 uint8_t output_all_calib(void);
 int32_t convert_to_ble_type(float value);
 void output_gyro_raw(void);
-void copy_to_ble(void);
+
 void start_json_module(void);
 void toggle_test_output(void);
 void toggle_ble_output(void);

@@ -41,7 +41,7 @@ static THD_WORKING_AREA(math_thread_wa, 4096*4);
 static THD_FUNCTION(math_thread, arg);
 
 void start_math_module(void){
-	chThdCreateStatic(math_thread_wa, sizeof(math_thread_wa), NORMALPRIO,
+	chThdCreateStatic(math_thread_wa, sizeof(math_thread_wa), NORMALPRIO + 2,
 				math_thread, NULL);
 }
 

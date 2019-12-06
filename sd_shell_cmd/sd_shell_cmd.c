@@ -167,12 +167,12 @@ static const ShellConfig shell_cfg1 = { (BaseSequentialStream*) &SHELL_SD,
 		commands, history_buffer, 32, complete_buffer };
 
 thread_t *cmd_init(void) {
-	return chThdCreateFromHeap(NULL, SHELL_WA_SIZE, "shell", NORMALPRIO + 4,
+	return chThdCreateFromHeap(NULL, SHELL_WA_SIZE, "shell", NORMALPRIO + 5,
 			shellThread, (void *) &shell_cfg1);
 }
 
 void start_json_module(void){
-	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO, output_thread, NULL);
+	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO + 4, output_thread, NULL);
 }
 
 /*
@@ -195,6 +195,7 @@ static THD_FUNCTION(output_thread, arg) {
 			break;
 		case OUTPUT_TEST:
 			send_json();
+
 			break;
 		case OUTPUT_SERVICE:
 			break;
@@ -215,11 +216,7 @@ static THD_FUNCTION(output_thread, arg) {
 				case OUTPUT_NONE:
 					break;
 				case OUTPUT_TEST:
-					if (i++ == 10) {
-						copy_to_ble();
-						nina_send_all(peer);
-						i = 0;
-					}
+
 					break;
 				case OUTPUT_SERVICE:
 					break;
@@ -380,42 +377,7 @@ int32_t convert_to_ble_type(float value){
 	return val;
 }
 
-#ifdef USE_BLE_MODULE
-void copy_to_ble(void){
-#ifdef SD_MODULE_TRAINER
-#ifdef USE_MATH_MODULE
-	/*
-	thdg->value = convert_to_ble_type(lastFilterValues[1][FILTER_BUFFER_SIZE - 1]);
-	twd->value = convert_to_ble_type(lastFilterValues[4][FILTER_BUFFER_SIZE - 1]);
-	tws->value = convert_to_ble_type(lastFilterValues[5][FILTER_BUFFER_SIZE - 1]);
-	twa->value = convert_to_ble_type(lastFilterValues[6][FILTER_BUFFER_SIZE - 1]);
-	twa_tg->value = convert_to_ble_type(windAngleTarget);
-	bs_tg->value = convert_to_ble_type(hullSpeedTarget);
 
-	hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
-	//hdg->value = convert_to_ble_type(lastFilterValues[0][FILTER_BUFFER_SIZE - 1]);
-	heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
-	*/
-	thdg->value = convert_to_ble_type(lastSensorValues[HDT]);
-		twd->value = convert_to_ble_type(lastSensorValues[TWD]);
-		tws->value = convert_to_ble_type(lastSensorValues[TWS]);
-		twa->value = convert_to_ble_type(lastSensorValues[TWA]);
-		twa_tg->value = convert_to_ble_type(lastSensorValues[TWA_TGT]);
-		bs_tg->value = convert_to_ble_type(lastSensorValues[VMG_TGT]);
-		bs->value = convert_to_ble_type((float)(pvt_box->gSpeed * 0.0036 / 1.852));
-		heel->value = convert_to_ble_type(bno055->d_euler_hpr.h);
-		hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
-		//hdg->value = convert_to_ble_type(lastFilterValues[0][FILTER_BUFFER_SIZE - 1]);
-		heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
-#endif
-	//heel->value = convert_to_ble_type(bno055->d_euler_hpr.r);
-
-	//hdg->value = convert_to_ble_type(lastFilterValues[0][0]);
-	//heel->value = convert_to_ble_type(lastFilterValues[2][0]);
-
-#endif
-}
-#endif
 
 
 void send_json(void)
@@ -439,11 +401,11 @@ void send_json(void)
 		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc5883->yaw);
 #endif
 #ifdef USE_BMX160_MODULE
-		chprintf(SHELL_IFACE, "\"yaw  \":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
-		chprintf(SHELL_IFACE, "\"bmx_yaw  \":%d,\r\n\t\t\t", (uint16_t)bmx160.yaw);
+		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
+		/*chprintf(SHELL_IFACE, "\"bmx_yaw  \":%d,\r\n\t\t\t", (uint16_t)bmx160.yaw);
 		chprintf(SHELL_IFACE, "\"bmx_pitch\":%f,\r\n\t\t\t", bmx160.pitch);
 		chprintf(SHELL_IFACE, "\"bmx_roll \":%f,\r\n\t\t\t", bmx160.roll);
-
+*/
 /*		chprintf(SHELL_IFACE, "\"bax\":%f,\r\n\t\t\t", bmx160.ax);
 		chprintf(SHELL_IFACE, "\"bay\":%f,\r\n\t\t\t", bmx160.ay);
 		chprintf(SHELL_IFACE, "\"baz\":%f,\r\n\t\t\t", bmx160.az);
@@ -458,7 +420,7 @@ void send_json(void)
 
 #endif
 #ifdef USE_HMC6343_MODULE
-		chprintf(SHELL_IFACE, "\"yaw2\":%d,\r\n\t\t\t", (uint16_t)hmc6343->yaw);
+		//chprintf(SHELL_IFACE, "\"yaw2\":%d,\r\n\t\t\t", (uint16_t)hmc6343->yaw);
 /*
 		chprintf(SHELL_IFACE, "\"ax \":%d,\r\n\t\t\t", (uint16_t)hmc6343->ax16);
 		chprintf(SHELL_IFACE, "\"ay \":%d,\r\n\t\t\t", (uint16_t)hmc6343->ay16);

@@ -18,6 +18,17 @@
 #include "sd_shell_cmds.h"
 #include "lag.h"
 #include "adc.h"
+#ifdef USE_UBLOX_GPS_MODULE
+#include "neo-m8.h"
+#include "neo_ubx.h"
+extern ubx_nav_pvt_t *pvt_box;
+extern ubx_nav_odo_t *odo_box;
+#endif
+#ifdef USE_BNO055_MODULE
+#include "bno055_i2c.h"
+#include "bno055.h"
+extern bno055_t *bno055;
+#endif
 struct ch_semaphore usart_nina;
 extern struct ch_semaphore usart1_semaph;
 #ifdef SD_MODULE_TRAINER
@@ -42,7 +53,12 @@ extern dots_t *r_rudder_dots;
 extern coefs_t *r_rudder_coefs;
 
 #endif
-
+#include "sailDataMath.h"
+extern float lastFilterValues[10][FILTER_BUFFER_SIZE];
+extern float windAngleTarget;
+extern float lastSensorValues[SIZE_BUFFER_VALUES];
+extern float hullSpeedTarget;
+extern float velocityMadeGoodTarget;
 #ifdef SD_SENSOR_BOX_RUDDER
 ble_charac_t *ble_rudder;
 ble_charac_t *charac_array[NUM_OF_CHARACTS];
@@ -93,9 +109,9 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		token = sdGet(&NINA_IF);
 		megastring[i] = token;
 		i++;
-		chSemWait(&usart1_semaph);
-		//chprintf((BaseSequentialStream*) &SD1, "%c", token);
-		chSemSignal(&usart1_semaph);
+	/*	chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*) &SD1, "%c", token);
+		chSemSignal(&usart1_semaph);*/
 		if (token == '\r' || token == '+'){
 			str_flag = 1;
 		}else if ((token == '\n') && (str_flag == 1)){
@@ -116,6 +132,7 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 static THD_FUNCTION(ble_thread, arg) {
 	(void) arg;
 	uint8_t token;
+	uint8_t i = 0;
 	chRegSetThreadName("BLE Conrol Thread");
 	nina_fill_memory();
 	chSemObjectInit(&usart_nina, 1);
@@ -150,10 +167,16 @@ static THD_FUNCTION(ble_thread, arg) {
 	output->ble = OUTPUT_RUDDER_BLE;
 	while (true) {
 #ifdef SD_MODULE_TRAINER
+		if (output->type == OUTPUT_TEST){
+						copy_to_ble();
+						nina_send_all(peer);
+		}
+
+						if (i++ == 10) {
 		remote_lag->is_avalible = 0;
 		remote_rudder->is_avalible = 0;
 		if (remote_lag->is_connected == 0 || remote_rudder->is_connected == 0) {
-			if (remote_rudder->is_connected == 0) {
+
 			chprintf(NINA_IFACE, "AT+UBTD=2,1,2000\r");
 			chThdSleepMilliseconds(2500);
 			}
@@ -169,11 +192,50 @@ static THD_FUNCTION(ble_thread, arg) {
 				nina_connect("D4CA6EBAFDA0", 0); //Rudder
 				chThdSleepMilliseconds(1500);
 			}
-		}
+			i = 0;
+						}
+
 #endif
-		chThdSleepMilliseconds(10000);
+		chThdSleepMilliseconds(1000);
 	}
 }
+
+#ifdef USE_BLE_MODULE
+void copy_to_ble(void){
+#ifdef SD_MODULE_TRAINER
+#ifdef USE_MATH_MODULE
+	/*
+	thdg->value = convert_to_ble_type(lastFilterValues[1][FILTER_BUFFER_SIZE - 1]);
+	twd->value = convert_to_ble_type(lastFilterValues[4][FILTER_BUFFER_SIZE - 1]);
+	tws->value = convert_to_ble_type(lastFilterValues[5][FILTER_BUFFER_SIZE - 1]);
+	twa->value = convert_to_ble_type(lastFilterValues[6][FILTER_BUFFER_SIZE - 1]);
+	twa_tg->value = convert_to_ble_type(windAngleTarget);
+	bs_tg->value = convert_to_ble_type(hullSpeedTarget);
+
+	hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
+	//hdg->value = convert_to_ble_type(lastFilterValues[0][FILTER_BUFFER_SIZE - 1]);
+	heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
+	*/
+	thdg->value = convert_to_ble_type(lastSensorValues[HDT]);
+		twd->value = convert_to_ble_type(lastSensorValues[TWD]);
+		tws->value = convert_to_ble_type(lastSensorValues[TWS]);
+		twa->value = convert_to_ble_type(lastSensorValues[TWA]);
+		twa_tg->value = convert_to_ble_type(lastSensorValues[TWA_TGT]);
+		bs_tg->value = convert_to_ble_type(lastSensorValues[VMG_TGT]);
+		//bs->value = convert_to_ble_type((float)(pvt_box->gSpeed * 0.0036 / 1.852));
+		heel->value = convert_to_ble_type(bno055->d_euler_hpr.h);
+		hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
+		//hdg->value = convert_to_ble_type(lastFilterValues[0][FILTER_BUFFER_SIZE - 1]);
+		heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
+#endif
+	//heel->value = convert_to_ble_type(bno055->d_euler_hpr.r);
+
+	//hdg->value = convert_to_ble_type(lastFilterValues[0][0]);
+	//heel->value = convert_to_ble_type(lastFilterValues[2][0]);
+
+#endif
+}
+#endif
 
 uint8_t nina_parse_command(int8_t *strp) {
 	uint8_t scan_res;
@@ -299,7 +361,7 @@ void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t v
 #ifdef SD_MODULE_TRAINER
 	if ((remote_lag->is_connected == 1) && (remote_lag->conn_handle == conn_handle)){
 #ifdef RAW_BLE_SENSOR_DATA
-		r_lag->millis = (float)(value >> 8);
+		r_lag->meters = (float)((value >> 8) & 0x0000FFFF);
 		//r_lag->meters =
 		bs->value = value;
 #else
@@ -350,17 +412,17 @@ void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr){
 
 void nina_unregister_peer(uint8_t conn_handle){
 #ifdef SD_MODULE_TRAINER
-	/*if (remote_lag->conn_handle == conn_handle) {
+	if (remote_lag->conn_handle == conn_handle) {
 		chprintf((BaseSequentialStream*) &SD1, "Disconnected to lag %d %d\r\n",
 				remote_lag->conn_handle, remote_lag->type);
-		remote_lag->conn_handle = 0;
+		remote_lag->conn_handle = 99;
 
 		remote_lag->is_connected = 0;
 		remote_lag->type = 0;
-	}else*/ if (remote_rudder->conn_handle == conn_handle) {
+	}else if (remote_rudder->conn_handle == conn_handle) {
 		chprintf((BaseSequentialStream*) &SD1, "Disconnected to rudder %d %d\r\n",
 				remote_rudder->conn_handle, remote_rudder->type);
-		remote_rudder->conn_handle = 0;
+		remote_rudder->conn_handle = 99;
 
 		remote_rudder->is_connected = 0;
 		remote_rudder->type = 0;
@@ -422,14 +484,14 @@ void nina_unregister_remote_dev(uint8_t conn_handle){
 	if (remote_lag->conn_handle == conn_handle) {
 		chprintf((BaseSequentialStream*) &SD1, "Disconnected lag %d %d\r\n",
 				remote_lag->conn_handle, remote_lag->type);
-		remote_lag->conn_handle = 0;
+		remote_lag->conn_handle = 99;
 
 		remote_lag->is_connected = 0;
 		remote_lag->type = 0;
 	}else if (remote_rudder->conn_handle == conn_handle) {
 		chprintf((BaseSequentialStream*) &SD1, "Disconnected rudder %d %d \r\n",
 				remote_rudder->conn_handle, remote_rudder->type);
-		remote_rudder->conn_handle = 0;
+		remote_rudder->conn_handle = 99;
 
 		remote_rudder->is_connected = 0;
 		remote_rudder->type = 0;
@@ -717,7 +779,7 @@ uint8_t nina_init_services(void){
 #endif
 void nina_send_all(ble_peer_t *peer){
 #ifdef SD_MODULE_TRAINER
-	if (peer->is_connected == 1) {
+	//if (peer->is_connected == 1) {
 
 		chSemWait(&usart_nina);
 		chprintf(NINA_IFACE, "AT+UBTGSN=%d,%d,%06x\r", peer->conn_handle,
@@ -787,7 +849,7 @@ void nina_send_all(ble_peer_t *peer){
 				heel->cccd_handle, heel->value);
 		chSemSignal(&usart_nina);
 
-	}
+	//}
 #endif
 }
 

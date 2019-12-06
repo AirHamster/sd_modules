@@ -308,25 +308,26 @@ static THD_FUNCTION(bmx160_thread, arg) {
 		bmx160.az = accel.z * 0.000061035;
 
 		//patch for madgwick filter
-
+/*
 		bmx160.mx = rawMagData.y / 100.0;	//microTesla to Gauss
 		bmx160.my = -rawMagData.x / 100.0;
 		bmx160.mz = rawMagData.z / 100.0;
-	/*
+	*/
+
 		bmx160.mx = rawMagData.x / 100.0;	//microTesla to Gauss
 		bmx160.my = rawMagData.y / 100.0;
 		bmx160.mz = rawMagData.z / 100.0;
-*/
+
 //for normal calculating
-	/*	bmx160.mx -= -0.02437;
+		bmx160.mx -= -0.02437;
 		bmx160.my -= 0.02968;
 		bmx160.mz -= -0.5;
-*/
 
+/*
 		bmx160.mx -= 0.0653;
 		bmx160.my -= 0.024;
 		bmx160.mz -= -0.47;
-
+*/
 		//MadgwickAHRSupdate(bmx160.gx, bmx160.gy, bmx160.gz, bmx160.ax, bmx160.ay, bmx160.az, bmx160.mx, bmx160.my, bmx160.mz);
 		MadgwickQuaternionUpdate(bmx160.ax, bmx160.ay, bmx160.az, bmx160.gx, bmx160.gy, bmx160.gz, bmx160.mx, bmx160.my, bmx160.mz);
 
@@ -354,10 +355,10 @@ static THD_FUNCTION(bmx160_thread, arg) {
 		sin_pitch = sin(bmx160.pitch * 3.1415 / 180.0);
 
 		//patch for madgwick filter
-		temp = bmx160.my;
+/*		temp = bmx160.my;
 		bmx160.my = -bmx160.mx;
 		bmx160.mx = temp;
-
+*/
 /*
 				bmm.data.y = -summx;
 						bmm.data.x = summy;
