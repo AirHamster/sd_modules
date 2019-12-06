@@ -53,12 +53,14 @@ extern dots_t *r_rudder_dots;
 extern coefs_t *r_rudder_coefs;
 
 #endif
+
 #include "sailDataMath.h"
 extern float lastFilterValues[10][FILTER_BUFFER_SIZE];
 extern float windAngleTarget;
 extern float lastSensorValues[SIZE_BUFFER_VALUES];
 extern float hullSpeedTarget;
 extern float velocityMadeGoodTarget;
+
 #ifdef SD_SENSOR_BOX_RUDDER
 ble_charac_t *ble_rudder;
 ble_charac_t *charac_array[NUM_OF_CHARACTS];
@@ -109,9 +111,11 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		token = sdGet(&NINA_IF);
 		megastring[i] = token;
 		i++;
+
 	/*	chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*) &SD1, "%c", token);
 		chSemSignal(&usart1_semaph);*/
+
 		if (token == '\r' || token == '+'){
 			str_flag = 1;
 		}else if ((token == '\n') && (str_flag == 1)){
@@ -860,6 +864,10 @@ uint8_t nina_init_services(void){
 	if (nina_wait_response("+UBTLE\r") != NINA_SUCCESS) {
 		return -1;
 	}
+	/*chprintf(NINA_IFACE, "AT+UMRS=115200,2,8,1,1,1\r");
+		if (nina_wait_response("+UMRS\r") != NINA_SUCCESS) {
+			return -1;
+		}*/
 	chThdSleepMilliseconds(200);
 	chprintf(NINA_IFACE, "AT&W\r");
 	if (nina_wait_response("AT&W\r") != NINA_SUCCESS) {
