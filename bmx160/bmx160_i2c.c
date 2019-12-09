@@ -22,6 +22,8 @@
 #include "MadgwickAHRS.h"
 #include "bno055_i2c.h"
 extern bno055_t *bno055;
+#include "hmc6343_i2c.h"
+extern hmc6343_t *hmc6343;
 #include "BsxFusionLibrary.h"
 #include "BsxLibraryCalibConstants.h"
 #include "BsxLibraryConstants.h"
@@ -319,17 +321,20 @@ static THD_FUNCTION(bmx160_thread, arg) {
 		bmx160.mz = rawMagData.z / 100.0;
 
 //for normal calculating
+/*
 		bmx160.mx -= -0.02437;
 		bmx160.my -= 0.02968;
 		bmx160.mz -= -0.5;
-
+*/
 /*
 		bmx160.mx -= 0.0653;
 		bmx160.my -= 0.024;
 		bmx160.mz -= -0.47;
 */
+
 		//MadgwickAHRSupdate(bmx160.gx, bmx160.gy, bmx160.gz, bmx160.ax, bmx160.ay, bmx160.az, bmx160.mx, bmx160.my, bmx160.mz);
-		MadgwickQuaternionUpdate(bmx160.ax, bmx160.ay, bmx160.az, bmx160.gx, bmx160.gy, bmx160.gz, bmx160.mx, bmx160.my, bmx160.mz);
+		//MadgwickQuaternionUpdate(bmx160.ax, bmx160.ay, bmx160.az, bmx160.gx, bmx160.gy, bmx160.gz, bmx160.mx, bmx160.my, bmx160.mz);
+		MadgwickQuaternionUpdate(bmx160.ax, bmx160.ay, bmx160.az, bmx160.gx, bmx160.gy, bmx160.gz, hmc6343->mx, hmc6343->my, hmc6343->mz);
 
 		/*bmx160.yaw = atan2(2.0f * (q1 * q2 + q0 * q3),	q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3);
 		bmx160.pitch = -asin(2.0f * (q1 * q3 - q0 * q2));

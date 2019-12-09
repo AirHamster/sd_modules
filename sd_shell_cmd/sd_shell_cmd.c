@@ -167,7 +167,7 @@ static const ShellConfig shell_cfg1 = { (BaseSequentialStream*) &SHELL_SD,
 		commands, history_buffer, 32, complete_buffer };
 
 thread_t *cmd_init(void) {
-	return chThdCreateFromHeap(NULL, SHELL_WA_SIZE, "shell", NORMALPRIO + 5,
+	return chThdCreateFromHeap(NULL, SHELL_WA_SIZE, "shell", NORMALPRIO + 6,
 			shellThread, (void *) &shell_cfg1);
 }
 
@@ -206,6 +206,16 @@ static THD_FUNCTION(output_thread, arg) {
 			break;
 		case OUTPUT_GYRO_RAW:
 			output_gyro_raw();
+			break;
+		case OUTPUT_RAW_BMX160:
+			output_gyro_raw();
+			break;
+		case OUTPUT_RAW_HMC:
+			output_gyro_raw();
+			break;
+		case OUTPUT_RAW_HMC_BMX:
+			output_gyro_raw();
+			break;
 		default:
 			break;
 		}
@@ -287,8 +297,14 @@ uint8_t output_all_calib(void){
 void output_gyro_raw(void){
 	chSemWait(&usart1_semaph);
 			//chprintf(SHELL_IFACE, ",%f,%f,%f,%f,%f,%f,%f,%f,%f\r\n", bmx160.ax, bmx160.ay, bmx160.az, bmx160.gx, bmx160.gy, bmx160.gz, bmx160.mx, bmx160.my, bmx160.mz);
-			chprintf(SHELL_IFACE, ",%f,%f,%f,%f,%f\r\n", bmx160.mx, bmx160.my, bmx160.mz, bno055->d_euler_hpr.p, bno055->d_euler_hpr.r);
-			chSemSignal(&usart1_semaph);
+	if(output->type == OUTPUT_RAW_BMX160){
+	chprintf(SHELL_IFACE, ",%f,%f,%f,%f,%f\r\n", bmx160.mx, bmx160.my, bmx160.mz, bno055->d_euler_hpr.p, bno055->d_euler_hpr.r);
+	}else if(output->type == OUTPUT_RAW_HMC){
+		chprintf(SHELL_IFACE, ",%d,%d,%d,%f,%f\r\n", hmc6343->mx16, hmc6343->my16, hmc6343->mz16, bno055->d_euler_hpr.p, bno055->d_euler_hpr.r);
+	}else if(output->type == OUTPUT_RAW_HMC_BMX){
+		chprintf(SHELL_IFACE, ",%f,%f,%f,%f,%f\r\n", hmc6343->mx, hmc6343->my, hmc6343->mz, bno055->d_euler_hpr.p, bno055->d_euler_hpr.r);
+	}
+	chSemSignal(&usart1_semaph);
 		/*	chprintf(SHELL_IFACE, "%f,", bmx160.ay);
 			chprintf(SHELL_IFACE, "%f,", bmx160.az);
 			chprintf(SHELL_IFACE, "%f,", bmx160.gx);
@@ -402,8 +418,8 @@ void send_json(void)
 #endif
 #ifdef USE_BMX160_MODULE
 		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
-		/*chprintf(SHELL_IFACE, "\"bmx_yaw  \":%d,\r\n\t\t\t", (uint16_t)bmx160.yaw);
-		chprintf(SHELL_IFACE, "\"bmx_pitch\":%f,\r\n\t\t\t", bmx160.pitch);
+		chprintf(SHELL_IFACE, "\"hmc_yaw  \":%d,\r\n\t\t\t", (uint16_t)bmx160.yaw);
+		/*chprintf(SHELL_IFACE, "\"bmx_pitch\":%f,\r\n\t\t\t", bmx160.pitch);
 		chprintf(SHELL_IFACE, "\"bmx_roll \":%f,\r\n\t\t\t", bmx160.roll);
 */
 /*		chprintf(SHELL_IFACE, "\"bax\":%f,\r\n\t\t\t", bmx160.ax);
@@ -516,9 +532,21 @@ void cmd_start(BaseSequentialStream* chp, int argc, char* argv[]) {
 			toggle_ypr_output();
 			return;
 		}
-		if (strcmp(argv[0], "gyro") == 0) {
-			toggle_gyro_output();
+		if (strcmp(argv[0], "raw_bmx160") == 0) {
+			toggle_raw_output(1);
 			return;
+		}
+		if (strcmp(argv[0], "raw_hmc6343") == 0) {
+			toggle_raw_output(2);
+			return;
+		}
+		if (strcmp(argv[0], "raw_hmc_bmx") == 0) {
+					toggle_raw_output(3);
+					return;
+				}
+		if (strcmp(argv[0], "gyro") == 0) {
+					toggle_gyro_output();
+					return;
 		}
 	}
 	chprintf(chp, "Usage: start test|gps|ypr|gyro\n\r");
@@ -775,6 +803,17 @@ void toggle_gyro_output(void) {
 	output->type = OUTPUT_GYRO_RAW;;
 }
 
+void toggle_raw_output(uint8_t sensor) {
+	output->service = 0;
+	//output->gyro = (~output->gyro) & 0x01;
+	if (sensor == 1){
+	output->type = OUTPUT_RAW_BMX160;
+	}else if (sensor == 2){
+	output->type = OUTPUT_RAW_HMC;
+	}else if (sensor == 3){
+		output->type = OUTPUT_RAW_HMC_BMX;
+		}
+}
 
 
 void stop_all_tests(void) {
