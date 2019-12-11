@@ -61,6 +61,7 @@ typedef struct {
 	float yaw;
 	float roll;
 	float pitch;
+	float mx,my,mz;
     int16_t yaw16;
     int16_t pitch16;
     int16_t roll16;

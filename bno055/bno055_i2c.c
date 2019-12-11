@@ -42,7 +42,7 @@ const I2CConfig bno055_i2c_cfg = {
 
 void start_bno055_module(void){
 
-	chThdCreateStatic(bno055_thread_wa, sizeof(bno055_thread_wa), NORMALPRIO + 3, bno055_thread, NULL);
+	chThdCreateStatic(bno055_thread_wa, sizeof(bno055_thread_wa), NORMALPRIO + 5, bno055_thread, NULL);
 }
 
 /*

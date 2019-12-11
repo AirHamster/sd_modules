@@ -32,6 +32,9 @@ enum output_threads{
 	OUTPUT_RUDDER_BLE,
 	OUTPUT_LAG_CALIB,
 	OUTPUT_LAG_BLE,
+	OUTPUT_RAW_BMX160,
+	OUTPUT_RAW_HMC,
+	OUTPUT_RAW_HMC_BMX,
 	OUTPUT_BLE
 };
 
@@ -66,6 +69,7 @@ void send_rudder_over_ble(rudder_t *rudder);
 #ifdef SD_SENSOR_BOX_LAG
 void send_lag_over_ble(lag_t *lag);
 #endif
+void toggle_raw_output(uint8_t sensor);
 uint8_t output_magn_calib(void);
 uint8_t output_accel_calib(void);
 uint8_t output_gyro_calib(void);

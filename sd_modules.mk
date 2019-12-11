@@ -83,7 +83,15 @@ SD_INC += ./sd_modules/bmx160/MadgwickAHRS
 SD_INC += ./sd_modules/bmx160
 endif
 
+#FUSION
+ifeq ($(USE_FUSION_MODULE), TRUE)
+SD_SRC += ./sd_modules/bmx160/Fusion/FusionAhrs.c
+SD_SRC += ./sd_modules/bmx160/Fusion/FusionBias.c
+SD_SRC += ./sd_modules/bmx160/Fusion/FusionCompass.c
+SD_INC += ./sd_modules/bmx160/Fusion
 #LAG
+endif
+
 ifeq ($(USE_LAG_MODULE), TRUE)
 SD_SRC += ./sd_modules/lag/lag.c
 SD_INC += ./sd_modules/lag

@@ -55,6 +55,13 @@ extern rudder_t *rudder;
 extern lag_t *lag;
 #endif
 
+#ifdef USE_BMX160_MODULE
+#include "bmx160_i2c.h"
+extern bmx160_t bmx160;
+extern struct bmm150_dev bmm;
+extern volatile float beta;
+#endif
+
 #ifdef USE_HMC6343_MODULE
 #include "hmc6343_i2c.h"
 extern hmc6343_t *hmc6343;
@@ -479,8 +486,14 @@ void cmd_get_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			r_rudder->center_degrees);
 	chprintf(SHELL_IFACE, "\"RudderRightNative\":%d,\r\n\t\t\t",
 			(uint16_t) r_rudder->max_native);
-	chprintf(SHELL_IFACE, "\"RudderRightDegrees\":%f\r\n\t\t\t",
+	chprintf(SHELL_IFACE, "\"RudderRightDegrees\":%f,\r\n\t\t\t",
 			r_rudder->max_degrees);
+	chprintf(SHELL_IFACE, "\"CompassRawOffsetX\":%f,\r\n\t\t\t",
+				bmx160.mag_offset.x);
+	chprintf(SHELL_IFACE, "\"CompassRawOffsetY\":%f,\r\n\t\t\t",
+					bmx160.mag_offset.y);
+	chprintf(SHELL_IFACE, "\"CompassRawOffsetZ\":%f\r\n\t\t\t",
+					bmx160.mag_offset.z);
 	chprintf(SHELL_IFACE, "}\r\n\t}\r\n");
 	chSemSignal(&usart1_semaph);
 }
@@ -642,6 +655,42 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 				chprintf(chp, "Error: no value\r\n");
 			}
 
+		} else if (strcmp(argv[0], "CompassRawOffsetX") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val = atof(argv[1]);
+				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				eeprom_write(EEPROM_MAGN_X_OFFSET_ADDR, (uint8_t*) &calib_val,
+						4);
+				chprintf(chp, "Saved CompassRawOffsetX value: %f\r\n", calib_val);
+				bmx160.mag_offset.x = calib_val;
+				//microsd_update_calibfile();
+			} else {
+				chprintf(chp, "Error: no value\r\n");
+			}
+		} else if (strcmp(argv[0], "CompassRawOffsetY") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val = atof(argv[1]);
+				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				eeprom_write(EEPROM_MAGN_Y_OFFSET_ADDR, (uint8_t*) &calib_val,
+						4);
+				chprintf(chp, "Saved CompassRawOffsetY value: %f\r\n", calib_val);
+				bmx160.mag_offset.y = calib_val;
+				//microsd_update_calibfile();
+			} else {
+				chprintf(chp, "Error: no value\r\n");
+			}
+		} else if (strcmp(argv[0], "CompassRawOffsetZ") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val = atof(argv[1]);
+				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				eeprom_write(EEPROM_MAGN_X_OFFSET_ADDR, (uint8_t*) &calib_val,
+						4);
+				chprintf(chp, "Saved CompassRawOffsetZ value: %f\r\n", calib_val);
+				bmx160.mag_offset.z = calib_val;
+				//microsd_update_calibfile();
+			} else {
+				chprintf(chp, "Error: no value\r\n");
+			}
 		}
 #ifdef USE_BLE_MODULE
 		else if (strcmp(argv[0], "rudder_left") == 0) {

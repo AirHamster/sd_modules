@@ -120,6 +120,10 @@ uint8_t hmc6343_read_mag_data(hmc6343_t *hmc){
 		hmc->my16 = (buff[2] << 8) | buff[3];
 		hmc->mz16 = (buff[4] << 8) | buff[5];
 
+		hmc->mx = (float)hmc->my16 * 0.00002628570058 - 0.2991288159;
+		hmc->my = (float)hmc->mx16 * 0.00004114513763 + 0.08083025263;
+		hmc->mz = (float)hmc->mz16 * 0.00006280030807 - 0.4764088021;
+
 		//hmc->yaw = hmc->yaw16 / 10.0;
 		//hmc->pitch = hmc->pitch16 / 10.0;
 		//hmc->roll = hmc->roll16 / 10.0;
