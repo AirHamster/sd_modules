@@ -481,12 +481,6 @@ void cmd_get_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			(uint16_t) r_rudder->max_native);
 	chprintf(SHELL_IFACE, "\"RudderRightDegrees\":%f\r\n\t\t\t",
 			r_rudder->max_degrees);
-	chprintf(SHELL_IFACE, "\"WindowSize1\":%d,\r\n\t\t\t",
-			paramSD.WindowSize1);
-	chprintf(SHELL_IFACE, "\"WindowSize2\":%d,\r\n\t\t\t",
-			paramSD.WindowSize2);
-	chprintf(SHELL_IFACE, "\"WindowSize3\":%d\r\n\t\t\t",
-			paramSD.WindowSize3);
 	chprintf(SHELL_IFACE, "}\r\n\t}\r\n");
 	chSemSignal(&usart1_semaph);
 }
