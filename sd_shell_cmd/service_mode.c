@@ -486,20 +486,14 @@ void cmd_get_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			r_rudder->center_degrees);
 	chprintf(SHELL_IFACE, "\"RudderRightNative\":%d,\r\n\t\t\t",
 			(uint16_t) r_rudder->max_native);
-	chprintf(SHELL_IFACE, "\"RudderRightDegrees\":%f\r\n\t\t\t",
+	chprintf(SHELL_IFACE, "\"RudderRightDegrees\":%f,\r\n\t\t\t",
 			r_rudder->max_degrees);
-	chprintf(SHELL_IFACE, "\"CompassRawOffsetX\":%f\r\n\t\t\t",
+	chprintf(SHELL_IFACE, "\"CompassRawOffsetX\":%f,\r\n\t\t\t",
 				bmx160.mag_offset.x);
-	chprintf(SHELL_IFACE, "\"CompassRawOffsetY\":%f\r\n\t\t\t",
+	chprintf(SHELL_IFACE, "\"CompassRawOffsetY\":%f,\r\n\t\t\t",
 					bmx160.mag_offset.y);
 	chprintf(SHELL_IFACE, "\"CompassRawOffsetZ\":%f\r\n\t\t\t",
 					bmx160.mag_offset.z);
-	chprintf(SHELL_IFACE, "\"WindowSize1\":%d,\r\n\t\t\t",
-			paramSD.WindowSize1);
-	chprintf(SHELL_IFACE, "\"WindowSize2\":%d,\r\n\t\t\t",
-			paramSD.WindowSize2);
-	chprintf(SHELL_IFACE, "\"WindowSize3\":%d\r\n\t\t\t",
-			paramSD.WindowSize3);
 	chprintf(SHELL_IFACE, "}\r\n\t}\r\n");
 	chSemSignal(&usart1_semaph);
 }
