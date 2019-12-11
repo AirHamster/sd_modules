@@ -299,11 +299,15 @@ void output_gyro_raw(void){
 			//chprintf(SHELL_IFACE, ",%f,%f,%f,%f,%f,%f,%f,%f,%f\r\n", bmx160.ax, bmx160.ay, bmx160.az, bmx160.gx, bmx160.gy, bmx160.gz, bmx160.mx, bmx160.my, bmx160.mz);
 	if(output->type == OUTPUT_RAW_BMX160){
 	chprintf(SHELL_IFACE, ",%f,%f,%f,%f,%f\r\n", bmx160.mx, bmx160.my, bmx160.mz, bno055->d_euler_hpr.p, bno055->d_euler_hpr.r);
-	}else if(output->type == OUTPUT_RAW_HMC){
+	}
+#ifdef USE_HMC6343_MODULE
+	else if(output->type == OUTPUT_RAW_HMC){
 		chprintf(SHELL_IFACE, ",%d,%d,%d,%f,%f\r\n", hmc6343->mx16, hmc6343->my16, hmc6343->mz16, bno055->d_euler_hpr.p, bno055->d_euler_hpr.r);
-	}else if(output->type == OUTPUT_RAW_HMC_BMX){
+	}
+	else if(output->type == OUTPUT_RAW_HMC_BMX){
 		chprintf(SHELL_IFACE, ",%f,%f,%f,%f,%f\r\n", hmc6343->mx, hmc6343->my, hmc6343->mz, bno055->d_euler_hpr.p, bno055->d_euler_hpr.r);
 	}
+#endif
 	chSemSignal(&usart1_semaph);
 		/*	chprintf(SHELL_IFACE, "%f,", bmx160.ay);
 			chprintf(SHELL_IFACE, "%f,", bmx160.az);

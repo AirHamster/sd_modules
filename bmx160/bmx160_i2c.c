@@ -267,7 +267,10 @@ static THD_FUNCTION(bmx160_thread, arg) {
 	} else {
 		chprintf(SHELL_IFACE, "\r\nBSX library NOT initialized\r\n");
 	}
-
+	bmx160_read_calib_from_eeprom(&bmx160);
+	hardIronBias.axis.x = bmx160.mag_offset.x;
+	hardIronBias.axis.y = bmx160.mag_offset.y;
+	hardIronBias.axis.z = bmx160.mag_offset.z;
 	// Initialise gyroscope bias correction algorithm
 	FusionBiasInitialise(&fusionBias, 0.5f, samplePeriod); // stationary threshold = 0.5 degrees per second
 
@@ -283,6 +286,13 @@ static THD_FUNCTION(bmx160_thread, arg) {
 		/* To read both Accel and Gyro data */
 		if (bmx160.calib_flag == 1) {
 			bmx160_mag_calibration(bmx160.magBias, bmx160.magScale);
+			bmx160.mag_offset.x = bmx160.magBias[0];
+			bmx160.mag_offset.y = bmx160.magBias[1];
+			bmx160.mag_offset.z = bmx160.magBias[2];
+			bmx160_save_calib_to_eeprom(&bmx160);
+			hardIronBias.axis.x = bmx160.mag_offset.x;
+			hardIronBias.axis.y = bmx160.mag_offset.y;
+			hardIronBias.axis.z = bmx160.mag_offset.z;
 			bmx160.calib_flag = 0;
 		}
 
@@ -408,14 +418,14 @@ static THD_FUNCTION(bmx160_thread, arg) {
 		if (eulerAngles.angle.yaw < 0.0){
 			eulerAngles.angle.yaw += 360.0;
 		}
-
+		bmx160.yaw = eulerAngles.angle.yaw;
 
 		//eulerAngles.angle.yaw = 180.0 - eulerAngles.angle.yaw;
 
-		chprintf(SHELL_IFACE, "Roll = %0.1f, Pitch = %0.1f, Yaw = %0.1f\r\n",
+	/*	chprintf(SHELL_IFACE, "Roll = %0.1f, Pitch = %0.1f, Yaw = %0.1f\r\n",
 				eulerAngles.angle.roll, eulerAngles.angle.pitch,
 				eulerAngles.angle.yaw);
-
+*/
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(10));
 	}
 }
@@ -687,7 +697,7 @@ void bmx160_mag_calibration(float * dest1, float * dest2) {
 	//if (MPU9250Mmode == 0x02)
 		//sample_count = 128; // at 8 Hz ODR, new mag data is available every 125 ms
 	//if (MPU9250Mmode == 0x06)
-		sample_count = 800; // at 100 Hz ODR, new mag data is available every 10 ms
+		sample_count = 1200; // at 100 Hz ODR, new mag data is available every 10 ms
 	for (ii = 0; ii < sample_count; ii++) {
 
 		bmi160_get_sensor_data((BMI160_ACCEL_SEL | BMI160_GYRO_SEL), &accel, &gyro, &bmi);
