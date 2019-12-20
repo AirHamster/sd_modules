@@ -26,7 +26,12 @@
 #include "sailDataMath.h"
 #include "sd_math.h"
 #include "eeprom.h"
-
+#ifdef USE_BMX160_MODULE
+#include "bmx160_i2c.h"
+extern bmx160_t bmx160;
+extern struct bmm150_dev bmm;
+extern volatile float beta;
+#endif
 extern windsensor_t *wind;
 extern bno055_t *bno055;
 extern ubx_nav_pvt_t *pvt_box;
@@ -121,7 +126,7 @@ void math_copy_sensor_values(float *lastSensorValues) {
 //	chprintf(SHELL_IFACE, "AWS: %f\r\n", lastSensorValues[AWS]);
 	lastSensorValues[CMG] = (float) pvt_box->headMot;	//cog	gps
 //	chprintf(SHELL_IFACE, "CMG: %f\r\n", lastSensorValues[CMG]);
-	lastSensorValues[HDM] = bno055->d_euler_hpr.h;
+	lastSensorValues[HDM] = bmx160.yaw;
 //	chprintf(SHELL_IFACE, "HDM: %f\r\n", lastSensorValues[HDM]);
 	lastSensorValues[HEEL] = bno055->d_euler_hpr.r;
 //	chprintf(SHELL_IFACE, "HEEL: %f\r\n", lastSensorValues[HEEL]);

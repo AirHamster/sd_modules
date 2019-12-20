@@ -421,8 +421,8 @@ void send_json(void)
 		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc5883->yaw);
 #endif
 #ifdef USE_BMX160_MODULE
-		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
-		chprintf(SHELL_IFACE, "\"hmc_yaw  \":%d,\r\n\t\t\t", (uint16_t)bmx160.yaw);
+		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bmx160.yaw);
+		chprintf(SHELL_IFACE, "\"bno_yaw  \":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
 		/*chprintf(SHELL_IFACE, "\"bmx_pitch\":%f,\r\n\t\t\t", bmx160.pitch);
 		chprintf(SHELL_IFACE, "\"bmx_roll \":%f,\r\n\t\t\t", bmx160.roll);
 */
@@ -517,6 +517,7 @@ void send_rudder_over_ble(rudder_t *rudder){
 #endif
 
 void cmd_mag_calibrate(BaseSequentialStream* chp, int argc, char* argv[]){
+	stop_all_tests();
 	bmx160.calib_flag = 1;
 }
 
@@ -584,11 +585,11 @@ void cmd_boot(BaseSequentialStream* chp, int argc, char* argv[]) {
 	chprintf(chp, "Entering bootloader after system reset");
 	chThdSleepMilliseconds(500);
 	chprintf(chp, ".");
-	chThdSleepMilliseconds(500);
+/*	chThdSleepMilliseconds(500);
 	chprintf(chp, ".");
 	chThdSleepMilliseconds(500);
 	chprintf(chp, ".");
-	chThdSleepMilliseconds(500);
+	chThdSleepMilliseconds(500);*/
 	chprintf(chp, "\r\n");
 
 	// *((unsigned long *)(SYMVAL(__ram0_end__) - 4)) = 0xDEADBEEF;
@@ -598,7 +599,7 @@ void cmd_boot(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 	 if (RTC->BKP0R == MAGIC_BOOTLOADER_NUMBER) {
 	 chprintf(chp, "Writed to the end of RAM %x, reset\r\n", RTC->BKP0R);
-	 chThdSleepMilliseconds(500);
+	// chThdSleepMilliseconds(500);
 	 NVIC_SystemReset();
 	 }else{
 		 chprintf(chp, "Comparsion failed\r\n");

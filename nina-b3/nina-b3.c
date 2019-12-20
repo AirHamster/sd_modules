@@ -171,10 +171,10 @@ static THD_FUNCTION(ble_thread, arg) {
 	output->ble = OUTPUT_RUDDER_BLE;
 	while (true) {
 #ifdef SD_MODULE_TRAINER
-		if (output->type == OUTPUT_TEST){
+	//	if (output->type == OUTPUT_TEST){
 						copy_to_ble();
 						nina_send_all(peer);
-		}
+	//	}
 
 						if (i++ == 10) {
 		remote_lag->is_avalible = 0;

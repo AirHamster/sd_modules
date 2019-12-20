@@ -687,17 +687,13 @@ void bmx160_mag_calibration(float * dest1, float * dest2) {
 	float mag_bias[3] = { 0, 0, 0 }, mag_scale[3] = { 0, 0, 0 };
 	float mag_max[3] = { -32767, -32767, -32767 }, mag_min[3] = { 32767,
 			32767, 32767 }, mag_temp[3] = { 0, 0, 0 };
-	//int16_t magCount[3];
-	chSemWait(&usart1_semaph);
-	chprintf((BaseSequentialStream*) &SD1, "Mag Calibration: Wave device in a figure eight until done!\r\n");
-	chSemSignal(&usart1_semaph);
-	chThdSleepMilliseconds(4000);
 
-// shoot for ~fifteen seconds of mag data
-	//if (MPU9250Mmode == 0x02)
-		//sample_count = 128; // at 8 Hz ODR, new mag data is available every 125 ms
-	//if (MPU9250Mmode == 0x06)
-		sample_count = 1200; // at 100 Hz ODR, new mag data is available every 10 ms
+	chSemWait(&usart1_semaph);
+	chprintf((BaseSequentialStream*) &SD1, "Mag Calibration: Wave device in all axis!\r\n");
+	chSemSignal(&usart1_semaph);
+	chThdSleepMilliseconds(2000);
+
+	sample_count = 1200; // at 100 Hz ODR, new mag data is available every 10 ms
 	for (ii = 0; ii < sample_count; ii++) {
 
 		bmi160_get_sensor_data((BMI160_ACCEL_SEL | BMI160_GYRO_SEL), &accel, &gyro, &bmi);
@@ -721,50 +717,49 @@ void bmx160_mag_calibration(float * dest1, float * dest2) {
 		libraryInput_ts.mag.data.z = bmm.data.z;
 		libraryInput_ts.mag.time_stamp = sensortime_1;
 		sensortime_1 += 10 * 1000;
-			bsx_dostep(&libraryInput_ts);
-			bsx_get_magrawdata(&rawMagData);
-			/* bmx160.mx = rawMagData.x / 100.0;	//microTesla to Gauss
-			bmx160.my = rawMagData.y / 100.0;
-			bmx160.mz = rawMagData.z / 100.0; */
+		bsx_dostep(&libraryInput_ts);
+		bsx_get_magrawdata(&rawMagData);
 
 		bmx160.mx = rawMagData.x;	//microTesla to Gauss
 		bmx160.my = rawMagData.y;
 		bmx160.mz = rawMagData.z;
-
-			chSemWait(&usart1_semaph);
+/*
+		chSemWait(&usart1_semaph);
 				chprintf((BaseSequentialStream*)&SD1, "MX: %f, MY: %f, MZ: %f\r\n",
 						bmx160.magCount[0], bmx160.magCount[1], bmx160.magCount[2]);
 		chSemSignal(&usart1_semaph);
+		 */
+		if (ii % 120 == 0) {
+			chSemWait(&usart1_semaph);
+			chprintf(SHELL_IFACE, "Calibration progress: %d%%\r\n", (uint8_t)(((ii+1) / 120) * 10));
+			chSemSignal(&usart1_semaph);
+		}
+
 		bmx160.magCount[0] = bmx160.mx;
 		bmx160.magCount[1] = bmx160.my;
 		bmx160.magCount[2] = bmx160.mz;
-		//MPU9250readMagData(mag_temp);  // Read the mag data
+
 		for (int jj = 0; jj < 3; jj++) {
 			if (bmx160.magCount[jj] > mag_max[jj])
 				mag_max[jj] = bmx160.magCount[jj];
 			if (bmx160.magCount[jj] < mag_min[jj])
 				mag_min[jj] = bmx160.magCount[jj];
 		}
-		//if (MPU9250Mmode == 0x02)
-			//delay(135);  // at 8 Hz ODR, new mag data is available every 125 ms
-		//if (MPU9250Mmode == 0x06)
+
 		chThdSleepMilliseconds(11);  // at 100 Hz ODR, new mag data is available every 10 ms
 	}
 
-	chSemWait(&usart1_semaph);
+/*	chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*) &SD1, "max x = %f, max y = %f, max z = %f\r\n", mag_max[0], mag_max[1], mag_max[2]);
 		chprintf((BaseSequentialStream*) &SD1, "min x = %f, min y = %f, min z = %f\r\n", mag_min[0], mag_min[1], mag_min[2]);
 	chSemSignal(&usart1_semaph);
+	*/
 // Get hard iron correction
 	mag_bias[0] = (mag_max[0] + mag_min[0]) / 2; // get average x mag bias in counts
 	mag_bias[1] = (mag_max[1] + mag_min[1]) / 2; // get average y mag bias in counts
 	mag_bias[2] = (mag_max[2] + mag_min[2]) / 2; // get average z mag bias in counts
 
-	//dest1[0] = (float) mag_bias[0] * mpu->mRes * mpu->magCalibration[0]; // save mag biases in G for main program
-	//dest1[1] = (float) mag_bias[1] * mpu->mRes * mpu->magCalibration[1];
-	//dest1[2] = (float) mag_bias[2] * mpu->mRes * mpu->magCalibration[2];
-
-	dest1[0] =  mag_bias[0]; // save mag biases in G for main program
+		dest1[0] =  mag_bias[0]; // save mag biases in G for main program
 	dest1[1] =  mag_bias[1];
 	dest1[2] =  mag_bias[2];
 
@@ -781,7 +776,7 @@ void bmx160_mag_calibration(float * dest1, float * dest2) {
 	dest2[2] = avg_rad / ( mag_scale[2]);
 
 	chSemWait(&usart1_semaph);
-	chprintf((BaseSequentialStream*) &SD1, "Mag Calibration done!\r\ndest1 x = %f, dest1 y = %f, dest1 z = %f\r\ndest2 x = %f, dest2 y = %f, dest2 z = %f\r\n",
+	chprintf((BaseSequentialStream*) &SD1, "Offset X = %f, Offset Y = %f, Offset Z = %f\r\nScale X = %f, Scale Y = %f, Scale Z = %f\r\nMag Calibration done!\r\n",
 				dest1[0], dest1[1], dest1[2], dest2[0], dest2[1], dest2[2]);
 	chSemSignal(&usart1_semaph);
 }

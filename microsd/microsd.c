@@ -31,6 +31,13 @@ extern windsensor_t *wind;
 #include "lag.h"
 #include "adc.h"
 
+#ifdef USE_BMX160_MODULE
+#include "bmx160_i2c.h"
+extern bmx160_t bmx160;
+extern struct bmm150_dev bmm;
+extern volatile float beta;
+#endif
+
 microsd_t *microsd;
 microsd_fsm_t *microsd_fsm;
 extern lag_t *r_lag;
@@ -547,7 +554,7 @@ static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
 	memset(megastring, 0, 256);
 	sprintf((char*)megastring, "%d-%d,%d,%d,%d,%f,%f,%f,%d,%d,%f,%f,%d,%f,%d,%f,%f\r\n",
 			pvt_box->month, pvt_box->day, pvt_box->hour, pvt_box->min, pvt_box->sec, pvt_box->lat / 10000000.0f, pvt_box->lon / 10000000.0f,
-			(float) (pvt_box->gSpeed * 0.0036), (uint16_t) (pvt_box->headMot / 100000), (uint16_t)bno055->d_euler_hpr.h, bno055->d_euler_hpr.p,
+			(float) (pvt_box->gSpeed * 0.0036), (uint16_t) (pvt_box->headMot / 100000), (uint16_t)bmx160.yaw, bno055->d_euler_hpr.p,
 			bno055->d_euler_hpr.r, wind->direction, wind->speed, pvt_box->numSV, r_rudder->degrees, r_lag->meters);
 
 	f_lseek(&logfile, f_size(&logfile));
@@ -568,6 +575,7 @@ static void microsd_write_logfile_header(BaseSequentialStream *chp) {
 	FILINFO fno;
 	int written;
 	f_lseek(&logfile, f_size(&logfile));
+	//if (microsd->file_created == 0) {
 	written =
 			f_printf(&logfile, "DATE,HOUR,MIN,SEC,LAT,LON,SPD,COG_GPS,YAW,PITCH,ROLL,WIND_DIR,WIND_SPD,SAT,RDR,LOG\r\n");
 
@@ -577,6 +585,7 @@ static void microsd_write_logfile_header(BaseSequentialStream *chp) {
 		//chprintf(chp, "FS: f_puts(\"Hello World\",\"%s\") succeeded\r\n", path_to_file);
 	}
 	f_sync(&logfile);
+	//}
 }
 
 void start_microsd_module(void) {
