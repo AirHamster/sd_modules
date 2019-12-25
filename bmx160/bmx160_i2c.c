@@ -250,7 +250,7 @@ static THD_FUNCTION(bmx160_thread, arg) {
 	uint8_t i;
 	chRegSetThreadName("bmx160 Thread");
 	chThdSleepMilliseconds(500);
-	//i2cStart(&GYRO_IF, &bmx160_i2c_cfg);
+	i2cStart(&GYRO_IF, &bmx160_i2c_cfg);
 	bmx160_full_init();
 	chThdSleepMilliseconds(2500);
 	s_input.accelspec = (BSX_U8 *) &bsxLibConfAcc;
@@ -268,9 +268,10 @@ static THD_FUNCTION(bmx160_thread, arg) {
 		chprintf(SHELL_IFACE, "\r\nBSX library NOT initialized\r\n");
 	}
 	bmx160_read_calib_from_eeprom(&bmx160);
-	hardIronBias.axis.x = bmx160.mag_offset.x;
+/*	hardIronBias.axis.x = bmx160.mag_offset.x;
 	hardIronBias.axis.y = bmx160.mag_offset.y;
 	hardIronBias.axis.z = bmx160.mag_offset.z;
+	*/
 	// Initialise gyroscope bias correction algorithm
 	FusionBiasInitialise(&fusionBias, 0.5f, samplePeriod); // stationary threshold = 0.5 degrees per second
 
@@ -360,7 +361,18 @@ static THD_FUNCTION(bmx160_thread, arg) {
 		bmx160.mx = rawMagData.x;	//microTesla to Gauss
 		bmx160.my = rawMagData.y;
 		bmx160.mz = rawMagData.z;
+/*		chprintf(SHELL_IFACE, "X = %0.1f, Y = %0.1f, Z = %0.1f\r\n",
+				bmx160.mx, bmx160.my,
+				bmx160.mz);
 
+			chprintf(SHELL_IFACE, "X = %0.1f, Y = %0.1f, Z = %0.1f\r\n",
+					bmx160.ax, bmx160.ay,
+					bmx160.az);
+
+			chprintf(SHELL_IFACE, "X = %0.1f, Y = %0.1f, Z = %0.1f\r\n\r\n",
+					bmx160.gx, bmx160.gy,
+					bmx160.gz);
+*/
 		// Calibrate gyroscope
 		FusionVector3 uncalibratedGyroscope = {
 				.axis.x = bmx160.gx, /* replace this value with actual gyroscope x axis measurement in lsb */
@@ -419,7 +431,8 @@ static THD_FUNCTION(bmx160_thread, arg) {
 			eulerAngles.angle.yaw += 360.0;
 		}
 		bmx160.yaw = eulerAngles.angle.yaw;
-
+		bmx160.pitch = eulerAngles.angle.pitch;
+		bmx160.roll = eulerAngles.angle.roll;
 		//eulerAngles.angle.yaw = 180.0 - eulerAngles.angle.yaw;
 
 	/*	chprintf(SHELL_IFACE, "Roll = %0.1f, Pitch = %0.1f, Yaw = %0.1f\r\n",
