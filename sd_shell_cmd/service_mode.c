@@ -55,6 +55,13 @@ extern rudder_t *rudder;
 extern lag_t *lag;
 #endif
 
+#ifdef USE_BMX160_MODULE
+#include "bmx160_i2c.h"
+extern bmx160_t bmx160;
+extern struct bmm150_dev bmm;
+extern volatile float beta;
+#endif
+
 #ifdef USE_HMC6343_MODULE
 #include "hmc6343_i2c.h"
 extern hmc6343_t *hmc6343;
@@ -248,8 +255,7 @@ void cmd_compass(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 #ifdef USE_BNO055_MODULE
 void cmd_bno055(BaseSequentialStream* chp, int argc, char* argv[]) {
-	float dest1[3];
-	float dest2[3];
+
 	if (output->type != OUTPUT_SERVICE) {
 		return;
 	}
@@ -377,6 +383,7 @@ void cmd_bno055(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 #ifdef USE_UBLOX_GPS_MODULE
 void cmd_gps(BaseSequentialStream* chp, int argc, char* argv[]) {
+
 	if (output->type != OUTPUT_SERVICE) {
 		return;
 	}
@@ -466,19 +473,34 @@ void cmd_get_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			paramSD.RudderCorrection);
 	chprintf(SHELL_IFACE, "\"WindCorrection\":%f,\r\n\t\t\t",
 			paramSD.WindCorrection);
-	chprintf(SHELL_IFACE, "\"WindowSize1\":%d,\r\n\t\t\t",
-			paramSD.WindowSize1);
-	chprintf(SHELL_IFACE, "\"WindowSize2\":%d,\r\n\t\t\t",
-			paramSD.WindowSize2);
-	chprintf(SHELL_IFACE, "\"WindowSize3\":%d,\r\n\t\t\t",
-			paramSD.WindowSize3);
+	chprintf(SHELL_IFACE, "\"WindowSize1\":%d,\r\n\t\t\t", paramSD.WindowSize1);
+	chprintf(SHELL_IFACE, "\"WindowSize2\":%d,\r\n\t\t\t", paramSD.WindowSize2);
+	chprintf(SHELL_IFACE, "\"WindowSize3\":%d,\r\n\t\t\t", paramSD.WindowSize3);
+	chprintf(SHELL_IFACE, "\"RudderLeftNative\":%d,\r\n\t\t\t",
+			(uint16_t) r_rudder->min_native);
+	chprintf(SHELL_IFACE, "\"RudderLeftDegrees\":%f,\r\n\t\t\t",
+			r_rudder->min_degrees);
+	chprintf(SHELL_IFACE, "\"RudderCenterNative\":%d,\r\n\t\t\t",
+			(uint16_t) r_rudder->center_native);
+	chprintf(SHELL_IFACE, "\"RudderCenterDegrees\":%f,\r\n\t\t\t",
+			r_rudder->center_degrees);
+	chprintf(SHELL_IFACE, "\"RudderRightNative\":%d,\r\n\t\t\t",
+			(uint16_t) r_rudder->max_native);
+	chprintf(SHELL_IFACE, "\"RudderRightDegrees\":%f,\r\n\t\t\t",
+			r_rudder->max_degrees);
+	chprintf(SHELL_IFACE, "\"CompassRawOffsetX\":%f,\r\n\t\t\t",
+				bmx160.mag_offset.x);
+	chprintf(SHELL_IFACE, "\"CompassRawOffsetY\":%f,\r\n\t\t\t",
+					bmx160.mag_offset.y);
+	chprintf(SHELL_IFACE, "\"CompassRawOffsetZ\":%f\r\n\t\t\t",
+					bmx160.mag_offset.z);
 	chprintf(SHELL_IFACE, "}\r\n\t}\r\n");
 	chSemSignal(&usart1_semaph);
 }
 
 void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 	float calib_val;
-	int8_t calib_val_i;
+	int16_t calib_val_i;
 	if (argc != 0) {
 		if (strcmp(argv[0], "help") == 0) {
 			chprintf(chp,
@@ -489,64 +511,89 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
 				eeprom_write(EEPROM_MATH_COMPASS_CORRECTION,
 						(uint8_t*) &calib_val, 4);
+				chprintf(chp, "Saved CompassCorrection value: %f\r\n",
+						calib_val);
+				paramSD.CompassCorrection = calib_val;
+				microsd_update_calibfile();
+			} else {
+				chprintf(chp, "Error: no value\r\n");
 			}
-			chprintf(chp, "Saved CompassCorrection value: %f\r\n", calib_val);
-			paramSD.CompassCorrection = calib_val;
-
 		} else if (strcmp(argv[0], "HSPCorrection") == 0) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
 				eeprom_write(EEPROM_MATH_HSP_CORRECTION, (uint8_t*) &calib_val,
 						4);
+				chprintf(chp, "Saved HSPCorrection value: %f\r\n", calib_val);
+				paramSD.HSPCorrection = calib_val;
+				microsd_update_calibfile();
+			} else {
+				chprintf(chp, "Error: no value\r\n");
 			}
-			chprintf(chp, "Saved HSPCorrection value: %f\r\n", calib_val);
-			paramSD.HSPCorrection = calib_val;
 		} else if (strcmp(argv[0], "HeelCorrection") == 0) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
 				eeprom_write(EEPROM_MATH_HEEL_CORRECTION, (uint8_t*) &calib_val,
 						4);
+				chprintf(chp, "Saved HeelCorrection value: %f\r\n", calib_val);
+				paramSD.HeelCorrection = calib_val;
+				microsd_update_calibfile();
+			} else {
+				chprintf(chp, "Error: no value\r\n");
 			}
-			chprintf(chp, "Saved HeelCorrection value: %f\r\n", calib_val);
-			paramSD.HeelCorrection = calib_val;
 		} else if (strcmp(argv[0], "MagneticDeclanation") == 0) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
 				eeprom_write(EEPROM_MATH_DECLANATION_CORRECTION,
 						(uint8_t*) &calib_val, 4);
+				chprintf(chp, "Saved MagneticDeclanation value: %f\r\n",
+						calib_val);
+				paramSD.MagneticDeclanation = calib_val;
+				microsd_update_calibfile();
+			} else {
+				chprintf(chp, "Error: no value\r\n");
 			}
-			chprintf(chp, "Saved MagneticDeclanation value: %f\r\n", calib_val);
-			paramSD.MagneticDeclanation = calib_val;
 		} else if (strcmp(argv[0], "PitchCorrection") == 0) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
 				eeprom_write(EEPROM_MATH_PITCH_CORRECTION,
 						(uint8_t*) &calib_val, 4);
+				chprintf(chp, "Saved PitchCorrection value: %f\r\n", calib_val);
+				paramSD.PitchCorrection = calib_val;
+				microsd_update_calibfile();
+			} else {
+				chprintf(chp, "Error: no value\r\n");
 			}
-			chprintf(chp, "Saved PitchCorrection value: %f\r\n", calib_val);
-			paramSD.PitchCorrection = calib_val;
 		} else if (strcmp(argv[0], "RudderCorrection") == 0) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
 				eeprom_write(EEPROM_MATH_RUDDER_CORRECTION,
 						(uint8_t*) &calib_val, 4);
+
+				chprintf(chp, "Saved RudderCorrection value: %f\r\n",
+						calib_val);
+				paramSD.RudderCorrection = calib_val;
+				microsd_update_calibfile();
+			} else {
+				chprintf(chp, "Error: no value\r\n");
 			}
-			chprintf(chp, "Saved RudderCorrection value: %f\r\n", calib_val);
-			paramSD.RudderCorrection = calib_val;
 		} else if (strcmp(argv[0], "WindCorrection") == 0) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
 				eeprom_write(EEPROM_MATH_WIND_CORRECTION, (uint8_t*) &calib_val,
 						4);
+
+				chprintf(chp, "Saved WindCorrection value: %f\r\n", calib_val);
+				paramSD.WindCorrection = calib_val;
+				microsd_update_calibfile();
+			} else {
+				chprintf(chp, "Error: no value\r\n");
 			}
-			chprintf(chp, "Saved WindCorrection value: %f\r\n", calib_val);
-			paramSD.WindCorrection = calib_val;
 		} else if (strcmp(argv[0], "WindowSize1") == 0) {
 			if (strlen(argv[1]) != 0) {
 				calib_val_i = atoi(argv[1]);
@@ -557,10 +604,14 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 					chprintf(chp, "Saved WindowSize1 value: %d\r\n",
 							calib_val_i);
 					paramSD.WindowSize1 = calib_val_i;
+					microsd_update_calibfile();
+
 				} else {
 					chprintf(chp,
 							"Saving WindowSize1 error: value is greater than FILTER_BUFFER_SIZE\r\n");
 				}
+			} else {
+				chprintf(chp, "Error: no value %f\r\n");
 			}
 
 		} else if (strcmp(argv[0], "WindowSize2") == 0) {
@@ -573,10 +624,14 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 					chprintf(chp, "Saved WindowSize2 value: %d\r\n",
 							calib_val_i);
 					paramSD.WindowSize2 = calib_val_i;
+					microsd_update_calibfile();
+
 				} else {
 					chprintf(chp,
 							"Saving WindowSize2 error: value is greater than FILTER_BUFFER_SIZE\r\n");
 				}
+			} else {
+				chprintf(chp, "Error: no value\r\n");
 			}
 
 		} else if (strcmp(argv[0], "WindowSize3") == 0) {
@@ -590,12 +645,52 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 					chprintf(chp, "Saved WindowSize3 value: %d\r\n",
 							calib_val_i);
 					paramSD.WindowSize3 = calib_val_i;
+					microsd_update_calibfile();
+
 				} else {
 					chprintf(chp,
 							"Saving WindowSize3 error: value is greater than FILTER_BUFFER_SIZE\r\n");
 				}
+			} else {
+				chprintf(chp, "Error: no value\r\n");
 			}
 
+		} else if (strcmp(argv[0], "CompassRawOffsetX") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val = atof(argv[1]);
+				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				eeprom_write(EEPROM_MAGN_X_OFFSET_ADDR, (uint8_t*) &calib_val,
+						4);
+				chprintf(chp, "Saved CompassRawOffsetX value: %f\r\n", calib_val);
+				bmx160.mag_offset.x = calib_val;
+				//microsd_update_calibfile();
+			} else {
+				chprintf(chp, "Error: no value\r\n");
+			}
+		} else if (strcmp(argv[0], "CompassRawOffsetY") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val = atof(argv[1]);
+				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				eeprom_write(EEPROM_MAGN_Y_OFFSET_ADDR, (uint8_t*) &calib_val,
+						4);
+				chprintf(chp, "Saved CompassRawOffsetY value: %f\r\n", calib_val);
+				bmx160.mag_offset.y = calib_val;
+				//microsd_update_calibfile();
+			} else {
+				chprintf(chp, "Error: no value\r\n");
+			}
+		} else if (strcmp(argv[0], "CompassRawOffsetZ") == 0) {
+			if (strlen(argv[1]) != 0) {
+				calib_val = atof(argv[1]);
+				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				eeprom_write(EEPROM_MAGN_X_OFFSET_ADDR, (uint8_t*) &calib_val,
+						4);
+				chprintf(chp, "Saved CompassRawOffsetZ value: %f\r\n", calib_val);
+				bmx160.mag_offset.z = calib_val;
+				//microsd_update_calibfile();
+			} else {
+				chprintf(chp, "Error: no value\r\n");
+			}
 		}
 #ifdef USE_BLE_MODULE
 		else if (strcmp(argv[0], "rudder_left") == 0) {
@@ -613,8 +708,10 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 					r_rudder->min_native = r_rudder->native;
 					r_rudder_dots->x1 = r_rudder->native;
 					r_rudder_dots->y1 = calib_val;
-									r_rudder->min_degrees = calib_val;
+					r_rudder->min_degrees = calib_val;
 					calculate_polynom_coefs(r_rudder_dots, r_rudder_coefs);
+					microsd_update_calibfile();
+
 				} else {
 					chprintf(chp,
 							"Saving left rudder value error: value not valid\r\n");
@@ -633,9 +730,13 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 												(uint8_t*) &calib_val, 4);
 					chprintf(chp, "Saved central rudder value: %f native and %f degrees\r\n",
 							r_rudder->native, calib_val);
+					r_rudder->center_native = r_rudder->native;
 					r_rudder_dots->x2 = r_rudder->native;
 					r_rudder_dots->y2 = calib_val;
+					r_rudder->center_degrees = calib_val;
 					calculate_polynom_coefs(r_rudder_dots, r_rudder_coefs);
+					microsd_update_calibfile();
+
 				} else {
 					chprintf(chp,
 							"Saving center rudder value error: value not valid\r\n");
@@ -655,10 +756,12 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 					chprintf(chp, "Saved right rudder value: %f native and %f degrees\r\n",
 							r_rudder->native, calib_val);
 					r_rudder->max_native = r_rudder->native;
-					r_rudder_dots->x1 = r_rudder->native;
-					r_rudder_dots->y1 = calib_val;
-									r_rudder->min_degrees = calib_val;
+					r_rudder_dots->x3 = r_rudder->native;
+					r_rudder_dots->y3 = calib_val;
+					r_rudder->max_degrees = calib_val;
 					calculate_polynom_coefs(r_rudder_dots, r_rudder_coefs);
+					microsd_update_calibfile();
+
 				} else {
 					chprintf(chp,
 							"Saving right rudder value error: value not valid\r\n");

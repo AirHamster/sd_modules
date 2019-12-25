@@ -20,8 +20,8 @@ endif
 #MPU9250 - 9-axis accel/gyro/magn chip
 ifeq ($(USE_MPU_9250_MODULE), TRUE)
 SD_SRC += ./sd_modules/mpu9250/mpu9250.c
-SD_SRC += ./sd_modules/mpu9250/MadgwickAHRS.c
-//SD_SRC += ./sd_modules/mpu9250/quaternionFilters.c
+#SD_SRC += ./sd_modules/mpu9250/MadgwickAHRS.c
+#SD_SRC += ./sd_modules/mpu9250/quaternionFilters.c
 SD_INC += ./sd_modules/mpu9250
 endif
 
@@ -75,13 +75,23 @@ ifeq ($(USE_BMX160_MODULE), TRUE)
 SD_SRC += ./sd_modules/bmx160/bmx160_i2c.c
 SD_SRC += ./sd_modules/bmx160/bmi160.c
 SD_SRC += ./sd_modules/bmx160/bmm150.c
-SD_SRC += ./sd_modules/mpu9250/MadgwickAHRS.c
-SD_SRC += ./sd_modules/mpu9250/quaternionFilters.c
+SD_SRC += ./sd_modules/bmx160/MadgwickAHRS/MadgwickAHRS.c
+#SD_SRC += ./sd_modules/bmx160/MahonyAHRS/MahonyAHRS.c
 SD_INC += ./sd_modules/bmx160/bsx_lite/Inc
+SD_INC += ./sd_modules/bmx160/MadgwickAHRS
+#SD_INC += ./sd_modules/bmx160/MahonyAHRS
 SD_INC += ./sd_modules/bmx160
 endif
 
+#FUSION
+ifeq ($(USE_FUSION_MODULE), TRUE)
+SD_SRC += ./sd_modules/bmx160/Fusion/FusionAhrs.c
+SD_SRC += ./sd_modules/bmx160/Fusion/FusionBias.c
+SD_SRC += ./sd_modules/bmx160/Fusion/FusionCompass.c
+SD_INC += ./sd_modules/bmx160/Fusion
 #LAG
+endif
+
 ifeq ($(USE_LAG_MODULE), TRUE)
 SD_SRC += ./sd_modules/lag/lag.c
 SD_INC += ./sd_modules/lag
@@ -120,6 +130,13 @@ ifeq (${USE_CHARGER_MODULE}, TRUE)
 SD_SRC += ./sd_modules/bq2560x/bq2560x.c
 SD_INC += ./sd_modules/bq2560x
 endif
+
+#BQ27441 fuel gauge module
+ifeq (${USE_FUEL_GAUGE_MODULE}, TRUE)
+SD_SRC += ./sd_modules/bq27441/bq27441.c
+SD_INC += ./sd_modules/bq27441
+endif
+
 # Shared variables
 ALLCSRC += $(SD_SRC)
 ALLINC  += $(SD_INC)

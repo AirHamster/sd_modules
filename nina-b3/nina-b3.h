@@ -87,6 +87,7 @@ void nina_get_remote_characs(uint16_t handle, uint16_t uuid);
 void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t value);
 uint8_t nina_parse_command(int8_t *strp);
 uint8_t nina_init_services(void);
+void copy_to_ble(void);
 uint8_t nina_wait_response(int8_t *at_command);
 
 #endif /* SD_MODULES_NINA_B3_NINA_B3_H_ */
