@@ -450,12 +450,10 @@ void send_json(void)
 		chprintf(SHELL_IFACE, "\"my \":%d,\r\n\t\t\t", (int16_t)hmc6343->my16);
 		chprintf(SHELL_IFACE, "\"mz \":%d,\r\n\t\t\t", (int16_t)hmc6343->mz16);*/
 #endif
-		chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
-		chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", bno055->d_euler_hpr.r);
-	//	chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t", bno055->calib_stat.magn);
-	//	chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t", bno055->calib_stat.accel);
-	//	chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t", bno055->calib_stat.gyro);
-	//	chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t", bno055->calib_stat.system);
+		chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bmx160.pitch);
+		chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", bmx160.roll);
+		//chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
+		//chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", bno055->d_euler_hpr.r);
 #endif
 #ifdef USE_UBLOX_GPS_MODULE
 		chprintf(SHELL_IFACE, "\"headMot\":%d,\r\n\t\t\t", (uint16_t)(pvt_box->headMot / 100000));
