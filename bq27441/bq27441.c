@@ -97,10 +97,10 @@ static uint8_t fuel_read_register(uint8_t command, uint8_t *buf, uint8_t num){
 		return -1;
 	}
 	memcpy(buf, rxbuff, num);
-	/*chSemWait(&usart1_semaph);
-		chprintf((BaseSequentialStream*) &SD1, "Readed from charger %d\r\n",
+	chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*) &SD1, "Readed from fuel %d\r\n",
 				rxbuff[0]);
-		chSemSignal(&usart1_semaph);*/
+		chSemSignal(&usart1_semaph);
 	return 0;
 
 }
