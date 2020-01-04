@@ -17,9 +17,10 @@
 #include "mcu-mcu_i2c.h"
 
 mcu_mcu_data_t *mcu_mcu_data;
+power_data_t power;
+power_data_t *power_data = &power;
 
-
-#ifdef SLAVE_MCU
+#ifdef MAIN_MCU
 const I2CConfig mcu_mcu_if_cfg = {
   0xD0D43C4C,
   0,
@@ -39,7 +40,7 @@ static THD_WORKING_AREA(mcu_mcu_thread_wa, 256);
 static THD_FUNCTION(mcu_mcu_thread, p) {
 	(void) p;
 	chRegSetThreadName("MCU-MCU Thd");
-	//i2cStart(&MCU_MCU_IF, &mcu_mcu_if_cfg);
+	i2cStart(&MCU_MCU_IF, &mcu_mcu_if_cfg);
 
 	while (true) {
 
@@ -48,6 +49,7 @@ static THD_FUNCTION(mcu_mcu_thread, p) {
 		switch(power_mcu->current_state){
 
 		}
+		mcu_mcu_read_power_parameters(power_data);
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
 #endif
 
@@ -60,7 +62,33 @@ static THD_FUNCTION(mcu_mcu_thread, p) {
 	}
 }
 
-#ifdef POWER_MCU
+#ifdef MAIN_MCU
+
+static int8_t mcu_mcu_read_power_data(power_data_t *p_data){
+	mcu_mcu_read_from_slave(POWER_MCU_DATA, (uint8_t*)data, sizeof(power_data_t));
+
+}
+
+static int8_t mcu_mcu_read_from_slave(uint8_t reg_addr, uint8_t *buf, uint8_t num){
+	uint8_t txbuff[1];
+		uint8_t rxbuff[10];
+		msg_t status;
+		txbuff[0] = reg_addr;
+		i2cAcquireBus(&POWER_MCU_IF);
+		status = i2cMasterTransmitTimeout(&POWER_MCU_IF, POWER_SLAVE_ADDRESS, txbuff, 1,
+				rxbuff, num, 1000);
+		i2cReleaseBus(&POWER_MCU_IF);
+		if (status != MSG_OK) {
+			chSemWait(&usart1_semaph);
+			chprintf((BaseSequentialStream*) &SD1,
+					"Shit happened in mcu-mcu comm: status is %d\r\n", i2cGetErrors(&CHARGER_IF));
+			chSemSignal(&usart1_semaph);
+			return -1;
+		}
+		memcpy(buf, rxbuff, num);
+		return 0;
+}
+
 static int8_t mcu_mcu_send_data_packet_to_slave(mcu_mcu_data_t *data) {
 	uint8_t txbuff[sizeof(mcu_mcu_data_t)+1];
 	uint8_t rxbuff[1];
