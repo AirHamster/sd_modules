@@ -48,7 +48,7 @@ const I2CConfig charger_if_cfg = {
 #endif
 
 #ifdef PWR_CPU
-const I2CConfig charger_if_cfg = {
+static const I2CConfig charger_if_cfg = {
   0x10E37AFF,
   0,
   0
@@ -73,18 +73,23 @@ static THD_FUNCTION( charger_thread, p) {
 	charger_init(&CHARGER_IF, &charger_cfg);
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 
+	charger_read_all_regs(charger_regs);
+	charger_parse_status(charger_regs, charger);
+
 	while (true) {
+	//	if (charger->)
+
 		charger_read_all_regs(charger_regs);
-	/*	chprintf(SHELL_IFACE,
-				"Readed from charger:\tR0\tR1\tR2\tR3\tR4\tR5\tR6\tR7\tR8\tR9\tRA\tRB\r\n");
-		chprintf(SHELL_IFACE,
-				"Readed from charger:\t%x\t%x\t%x\t%x\t%x\t%x\t%x\t%x\t%x\t%x\t%x\t%x\r\n\r\n",
-				charger_regs->reg00, charger_regs->reg01, charger_regs->reg02, charger_regs->reg03,
-				charger_regs->reg04, charger_regs->reg05, charger_regs->reg06, charger_regs->reg07,
-				charger_regs->reg08, charger_regs->reg09, charger_regs->reg0A, charger_regs->reg0B);
-*/
 		charger_parse_status(charger_regs, charger);
-		charger_print_info(charger);
+	/*		chprintf(SHELL_IFACE,
+					"\r\nReaded from charger:\tR0\tR1\tR2\tR3\tR4\tR5\tR6\tR7\tR8\tR9\tRA\tRB\r\n");
+			chprintf(SHELL_IFACE,
+					"Readed from charger:\t%x\t%x\t%x\t%x\t%x\t%x\t%x\t%x\t%x\t%x\t%x\t%x\r\n\r\n",
+					charger_regs->reg00, charger_regs->reg01, charger_regs->reg02, charger_regs->reg03,
+					charger_regs->reg04, charger_regs->reg05, charger_regs->reg06, charger_regs->reg07,
+					charger_regs->reg08, charger_regs->reg09, charger_regs->reg0A, charger_regs->reg0B);
+*/
+	//	charger_print_info(charger);
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
 	}
 }

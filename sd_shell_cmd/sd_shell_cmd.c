@@ -84,9 +84,11 @@ extern float velocityMadeGoodTarget;
 #endif
 #endif
 
+#ifdef SENSOR_BOX
 #include "adc.h"
 dots_t *r_rudder_dots;
 coefs_t *r_rudder_coefs;
+#endif
 
 extern struct ch_semaphore usart1_semaph;
 #ifdef USE_BLE_MODULE
@@ -294,12 +296,15 @@ uint8_t output_all_calib(void){
 }
 #endif
 
+
 void output_gyro_raw(void){
+#ifdef USE_BMX160_MODULE
 	chSemWait(&usart1_semaph);
 			//chprintf(SHELL_IFACE, ",%f,%f,%f,%f,%f,%f,%f,%f,%f\r\n", bmx160.ax, bmx160.ay, bmx160.az, bmx160.gx, bmx160.gy, bmx160.gz, bmx160.mx, bmx160.my, bmx160.mz);
 	if(output->type == OUTPUT_RAW_BMX160){
 	chprintf(SHELL_IFACE, ",%f,%f,%f,%f,%f\r\n", bmx160.mx, bmx160.my, bmx160.mz, bno055->d_euler_hpr.p, bno055->d_euler_hpr.r);
 	}
+#endif
 #ifdef USE_HMC6343_MODULE
 	else if(output->type == OUTPUT_RAW_HMC){
 		chprintf(SHELL_IFACE, ",%d,%d,%d,%f,%f\r\n", hmc6343->mx16, hmc6343->my16, hmc6343->mz16, bno055->d_euler_hpr.p, bno055->d_euler_hpr.r);
@@ -514,10 +519,13 @@ void send_rudder_over_ble(rudder_t *rudder){
 }
 #endif
 
+#ifdef USE_BMX160_MODULE
 void cmd_mag_calibrate(BaseSequentialStream* chp, int argc, char* argv[]){
 	stop_all_tests();
+
 	bmx160.calib_flag = 1;
 }
+#endif
 
 void cmd_start(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
@@ -605,6 +613,7 @@ void cmd_boot(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 }
 
+#ifdef USE_BMX160_MODULE
 void cmd_beta(BaseSequentialStream* chp, int argc, char* argv[]){
 	if (strlen(argv[0]) != 0) {
 		beta = atof(argv[0]);
@@ -613,6 +622,7 @@ void cmd_beta(BaseSequentialStream* chp, int argc, char* argv[]){
 		chprintf(chp, "No value provided\r\n");
 	}
 }
+#endif
 
 void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
