@@ -15,6 +15,7 @@
 #include "shell.h"
 #include "chprintf.h"
 #include "mcu-mcu_i2c.h"
+#include "software_uart.h"
 
 mcu_mcu_data_t *mcu_mcu_data;
 power_data_t power;
@@ -40,18 +41,17 @@ static THD_WORKING_AREA(mcu_mcu_thread_wa, 256);
 static THD_FUNCTION(mcu_mcu_thread, p) {
 	(void) p;
 	chRegSetThreadName("MCU-MCU Thd");
-	i2cStart(&MCU_MCU_IF, &mcu_mcu_if_cfg);
-
+	//i2cStart(&MCU_MCU_IF, &mcu_mcu_if_cfg);
+	susart_init();
 	while (true) {
 
-#ifdef POWER_MCU
-		systime_t prev = chVTGetSystemTime(); // Current system time.
-		switch(power_mcu->current_state){
 
-		}
-		mcu_mcu_read_power_parameters(power_data);
+		systime_t prev = chVTGetSystemTime(); // Current system time.
+		//mcu_mcu_read_power_parameters(power_data);
+		//chprintf((BaseSequentialStream*) &SD1, "Sending S\r\n");
+		_putchar( 'S' );
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
-#endif
+
 
 #ifdef SLAVE_MCU
 		//needed to patch ChibiOS code for support slave configuration
@@ -60,6 +60,10 @@ static THD_FUNCTION(mcu_mcu_thread, p) {
 
 
 	}
+}
+
+void start_mcu_mcu_module(void){
+	chThdCreateStatic(mcu_mcu_thread_wa, sizeof(mcu_mcu_thread_wa), NORMALPRIO + 3, mcu_mcu_thread, NULL);
 }
 
 #ifdef MAIN_MCU

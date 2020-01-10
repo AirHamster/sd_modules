@@ -83,6 +83,13 @@ SD_INC += ./sd_modules/bmx160/MadgwickAHRS
 SD_INC += ./sd_modules/bmx160
 endif
 
+#Multi MCU communication module
+ifeq ($(USE_MCU_MCU_MODULE), TRUE)
+SD_SRC += ./sd_modules/mcu-mcu_i2c/mcu-mcu_i2c.c
+SD_SRC += ./sd_modules/mcu-mcu_i2c/software_uart.c
+SD_INC += ./sd_modules/mcu-mcu_i2c
+endif
+
 #FUSION
 ifeq ($(USE_FUSION_MODULE), TRUE)
 SD_SRC += ./sd_modules/bmx160/Fusion/FusionAhrs.c
