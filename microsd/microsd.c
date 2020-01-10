@@ -293,7 +293,7 @@ void cmd_mkfs(BaseSequentialStream *chp, int argc, char *argv[]) {
 	}
 	partition=atoi(argv[0]);
 	chprintf(chp, "FS: f_mkfs(%d,0,0) Started\r\n",partition);
-	err = f_mkfs(argv[0], FM_ANY, 0, NULL, 0);
+//	err = f_mkfs(argv[0], FM_ANY, 0, NULL, 0);
 	if (err != FR_OK) {
 		chprintf(chp, "FS: f_mkfs() failed\r\n");
 		verbose_error(chp, err);
