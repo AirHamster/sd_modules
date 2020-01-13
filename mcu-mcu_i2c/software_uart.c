@@ -51,6 +51,10 @@
 
 #include <stdio.h>
 #include "software_uart.h"
+#include "ch.h"
+#include "hal.h"
+#include "shell.h"
+#include "chprintf.h"
 /*
  * GPT4 configuration. This timer is used as trigger for the ADC.
  */
@@ -90,11 +94,16 @@ static void set_timer_interrupt (void);
 static void clear_timer_interrupt (void);
 static void idle(void);
 
+event_listener_t el_rx;
+static event_source_t char_rx;
+
+
 void timer3_isr_cb(GPTDriver *gptp)
 	{
 	(void)gptp;
 	char			mask, start_bit, flag_in;
-	palToggleLine(LINE_RED_LED);
+	//palToggleLine(LINE_RED_LED);
+	//palToggleLine(LINE_ORANGE_LED);
 	//return;
 	//chprintf((BaseSequentialStream*) &SD1, "C");
 	// Transmitter Section
@@ -130,6 +139,8 @@ void timer3_isr_cb(GPTDriver *gptp)
 				flag_rx_waiting_for_stop_bit = FALSE;
 				flag_rx_ready = FALSE;
 				internal_rx_buffer &= 0xFF;
+
+
 				if ( internal_rx_buffer!=0xC2 )
 					{
 					inbuf[qin] = internal_rx_buffer;
@@ -138,6 +149,14 @@ void timer3_isr_cb(GPTDriver *gptp)
 						qin = 0;
 						}
 					}
+				chSysLockFromISR();
+
+				clear_timer_interrupt();
+				chEvtBroadcastI(&char_rx);
+				palEnableLineEventI(LINE_SUSART1_RX, PAL_EVENT_MODE_FALLING_EDGE);
+
+				chSysUnlockFromISR();
+
 				}
 			}
 		else		// rx_test_busy
@@ -181,39 +200,38 @@ void susart_init( void )
 	flag_tx_ready = FALSE;
 	flag_rx_ready = FALSE;
 	flag_rx_waiting_for_stop_bit = FALSE;
-	flag_rx_off = TRUE;
+	flag_rx_off = FALSE;
 	rx_num_of_bits = 10;
 	tx_num_of_bits = 10;
 
 	set_tx_pin_high();
-
+	chEvtObjectInit(&char_rx);
+		chEvtRegister(&char_rx, &el_rx, 4);
 	/* Enabling events on both edges of the rx line.*/
-//		palEnableLineEvent(LINE_SUSART1_RX, PAL_EVENT_MODE_BOTH_EDGES);
-	//	palSetLineCallback(LINE_SUSART1_RX, susart_rx_cb, NULL);
+		palEnableLineEvent(LINE_SUSART1_RX, PAL_EVENT_MODE_FALLING_EDGE);
+		palSetLineCallback(LINE_SUSART1_RX, susart_rx_cb, NULL);
 
 	timer_set( BAUD_RATE );
-//	set_timer_interrupt(); 	// Enable timer interrupt
+	set_timer_interrupt(); 	// Enable timer interrupt
 	}
 
-char _getchar( void )
-	{
-	char		ch;
+char susart_getchar(void) {
+	char ch;
+	eventmask_t events;
 
-	do
-		{
-		while ( qout==qin )
-			{
-			idle();
-			}
-		ch = inbuf[qout] & 0xFF;
-		if ( ++qout>=IN_BUF_SIZE )
-			{
-			qout = 0;
-			}
+	//do {
+		while (qout == qin) {
+			events = chEvtWaitOne(EVENT_MASK(4));
 		}
-	while ( ch==0x0A || ch==0xC2 );
-	return( ch );
-	}
+
+		ch = inbuf[qout] & 0xFF;
+		if (++qout >= IN_BUF_SIZE) {
+			qout = 0;
+		}
+	//} while (ch == 0x0A || ch == 0xC2);
+	palSetLineCallback(LINE_SUSART1_RX, susart_rx_cb, NULL);
+	return (ch);
+}
 
 void _putchar( char ch )
 	{
@@ -254,6 +272,16 @@ void turn_rx_off( void )
 
 static void susart_rx_cb(void *arg){
 	(void) arg;
+	//palToggleLine(LINE_ORANGE_LED);
+	//chprintf((BaseSequentialStream*) &SD1, "Rx CB!\r\n");
+
+	if (palReadLine(LINE_SUSART1_RX) == PAL_LOW){
+		chSysLockFromISR();
+		palDisableLineEventI(LINE_SUSART1_RX);
+		set_timer_interrupt();
+		chSysUnlockFromISR();
+	}
+
 }
 // platform specific funcs
 static int8_t get_rx_pin_status(void){

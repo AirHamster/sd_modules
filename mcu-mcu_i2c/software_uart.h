@@ -19,5 +19,6 @@
 
 void susart_init(void);
 void _putchar( char ch );
+char susart_getchar(void);
 
 #endif	//SD_MODULES_SUSART_H_

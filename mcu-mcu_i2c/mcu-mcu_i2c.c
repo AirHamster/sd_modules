@@ -45,12 +45,16 @@ static THD_FUNCTION( mcu_mcu_thread, p) {
 	chRegSetThreadName("MCU-MCU Thd");
 	//i2cStart(&MCU_MCU_IF, &mcu_mcu_if_cfg);
 	susart_init();
+
 	char char_arr[4];
+	char ch;
+
 	while (true) {
 
 		systime_t prev = chVTGetSystemTime(); // Current system time.
 		//mcu_mcu_read_power_parameters(power_data);
 		//chprintf((BaseSequentialStream*) &SD1, "Sending S\r\n");
+#ifdef PWD_MCU
 		itoa(fuel->voltage, char_arr, 10);
 		//chprintf(SHELL_IFACE, "\r\nATOI:\t%d %s\r\n", fuel->voltage);
 		_putchar('V');
@@ -71,12 +75,16 @@ static THD_FUNCTION( mcu_mcu_thread, p) {
 			_putchar(char_arr[1]);
 			_putchar(char_arr[2]);
 		}
-
 		_putchar('\r');
 		_putchar('\n');
 
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
 
+		#else
+		ch = susart_getchar();
+		chprintf((BaseSequentialStream*) &SD1, "Recieved %c\r\n", ch);
+		//prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
+#endif
 #ifdef SLAVE_MCU
 		//needed to patch ChibiOS code for support slave configuration
 		//result = i2cSlaveRecieveTimeout(TIMEOUT_INFINITE);
