@@ -476,6 +476,7 @@ void cmd_get_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 	chprintf(SHELL_IFACE, "\"WindowSize1\":%d,\r\n\t\t\t", paramSD.WindowSize1);
 	chprintf(SHELL_IFACE, "\"WindowSize2\":%d,\r\n\t\t\t", paramSD.WindowSize2);
 	chprintf(SHELL_IFACE, "\"WindowSize3\":%d,\r\n\t\t\t", paramSD.WindowSize3);
+#ifdef USE_BLE_MODULE
 	chprintf(SHELL_IFACE, "\"RudderLeftNative\":%d,\r\n\t\t\t",
 			(uint16_t) r_rudder->min_native);
 	chprintf(SHELL_IFACE, "\"RudderLeftDegrees\":%f,\r\n\t\t\t",
@@ -494,6 +495,7 @@ void cmd_get_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 					bmx160.mag_offset.y);
 	chprintf(SHELL_IFACE, "\"CompassRawOffsetZ\":%f\r\n\t\t\t",
 					bmx160.mag_offset.z);
+#endif
 	chprintf(SHELL_IFACE, "}\r\n\t}\r\n");
 	chSemSignal(&usart1_semaph);
 }
