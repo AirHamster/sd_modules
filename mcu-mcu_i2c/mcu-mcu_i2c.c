@@ -43,14 +43,17 @@ static THD_FUNCTION(mcu_mcu_thread, p) {
 	chRegSetThreadName("MCU-MCU Thd");
 	//i2cStart(&MCU_MCU_IF, &mcu_mcu_if_cfg);
 	susart_init();
+	char ch;
 	while (true) {
 
 
 		systime_t prev = chVTGetSystemTime(); // Current system time.
 		//mcu_mcu_read_power_parameters(power_data);
 		//chprintf((BaseSequentialStream*) &SD1, "Sending S\r\n");
-		_putchar( 'S' );
-		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
+		//_putchar( 'S' );
+		ch = susart_getchar();
+		chprintf((BaseSequentialStream*) &SD1, "Recieved %c\r\n", ch);
+		//prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
 
 
 #ifdef SLAVE_MCU
