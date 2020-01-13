@@ -16,7 +16,9 @@
 #include "chprintf.h"
 #include "mcu-mcu_i2c.h"
 #include "software_uart.h"
+#include "bq27441.h"
 
+extern fuel_t *fuel;
 mcu_mcu_data_t *mcu_mcu_data;
 power_data_t power;
 power_data_t *power_data = &power;
@@ -38,26 +40,47 @@ const I2CConfig mcu_mcu_if_cfg = {
 #endif
 
 static THD_WORKING_AREA(mcu_mcu_thread_wa, 256);
-static THD_FUNCTION(mcu_mcu_thread, p) {
+static THD_FUNCTION( mcu_mcu_thread, p) {
 	(void) p;
 	chRegSetThreadName("MCU-MCU Thd");
 	//i2cStart(&MCU_MCU_IF, &mcu_mcu_if_cfg);
 	susart_init();
+	char char_arr[4];
 	while (true) {
-
 
 		systime_t prev = chVTGetSystemTime(); // Current system time.
 		//mcu_mcu_read_power_parameters(power_data);
 		//chprintf((BaseSequentialStream*) &SD1, "Sending S\r\n");
-		_putchar( 'S' );
-		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
+		itoa(fuel->voltage, char_arr, 10);
+		//chprintf(SHELL_IFACE, "\r\nATOI:\t%d %s\r\n", fuel->voltage);
+		_putchar('V');
+		_putchar(char_arr[0]);
+		_putchar(char_arr[1]);
+		_putchar(char_arr[2]);
+		_putchar(char_arr[3]);
+		itoa(fuel->soc, char_arr, 10);
 
+
+		_putchar('S');
+
+		if (fuel->soc < 100) {
+			_putchar(char_arr[0]);
+			_putchar(char_arr[1]);
+		} else {
+			_putchar(char_arr[0]);
+			_putchar(char_arr[1]);
+			_putchar(char_arr[2]);
+		}
+
+		_putchar('\r');
+		_putchar('\n');
+
+		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
 
 #ifdef SLAVE_MCU
 		//needed to patch ChibiOS code for support slave configuration
 		//result = i2cSlaveRecieveTimeout(TIMEOUT_INFINITE);
 #endif
-
 
 	}
 }

@@ -94,7 +94,8 @@ void timer3_isr_cb(GPTDriver *gptp)
 	{
 	(void)gptp;
 	char			mask, start_bit, flag_in;
-	//palToggleLine(LINE_RED_LED);
+	palToggleLine(LINE_RED_LED);
+	//return;
 	//chprintf((BaseSequentialStream*) &SD1, "C");
 	// Transmitter Section
 	if ( flag_tx_ready )
@@ -216,6 +217,7 @@ char _getchar( void )
 
 void _putchar( char ch )
 	{
+	chThdSleepMilliseconds(10);
 	while ( flag_tx_ready );
 
 
@@ -272,8 +274,13 @@ static void timer_set(uint16_t br){
 	 gpt6cfg1.cr2       =  0U;
 	 gpt6cfg1.dier      =  0U;
 	 gptStart(&GPTD6, &gpt6cfg1);
-	 set_timer_interrupt();
+	 //set_timer_interrupt();
+	 //STM32L4 has problems with timer freq, workaround here
+#ifdef PWR_CPU
+	 gptStartContinuous(&GPTD6, 104);
+#else
 	 gptStartContinuous(&GPTD6, 100);
+#endif
 }
 
 static void set_timer_interrupt (void){
