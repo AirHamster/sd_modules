@@ -16,9 +16,11 @@
 #include "chprintf.h"
 #include "mcu-mcu_i2c.h"
 #include "software_uart.h"
+#ifdef USE_CHARGER_MODULE
 #include "bq27441.h"
-
 extern fuel_t *fuel;
+#endif
+
 mcu_mcu_data_t *mcu_mcu_data;
 power_data_t power;
 power_data_t *power_data = &power;
