@@ -20,13 +20,17 @@
 #include "adc.h"
 
 #include "fsm.h"
+
+static virtual_timer_t ble_observe_tim;
+static virtual_timer_t ble_data_tx_tim;
+static ble_remote_dev_t ble_remote_dev_list[NUM_OF_REMOTE_DEV];
+
 //Events for actions requests
 static event_source_t ble_observe_request_event;
 static event_source_t ble_data_tx_request_event;
 static event_source_t ble_remote_dev_cfg_request_event;
 
-static Motor motorObj1;
-SM_DEFINE(BLE_SM_1, &motorObj1)
+SM_DEFINE(BLE_SM_1, ble_remote_dev_list)
 
 // State enumeration order must match the order of state
 // method entries in the state map
@@ -43,10 +47,10 @@ enum ble_states
 
 // State machine state functions
 STATE_DECLARE(Idle, NoEventData)
-STATE_DECLARE(Observe, NoEventData)
+STATE_DECLARE(Observe, ble_remote_dev_t)
 STATE_DECLARE(Data_rx, NoEventData)
 STATE_DECLARE(Data_tx, NoEventData)
-STATE_DECLARE(Pairing, NoEventData)
+STATE_DECLARE(Pairing, ble_remote_dev_t)
 STATE_DECLARE(Remote_cfg, NoEventData)
 STATE_DECLARE(Wait_for_response, NoEventData)
 
@@ -94,7 +98,7 @@ EVENT_DEFINE(BLE_Data_tx, NoEventData)
 }
 
 // If timer said that we should observe devices
-EVENT_DEFINE(BLE_Observe, NoEventData)
+EVENT_DEFINE(BLE_Observe, ble_remote_dev_t)
 {
     // Given the SetSpeed event, transition to a new state based upon
     // the current state of the state machine
@@ -167,6 +171,7 @@ ble_charac_t *hdg;
 ble_charac_t *heel;
 ble_charac_t *charac_array[NUM_OF_CHARACTS];
 
+
 ble_remote_t *remote_lag;
 ble_remote_t *remote_rudder;
 ble_remote_t *remote_wind;
@@ -217,6 +222,13 @@ void start_ble_module(void){
 				ble_thread, NULL);
 }
 
+static void ble_observe_tim_cb(void *arg){
+	chSysLockFromISR();
+	chEvtBroadcastI(&ble_observe_request_event);
+	chVTSetI(&ble_observe_tim, TIME_S2I(10), ble_observe_tim_cb, NULL);
+	chSysUnlockFromISR();
+}
+
 /*
  * Thread to process data collection and filtering from NEO-M8P
  */
@@ -234,9 +246,9 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		megastring[i] = token;
 		i++;
 
-	/*	chSemWait(&usart1_semaph);
+		chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*) &SD1, "%c", token);
-		chSemSignal(&usart1_semaph);*/
+		chSemSignal(&usart1_semaph);
 
 		if (token == '\r' || token == '+'){
 			str_flag = 1;
@@ -264,7 +276,7 @@ static THD_FUNCTION(ble_thread, arg) {
 	chThdSleepMilliseconds(500);
 	nina_init_services();
 	chThdSleepMilliseconds(500);
-
+	nina_init_devices(&ble_remote_dev_list);
 	/* Events initialization and registration.*/
 	chEvtObjectInit(&ble_observe_request_event);
 	chEvtObjectInit(&ble_data_tx_request_event);
@@ -304,10 +316,15 @@ static THD_FUNCTION(ble_thread, arg) {
 	while (true) {
 #ifdef SD_MODULE_TRAINER
 
+		/* LED timer initialization.*/
+		  chVTObjectInit(&ble_observe_tim);
 
+		  /* Starting blinker.*/
+		  chVTSet(&ble_observe_tim, TIME_S2I(10), ble_observe_tim_cb, NULL);
 
+while(true){
 		SM_Event(BLE_SM_1, BLE_Go_idle, NULL);
-
+}
 
 	//	if (output->type == OUTPUT_TEST){
 						copy_to_ble();
@@ -382,7 +399,6 @@ void copy_to_ble(void){
 // State machine sits here when motor is not running
 STATE_DEFINE(Idle, NoEventData) {
 
-	while (1) {
 		eventmask_t evt = chEvtWaitAny(ALL_EVENTS);
 
 		if (evt & EVENT_MASK(BLE_OBSERVE_EV)) {
@@ -395,16 +411,37 @@ STATE_DEFINE(Idle, NoEventData) {
 		if (evt & EVENT_MASK(BLE_REMOTE_CFG_EV)) {
 			SM_Event(BLE_SM_1, BLE_Remote_cfg, NULL);
 		}
-	}
 	//printf("%s ST_Idle\n", self->name);
 }
 
-STATE_DEFINE(Observe, NoEventData){
+STATE_DEFINE(Observe, ble_remote_dev_t) {
+	ble_remote_dev_t* devlist = SM_GetInstance(ble_remote_dev_t);
+	//SM_InternalEvent(ST_IDLE, NULL);
+	chprintf(NINA_IFACE, "AT+UBTD=2,1,2000\r");
 
+	chThdSleepMilliseconds(2000);
+
+	uint8_t i = 0;
+	for (i = 0; i < NUM_OF_REMOTE_DEV; i++) {
+		if ((devlist[i].avalible == 1) && (devlist[i].connected == 0)){
+			SM_InternalEvent(ST_PAIRING, NULL);
+			break;
+		}
+
+	}
 }
 
-STATE_DEFINE(Pairing, NoEventData){
+STATE_DEFINE(Pairing, ble_remote_dev_t) {
+	ble_remote_dev_t* devlist = SM_GetInstance(ble_remote_dev_t);
 
+	uint8_t i = 0;
+	for (i = 0; i < NUM_OF_REMOTE_DEV; i++) {
+		if ((devlist[i].avalible == 1) && (devlist[i].connected == 0)) {
+			nina_connect(devlist[i].addr, 0);
+			chThdSleepMilliseconds(1500);
+			//SM_InternalEvent(ST_PAIRING, NULL);
+		}
+	}
 }
 
 STATE_DEFINE(Data_tx, NoEventData){
@@ -483,6 +520,8 @@ uint8_t nina_parse_command(int8_t *strp) {
 	//scan_res = sscanf(strp, "\r\n+UBTD:%12sp,", addr);
 #ifdef SD_MODULE_TRAINER
 	if (strstr(strp, "+UBTD:") != NULL) {
+		nina_compare_founded_dev(strp, &ble_remote_dev_list);
+		return;
 		scan_res_p = strstr(strp, "D4CA6EB91DD3");
 		if (scan_res_p != NULL) {
 
@@ -507,7 +546,7 @@ uint8_t nina_parse_command(int8_t *strp) {
 		chprintf((BaseSequentialStream*) &SD1,
 				"Scanned connected to dev %d %d %s\r\n", scanned_vals[0],
 				scanned_vals[1], addr);
-		nina_register_remote_dev(scanned_vals[0], scanned_vals[1], addr);
+		nina_register_remote_dev(&ble_remote_dev_list, scanned_vals[0], scanned_vals[1], addr);
 		return 1;
 	}
 
@@ -524,7 +563,7 @@ uint8_t nina_parse_command(int8_t *strp) {
 
 	scan_res = sscanf(strp, "+UUBTACLD:%d\r", &scanned_vals[0]);
 	if (scan_res == 1) {
-		nina_unregister_peer(scanned_vals[0]);
+		nina_unregister_peer(&ble_remote_dev_list, scanned_vals[0]);
 		return 1;
 	}
 
@@ -596,8 +635,35 @@ void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr){
 
 }
 
-void nina_unregister_peer(uint8_t conn_handle){
+void nina_unregister_peer(ble_remote_dev_t* devlist, uint8_t conn_handle) {
 #ifdef SD_MODULE_TRAINER
+
+	uint8_t i = 0;
+	//int8_t scan_res_p;
+	for (i = 0; i < NUM_OF_REMOTE_DEV; i++) {
+		//scan_res_p = strcmp(addr, devlist[i].addr);
+		if (devlist[i].charac.conn_handle == conn_handle) {
+			chprintf((BaseSequentialStream*) &SD1,
+								"Disconnected from %s with conn_handle %d, conn_type %d (addr: %s)\r\n",
+								devlist[i].ascii_name, devlist[i].charac.conn_handle,
+								devlist[i].conn_type, devlist[i].addr);
+			devlist[i].connected = 0;
+			devlist[i].charac.conn_handle = 99;
+			devlist[i].conn_type = 0;
+			//nina_get_remote_characs(devlist[i].charac.conn_handle, 0x4A01);	//TODO: uuid not used, should be removed
+			return;
+		}
+	}
+
+	chprintf((BaseSequentialStream*) &SD1, "Disconnected peer 1 %d %d %s\r\n",
+			peer->conn_handle, peer->type, peer->addr);
+	peer->is_connected = 0;
+	peer->conn_handle = 0;
+	peer->type = 0;
+	memset(peer->addr, 0, 12);
+	return;
+
+
 	if (remote_lag->conn_handle == conn_handle) {
 		chprintf((BaseSequentialStream*) &SD1, "Disconnected to lag %d %d\r\n",
 				remote_lag->conn_handle, remote_lag->type);
@@ -605,15 +671,18 @@ void nina_unregister_peer(uint8_t conn_handle){
 
 		remote_lag->is_connected = 0;
 		remote_lag->type = 0;
-	}else if (remote_rudder->conn_handle == conn_handle) {
-		chprintf((BaseSequentialStream*) &SD1, "Disconnected to rudder %d %d\r\n",
-				remote_rudder->conn_handle, remote_rudder->type);
+	} else if (remote_rudder->conn_handle == conn_handle) {
+		chprintf((BaseSequentialStream*) &SD1,
+				"Disconnected to rudder %d %d\r\n", remote_rudder->conn_handle,
+				remote_rudder->type);
 		remote_rudder->conn_handle = 99;
 
 		remote_rudder->is_connected = 0;
 		remote_rudder->type = 0;
-	}else{
-		chprintf((BaseSequentialStream*) &SD1, "Disconnected peer 1 %d %d %s\r\n", peer->conn_handle, peer->type, peer->addr);
+	} else {
+		chprintf((BaseSequentialStream*) &SD1,
+				"Disconnected peer 1 %d %d %s\r\n", peer->conn_handle,
+				peer->type, peer->addr);
 		peer->is_connected = 0;
 		peer->conn_handle = 0;
 		peer->type = 0;
@@ -623,8 +692,27 @@ void nina_unregister_peer(uint8_t conn_handle){
 #endif
 }
 
-void nina_register_remote_dev(uint8_t conn_handle, uint8_t type, int8_t *addr){
+void nina_register_remote_dev(ble_remote_dev_t* devlist, uint8_t conn_handle, uint8_t type, int8_t *addr){
 #ifdef SD_MODULE_TRAINER
+
+	uint8_t i = 0;
+	int8_t scan_res_p;
+	for (i = 0; i < NUM_OF_REMOTE_DEV; i++) {
+		scan_res_p = strcmp(addr, devlist[i].addr);
+		if (scan_res_p == 0){
+				devlist[i].connected = 1;
+				devlist[i].charac.conn_handle = conn_handle;
+				devlist[i].conn_type = type;
+				chprintf((BaseSequentialStream*) &SD1, "Connected to %s with conn_handle %d, conn_type %d (addr: %s)\r\n", devlist[i].ascii_name, devlist[i].charac.conn_handle, devlist[i].conn_type, devlist[i].addr);
+				nina_get_remote_characs(devlist[i].charac.conn_handle, 0x4A01);	//TODO: uuid not used, should be removed
+				return;
+		}
+	}
+	nina_register_peer(conn_handle, type, addr);
+			output->ble = OUTPUT_BLE;
+		//	toggle_test_output();
+			return;
+
 	if (strcmp(addr, "D4CA6EB91DD3") == 0){
 		remote_lag->conn_handle = conn_handle;
 
@@ -793,6 +881,49 @@ void nina_wait_charac_handlers(ble_charac_t *charac){
 }
 
 #ifdef SD_MODULE_TRAINER
+
+int8_t nina_compare_founded_dev(uint8_t *strp, ble_remote_dev_t *devlist){
+	uint8_t i = 0;
+	int8_t *scan_res_p;
+	for(i = 0; i < NUM_OF_REMOTE_DEV; i++){
+		scan_res_p = strstr(strp, devlist[i].addr);
+				if (scan_res_p != NULL) {
+					devlist[i].avalible = 1;
+				}else{
+					devlist[i].avalible = 0;
+				}
+	}
+}
+
+int8_t nina_init_devices(ble_remote_dev_t *devlist) {
+
+	uint8_t i = 0;
+	for (i = 0; i < NUM_OF_REMOTE_DEV; i++) {
+		memset(&devlist[i], 0, sizeof(ble_remote_dev_t));
+		devlist[i].charac.conn_handle = 99;
+	}
+
+	memcpy(devlist[0].addr, BLE_RDR_ADDR, sizeof(devlist[0].addr));
+	memcpy(devlist[0].ascii_name, BLE_RDR_ASCII_NAME, sizeof(BLE_RDR_ASCII_NAME));
+
+	memcpy(devlist[1].addr, BLE_LOG_ADDR, sizeof(devlist[1].addr));
+	memcpy(devlist[1].ascii_name, BLE_LOG_ASCII_NAME, sizeof(BLE_LOG_ASCII_NAME));
+
+#if NUM_OF_REMOTE_DEV == 6
+	memcpy(devlist[2].addr, BLE_TENSO1_ADDR, sizeof(devlist[2].addr));
+	memcpy(devlist[2].ascii_name, BLE_TENSO1_ASCII_NAME, sizeof(BLE_TENSO1_ASCII_NAME));
+
+	memcpy(devlist[3].addr, BLE_TENSO2_ADDR, sizeof(devlist[3].addr));
+	memcpy(devlist[3].ascii_name, BLE_TENSO2_ASCII_NAME, sizeof(BLE_TENSO2_ASCII_NAME));
+
+	memcpy(devlist[4].addr, BLE_TENSO3_ADDR, sizeof(devlist[4].addr));
+	memcpy(devlist[4].ascii_name, BLE_TENSO3_ASCII_NAME, sizeof(BLE_TENSO3_ASCII_NAME));
+
+	memcpy(devlist[5].addr, BLE_TENSO4_ADDR, sizeof(devlist[5].addr));
+	memcpy(devlist[5].ascii_name, BLE_TENSO4_ASCII_NAME, sizeof(BLE_TENSO4_ASCII_NAME));
+#endif
+	return NUM_OF_REMOTE_DEV;
+}
 
 uint8_t nina_init_services(void){
 	chprintf(NINA_IFACE, "AT+UBTLE=3\r");
