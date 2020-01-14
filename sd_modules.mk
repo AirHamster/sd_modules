@@ -17,6 +17,11 @@ SD_SRC += ./sd_modules/sd_shell_cmd/service_mode.c
 SD_INC += ./sd_modules/sd_shell_cmd
 endif
 
+ifeq ($(USE_FSM_MODE), TRUE)
+SD_SRC += ./sd_modules/fsm/fsm.c
+SD_INC += ./sd_modules/fsm
+endif
+
 #MPU9250 - 9-axis accel/gyro/magn chip
 ifeq ($(USE_MPU_9250_MODULE), TRUE)
 SD_SRC += ./sd_modules/mpu9250/mpu9250.c
