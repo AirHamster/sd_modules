@@ -16,14 +16,14 @@
 #define _STATE_MACHINE_H
 
 #include "data_types.h"
-//#include "Fault.h"
+#include "fault.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // Define USE_SM_ALLOCATOR to use the fixed block allocator instead of heap
-#define USE_SM_ALLOCATOR
+//#define USE_SM_ALLOCATOR
 #ifdef USE_SM_ALLOCATOR
     #include "sm_allocator.h"
     #define SM_XAlloc(size)    SMALLOC_Alloc(size)

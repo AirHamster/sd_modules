@@ -12,6 +12,23 @@
 #include "hal.h"
 #include "config.h"
 #define NINA_SUCCESS 1
+
+#define BLE_OBSERVE_EV	0
+#define BLE_DATA_TX_EV	1
+#define BLE_REMOTE_CFG_EV	2
+
+// Motor object structure
+typedef struct
+{
+    int16_t currentSpeed;
+} Motor;
+
+// Event data structure
+typedef struct
+{
+    int16_t speed;
+} MotorData;
+
 typedef struct{
 
 }ble_t;

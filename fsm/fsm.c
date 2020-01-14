@@ -1,4 +1,4 @@
-//#include "Fault.h"
+#include "fault.h"
 #include "fsm.h"
 
 // Generates an external event. Called once per external event 

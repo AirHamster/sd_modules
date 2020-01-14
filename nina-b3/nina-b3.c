@@ -18,6 +18,129 @@
 #include "sd_shell_cmds.h"
 #include "lag.h"
 #include "adc.h"
+
+#include "fsm.h"
+//Events for actions requests
+static event_source_t ble_observe_request_event;
+static event_source_t ble_data_tx_request_event;
+static event_source_t ble_remote_dev_cfg_request_event;
+
+static Motor motorObj1;
+SM_DEFINE(BLE_SM_1, &motorObj1)
+
+// State enumeration order must match the order of state
+// method entries in the state map
+enum ble_states
+{
+    ST_IDLE,
+    ST_OBSERVE,
+    ST_DATA_RX,
+	ST_DATA_TX,
+	ST_PAIRING,
+	ST_REMOTE_CFG,
+	ST_WAIT_FOR_RESPONSE
+};
+
+// State machine state functions
+STATE_DECLARE(Idle, NoEventData)
+STATE_DECLARE(Observe, NoEventData)
+STATE_DECLARE(Data_rx, NoEventData)
+STATE_DECLARE(Data_tx, NoEventData)
+STATE_DECLARE(Pairing, NoEventData)
+STATE_DECLARE(Remote_cfg, NoEventData)
+STATE_DECLARE(Wait_for_response, NoEventData)
+
+// State map to define state function order
+BEGIN_STATE_MAP(Motor)
+    STATE_MAP_ENTRY(ST_Idle)
+    STATE_MAP_ENTRY(ST_Observe)
+    STATE_MAP_ENTRY(ST_Data_rx)
+    STATE_MAP_ENTRY(ST_Data_tx)
+	STATE_MAP_ENTRY(ST_Pairing)
+	STATE_MAP_ENTRY(ST_Remote_cfg)
+	STATE_MAP_ENTRY(ST_Wait_for_response)
+END_STATE_MAP(Motor)
+
+// If we parsed new data from sensors
+EVENT_DEFINE(BLE_Data_rx, NoEventData)
+{
+    // Given the SetSpeed event, transition to a new state based upon
+    // the current state of the state machine
+    BEGIN_TRANSITION_MAP                        // - Current State -
+        TRANSITION_MAP_ENTRY(ST_DATA_RX)          // ST_Idle
+    	TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Observe
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_rx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_tx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Pairing
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Remote_cfg
+        TRANSITION_MAP_ENTRY(EVENT_IGNORED)     // ST_Wait_for_response
+    END_TRANSITION_MAP(Motor, pEventData)
+}
+
+// If timer said that we should transmit data
+EVENT_DEFINE(BLE_Data_tx, NoEventData)
+{
+    // Given the SetSpeed event, transition to a new state based upon
+    // the current state of the state machine
+    BEGIN_TRANSITION_MAP                        // - Current State -
+        TRANSITION_MAP_ENTRY(ST_DATA_TX)	         // ST_Idle
+    	TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Observe
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_rx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_tx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Pairing
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Remote_cfg
+        TRANSITION_MAP_ENTRY(EVENT_IGNORED)     // ST_Wait_for_response
+    END_TRANSITION_MAP(Motor, pEventData)
+}
+
+// If timer said that we should observe devices
+EVENT_DEFINE(BLE_Observe, NoEventData)
+{
+    // Given the SetSpeed event, transition to a new state based upon
+    // the current state of the state machine
+    BEGIN_TRANSITION_MAP                        // - Current State -
+        TRANSITION_MAP_ENTRY(ST_OBSERVE)	         // ST_Idle
+    	TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Observe
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_rx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_tx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Pairing
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Remote_cfg
+        TRANSITION_MAP_ENTRY(EVENT_IGNORED)     // ST_Wait_for_response
+    END_TRANSITION_MAP(Motor, pEventData)
+}
+
+// If timer said that we should transmit data
+EVENT_DEFINE(BLE_Remote_cfg, NoEventData)
+{
+    // Given the SetSpeed event, transition to a new state based upon
+    // the current state of the state machine
+    BEGIN_TRANSITION_MAP                        // - Current State -
+        TRANSITION_MAP_ENTRY(ST_REMOTE_CFG)	         // ST_Idle
+    	TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Observe
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_rx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_tx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Pairing
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Remote_cfg
+        TRANSITION_MAP_ENTRY(EVENT_IGNORED)     // ST_Wait_for_response
+    END_TRANSITION_MAP(Motor, pEventData)
+}
+
+// If timer said that we should transmit data
+EVENT_DEFINE(BLE_Go_idle, NoEventData)
+{
+    // Given the SetSpeed event, transition to a new state based upon
+    // the current state of the state machine
+    BEGIN_TRANSITION_MAP                        // - Current State -
+        TRANSITION_MAP_ENTRY(ST_IDLE)	         // ST_Idle
+    	TRANSITION_MAP_ENTRY(ST_IDLE)          // ST_Observe
+		TRANSITION_MAP_ENTRY(ST_IDLE)          // ST_Data_rx
+		TRANSITION_MAP_ENTRY(ST_IDLE)          // ST_Data_tx
+		TRANSITION_MAP_ENTRY(ST_IDLE)          // ST_Pairing
+		TRANSITION_MAP_ENTRY(ST_IDLE)          // ST_Remote_cfg
+        TRANSITION_MAP_ENTRY(ST_IDLE)     // ST_Wait_for_response
+    END_TRANSITION_MAP(Motor, pEventData)
+}
+
 #ifdef USE_UBLOX_GPS_MODULE
 #include "neo-m8.h"
 #include "neo_ubx.h"
@@ -106,7 +229,6 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 	uint8_t str_flag = 0;
 	chRegSetThreadName("BLE Parsing Thread");
 	sdStart(&NINA_IF, &nina_config);
-	//systime_t prev = chVTGetSystemTime(); // Current system time.
 	while (true) {
 		token = sdGet(&NINA_IF);
 		megastring[i] = token;
@@ -127,9 +249,6 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		if (i == 256){
 			i = 0;
 		}
-
-	//	palToggleLine(LINE_ORANGE_LED);
-		//prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(500));
 	}
 }
 
@@ -137,12 +256,25 @@ static THD_FUNCTION(ble_thread, arg) {
 	(void) arg;
 	uint8_t token;
 	uint8_t i = 0;
+	event_listener_t el1, el2, el3;
+
 	chRegSetThreadName("BLE Conrol Thread");
 	nina_fill_memory();
 	chSemObjectInit(&usart_nina, 1);
 	chThdSleepMilliseconds(500);
 	nina_init_services();
 	chThdSleepMilliseconds(500);
+
+	/* Events initialization and registration.*/
+	chEvtObjectInit(&ble_observe_request_event);
+	chEvtObjectInit(&ble_data_tx_request_event);
+	chEvtObjectInit(&ble_remote_dev_cfg_request_event);
+
+	chEvtRegisterMask(&ble_observe_request_event, &el1, EVENT_MASK(BLE_OBSERVE_EV));
+	chEvtRegisterMask(&ble_data_tx_request_event, &el2, EVENT_MASK(BLE_DATA_TX_EV));
+	chEvtRegisterMask(&ble_remote_dev_cfg_request_event, &el3, EVENT_MASK(BLE_REMOTE_CFG_EV));
+	//ALLOC_Init();
+
 /*#ifdef SD_SENSOR_BOX_LAG
 	output->type = OUTPUT_LAG_BLE;
 #endif
@@ -171,6 +303,12 @@ static THD_FUNCTION(ble_thread, arg) {
 	output->ble = OUTPUT_RUDDER_BLE;
 	while (true) {
 #ifdef SD_MODULE_TRAINER
+
+
+
+		SM_Event(BLE_SM_1, BLE_Go_idle, NULL);
+
+
 	//	if (output->type == OUTPUT_TEST){
 						copy_to_ble();
 						nina_send_all(peer);
@@ -240,6 +378,50 @@ void copy_to_ble(void){
 #endif
 }
 #endif
+
+// State machine sits here when motor is not running
+STATE_DEFINE(Idle, NoEventData) {
+
+	while (1) {
+		eventmask_t evt = chEvtWaitAny(ALL_EVENTS);
+
+		if (evt & EVENT_MASK(BLE_OBSERVE_EV)) {
+			//if dev[i]->conn ==0
+			SM_Event(BLE_SM_1, BLE_Observe, NULL);
+		}
+		if (evt & EVENT_MASK(BLE_DATA_TX_EV)) {
+			SM_Event(BLE_SM_1, BLE_Data_tx, NULL);
+		}
+		if (evt & EVENT_MASK(BLE_REMOTE_CFG_EV)) {
+			SM_Event(BLE_SM_1, BLE_Remote_cfg, NULL);
+		}
+	}
+	//printf("%s ST_Idle\n", self->name);
+}
+
+STATE_DEFINE(Observe, NoEventData){
+
+}
+
+STATE_DEFINE(Pairing, NoEventData){
+
+}
+
+STATE_DEFINE(Data_tx, NoEventData){
+
+}
+
+STATE_DEFINE(Remote_cfg, NoEventData){
+
+}
+
+STATE_DEFINE(Wait_for_response, NoEventData){
+
+}
+
+STATE_DEFINE(Data_rx, NoEventData){
+
+}
 
 uint8_t nina_parse_command(int8_t *strp) {
 	uint8_t scan_res;
