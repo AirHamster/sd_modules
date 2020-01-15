@@ -55,7 +55,7 @@ STATE_DECLARE(Remote_cfg, NoEventData)
 STATE_DECLARE(Wait_for_response, NoEventData)
 
 // State map to define state function order
-BEGIN_STATE_MAP(Motor)
+BEGIN_STATE_MAP(ble_remote_dev_t)
     STATE_MAP_ENTRY(ST_Idle)
     STATE_MAP_ENTRY(ST_Observe)
     STATE_MAP_ENTRY(ST_Data_rx)
@@ -63,7 +63,7 @@ BEGIN_STATE_MAP(Motor)
 	STATE_MAP_ENTRY(ST_Pairing)
 	STATE_MAP_ENTRY(ST_Remote_cfg)
 	STATE_MAP_ENTRY(ST_Wait_for_response)
-END_STATE_MAP(Motor)
+END_STATE_MAP(ble_remote_dev_t)
 
 // If we parsed new data from sensors
 EVENT_DEFINE(BLE_Data_rx, NoEventData)
@@ -78,7 +78,7 @@ EVENT_DEFINE(BLE_Data_rx, NoEventData)
 		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Pairing
 		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Remote_cfg
         TRANSITION_MAP_ENTRY(EVENT_IGNORED)     // ST_Wait_for_response
-    END_TRANSITION_MAP(Motor, pEventData)
+    END_TRANSITION_MAP(ble_remote_dev_t, pEventData)
 }
 
 // If timer said that we should transmit data
@@ -94,7 +94,7 @@ EVENT_DEFINE(BLE_Data_tx, NoEventData)
 		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Pairing
 		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Remote_cfg
         TRANSITION_MAP_ENTRY(EVENT_IGNORED)     // ST_Wait_for_response
-    END_TRANSITION_MAP(Motor, pEventData)
+    END_TRANSITION_MAP(ble_remote_dev_t, pEventData)
 }
 
 // If timer said that we should observe devices
@@ -110,7 +110,7 @@ EVENT_DEFINE(BLE_Observe, ble_remote_dev_t)
 		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Pairing
 		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Remote_cfg
         TRANSITION_MAP_ENTRY(EVENT_IGNORED)     // ST_Wait_for_response
-    END_TRANSITION_MAP(Motor, pEventData)
+    END_TRANSITION_MAP(ble_remote_dev_t, pEventData)
 }
 
 // If timer said that we should transmit data
@@ -126,7 +126,7 @@ EVENT_DEFINE(BLE_Remote_cfg, NoEventData)
 		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Pairing
 		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Remote_cfg
         TRANSITION_MAP_ENTRY(EVENT_IGNORED)     // ST_Wait_for_response
-    END_TRANSITION_MAP(Motor, pEventData)
+    END_TRANSITION_MAP(ble_remote_dev_t, pEventData)
 }
 
 // If timer said that we should transmit data
@@ -142,7 +142,7 @@ EVENT_DEFINE(BLE_Go_idle, NoEventData)
 		TRANSITION_MAP_ENTRY(ST_IDLE)          // ST_Pairing
 		TRANSITION_MAP_ENTRY(ST_IDLE)          // ST_Remote_cfg
         TRANSITION_MAP_ENTRY(ST_IDLE)     // ST_Wait_for_response
-    END_TRANSITION_MAP(Motor, pEventData)
+    END_TRANSITION_MAP(ble_remote_dev_t, pEventData)
 }
 
 #ifdef USE_UBLOX_GPS_MODULE
@@ -225,7 +225,16 @@ void start_ble_module(void){
 static void ble_observe_tim_cb(void *arg){
 	chSysLockFromISR();
 	chEvtBroadcastI(&ble_observe_request_event);
-	chVTSetI(&ble_observe_tim, TIME_S2I(10), ble_observe_tim_cb, NULL);
+	chVTSetI(&ble_observe_tim, TIME_S2I(10), ble_observe_tim_cb, peer);
+	chSysUnlockFromISR();
+}
+
+static void ble_data_tx_tim_cb(ble_peer_t *peer_1){
+	chSysLockFromISR();
+	if (peer_1->is_connected == 1){
+	chEvtBroadcastI(&ble_data_tx_request_event);
+	}
+	chVTSetI(&ble_data_tx_tim, TIME_S2I(1), ble_data_tx_tim_cb, peer);
 	chSysUnlockFromISR();
 }
 
@@ -318,10 +327,10 @@ static THD_FUNCTION(ble_thread, arg) {
 
 		/* LED timer initialization.*/
 		  chVTObjectInit(&ble_observe_tim);
-
+		  chVTObjectInit(&ble_data_tx_tim);
 		  /* Starting blinker.*/
 		  chVTSet(&ble_observe_tim, TIME_S2I(10), ble_observe_tim_cb, NULL);
-
+		  chVTSet(&ble_data_tx_tim, TIME_S2I(1), ble_data_tx_tim_cb, peer);
 while(true){
 		SM_Event(BLE_SM_1, BLE_Go_idle, NULL);
 }
@@ -419,7 +428,7 @@ STATE_DEFINE(Observe, ble_remote_dev_t) {
 	//SM_InternalEvent(ST_IDLE, NULL);
 	chprintf(NINA_IFACE, "AT+UBTD=2,1,2000\r");
 
-	chThdSleepMilliseconds(2000);
+	chThdSleepMilliseconds(2500);
 
 	uint8_t i = 0;
 	for (i = 0; i < NUM_OF_REMOTE_DEV; i++) {
@@ -445,7 +454,8 @@ STATE_DEFINE(Pairing, ble_remote_dev_t) {
 }
 
 STATE_DEFINE(Data_tx, NoEventData){
-
+	copy_to_ble();
+	nina_send_all(peer);
 }
 
 STATE_DEFINE(Remote_cfg, NoEventData){
@@ -663,7 +673,7 @@ void nina_unregister_peer(ble_remote_dev_t* devlist, uint8_t conn_handle) {
 	memset(peer->addr, 0, 12);
 	return;
 
-
+/*
 	if (remote_lag->conn_handle == conn_handle) {
 		chprintf((BaseSequentialStream*) &SD1, "Disconnected to lag %d %d\r\n",
 				remote_lag->conn_handle, remote_lag->type);
@@ -689,6 +699,15 @@ void nina_unregister_peer(ble_remote_dev_t* devlist, uint8_t conn_handle) {
 		memset(peer->addr, 0, 12);
 		//output->ble = OUTPUT_NONE;
 	}
+	*/
+#else
+	chprintf((BaseSequentialStream*) &SD1, "Disconnected peer 1 %d %d %s\r\n",
+				peer->conn_handle, peer->type, peer->addr);
+		peer->is_connected = 0;
+		peer->conn_handle = 0;
+		peer->type = 0;
+		memset(peer->addr, 0, 12);
+		return;
 #endif
 }
 
@@ -712,7 +731,7 @@ void nina_register_remote_dev(ble_remote_dev_t* devlist, uint8_t conn_handle, ui
 			output->ble = OUTPUT_BLE;
 		//	toggle_test_output();
 			return;
-
+/*
 	if (strcmp(addr, "D4CA6EB91DD3") == 0){
 		remote_lag->conn_handle = conn_handle;
 
@@ -737,6 +756,7 @@ void nina_register_remote_dev(ble_remote_dev_t* devlist, uint8_t conn_handle, ui
 		output->ble = OUTPUT_BLE;
 	//	toggle_test_output();
 	}
+	*/
 #else
 	nina_register_peer(conn_handle, type, addr);
 #endif
@@ -751,7 +771,7 @@ void nina_get_remote_characs(uint16_t handle, uint16_t uuid){
 	chThdSleepMilliseconds(300);
 	chprintf(NINA_IFACE, "AT+UBTGWC=%d,%d,%d\r", handle, 33, 1);
 }
-
+/*
 void nina_unregister_remote_dev(uint8_t conn_handle){
 	(void)conn_handle;
 #ifdef SD_MODULE_TRAINER
@@ -779,7 +799,7 @@ void nina_unregister_remote_dev(uint8_t conn_handle){
 	}
 #endif
 }
-
+*/
 void nina_fill_memory(void){
 	charac_temporary = calloc(1, sizeof(ble_temp_charac_t));
 	peer = calloc(1, sizeof(ble_peer_t));
