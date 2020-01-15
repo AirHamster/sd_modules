@@ -17,8 +17,12 @@ SD_SRC += ./sd_modules/sd_shell_cmd/service_mode.c
 SD_INC += ./sd_modules/sd_shell_cmd
 endif
 
-ifeq ($(USE_FSM_MODE), TRUE)
+#Finite state mashine engine
+ifeq ($(USE_FSM_MODULE), TRUE)
 SD_SRC += ./sd_modules/fsm/fsm.c
+#SD_SRC += ./sd_modules/fsm/fb_allocator.c
+#SD_SRC += ./sd_modules/fsm/sm_allocator.c
+#SD_SRC += ./sd_modules/fsm/x_allocator.c
 SD_INC += ./sd_modules/fsm
 endif
 

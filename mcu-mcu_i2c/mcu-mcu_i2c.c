@@ -84,7 +84,7 @@ static THD_FUNCTION( mcu_mcu_thread, p) {
 
 		#else
 		ch = susart_getchar();
-		chprintf((BaseSequentialStream*) &SD1, "Recieved %c\r\n", ch);
+		//chprintf((BaseSequentialStream*) &SD1, "Recieved %c\r\n", ch);
 		//prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
 #endif
 #ifdef SLAVE_MCU

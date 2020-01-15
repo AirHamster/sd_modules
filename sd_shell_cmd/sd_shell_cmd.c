@@ -84,11 +84,11 @@ extern float velocityMadeGoodTarget;
 #endif
 #endif
 
-#ifdef SENSOR_BOX
+//#ifdef SENSOR_BOX
 #include "adc.h"
 dots_t *r_rudder_dots;
 coefs_t *r_rudder_coefs;
-#endif
+//#endif
 
 extern struct ch_semaphore usart1_semaph;
 #ifdef USE_BLE_MODULE
