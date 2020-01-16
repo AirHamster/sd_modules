@@ -5,6 +5,7 @@
  *      Author: a-h
  */
 #include "xbee.h"
+#include "config.h"
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -17,6 +18,153 @@ xbee_struct_t *xbee = &xbee_struct;
 tx_box_t tx_struct;
 tx_box_t *tx_box = &tx_struct;
 
+event_listener_t xbee_attn_pin_el;
+static event_source_t xbee_attn_pin;
+
+/*
+ * Maximum speed SPI configuration (3.3MHz, CPHA=0, CPOL=0, MSb first).
+ */
+static const SPIConfig xbee_spi_cfg = {
+		false,
+		NULL,
+		GPIOA,
+		GPIOA_RF_868_CS,
+		SPI_CR1_BR_2 | SPI_CR1_BR_1 | SPI_CR1_BR_0,	//FPCLK1 is 54 MHZ. XBEE support 3.5 max, so divide it by 16
+		//  0,
+		0
+};
+
+static void xbee_attn_cb(void *arg){
+	(void) arg;
+	//palToggleLine(LINE_ORANGE_LED);
+	//chprintf((BaseSequentialStream*) &SD1, "Rx CB!\r\n");
+
+	if (palReadLine(LINE_SUSART1_RX) == PAL_LOW){
+		chSysLockFromISR();
+
+		//palDisableLineEventI(LINE_SUSART1_RX);
+		//set_timer_interrupt();
+		chSysUnlockFromISR();
+	}
+
+}
+
+thread_reference_t xbee_trp = NULL;
+
+static THD_WORKING_AREA(xbee_thread_wa, 1024);
+static THD_FUNCTION(xbee_thread, p) {
+	(void) p;
+	msg_t msg;
+	uint8_t at[] = { 'S', 'L' };
+	uint8_t rxbuf[15];
+	chRegSetThreadName("XBee Thread");
+	chEvtObjectInit(&xbee_attn_pin);
+	chEvtRegisterMask(&xbee_attn_pin, &xbee_attn_pin_el, EVENT_MASK(XBEE_ATTN_MASK));
+	palEnableLineEvent(LINE_RF_868_SPI_ATTN, PAL_EVENT_MODE_FALLING_EDGE);
+	palSetLineCallback(LINE_RF_868_SPI_ATTN, xbee_attn_event, NULL);
+
+	spiStart(&XBEE_IF, &xbee_spi_cfg);
+
+	palClearLine(LINE_RF_868_RST);
+	chThdSleepMilliseconds(100);
+	palSetLine(LINE_RF_868_RST);
+	chThdSleepMilliseconds(100);
+	if(!palReadLine(LINE_RF_868_SPI_ATTN)){
+				xbee_polling();
+			}
+
+	xbee->tx_ready = 1;
+	while (true) {
+		while(!palReadLine(LINE_RF_868_SPI_ATTN)){
+					xbee_polling();
+				}
+		eventmask_t evt = chEvtWaitAny(ALL_EVENTS);
+
+		if (evt & EVENT_MASK(XBEE_ATTN_MASK)) {
+			//if dev[i]->conn ==0
+			//SM_Event(BLE_SM_1, BLE_Observe, NULL);
+			xbee_polling();
+		}
+		/*
+		 if (evt & EVENT_MASK(BLE_DATA_TX_EV)) {
+		 SM_Event(BLE_SM_1, BLE_Data_tx, NULL);
+		 }
+		 if (evt & EVENT_MASK(BLE_REMOTE_CFG_EV)) {
+		 SM_Event(BLE_SM_1, BLE_Remote_cfg, NULL);
+		 }
+		 */
+	/*
+		chSysLock();
+		if (xbee->suspend_state) {
+			msg = chThdSuspendS(&xbee_trp);
+		}
+		chSysUnlock();
+
+		// Perform processing here.
+		switch (msg) {
+		case XBEE_GET_OWN_ADDR:
+			xbee_read_own_addr(xbee);
+			break;
+		case XBEE_GET_RSSI:
+			xbee->rssi = xbee_read_last_rssi(xbee);
+			chSemWait(&usart1_semaph);
+			chprintf((BaseSequentialStream*) &SD1, "RSSI: %d\r\n", xbee->rssi);
+			chSemSignal(&usart1_semaph);
+			break;
+		case XBEE_GET_PACKET_PAYLOAD:
+			xbee->packet_payload = xbee_get_packet_payload(xbee);
+			chSemWait(&usart1_semaph);
+			chprintf((BaseSequentialStream*) &SD1, "Packet payload: %d\r\n",
+					xbee->packet_payload);
+			chSemSignal(&usart1_semaph);
+			break;
+		case XBEE_GET_STAT:
+			xbee->bytes_transmitted = xbee_get_bytes_transmitted(xbee);
+			xbee->good_packs_res = xbee_get_good_packets_res(xbee);
+			xbee->rec_err_count = xbee_get_received_err_count(xbee);
+			xbee->trans_errs = xbee_get_transceived_err_count(xbee);
+			xbee->unicast_trans_count = xbee_get_unicast_trans_count(xbee);
+			xbee->rssi = xbee_read_last_rssi(xbee);
+			chSemWait(&usart1_semaph);
+			chprintf((BaseSequentialStream*) &SD1,
+					"Bytes transmitted:     %d\r\n", xbee->bytes_transmitted);
+			chprintf((BaseSequentialStream*) &SD1,
+					"Good packets received: %d\r\n", xbee->good_packs_res);
+			chprintf((BaseSequentialStream*) &SD1,
+					"Received errors count: %d\r\n", xbee->rec_err_count);
+			chprintf((BaseSequentialStream*) &SD1,
+					"Transceiver errors:    %d\r\n", xbee->trans_errs);
+			chprintf((BaseSequentialStream*) &SD1,
+					"Unicast transmittions: %d\r\n", xbee->unicast_trans_count);
+			chprintf((BaseSequentialStream*) &SD1,
+					"RSSI:                  %d\r\n", xbee->rssi);
+			chSemSignal(&usart1_semaph);
+			break;
+		case XBEE_GET_PING:
+			chSemWait(&usart1_semaph);
+			chprintf((BaseSequentialStream*) &SD1, "Ping hello message\r\n");
+			chSemSignal(&usart1_semaph);
+			xbee_send_ping_message(xbee);
+			break;
+		case XBEE_GET_CHANNELS:
+			xbee->channels = xbee_read_channels(xbee);
+			chSemWait(&usart1_semaph);
+			chprintf((BaseSequentialStream*) &SD1, "Channels settings: %x\r\n",
+					xbee->channels);
+			chSemSignal(&usart1_semaph);
+			break;
+		}
+
+		xbee->suspend_state = 1;
+	}
+	*/
+}
+}
+
+void start_xbee_module(void){
+	chThdCreateStatic(xbee_thread_wa, sizeof(xbee_thread_wa), NORMALPRIO + 1,
+				xbee_thread, NULL);
+}
 
 void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff){
 		uint8_t len;
@@ -491,7 +639,7 @@ void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len
 	uint8_t txbuff[128];
 	uint8_t pack_len;
 	xbee_strc->dest_addr_h = 0x013A200;
-	xbee_strc->dest_addr_l = 0x418856C9;
+	xbee_strc->dest_addr_l = 0x419E8D5D;
 	//xbee_strc->dest_addr_h = 0x00;
 	//xbee_strc->dest_addr_l = 0x0000FFFF;
 	pack_len = xbee_create_data_write_message(txbuff, buffer, len);
@@ -543,7 +691,7 @@ void xbee_send_rf_message_back(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_
 
 void xbee_attn_event(void){
 	chSysLockFromISR();
-	chThdResumeI(&xbee_poll_trp, (msg_t)0x01);  /* Resuming the thread with message.*/
+	chEvtBroadcastI(&xbee_attn_pin);
 	chSysUnlockFromISR();
 	//palToggleLine(LINE_RED_LED);
 }
@@ -892,8 +1040,15 @@ void xbee_parse_gps_packet(uint8_t *rxbuff){
 	headMot_int = (uint16_t)(headMot / 100000);
 	//json_create_message
 	chSemWait(&usart1_semaph);
+	chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame: ");
+	int8_t i;
+		for (i = 0; i < 12; i++){
+			chprintf((BaseSequentialStream*)&SD1, "%x ", rxbuff[i]);
+		}
+		chprintf((BaseSequentialStream*)&SD1, "\r\n");
 	/*chprintf((BaseSequentialStream*)&SD1, "%f,%f,%d:%d:%d:%d,%d,%d,%d\r\n",
 						flat, flon, hour, min, sec, sat, dist, speed, xbee->rssi);*/
+	/*
 	chprintf((BaseSequentialStream*)&SD1, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
 	chprintf((BaseSequentialStream*)&SD1, "\"hour\":%d,\r\n\t\t\t", hour);
 	chprintf((BaseSequentialStream*)&SD1, "\"min\":%d,\r\n\t\t\t", min);
@@ -910,6 +1065,7 @@ void xbee_parse_gps_packet(uint8_t *rxbuff){
 	chprintf((BaseSequentialStream*)&SD1, "\"rssi\":%d,\r\n\t\t\t", xbee->rssi);
 	chprintf((BaseSequentialStream*)&SD1, "\"bat\":0\r\n\t\t\t");
 	chprintf((BaseSequentialStream*)&SD1, "}\r\n\t}");
+	*/
 	//chprintf((BaseSequentialStream*)&SD1, "");
 	chSemSignal(&usart1_semaph);
 }

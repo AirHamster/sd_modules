@@ -56,7 +56,7 @@ static THD_FUNCTION( mcu_mcu_thread, p) {
 		systime_t prev = chVTGetSystemTime(); // Current system time.
 		//mcu_mcu_read_power_parameters(power_data);
 		//chprintf((BaseSequentialStream*) &SD1, "Sending S\r\n");
-#ifdef PWD_MCU
+#ifdef PWR_MCU
 		itoa(fuel->voltage, char_arr, 10);
 		//chprintf(SHELL_IFACE, "\r\nATOI:\t%d %s\r\n", fuel->voltage);
 		_putchar('V');

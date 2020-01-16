@@ -255,9 +255,9 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		megastring[i] = token;
 		i++;
 
-		chSemWait(&usart1_semaph);
-		chprintf((BaseSequentialStream*) &SD1, "%c", token);
-		chSemSignal(&usart1_semaph);
+	//	chSemWait(&usart1_semaph);
+	//	chprintf((BaseSequentialStream*) &SD1, "%c", token);
+	//	chSemSignal(&usart1_semaph);
 
 		if (token == '\r' || token == '+'){
 			str_flag = 1;

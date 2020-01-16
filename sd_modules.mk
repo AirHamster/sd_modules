@@ -55,7 +55,7 @@ SD_INC += ./sd_modules/neo-m8
 endif
 
 #DIGI XBee modules
-ifeq ($(USE_XBEE_868_MODULE), TRUE)
+ifeq ($(USE_XBEE_MODULE), TRUE)
 SD_SRC += ./sd_modules/xbee/xbee.c
 SD_INC += ./sd_modules/xbee
 endif

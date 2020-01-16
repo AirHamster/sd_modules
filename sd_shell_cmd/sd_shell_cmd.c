@@ -10,8 +10,10 @@
 #include "microsd.h"
 extern thread_reference_t microsd_trp;
 #endif
-#ifdef USE_XBEE_868_MODULE
+#ifdef USE_XBEE_MODULE
 #include "xbee.h"
+extern tx_box_t *tx_box;
+extern xbee_struct_t *xbee;
 #endif
 #ifdef USE_UBLOX_GPS_MODULE
 #include "neo-m8.h"
@@ -323,59 +325,59 @@ void output_gyro_raw(void){
 			chprintf(SHELL_IFACE, "%f,", bmx160.my);
 			chprintf(SHELL_IFACE, "%f,\r\n", bmx160.mz);*/
 }
-/*
-void send_data(uint8_t stream){
+
+void send_data(uint8_t stream) {
 	uint8_t databuff[34];
 	int32_t spdi = 0;
 	double spd;
 	double dlat, dlon;
-	spd = (float)(pvt_box->gSpeed * 0.0036);
-	spdi = (int32_t)(spd);
+	spd = (float) (pvt_box->gSpeed * 0.0036);
+	spdi = (int32_t) (spd);
 	tx_box->lat = pvt_box->lat;
 	tx_box->lon = pvt_box->lon;
 	tx_box->hour = pvt_box->hour;
 	tx_box->min = pvt_box->min;
 	tx_box->sec = pvt_box->sec;
-	tx_box->dist = (uint16_t)odo_box->distance;
+	tx_box->dist = (uint16_t) odo_box->distance;
 	tx_box->sat = pvt_box->numSV;
 	tx_box->speed = spd;
 	tx_box->headMot = pvt_box->headMot;
 	tx_box->headVeh = pvt_box->headVeh;
 
-		databuff[0] = RF_GPS_PACKET;
-		databuff[1] = (uint8_t)(tx_box->lat >> 24);
-		databuff[2] = (uint8_t)(tx_box->lat >> 16 );
-		databuff[3] = (uint8_t)(tx_box->lat >> 8);
-		databuff[4] = (uint8_t)(tx_box->lat);
-		databuff[5] = (uint8_t)(tx_box->lon >> 24);
-		databuff[6] = (uint8_t)(tx_box->lon >> 16);
-		databuff[7] = (uint8_t)(tx_box->lon >> 8);
-		databuff[8] = (uint8_t)(tx_box->lon);
-		databuff[9] = tx_box->hour;
-		databuff[10] = tx_box->min;
-		databuff[11] = tx_box->sec;
-		databuff[12] = tx_box->sat;
-		databuff[13] = (uint8_t)(tx_box->dist >> 8);
-		databuff[14] = (uint8_t)(tx_box->dist);
+	databuff[0] = RF_GPS_PACKET;
+	databuff[1] = (uint8_t) (tx_box->lat >> 24);
+	databuff[2] = (uint8_t) (tx_box->lat >> 16);
+	databuff[3] = (uint8_t) (tx_box->lat >> 8);
+	databuff[4] = (uint8_t) (tx_box->lat);
+	databuff[5] = (uint8_t) (tx_box->lon >> 24);
+	databuff[6] = (uint8_t) (tx_box->lon >> 16);
+	databuff[7] = (uint8_t) (tx_box->lon >> 8);
+	databuff[8] = (uint8_t) (tx_box->lon);
+	databuff[9] = tx_box->hour;
+	databuff[10] = tx_box->min;
+	databuff[11] = tx_box->sec;
+	databuff[12] = tx_box->sat;
+	databuff[13] = (uint8_t) (tx_box->dist >> 8);
+	databuff[14] = (uint8_t) (tx_box->dist);
 
-		memcpy(&databuff[15], &tx_box->speed, sizeof(tx_box->speed));
+	memcpy(&databuff[15], &tx_box->speed, sizeof(tx_box->speed));
 
-		databuff[19] = (uint8_t)(tx_box->yaw >> 8);
-		databuff[20] = (uint8_t)(tx_box->yaw);
+	databuff[19] = (uint8_t) (tx_box->yaw >> 8);
+	databuff[20] = (uint8_t) (tx_box->yaw);
 
-		memcpy(&databuff[21], &tx_box->pitch, sizeof(tx_box->pitch));
+	memcpy(&databuff[21], &tx_box->pitch, sizeof(tx_box->pitch));
 
-		memcpy(&databuff[25], &tx_box->roll, sizeof(tx_box->roll));
-		databuff[29] = tx_box->bat;
+	memcpy(&databuff[25], &tx_box->roll, sizeof(tx_box->roll));
+	databuff[29] = tx_box->bat;
 
-		databuff[30] = (uint8_t)(tx_box->headMot >> 24);
-		databuff[31] = (uint8_t)(tx_box->headMot >> 16);
-		databuff[32] = (uint8_t)(tx_box->headMot >> 8);
-		databuff[33] = (uint8_t)(tx_box->headMot);
+	databuff[30] = (uint8_t) (tx_box->headMot >> 24);
+	databuff[31] = (uint8_t) (tx_box->headMot >> 16);
+	databuff[32] = (uint8_t) (tx_box->headMot >> 8);
+	databuff[33] = (uint8_t) (tx_box->headMot);
 
 	xbee_send_rf_message(xbee, databuff, 34);
 }
-*/
+
 int32_t convert_to_ble_type(float value){
 	int32_t val;
 	int16_t cel;
@@ -483,6 +485,9 @@ void send_json(void)
 		chprintf(SHELL_IFACE, "\"bat\":0\r\n\t\t\t");
 		chprintf(SHELL_IFACE, "}\r\n\t}");
 		chSemSignal(&usart1_semaph);
+		send_data(OUTPUT_XBEE);
+
+
 }
 
 #ifdef SD_SENSOR_BOX_LAG
