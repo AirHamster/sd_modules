@@ -18,6 +18,11 @@ xbee_struct_t *xbee = &xbee_struct;
 tx_box_t tx_struct;
 tx_box_t *tx_box = &tx_struct;
 
+const uint8_t xbee_trainer_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x5D};
+const uint8_t xbee_sportsmen1_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x08};
+const uint8_t xbee_sportsmen2_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x94, 0x56};
+const uint8_t xbee_bouy_addr[] = 		{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x38};
+
 event_listener_t xbee_attn_pin_el;
 static event_source_t xbee_attn_pin;
 
@@ -1039,13 +1044,27 @@ void xbee_parse_gps_packet(uint8_t *rxbuff){
 	//headVeh = rxbuff[47] << 24 | rxbuff[48] << 16 | rxbuff[49] << 8 | rxbuff[50];
 	headMot_int = (uint16_t)(headMot / 100000);
 	//json_create_message
+
 	chSemWait(&usart1_semaph);
-	chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame: ");
+	if(memcmp(rxbuff, &xbee_sportsmen1_addr, sizeof(xbee_sportsmen1_addr))){
+		chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame from sportsmen 1 \r\n");
+	}else if(memcmp(rxbuff, &xbee_sportsmen2_addr, sizeof(xbee_sportsmen2_addr))){
+		chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame from sportsmen 2 \r\n");
+	}else if(memcmp(rxbuff, &xbee_bouy_addr, sizeof(xbee_bouy_addr))){
+		chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame from bouy \r\n");
+	}else if(memcmp(rxbuff, &xbee_trainer_addr, sizeof(xbee_trainer_addr))){
+		chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame from trainer \r\n");
+	}
+
+
+/*	chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame: ");
 	int8_t i;
 		for (i = 0; i < 12; i++){
 			chprintf((BaseSequentialStream*)&SD1, "%x ", rxbuff[i]);
 		}
 		chprintf((BaseSequentialStream*)&SD1, "\r\n");
+		*/
+
 	/*chprintf((BaseSequentialStream*)&SD1, "%f,%f,%d:%d:%d:%d,%d,%d,%d\r\n",
 						flat, flon, hour, min, sec, sat, dist, speed, xbee->rssi);*/
 	/*
