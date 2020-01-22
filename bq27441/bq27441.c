@@ -90,10 +90,10 @@ static uint8_t fuel_read_register(uint8_t command, uint8_t *buf, uint8_t num){
 			rxbuff, num, 1000);
 	i2cReleaseBus(&FUEL_IF);
 	if (status != MSG_OK) {
-		chSemWait(&usart1_semaph);
+		/*chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*) &SD1,
-				"Shit happened charger: status is %d\r\n", i2cGetErrors(&FUEL_IF));
-		chSemSignal(&usart1_semaph);
+				"Shit happened fuel: status is %d\r\n", i2cGetErrors(&FUEL_IF));
+		chSemSignal(&usart1_semaph);*/
 		return -1;
 	}
 	memcpy(buf, rxbuff, num);

@@ -57,6 +57,7 @@ void cmd_help(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]);
 void cmd_xbee(BaseSequentialStream* chp, int argc, char* argv[]);
+void cmd_terminate(BaseSequentialStream* chp, int argc, char* argv[]);
 #ifdef SD_SENSOR_BOX_RUDDER
 void send_rudder_over_ble(rudder_t *rudder);
 #endif
