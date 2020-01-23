@@ -127,6 +127,12 @@ SD_SRC += ./sd_modules/bq27441/bq27441.c
 SD_INC += ./sd_modules/bq27441
 endif
 
+#Sleep modes and button response
+ifeq (${USE_POWER_MANAGEMENT}, TRUE)
+SD_SRC += ./sd_modules/power_management/pwr_mgmt_l4.c
+SD_INC += ./sd_modules/power_management
+endif
+
 # Shared variables
 ALLCSRC += $(SD_SRC)
 ALLINC  += $(SD_INC)

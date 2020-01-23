@@ -60,7 +60,7 @@ static THD_FUNCTION( charger_thread, p) {
 			chprintf(SHELL_IFACE,"Terminating thread\r\n");
 			chThdExit(msg);
 		}
-		palToggleLine(LINE_RED_LED);
+		//palToggleLine(LINE_RED_LED);
 		charger_read_register(BQ2560X_REG_00, &charger_regs->reg00);
 		charger_read_register(BQ2560X_REG_01, &charger_regs->reg01);
 		charger_read_register(BQ2560X_REG_02, &charger_regs->reg02);
