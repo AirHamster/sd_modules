@@ -30,7 +30,7 @@ extern windsensor_t *wind;
 charger_regs_t *charger_regs;
 charger_t *charger;
 extern struct ch_semaphore usart1_semaph;
-
+extern thread_t *charger_trp;
 #ifdef SD_MODULE_TRAINER
 const I2CConfig charger_if_cfg = {
   0xD0D43C4C,
@@ -68,6 +68,7 @@ static THD_WORKING_AREA(charger_thread_wa, 256);
 static THD_FUNCTION( charger_thread, p) {
 	(void) p;
 	uint8_t i;
+	msg_t msg;
 	chRegSetThreadName("Charger Thd");
 	i2cStart(&CHARGER_IF, &charger_if_cfg);
 	charger_init(&CHARGER_IF, &charger_cfg);
@@ -202,10 +203,11 @@ int8_t charger_read_register(uint8_t reg_addr, uint8_t *buf) {
 			rxbuff, 1, 1000);
 	i2cReleaseBus(&CHARGER_IF);
 	if (status != MSG_OK) {
-		chSemWait(&usart1_semaph);
+/*		chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*) &SD1,
 				"Shit happened withs charger: status is %d\r\n", i2cGetErrors(&CHARGER_IF));
 		chSemSignal(&usart1_semaph);
+
 		return -1;
 	}
 	*buf = rxbuff[0];
@@ -244,5 +246,5 @@ int8_t charger_write_register(uint8_t reg_addr, uint8_t *txbuf, uint8_t txbytes)
 }
 
 void start_charger_module(void){
-	chThdCreateStatic(charger_thread_wa, sizeof(charger_thread_wa), NORMALPRIO, charger_thread, NULL);
+	charger_trp = chThdCreateStatic(charger_thread_wa, sizeof(charger_thread_wa), NORMALPRIO, charger_thread, NULL);
 }

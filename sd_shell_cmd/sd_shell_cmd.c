@@ -90,6 +90,8 @@ dots_t *r_rudder_dots;
 coefs_t *r_rudder_coefs;
 //#endif
 
+thread_t *charger_trp;
+
 extern struct ch_semaphore usart1_semaph;
 #ifdef USE_BLE_MODULE
 extern ble_charac_t *thdg;
@@ -117,6 +119,7 @@ static const ShellCommand commands[] = {
 		{ "c", cmd_c },
 		{ "boot", cmd_boot },
 		{ "reset", cmd_reset },
+		{ "terminate", cmd_terminate },
 #ifdef USE_SERVICE_MODE
 		{ "service", cmd_service },
 #ifdef SD_MODULE_TRAINER
@@ -189,8 +192,8 @@ static THD_FUNCTION(output_thread, arg) {
 
 	while (true) {
 		//wdgReset(&WDGD1);
-		palToggleLine(LINE_GREEN_LED);
-		//chThdSleepMilliseconds(5);
+		//palToggleLine(LINE_GREEN_LED);
+		chThdSleepMilliseconds(5);
 #ifdef USE_BNO055_MODULE
 		switch (output->type){
 		case OUTPUT_NONE:
@@ -494,7 +497,8 @@ void send_lag_over_ble(lag_t *lag){
 	chprintf(SHELL_IFACE, "Deg %d %d %4x%2x  ", spd_cel, spd_drob, spd_cel, spd_drob);*/
 	int32_t val;
 #ifdef RAW_BLE_SENSOR_DATA
-	val = convert_to_ble_type(lag->millis);
+	//val = convert_to_ble_type(lag->millis);
+	val = convert_to_ble_type(lag->meters);
 #else
 	val = convert_to_ble_type(lag->meters);
 #endif
@@ -561,6 +565,16 @@ void cmd_start(BaseSequentialStream* chp, int argc, char* argv[]) {
 		}
 	}
 	chprintf(chp, "Usage: start test|gps|ypr|gyro\n\r");
+}
+
+void cmd_terminate(BaseSequentialStream* chp, int argc, char* argv[]){
+	if (chThdTerminatedX(charger_trp)){
+		chprintf(chp, "Thread already terminated\n\r");
+	}else{
+		chprintf(chp, "Sending termination signal\n\r");
+		chThdTerminate(charger_trp);
+	}
+
 }
 
 void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]) {
