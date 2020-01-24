@@ -19,14 +19,47 @@
 #include "bmx160_i2c.h"
 #include "sd_shell_cmds.h"
 #include "eeprom.h"
-//#include "MadgwickAHRS.h"
-#include "quaternionFilters.h"
-
+#include "MadgwickAHRS.h"
+#include "bno055_i2c.h"
+extern bno055_t *bno055;
+#include "hmc6343_i2c.h"
+extern hmc6343_t *hmc6343;
 #include "BsxFusionLibrary.h"
 #include "BsxLibraryCalibConstants.h"
 #include "BsxLibraryConstants.h"
 #include "BsxLibraryDataTypes.h"
 #include "BsxLibraryErrorConstants.h"
+
+
+#include "Fusion.h"
+
+/* Fusion algo */
+
+FusionBias fusionBias;
+FusionAhrs fusionAhrs;
+
+float samplePeriod = 0.01f; // replace this value with actual sample period in seconds
+
+FusionVector3 gyroscopeSensitivity = {
+    .axis.x = 0.00762195f,
+    .axis.y = 0.00762195f,
+    .axis.z = 0.00762195f,
+}; // replace these values with actual sensitivity in degrees per second per lsb as specified in gyroscope datasheet
+
+FusionVector3 accelerometerSensitivity = {
+    .axis.x = 0.000061035f,
+    .axis.y = 0.000061035f,
+    .axis.z = 0.000061035f,
+}; // replace these values with actual sensitivity in g per lsb as specified in accelerometer datasheet
+
+FusionVector3 hardIronBias = {
+    .axis.x = 0.75f,
+    .axis.y = 2.96875f,
+    .axis.z = -14.5f,
+}; // replace these values with actual hard-iron bias in uT if known
+
+
+
 
 BSX_U8 bsxLibConfAcc[] = { 37, 0, 3, 1, 0, 9, 12, 150, 0, 16, 60, 0, 1, 0, 1, 0,
 		176, 4, 82, 3, 0, 0, 64, 65, 1, 1, 1, 1, 2, 2, 2, 3, 3, 1, 1, 180, 115 };
@@ -119,7 +152,7 @@ ts_workingModes s_workingmodes;
 ts_HWsensorSwitchList HWsensorSwitchList;
 libraryinput_t libraryInput_ts;
 
-float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};
+volatile float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};
 extern volatile float q0;
 extern volatile float q1;
 extern volatile float q2;
@@ -201,8 +234,18 @@ static THD_FUNCTION(bmx160_thread, arg) {
 	BSX_U8 calibtick;
 	BSX_U8 magAcc;
 	float temp;
-	float filter[20];
+	float filter[60];
+	float filterx[60];
+	float filtery[60];
 	float summ = 0.0;
+	float summx = 0.0;
+	float summy = 0.0;
+	float cos_roll;
+	float sin_roll;
+	float cos_pitch;
+	float sin_pitch;
+	float true_mag_x;
+	float true_mag_y;
 	uint8_t filter_index = 0;
 	uint8_t i;
 	chRegSetThreadName("bmx160 Thread");
@@ -215,34 +258,53 @@ static THD_FUNCTION(bmx160_thread, arg) {
 	s_input.gyrospec = (BSX_U8 *) &bsxLibConfGyro;
 	s_input.usecase = (BSX_U8 *) &bsxLibConf;
 
-
-
-	if (bsx_init(&s_input) == 0){
-	chprintf(SHELL_IFACE, "\r\nBSX library initialized\r\n");
-	s_workingmodes.opMode = BSX_WORKINGMODE_NDOF_GEORV_FMC_OFF;
-	bsx_set_workingmode(&s_workingmodes);
-	//HWsensorSwitchList.acc
-	bsx_get_hwdependency(s_workingmodes, &HWsensorSwitchList);
-	}else{
+	if (bsx_init(&s_input) == 0) {
+		chprintf(SHELL_IFACE, "\r\nBSX library initialized\r\n");
+		s_workingmodes.opMode = BSX_WORKINGMODE_NDOF_GEORV_FMC_OFF;
+		bsx_set_workingmode(&s_workingmodes);
+		//HWsensorSwitchList.acc
+		bsx_get_hwdependency(s_workingmodes, &HWsensorSwitchList);
+	} else {
 		chprintf(SHELL_IFACE, "\r\nBSX library NOT initialized\r\n");
 	}
+	bmx160_read_calib_from_eeprom(&bmx160);
+/*	hardIronBias.axis.x = bmx160.mag_offset.x;
+	hardIronBias.axis.y = bmx160.mag_offset.y;
+	hardIronBias.axis.z = bmx160.mag_offset.z;
+	*/
+	// Initialise gyroscope bias correction algorithm
+	FusionBiasInitialise(&fusionBias, 0.5f, samplePeriod); // stationary threshold = 0.5 degrees per second
 
+	// Initialise AHRS algorithm
+	FusionAhrsInitialise(&fusionAhrs, 1.5f); // gain = 0.5
+
+	// Set optional magnetic field limits
+	FusionAhrsSetMagneticField(&fusionAhrs, 20.0f, 70.0f); // valid magnetic field range = 20 uT to 70 uT
 
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 
-
 	while (true) {
 		/* To read both Accel and Gyro data */
-		bmi160_get_sensor_data((BMI160_ACCEL_SEL | BMI160_GYRO_SEL), &accel, &gyro, &bmi);
-		rslt = bmm150_read_mag_data(&bmm);
-		/* check for the mag calibration status */
-		bsx_get_magcalibaccuracy(&magAcc);
+		if (bmx160.calib_flag == 1) {
+			bmx160_mag_calibration(bmx160.magBias, bmx160.magScale);
+			bmx160.mag_offset.x = bmx160.magBias[0];
+			bmx160.mag_offset.y = bmx160.magBias[1];
+			bmx160.mag_offset.z = bmx160.magBias[2];
+			bmx160_save_calib_to_eeprom(&bmx160);
+			hardIronBias.axis.x = bmx160.mag_offset.x;
+			hardIronBias.axis.y = bmx160.mag_offset.y;
+			hardIronBias.axis.z = bmx160.mag_offset.z;
+			bmx160.calib_flag = 0;
+		}
 
+		bmi160_get_sensor_data((BMI160_ACCEL_SEL | BMI160_GYRO_SEL), &accel,
+				&gyro, &bmi);
+		rslt = bmm150_read_mag_data(&bmm);
 
 		libraryInput_ts.acc.data.x = accel.x;
 		libraryInput_ts.acc.data.y = accel.y;
 		libraryInput_ts.acc.data.z = accel.z;
-	//	libraryInput_ts.acc.time_stamp = accel.sensortime*39; // <- timestamp resolution on BMX160 is 39us, hence multiplying by 39
+		libraryInput_ts.acc.time_stamp = accel.sensortime * 39; // <- timestamp resolution on BMX160 is 39us, hence multiplying by 39
 		libraryInput_ts.acc.time_stamp = sensortime_1; // <- timestamp resolution on BMX160 is 39us, hence multiplying by 39
 
 		libraryInput_ts.gyro.data.x = gyro.x;
@@ -254,96 +316,129 @@ static THD_FUNCTION(bmx160_thread, arg) {
 		libraryInput_ts.mag.data.y = bmm.data.y;
 		libraryInput_ts.mag.data.z = bmm.data.z;
 		libraryInput_ts.mag.time_stamp = sensortime_1;
-		sensortime_1 += 10*1000;
+		sensortime_1 += 10 * 1000;
 		bsx_dostep(&libraryInput_ts);
-		//bsx_get_orientdata_euler_rad(&orientEuler_rad);
-		bsx_get_accrawdata(&rawAccData);
 		bsx_get_magrawdata(&rawMagData);
-		bsx_get_gyrorawdata_rps(&rawGyroData);
 
-		bmx160.gx = rawGyroData.x;
-		bmx160.gy = rawGyroData.y;
-		bmx160.gz = rawGyroData.z;
-
-		bmx160.ax = rawAccData.x / 9.8f;
-		bmx160.ay = rawAccData.y / 9.8f;
-		bmx160.az = rawAccData.z / 9.8f;
-
-		bmx160.mx = rawMagData.x + 3;
-		bmx160.my = (rawMagData.y - 14.5) * 1.44;
-		bmx160.mz = rawMagData.z;
-		if (bsx_get_orientdata_euler_rad(&orientEuler_rad) == 0){
-
-		//chprintf(SHELL_IFACE, "Orient: %04f, %04f, %04f, %d %d\r\n", orientEuler_rad.h*180/3.1415, orientEuler_rad.r*180/3.1415, orientEuler_rad.p*180/3.1415, magAcc, accel.sensortime);
-		}else{
-			chprintf(SHELL_IFACE, "BSX flow failed\r\n");
-		}
-
-		//temp = atan2((bmx160.my),(bmx160.mx)) * 180.0/3.1415;
-		temp = atan2((bmm.data.y - 175),(bmm.data.x)) * 180.0/3.1415;
-		//temp += 30;
-		if(temp < 0){
-				temp += 360.0;
-		}
-
-		filter[filter_index++] = temp;
-
-		if (filter_index == 20)
-		{
-			filter_index = 0;
-		}
-
-		for (i = 0; i < 20; i++){
-			summ += filter[i];
-		}
-		summ /= 20.0;
-		//hmc5883->yaw = temp;
-		//chprintf(SHELL_IFACE, "%f,%f,%f,%f\r\n", bmx160.mx, bmx160.my, bmx160.mz, temp);
-		chprintf(SHELL_IFACE, "%f,%f,%f,%f\r\n", bmm.data.x, bmm.data.y - 175, bmm.data.z, summ);
-
-		//MadgwickAHRSupdate(bmx160.gx, bmx160.gy, bmx160.gz, bmx160.ax, bmx160.ay, bmx160.az, bmx160.mx, bmx160.my, bmx160.mz);
-		//FreeIMUAHRSupdate(bmx160.gx, bmx160.gy, bmx160.gz, bmx160.ax, bmx160.ay, bmx160.az, bmx160.mx, bmx160.my, bmx160.mz);
-		MadgwickQuaternionUpdate(bmx160.gx, bmx160.gy, bmx160.gz, bmx160.ax, bmx160.ay, -bmx160.az, bmx160.mx, bmx160.my, -bmx160.mz, 0.01f);
-		//MadgwickAHRSupdate(0, 0, 0, bmx160.ax, bmx160.ay, bmx160.az, 0, 0, 0);
-
-		bmx160.yaw   = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
-		bmx160.pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
-		bmx160.roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
-		bmx160.pitch *= 180.0f / PI;
-
-		bmx160.yaw   *= 180.0f / PI;
-
-		//bmx160.yaw   += 10.942f; // Declination
-
-		bmx160.roll  *= 180.0f / PI;
 		/*
-		bmx160.yaw   = atan2(2.0f * (q1 * q2 + q0 * q3), q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3);
-			bmx160.roll = -asin(2.0f * (q1 * q3 - q0 * q2));
-			bmx160.pitch  = atan2(2.0f * (q0 * q1 + q2 * q3), q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3);
+		 bmx160.gx = gyro.y / 131.2 * 3.1415 /180.0;		//due to 250 deg/sec
+		 bmx160.gy = -gyro.x / 131.2 * 3.1415 /180.0;
+		 bmx160.gz = gyro.z / 131.2 * 3.1415 /180.0;
+		 */
+		/*
+		 bmx160.ax = accel.y * 0.000061035;	//due to 2g
+		 bmx160.ay = -accel.x * 0.000061035;
+		 bmx160.az = accel.z * 0.000061035;
+		 */
+		/*
+		bmx160.gx = gyro.x / 131.2 * 3.1415 / 180.0;		//due to 250 deg/sec
+		bmx160.gy = gyro.y / 131.2 * 3.1415 / 180.0;
+		bmx160.gz = gyro.z / 131.2 * 3.1415 / 180.0;
 
-			bmx160.pitch *= 180.0f / PI;
+		bmx160.ax = accel.x * 0.000061035;	//due to 2g
+		bmx160.ay = accel.y * 0.000061035;
+		bmx160.az = accel.z * 0.000061035;
+*/
+		bmx160.gx = gyro.x;		//due to 250 deg/sec
+		bmx160.gy = gyro.y;
+		bmx160.gz = gyro.z;
 
-			bmx160.yaw   *= 180.0f / PI;
+		bmx160.ax = accel.x;	//due to 2g
+		bmx160.ay = accel.y;
+		bmx160.az = accel.z;
 
-			//bmx160.yaw   += 10.942f; // Declination
+		//patch for madgwick filter
+		/*
+		 bmx160.mx = rawMagData.y / 100.0;	//microTesla to Gauss
+		 bmx160.my = -rawMagData.x / 100.0;
+		 bmx160.mz = rawMagData.z / 100.0;
+		 */
+		/*
+		 bmx160.mx = rawMagData.x / 100.0;	//microTesla to Gauss
+		 bmx160.my = rawMagData.y / 100.0;
+		 bmx160.mz = rawMagData.z / 100.0;
+		 */
+		bmx160.mx = rawMagData.x;	//microTesla to Gauss
+		bmx160.my = rawMagData.y;
+		bmx160.mz = rawMagData.z;
+/*		chprintf(SHELL_IFACE, "X = %0.1f, Y = %0.1f, Z = %0.1f\r\n",
+				bmx160.mx, bmx160.my,
+				bmx160.mz);
 
-			bmx160.roll  *= 180.0f / PI;
-			*/
-			//tx_box->yaw = bmx160.yaw;
-			//tx_box->pitch = bmx160.pitch;
-			//tx_box->roll = bmx160.roll;
-		//	chprintf(SHELL_IFACE, "\r\nYPR %f %f %f\r\n", bmx160.yaw, bmx160.pitch, bmx160.roll);
-		//	chprintf(SHELL_IFACE, "Q %f %f %f %f\r\n", q0, q1, q2, q3);
-		//	chprintf(SHELL_IFACE, "\r\nG %f %f %f\r\n", bmx160.gx, bmx160.gy, bmx160.gz);
-		//	chprintf(SHELL_IFACE, "A %f %f %f\r\n", bmx160.ax, bmx160.ay, bmx160.az);
-		//	chprintf(SHELL_IFACE, "M %f %f %f\r\n", bmx160.mx, bmx160.my, bmx160.mz);
-			/* Print the Mag data */
-			//chprintf("\n Magnetometer data \n");
+			chprintf(SHELL_IFACE, "X = %0.1f, Y = %0.1f, Z = %0.1f\r\n",
+					bmx160.ax, bmx160.ay,
+					bmx160.az);
 
-	//	chprintf(SHELL_IFACE, "\r\nReaded from BMX160 accel %d %d %d %d\r\n", accel.x, accel.y, accel.z, accel.sensortime);
-	//	chprintf(SHELL_IFACE, "Readed from BMX160 gyro  %d %d %d %d\r\n", gyro.x, gyro.y, gyro.z, gyro.sensortime);
-	//	chprintf(SHELL_IFACE, "Readed from BMX160 magn  %02f %02f %02f\r\n", bmm.data.x, bmm.data.y, bmm.data.z);
+			chprintf(SHELL_IFACE, "X = %0.1f, Y = %0.1f, Z = %0.1f\r\n\r\n",
+					bmx160.gx, bmx160.gy,
+					bmx160.gz);
+*/
+		// Calibrate gyroscope
+		FusionVector3 uncalibratedGyroscope = {
+				.axis.x = bmx160.gx, /* replace this value with actual gyroscope x axis measurement in lsb */
+				.axis.y = bmx160.gy, /* replace this value with actual gyroscope y axis measurement in lsb */
+				.axis.z = bmx160.gz, /* replace this value with actual gyroscope z axis measurement in lsb */
+		};
 
+		FusionVector3 calibratedGyroscope = FusionCalibrationInertial(
+				uncalibratedGyroscope, FUSION_ROTATION_MATRIX_IDENTITY,
+				gyroscopeSensitivity, FUSION_VECTOR3_ZERO);
+
+		// Calibrate accelerometer
+		FusionVector3 uncalibratedAccelerometer = {
+				.axis.x = bmx160.ax, /* replace this value with actual accelerometer x axis measurement in lsb */
+				.axis.y = bmx160.ay, /* replace this value with actual accelerometer y axis measurement in lsb */
+				.axis.z = bmx160.az, /* replace this value with actual accelerometer z axis measurement in lsb */
+		};
+
+		FusionVector3 calibratedAccelerometer = FusionCalibrationInertial(
+				uncalibratedAccelerometer, FUSION_ROTATION_MATRIX_IDENTITY,
+				accelerometerSensitivity, FUSION_VECTOR3_ZERO);
+
+		// Calibrate magnetometer
+		FusionVector3 uncalibratedMagnetometer = {
+				.axis.x = bmx160.mx, /* replace this value with actual magnetometer x axis measurement in uT */
+				.axis.y = bmx160.my, /* replace this value with actual magnetometer y axis measurement in uT */
+				.axis.z = bmx160.mz, /* replace this value with actual magnetometer z axis measurement in uT */
+		};
+
+		FusionVector3 calibratedMagnetometer = FusionCalibrationMagnetic(
+				uncalibratedMagnetometer, FUSION_ROTATION_MATRIX_IDENTITY,
+				hardIronBias);
+
+		// Update gyroscope bias correction algorithm
+		calibratedGyroscope = FusionBiasUpdate(&fusionBias,
+				calibratedGyroscope);
+
+		// Update AHRS algorithm
+		FusionAhrsUpdate(&fusionAhrs, calibratedGyroscope,
+				calibratedAccelerometer, calibratedMagnetometer, samplePeriod);
+
+		// Print Euler angles
+		FusionEulerAngles eulerAngles = FusionQuaternionToEulerAngles(
+				FusionAhrsGetQuaternion(&fusionAhrs));
+
+		//	eulerAngles.angle.yaw -= 90.0;
+
+		if (eulerAngles.angle.yaw < 0.0){
+			eulerAngles.angle.yaw *= -1.0;
+			//eulerAngles.angle.yaw -= 90.0;
+		}else{
+			eulerAngles.angle.yaw = 360.0 - eulerAngles.angle.yaw;
+		}
+		eulerAngles.angle.yaw -= 90.0;
+		if (eulerAngles.angle.yaw < 0.0){
+			eulerAngles.angle.yaw += 360.0;
+		}
+		bmx160.yaw = eulerAngles.angle.yaw;
+		bmx160.pitch = eulerAngles.angle.pitch;
+		bmx160.roll = eulerAngles.angle.roll;
+		//eulerAngles.angle.yaw = 180.0 - eulerAngles.angle.yaw;
+
+	/*	chprintf(SHELL_IFACE, "Roll = %0.1f, Pitch = %0.1f, Yaw = %0.1f\r\n",
+				eulerAngles.angle.roll, eulerAngles.angle.pitch,
+				eulerAngles.angle.yaw);
+*/
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(10));
 	}
 }
@@ -393,6 +488,7 @@ int8_t bmx160_full_init(void) {
 	    bmm.read = bmm150_aux_read;
 	    bmm.write = bmm150_aux_write;
 	    bmm.delay_ms = bmx160_delay_ms;
+	    bmm.settings.data_rate = BMM150_DATA_RATE_30HZ;
 
 	    rslt = bmi160_init(&bmi);
 	    /* Check rslt for any error codes */
@@ -417,7 +513,7 @@ int8_t bmx160_full_init(void) {
 
 	    /* Configure the gyroscope */
 	    bmi.gyro_cfg.odr = BMI160_GYRO_ODR_100HZ;
-	    bmi.gyro_cfg.range = BMI160_GYRO_RANGE_2000_DPS;
+	    bmi.gyro_cfg.range = BMI160_GYRO_RANGE_250_DPS;
 	    bmi.gyro_cfg.bw = BMI160_GYRO_BW_NORMAL_MODE;
 	    bmi.gyro_cfg.power = BMI160_GYRO_NORMAL_MODE;
 
@@ -454,111 +550,15 @@ int8_t bmx160_full_init(void) {
 //	    rslt = bmi160_set_fifo_config(fifo_config, BMI160_ENABLE, &bmi);
 	    /* Check rslt for any error codes */
 }
-/*
+
 int8_t bmx160_save_calib_to_eeprom(bmx160_t *bmx160){
-	eeprom_write(EEPROM_MAGN_X_OFFSET_ADDR, &bmx160->magn_offset.x, sizeof(struct bmx160_mag_offset_t) + sizeof(struct bmx160_gyro_offset_t) + sizeof(struct bmx160_accel_offset_t));
+	eeprom_write(EEPROM_MAGN_X_OFFSET_ADDR, (uint8_t*)&bmx160->mag_offset.x, sizeof(float)*3);
 }
 
 int8_t bmx160_read_calib_from_eeprom(bmx160_t *bmx160){
-	eeprom_read(EEPROM_MAGN_X_OFFSET_ADDR, &bmx160->magn_offset.x, sizeof(struct bmx160_mag_offset_t) + sizeof(struct bmx160_gyro_offset_t) + sizeof(struct bmx160_accel_offset_t));
+	eeprom_read(EEPROM_MAGN_X_OFFSET_ADDR, (uint8_t*)&bmx160->mag_offset.x, sizeof(float)*3);
 }
 
-int8_t bno955_read_static_flag_from_eeprom(bmx160_t *bmx160){
-	uint8_t temp;
-		if (eeprom_read(EEPROM_STATIC_CALIB_FLAG_ADDR, &temp, 1) != -1) {
-			bmx160->static_calib = temp;
-			return temp;
-		}
-		return -1;
-}
-
-int8_t bmx160_set_static_calib(bmx160_t *bmx160) {
-	uint8_t temp = 1;
-	if (eeprom_write(EEPROM_STATIC_CALIB_FLAG_ADDR, &temp, 1) != -1) {
-		bmx160->static_calib = 1;
-		return 0;
-	}
-	return -1;
-}
-
-int8_t bmx160_set_dynamic_calib(bmx160_t *bmx160) {
-	uint8_t temp = 0;
-	if (eeprom_write(EEPROM_STATIC_CALIB_FLAG_ADDR, &temp, 1) != -1) {
-		bmx160->static_calib = 0;
-		return 0;
-	}
-	return -1;
-}
-
-
-int8_t bmx160_apply_calib_to_chip(bmx160_t *bmx160){
-	bmx160->read_type = OUTPUT_NONE;
-	bmx160_set_operation_mode(bmx160_OPERATION_MODE_CONFIG);
-	bmx160_write_mag_offset(&bmx160->magn_offset);
-	bmx160_write_gyro_offset(&bmx160->gyro_offset);
-	bmx160_write_accel_offset(&bmx160->accel_offset);
-	bmx160_set_operation_mode(bmx160_OPERATION_MODE_NDOF);
-	bmx160->read_type = OUTPUT_TEST;
-}
-
-int8_t bmx160_start_calibration(bmx160_t *bmx160){
-	int8_t comres = bmx160_INIT_VALUE;
-	bmx160->read_type = OUTPUT_NONE;
-	comres += bmx160_set_sys_rst(0x01);
-	chThdSleepMilliseconds(700);
-	comres = bmx160_init(bmx160);
-	comres += bmx160_set_power_mode(bmx160_POWER_MODE_NORMAL);
-	comres += bmx160_set_operation_mode(bmx160_OPERATION_MODE_NDOF);
-	comres += bmx160_write_page_id(bmx160_PAGE_ZERO);
-	comres += bmx160_set_euler_unit(bmx160_EULER_UNIT_DEG);
-	bmx160->read_type = OUTPUT_ALL_CALIB;
-	return comres;
-}
-
-int8_t bmx160_read_euler(bmx160_t *bmx160){
-	int8_t comres = bmx160_INIT_VALUE;
-	uint8_t euler_data[6];
-//	struct bmx160_euler_t reg_euler = {bmx160_INIT_VALUE,
-	//	bmx160_INIT_VALUE, bmx160_INIT_VALUE};
-	//euler_data[0] = bmx160_EULER_H_LSB_VALUEH_REG;
-	//bmx160_read(bmx160->dev_addr, euler_data, 6);
-	comres += bmx160_convert_float_euler_hpr_deg(&bmx160->d_euler_hpr);
-	//bmx160->d_euler_hpr.h = (float)(((int16_t)(euler_data[0] | euler_data[1] << 8))/bmx160_EULER_DIV_DEG);
-	//bmx160->d_euler_hpr.r = (float)(((int16_t)(euler_data[2] | euler_data[3] << 8))/bmx160_EULER_DIV_DEG);
-	//bmx160->d_euler_hpr.p = (float)(((int16_t)(euler_data[4] | euler_data[5] << 8))/bmx160_EULER_DIV_DEG);
-	//bmx160->d_euler_hpr.h = (float)(reg_euler.h/bmx160_EULER_DIV_DEG);
-	//bmx160->d_euler_hpr.r = (float)(reg_euler.r/bmx160_EULER_DIV_DEG);
-	//bmx160->d_euler_hpr.p = (float)(reg_euler.p/bmx160_EULER_DIV_DEG);
-		return comres;
-}
-
-int8_t bmx160_read_status(bmx160_t *bmx160){
-	int8_t comres = bmx160_INIT_VALUE;
-	comres += bmx160_get_mag_calib_stat(&bmx160->calib_stat.magn);
-	comres += bmx160_get_accel_calib_stat(&bmx160->calib_stat.accel);
-	comres += bmx160_get_gyro_calib_stat(&bmx160->calib_stat.gyro);
-	comres += bmx160_get_sys_calib_stat(&bmx160->calib_stat.system);
-	return comres;
-}
-
-int8_t bmx160_check_calib_coefs(bmx160_t *bmx160){
-	int8_t comres = bmx160_INIT_VALUE;
-	comres += bmx160_read_sic_matrix(&bmx160->sic_matrix);
-	comres += bmx160_read_accel_offset(&bmx160->accel_offset);
-	comres += bmx160_read_mag_offset(&bmx160->magn_offset);
-	comres += bmx160_read_gyro_offset(&bmx160->gyro_offset);
-	return comres;
-}
-int8_t bmx160_i2c_routine(bmx160_t *bmx160)
-{
-	bmx160->bmx160_I2C_bus_write= bmx160_I2C_bus_write;
-	bmx160->bmx160_I2C_bus_read = bmx160_I2C_bus_read;
-	bmx160->delay_msec = bmx160_delay_ms;
-	bmx160->dev_addr = bmx160_I2C_ADDR1;
-
-	return bmx160_INIT_VALUE;
-}
-*/
 void bmx160_delay_ms(uint16_t msec){
 	chThdSleepMilliseconds(msec);
 }
@@ -692,4 +692,104 @@ int8_t bmm150_aux_write(uint8_t id, uint8_t reg_addr, uint8_t *reg_data, uint16_
     (void) id; /* id is unused here */
 
     return bmi160_aux_write(reg_addr, reg_data, len, &bmi);
+}
+
+
+void bmx160_mag_calibration(float * dest1, float * dest2) {
+	uint16_t ii = 0, sample_count = 0;
+	float mag_bias[3] = { 0, 0, 0 }, mag_scale[3] = { 0, 0, 0 };
+	float mag_max[3] = { -32767, -32767, -32767 }, mag_min[3] = { 32767,
+			32767, 32767 }, mag_temp[3] = { 0, 0, 0 };
+
+	chSemWait(&usart1_semaph);
+	chprintf((BaseSequentialStream*) &SD1, "Mag Calibration: Wave device in all axis!\r\n");
+	chSemSignal(&usart1_semaph);
+	chThdSleepMilliseconds(2000);
+
+	sample_count = 1200; // at 100 Hz ODR, new mag data is available every 10 ms
+	for (ii = 0; ii < sample_count; ii++) {
+
+		bmi160_get_sensor_data((BMI160_ACCEL_SEL | BMI160_GYRO_SEL), &accel, &gyro, &bmi);
+		rslt = bmm150_read_mag_data(&bmm);
+		/* check for the mag calibration status */
+		//	bsx_get_magcalibaccuracy(&magAcc);
+
+		libraryInput_ts.acc.data.x = accel.x;
+		libraryInput_ts.acc.data.y = accel.y;
+		libraryInput_ts.acc.data.z = accel.z;
+		libraryInput_ts.acc.time_stamp = accel.sensortime*39; // <- timestamp resolution on BMX160 is 39us, hence multiplying by 39
+		libraryInput_ts.acc.time_stamp = sensortime_1; // <- timestamp resolution on BMX160 is 39us, hence multiplying by 39
+
+		libraryInput_ts.gyro.data.x = gyro.x;
+		libraryInput_ts.gyro.data.y = gyro.y;
+		libraryInput_ts.gyro.data.z = gyro.z;
+		libraryInput_ts.gyro.time_stamp = sensortime_1;
+
+		libraryInput_ts.mag.data.x = bmm.data.x;
+		libraryInput_ts.mag.data.y = bmm.data.y;
+		libraryInput_ts.mag.data.z = bmm.data.z;
+		libraryInput_ts.mag.time_stamp = sensortime_1;
+		sensortime_1 += 10 * 1000;
+		bsx_dostep(&libraryInput_ts);
+		bsx_get_magrawdata(&rawMagData);
+
+		bmx160.mx = rawMagData.x;	//microTesla to Gauss
+		bmx160.my = rawMagData.y;
+		bmx160.mz = rawMagData.z;
+/*
+		chSemWait(&usart1_semaph);
+				chprintf((BaseSequentialStream*)&SD1, "MX: %f, MY: %f, MZ: %f\r\n",
+						bmx160.magCount[0], bmx160.magCount[1], bmx160.magCount[2]);
+		chSemSignal(&usart1_semaph);
+		 */
+		if (ii % 120 == 0) {
+			chSemWait(&usart1_semaph);
+			chprintf(SHELL_IFACE, "Calibration progress: %d%%\r\n", (uint8_t)(((ii+1) / 120) * 10));
+			chSemSignal(&usart1_semaph);
+		}
+
+		bmx160.magCount[0] = bmx160.mx;
+		bmx160.magCount[1] = bmx160.my;
+		bmx160.magCount[2] = bmx160.mz;
+
+		for (int jj = 0; jj < 3; jj++) {
+			if (bmx160.magCount[jj] > mag_max[jj])
+				mag_max[jj] = bmx160.magCount[jj];
+			if (bmx160.magCount[jj] < mag_min[jj])
+				mag_min[jj] = bmx160.magCount[jj];
+		}
+
+		chThdSleepMilliseconds(11);  // at 100 Hz ODR, new mag data is available every 10 ms
+	}
+
+/*	chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*) &SD1, "max x = %f, max y = %f, max z = %f\r\n", mag_max[0], mag_max[1], mag_max[2]);
+		chprintf((BaseSequentialStream*) &SD1, "min x = %f, min y = %f, min z = %f\r\n", mag_min[0], mag_min[1], mag_min[2]);
+	chSemSignal(&usart1_semaph);
+	*/
+// Get hard iron correction
+	mag_bias[0] = (mag_max[0] + mag_min[0]) / 2; // get average x mag bias in counts
+	mag_bias[1] = (mag_max[1] + mag_min[1]) / 2; // get average y mag bias in counts
+	mag_bias[2] = (mag_max[2] + mag_min[2]) / 2; // get average z mag bias in counts
+
+		dest1[0] =  mag_bias[0]; // save mag biases in G for main program
+	dest1[1] =  mag_bias[1];
+	dest1[2] =  mag_bias[2];
+
+// Get soft iron correction estimate
+	mag_scale[0] = (mag_max[0] - mag_min[0]) / 2; // get average x axis max chord length in counts
+	mag_scale[1] = (mag_max[1] - mag_min[1]) / 2; // get average y axis max chord length in counts
+	mag_scale[2] = (mag_max[2] - mag_min[2]) / 2; // get average z axis max chord length in counts
+
+	float avg_rad = mag_scale[0] + mag_scale[1] + mag_scale[2];
+	avg_rad /= 3.0;
+
+	dest2[0] = avg_rad / ( mag_scale[0]);
+	dest2[1] = avg_rad / ( mag_scale[1]);
+	dest2[2] = avg_rad / ( mag_scale[2]);
+
+	chSemWait(&usart1_semaph);
+	chprintf((BaseSequentialStream*) &SD1, "Offset X = %f, Offset Y = %f, Offset Z = %f\r\nScale X = %f, Scale Y = %f, Scale Z = %f\r\nMag Calibration done!\r\n",
+				dest1[0], dest1[1], dest1[2], dest2[0], dest2[1], dest2[2]);
+	chSemSignal(&usart1_semaph);
 }

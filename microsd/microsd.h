@@ -31,6 +31,7 @@ enum microsd_commands{
 	MICROSD_CAT,
 	MICROSD_WRITE_LOG,
 	MICROSD_UPDATE_CALIBFILE,
+	MICROSD_REMOVE,
 	MICROSD_FREE
 };
 
@@ -54,6 +55,7 @@ void microsd_update_calibfile(void);
 void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]);
 void microsd_show_tree(BaseSequentialStream *chp);
 void cmd_mount(BaseSequentialStream *chp, int argc, char *argv[]);
+void cmd_remove(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_free(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_mkfs(BaseSequentialStream *chp, int argc, char *argv[]);

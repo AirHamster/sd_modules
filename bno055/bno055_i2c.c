@@ -16,14 +16,19 @@
 #include "bno055.h"
 #include "bno055_i2c.h"
 #include "sd_shell_cmds.h"
+#ifdef USE_HMC6343_MODULE
 #include "hmc6343_i2c.h"
+extern hmc6343_t *hmc6343;
+#endif
 #include "eeprom.h"
+#include "bmx160_i2c.h"
+extern bmx160_t bmx160;
 extern struct ch_semaphore usart1_semaph;
 struct ch_semaphore i2c1_semaph;
 //static bno055_t bno055_struct;
 //bno055_t *bno055 = &bno055_struct;
 bno055_t *bno055;
-extern hmc6343_t *hmc6343;
+
 
 static THD_WORKING_AREA(bno055_thread_wa, 4096*2);
 static THD_FUNCTION(bno055_thread, arg);
@@ -37,7 +42,7 @@ const I2CConfig bno055_i2c_cfg = {
 
 void start_bno055_module(void){
 
-	chThdCreateStatic(bno055_thread_wa, sizeof(bno055_thread_wa), NORMALPRIO + 3, bno055_thread, NULL);
+	chThdCreateStatic(bno055_thread_wa, sizeof(bno055_thread_wa), NORMALPRIO + 5, bno055_thread, NULL);
 }
 
 /*
@@ -202,7 +207,10 @@ int8_t bno055_read_euler(bno055_t *bno055){
 	//euler_data[0] = BNO055_EULER_H_LSB_VALUEH_REG;
 	//bno055_read(bno055->dev_addr, euler_data, 6);
 	comres += bno055_convert_float_euler_hpr_deg(&bno055->d_euler_hpr);
-	bno055->d_euler_hpr.h = hmc6343->yaw;
+#ifdef USE_HMC6343_MODULE
+	//bno055->d_euler_hpr.h = hmc6343->yaw;
+#endif
+	//bno055->d_euler_hpr.h = bmx160.yaw;
 	//bno055->d_euler_hpr.h = hmc5883->yaw;
 	//bno055->d_euler_hpr.h = (float)(((int16_t)(euler_data[0] | euler_data[1] << 8))/BNO055_EULER_DIV_DEG);
 	//bno055->d_euler_hpr.r = (float)(((int16_t)(euler_data[2] | euler_data[3] << 8))/BNO055_EULER_DIV_DEG);

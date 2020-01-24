@@ -26,11 +26,17 @@
 #include "sailDataMath.h"
 #include "sd_math.h"
 #include "eeprom.h"
-
+#ifdef USE_BMX160_MODULE
+#include "bmx160_i2c.h"
+extern bmx160_t bmx160;
+extern struct bmm150_dev bmm;
+extern volatile float beta;
+#endif
 extern windsensor_t *wind;
 extern bno055_t *bno055;
 extern ubx_nav_pvt_t *pvt_box;
 extern float lastSensorValues[SIZE_BUFFER_VALUES];
+extern rudder_t *r_rudder;
 CalibrationParmDef paramSD;
 float windAngleTarget = 0.0;
 float hullSpeedTarget = 0.0;
@@ -40,7 +46,7 @@ static THD_WORKING_AREA(math_thread_wa, 4096*4);
 static THD_FUNCTION(math_thread, arg);
 
 void start_math_module(void){
-	chThdCreateStatic(math_thread_wa, sizeof(math_thread_wa), NORMALPRIO,
+	chThdCreateStatic(math_thread_wa, sizeof(math_thread_wa), NORMALPRIO + 2,
 				math_thread, NULL);
 }
 
@@ -95,7 +101,22 @@ void math_init_calibration_params(CalibrationParmDef *param) {
 	eeprom_read(EEPROM_MATH_WINSIZE2_CORRECTION, (uint8_t*)&paramSD.WindowSize2, 1);
 	chThdSleepMilliseconds(10);
 	eeprom_read(EEPROM_MATH_WINSIZE3_CORRECTION, (uint8_t*)&paramSD.WindowSize3, 1);
+/*
+	eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_LEFT, (uint8_t*) &r_rudder->min_native,
+			4);
 	chThdSleepMilliseconds(10);
+	eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*) &r_rudder->min_degrees, 4);
+	chThdSleepMilliseconds(10);
+	eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_CENTER,	(uint8_t*) &r_rudder->center_native, 4);
+	chThdSleepMilliseconds(10);
+	eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*) &r_rudder->center_degrees, 4);
+	chThdSleepMilliseconds(10);
+	eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*) &r_rudder->max_degrees,
+			4);
+	chThdSleepMilliseconds(10);
+	eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*) &r_rudder->max_degrees, 4);
+
+	chThdSleepMilliseconds(10);*/
 }
 
 void math_copy_sensor_values(float *lastSensorValues) {
@@ -105,7 +126,7 @@ void math_copy_sensor_values(float *lastSensorValues) {
 //	chprintf(SHELL_IFACE, "AWS: %f\r\n", lastSensorValues[AWS]);
 	lastSensorValues[CMG] = (float) pvt_box->headMot;	//cog	gps
 //	chprintf(SHELL_IFACE, "CMG: %f\r\n", lastSensorValues[CMG]);
-	lastSensorValues[HDM] = bno055->d_euler_hpr.h;
+	lastSensorValues[HDM] = bmx160.yaw;
 //	chprintf(SHELL_IFACE, "HDM: %f\r\n", lastSensorValues[HDM]);
 	lastSensorValues[HEEL] = bno055->d_euler_hpr.r;
 //	chprintf(SHELL_IFACE, "HEEL: %f\r\n", lastSensorValues[HEEL]);

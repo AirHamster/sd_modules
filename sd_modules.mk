@@ -17,11 +17,20 @@ SD_SRC += ./sd_modules/sd_shell_cmd/service_mode.c
 SD_INC += ./sd_modules/sd_shell_cmd
 endif
 
+#Finite state mashine engine
+ifeq ($(USE_FSM_MODULE), TRUE)
+SD_SRC += ./sd_modules/fsm/fsm.c
+#SD_SRC += ./sd_modules/fsm/fb_allocator.c
+#SD_SRC += ./sd_modules/fsm/sm_allocator.c
+#SD_SRC += ./sd_modules/fsm/x_allocator.c
+SD_INC += ./sd_modules/fsm
+endif
+
 #MPU9250 - 9-axis accel/gyro/magn chip
 ifeq ($(USE_MPU_9250_MODULE), TRUE)
 SD_SRC += ./sd_modules/mpu9250/mpu9250.c
-SD_SRC += ./sd_modules/mpu9250/MadgwickAHRS.c
-//SD_SRC += ./sd_modules/mpu9250/quaternionFilters.c
+#SD_SRC += ./sd_modules/mpu9250/MadgwickAHRS.c
+#SD_SRC += ./sd_modules/mpu9250/quaternionFilters.c
 SD_INC += ./sd_modules/mpu9250
 endif
 
@@ -75,13 +84,30 @@ ifeq ($(USE_BMX160_MODULE), TRUE)
 SD_SRC += ./sd_modules/bmx160/bmx160_i2c.c
 SD_SRC += ./sd_modules/bmx160/bmi160.c
 SD_SRC += ./sd_modules/bmx160/bmm150.c
-SD_SRC += ./sd_modules/mpu9250/MadgwickAHRS.c
-SD_SRC += ./sd_modules/mpu9250/quaternionFilters.c
+SD_SRC += ./sd_modules/bmx160/MadgwickAHRS/MadgwickAHRS.c
+#SD_SRC += ./sd_modules/bmx160/MahonyAHRS/MahonyAHRS.c
 SD_INC += ./sd_modules/bmx160/bsx_lite/Inc
+SD_INC += ./sd_modules/bmx160/MadgwickAHRS
+#SD_INC += ./sd_modules/bmx160/MahonyAHRS
 SD_INC += ./sd_modules/bmx160
 endif
 
+#Multi MCU communication module
+ifeq ($(USE_MCU_MCU_MODULE), TRUE)
+SD_SRC += ./sd_modules/mcu-mcu_i2c/mcu-mcu_i2c.c
+SD_SRC += ./sd_modules/mcu-mcu_i2c/software_uart.c
+SD_INC += ./sd_modules/mcu-mcu_i2c
+endif
+
+#FUSION
+ifeq ($(USE_FUSION_MODULE), TRUE)
+SD_SRC += ./sd_modules/bmx160/Fusion/FusionAhrs.c
+SD_SRC += ./sd_modules/bmx160/Fusion/FusionBias.c
+SD_SRC += ./sd_modules/bmx160/Fusion/FusionCompass.c
+SD_INC += ./sd_modules/bmx160/Fusion
 #LAG
+endif
+
 ifeq ($(USE_LAG_MODULE), TRUE)
 SD_SRC += ./sd_modules/lag/lag.c
 SD_INC += ./sd_modules/lag

@@ -56,6 +56,13 @@ extern lag_t *lag;
 extern hmc5883_t *hmc5883;
 #endif
 
+#ifdef USE_BMX160_MODULE
+#include "bmx160_i2c.h"
+extern bmx160_t bmx160;
+extern struct bmm150_dev bmm;
+extern volatile float beta;
+#endif
+
 #ifdef USE_HMC6343_MODULE
 #include "hmc6343_i2c.h"
 extern hmc6343_t *hmc6343;
@@ -77,9 +84,11 @@ extern float velocityMadeGoodTarget;
 #endif
 #endif
 
+//#ifdef SENSOR_BOX
 #include "adc.h"
 dots_t *r_rudder_dots;
 coefs_t *r_rudder_coefs;
+//#endif
 
 thread_t *charger_trp;
 
@@ -124,6 +133,8 @@ static const ShellCommand commands[] = {
 #endif
 #ifdef USE_BNO055_MODULE
 		{ "bno055", cmd_bno055 },
+		{ "beta", cmd_beta },
+		{ "calibrate", cmd_mag_calibrate },
 #endif //USE_BNO055_MODULE
 #ifdef USE_MICROSD_MODULE
 		{ "microsd", cmd_microsd },
@@ -149,6 +160,7 @@ static const ShellCommand commands[] = {
 		{ "free", cmd_free },
 		{ "open", cmd_open },
 		{ "write", cmd_write },
+		{ "remove", cmd_remove },
 #endif
 #ifdef USE_RUDDER_MODULE
 		{"rudder", cmd_rudder },
@@ -160,12 +172,12 @@ static const ShellConfig shell_cfg1 = { (BaseSequentialStream*) &SHELL_SD,
 		commands, history_buffer, 32, complete_buffer };
 
 thread_t *cmd_init(void) {
-	return chThdCreateFromHeap(NULL, SHELL_WA_SIZE, "shell", NORMALPRIO + 4,
+	return chThdCreateFromHeap(NULL, SHELL_WA_SIZE, "shell", NORMALPRIO + 6,
 			shellThread, (void *) &shell_cfg1);
 }
 
 void start_json_module(void){
-	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO, output_thread, NULL);
+	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO + 4, output_thread, NULL);
 }
 
 /*
@@ -188,6 +200,7 @@ static THD_FUNCTION(output_thread, arg) {
 			break;
 		case OUTPUT_TEST:
 			send_json();
+
 			break;
 		case OUTPUT_SERVICE:
 			break;
@@ -195,6 +208,18 @@ static THD_FUNCTION(output_thread, arg) {
 			output_all_calib();
 			break;
 		case OUTPUT_BLE:
+			break;
+		case OUTPUT_GYRO_RAW:
+			output_gyro_raw();
+			break;
+		case OUTPUT_RAW_BMX160:
+			output_gyro_raw();
+			break;
+		case OUTPUT_RAW_HMC:
+			output_gyro_raw();
+			break;
+		case OUTPUT_RAW_HMC_BMX:
+			output_gyro_raw();
 			break;
 		default:
 			break;
@@ -206,11 +231,7 @@ static THD_FUNCTION(output_thread, arg) {
 				case OUTPUT_NONE:
 					break;
 				case OUTPUT_TEST:
-					if (i++ == 10) {
-						copy_to_ble();
-						nina_send_all(peer);
-						i = 0;
-					}
+
 					break;
 				case OUTPUT_SERVICE:
 					break;
@@ -278,6 +299,33 @@ uint8_t output_all_calib(void){
 }
 #endif
 
+
+void output_gyro_raw(void){
+#ifdef USE_BMX160_MODULE
+	chSemWait(&usart1_semaph);
+			//chprintf(SHELL_IFACE, ",%f,%f,%f,%f,%f,%f,%f,%f,%f\r\n", bmx160.ax, bmx160.ay, bmx160.az, bmx160.gx, bmx160.gy, bmx160.gz, bmx160.mx, bmx160.my, bmx160.mz);
+	if(output->type == OUTPUT_RAW_BMX160){
+	chprintf(SHELL_IFACE, ",%f,%f,%f,%f,%f\r\n", bmx160.mx, bmx160.my, bmx160.mz, bno055->d_euler_hpr.p, bno055->d_euler_hpr.r);
+	}
+#endif
+#ifdef USE_HMC6343_MODULE
+	else if(output->type == OUTPUT_RAW_HMC){
+		chprintf(SHELL_IFACE, ",%d,%d,%d,%f,%f\r\n", hmc6343->mx16, hmc6343->my16, hmc6343->mz16, bno055->d_euler_hpr.p, bno055->d_euler_hpr.r);
+	}
+	else if(output->type == OUTPUT_RAW_HMC_BMX){
+		chprintf(SHELL_IFACE, ",%f,%f,%f,%f,%f\r\n", hmc6343->mx, hmc6343->my, hmc6343->mz, bno055->d_euler_hpr.p, bno055->d_euler_hpr.r);
+	}
+#endif
+	chSemSignal(&usart1_semaph);
+		/*	chprintf(SHELL_IFACE, "%f,", bmx160.ay);
+			chprintf(SHELL_IFACE, "%f,", bmx160.az);
+			chprintf(SHELL_IFACE, "%f,", bmx160.gx);
+			chprintf(SHELL_IFACE, "%f,", bmx160.gy);
+			chprintf(SHELL_IFACE, "%f,", bmx160.gz);
+			chprintf(SHELL_IFACE, "%f,", bmx160.mx);
+			chprintf(SHELL_IFACE, "%f,", bmx160.my);
+			chprintf(SHELL_IFACE, "%f,\r\n", bmx160.mz);*/
+}
 /*
 void send_data(uint8_t stream){
 	uint8_t databuff[34];
@@ -357,42 +405,7 @@ int32_t convert_to_ble_type(float value){
 	return val;
 }
 
-#ifdef USE_BLE_MODULE
-void copy_to_ble(void){
-#ifdef SD_MODULE_TRAINER
-#ifdef USE_MATH_MODULE
-	/*
-	thdg->value = convert_to_ble_type(lastFilterValues[1][FILTER_BUFFER_SIZE - 1]);
-	twd->value = convert_to_ble_type(lastFilterValues[4][FILTER_BUFFER_SIZE - 1]);
-	tws->value = convert_to_ble_type(lastFilterValues[5][FILTER_BUFFER_SIZE - 1]);
-	twa->value = convert_to_ble_type(lastFilterValues[6][FILTER_BUFFER_SIZE - 1]);
-	twa_tg->value = convert_to_ble_type(windAngleTarget);
-	bs_tg->value = convert_to_ble_type(hullSpeedTarget);
 
-	hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
-	//hdg->value = convert_to_ble_type(lastFilterValues[0][FILTER_BUFFER_SIZE - 1]);
-	heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
-	*/
-	thdg->value = convert_to_ble_type(lastSensorValues[HDT]);
-		twd->value = convert_to_ble_type(lastSensorValues[TWD]);
-		tws->value = convert_to_ble_type(lastSensorValues[TWS]);
-		twa->value = convert_to_ble_type(lastSensorValues[TWA]);
-		twa_tg->value = convert_to_ble_type(lastSensorValues[TWA_TGT]);
-		bs_tg->value = convert_to_ble_type(lastSensorValues[VMG_TGT]);
-		bs->value = convert_to_ble_type((float)(pvt_box->gSpeed * 0.0036 / 1.852));
-		heel->value = convert_to_ble_type(bno055->d_euler_hpr.h);
-		hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
-		//hdg->value = convert_to_ble_type(lastFilterValues[0][FILTER_BUFFER_SIZE - 1]);
-		heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
-#endif
-	//heel->value = convert_to_ble_type(bno055->d_euler_hpr.r);
-
-	//hdg->value = convert_to_ble_type(lastFilterValues[0][0]);
-	//heel->value = convert_to_ble_type(lastFilterValues[2][0]);
-
-#endif
-}
-#endif
 
 
 void send_json(void)
@@ -412,14 +425,43 @@ void send_json(void)
 #endif
 #ifdef USE_BNO055_MODULE
 		//chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
-		//chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc5883->yaw);
-		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc6343->yaw);
-		chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
-		chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", bno055->d_euler_hpr.r);
-	//	chprintf(SHELL_IFACE, "\"magn_cal\":%d,\r\n\t\t\t", bno055->calib_stat.magn);
-	//	chprintf(SHELL_IFACE, "\"accel_cal\":%d,\r\n\t\t\t", bno055->calib_stat.accel);
-	//	chprintf(SHELL_IFACE, "\"gyro_cal\":%d,\r\n\t\t\t", bno055->calib_stat.gyro);
-	//	chprintf(SHELL_IFACE, "\"sys_cal\":%d,\r\n\t\t\t", bno055->calib_stat.system);
+#ifdef USE_HMC5883_MODULE
+		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc5883->yaw);
+#endif
+#ifdef USE_BMX160_MODULE
+		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bmx160.yaw);
+		chprintf(SHELL_IFACE, "\"bno_yaw  \":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
+		/*chprintf(SHELL_IFACE, "\"bmx_pitch\":%f,\r\n\t\t\t", bmx160.pitch);
+		chprintf(SHELL_IFACE, "\"bmx_roll \":%f,\r\n\t\t\t", bmx160.roll);
+*/
+/*		chprintf(SHELL_IFACE, "\"bax\":%f,\r\n\t\t\t", bmx160.ax);
+		chprintf(SHELL_IFACE, "\"bay\":%f,\r\n\t\t\t", bmx160.ay);
+		chprintf(SHELL_IFACE, "\"baz\":%f,\r\n\t\t\t", bmx160.az);
+
+		chprintf(SHELL_IFACE, "\"bgx\":%f,\r\n\t\t\t", bmx160.gx);
+		chprintf(SHELL_IFACE, "\"bgy\":%f,\r\n\t\t\t", bmx160.gy);
+		chprintf(SHELL_IFACE, "\"bgz\":%f,\r\n\t\t\t", bmx160.gz);
+*/
+	/*	chprintf(SHELL_IFACE, "\"bmx\":%f,\r\n\t\t\t", bmm.data.x);
+		chprintf(SHELL_IFACE, "\"bmy\":%f,\r\n\t\t\t", bmm.data.y);
+		chprintf(SHELL_IFACE, "\"bmz\":%f,\r\n\t\t\t", bmm.data.z);*/
+
+#endif
+#ifdef USE_HMC6343_MODULE
+		//chprintf(SHELL_IFACE, "\"yaw2\":%d,\r\n\t\t\t", (uint16_t)hmc6343->yaw);
+/*
+		chprintf(SHELL_IFACE, "\"ax \":%d,\r\n\t\t\t", (uint16_t)hmc6343->ax16);
+		chprintf(SHELL_IFACE, "\"ay \":%d,\r\n\t\t\t", (uint16_t)hmc6343->ay16);
+		chprintf(SHELL_IFACE, "\"az \":%d,\r\n\t\t\t", (uint16_t)hmc6343->az16);
+*/
+		/*chprintf(SHELL_IFACE, "\"mx \":%d,\r\n\t\t\t", (int16_t)hmc6343->mx16);
+		chprintf(SHELL_IFACE, "\"my \":%d,\r\n\t\t\t", (int16_t)hmc6343->my16);
+		chprintf(SHELL_IFACE, "\"mz \":%d,\r\n\t\t\t", (int16_t)hmc6343->mz16);*/
+#endif
+		chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bmx160.pitch);
+		chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", bmx160.roll);
+		//chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
+		//chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", bno055->d_euler_hpr.r);
 #endif
 #ifdef USE_UBLOX_GPS_MODULE
 		chprintf(SHELL_IFACE, "\"headMot\":%d,\r\n\t\t\t", (uint16_t)(pvt_box->headMot / 100000));
@@ -427,7 +469,8 @@ void send_json(void)
 #endif
 
 #ifdef USE_BLE_MODULE
-		chprintf(SHELL_IFACE, "\"rudder\":%f,\r\n\t\t\t", r_rudder->degrees);
+		chprintf(SHELL_IFACE, "\"rudder\":%f,\r\n\t\t\t", r_rudder->native);
+		chprintf(SHELL_IFACE, "\"rudder_deg\":%f,\r\n\t\t\t", r_rudder->degrees);
 		chprintf(SHELL_IFACE, "\"log\":%f,\r\n\t\t\t", r_lag->meters);
 #endif
 
@@ -480,6 +523,14 @@ void send_rudder_over_ble(rudder_t *rudder){
 }
 #endif
 
+#ifdef USE_BMX160_MODULE
+void cmd_mag_calibrate(BaseSequentialStream* chp, int argc, char* argv[]){
+	stop_all_tests();
+
+	bmx160.calib_flag = 1;
+}
+#endif
+
 void cmd_start(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
 		if (strcmp(argv[0], "test") == 0) {
@@ -496,9 +547,21 @@ void cmd_start(BaseSequentialStream* chp, int argc, char* argv[]) {
 			toggle_ypr_output();
 			return;
 		}
-		if (strcmp(argv[0], "gyro") == 0) {
-			toggle_gyro_output();
+		if (strcmp(argv[0], "raw_bmx160") == 0) {
+			toggle_raw_output(1);
 			return;
+		}
+		if (strcmp(argv[0], "raw_hmc6343") == 0) {
+			toggle_raw_output(2);
+			return;
+		}
+		if (strcmp(argv[0], "raw_hmc_bmx") == 0) {
+					toggle_raw_output(3);
+					return;
+				}
+		if (strcmp(argv[0], "gyro") == 0) {
+					toggle_gyro_output();
+					return;
 		}
 	}
 	chprintf(chp, "Usage: start test|gps|ypr|gyro\n\r");
@@ -542,11 +605,11 @@ void cmd_boot(BaseSequentialStream* chp, int argc, char* argv[]) {
 	chprintf(chp, "Entering bootloader after system reset");
 	chThdSleepMilliseconds(500);
 	chprintf(chp, ".");
-	chThdSleepMilliseconds(500);
+/*	chThdSleepMilliseconds(500);
 	chprintf(chp, ".");
 	chThdSleepMilliseconds(500);
 	chprintf(chp, ".");
-	chThdSleepMilliseconds(500);
+	chThdSleepMilliseconds(500);*/
 	chprintf(chp, "\r\n");
 
 	// *((unsigned long *)(SYMVAL(__ram0_end__) - 4)) = 0xDEADBEEF;
@@ -556,13 +619,24 @@ void cmd_boot(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 	 if (RTC->BKP0R == MAGIC_BOOTLOADER_NUMBER) {
 	 chprintf(chp, "Writed to the end of RAM %x, reset\r\n", RTC->BKP0R);
-	 chThdSleepMilliseconds(500);
+	// chThdSleepMilliseconds(500);
 	 NVIC_SystemReset();
 	 }else{
 		 chprintf(chp, "Comparsion failed\r\n");
 	 }
 
 }
+
+#ifdef USE_BMX160_MODULE
+void cmd_beta(BaseSequentialStream* chp, int argc, char* argv[]){
+	if (strlen(argv[0]) != 0) {
+		beta = atof(argv[0]);
+		chprintf(chp, "Saved beta %f\r\n", beta);
+	}else{
+		chprintf(chp, "No value provided\r\n");
+	}
+}
+#endif
 
 void cmd_ublox(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
@@ -753,8 +827,20 @@ void toggle_ypr_output(void) {
 void toggle_gyro_output(void) {
 	output->service = 0;
 	output->gyro = (~output->gyro) & 0x01;
+	output->type = OUTPUT_GYRO_RAW;;
 }
 
+void toggle_raw_output(uint8_t sensor) {
+	output->service = 0;
+	//output->gyro = (~output->gyro) & 0x01;
+	if (sensor == 1){
+	output->type = OUTPUT_RAW_BMX160;
+	}else if (sensor == 2){
+	output->type = OUTPUT_RAW_HMC;
+	}else if (sensor == 3){
+		output->type = OUTPUT_RAW_HMC_BMX;
+		}
+}
 
 
 void stop_all_tests(void) {
@@ -769,7 +855,11 @@ void stop_all_tests(void) {
 #ifdef USE_BNO055_MODULE
 		bno055->read_type = OUTPUT_NONE;
 #endif
+#ifdef USE_MICROSD_MODULE
+		fsm_new_state(MICROSD_WRITE_LOG);
+#endif
 	}
+
 }
 
 

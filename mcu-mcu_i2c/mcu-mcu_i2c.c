@@ -15,11 +15,17 @@
 #include "shell.h"
 #include "chprintf.h"
 #include "mcu-mcu_i2c.h"
+#include "software_uart.h"
+#ifdef USE_CHARGER_MODULE
+#include "bq27441.h"
+extern fuel_t *fuel;
+#endif
 
 mcu_mcu_data_t *mcu_mcu_data;
+power_data_t power;
+power_data_t *power_data = &power;
 
-
-#ifdef SLAVE_MCU
+#ifdef MAIN_MCU
 const I2CConfig mcu_mcu_if_cfg = {
   0xD0D43C4C,
   0,
@@ -36,31 +42,90 @@ const I2CConfig mcu_mcu_if_cfg = {
 #endif
 
 static THD_WORKING_AREA(mcu_mcu_thread_wa, 256);
-static THD_FUNCTION(mcu_mcu_thread, p) {
+static THD_FUNCTION( mcu_mcu_thread, p) {
 	(void) p;
 	chRegSetThreadName("MCU-MCU Thd");
 	//i2cStart(&MCU_MCU_IF, &mcu_mcu_if_cfg);
+	susart_init();
+
+	char char_arr[4];
+	char ch;
 
 	while (true) {
 
-#ifdef POWER_MCU
 		systime_t prev = chVTGetSystemTime(); // Current system time.
-		switch(power_mcu->current_state){
+		//mcu_mcu_read_power_parameters(power_data);
+		//chprintf((BaseSequentialStream*) &SD1, "Sending S\r\n");
+#ifdef PWD_MCU
+		itoa(fuel->voltage, char_arr, 10);
+		//chprintf(SHELL_IFACE, "\r\nATOI:\t%d %s\r\n", fuel->voltage);
+		_putchar('V');
+		_putchar(char_arr[0]);
+		_putchar(char_arr[1]);
+		_putchar(char_arr[2]);
+		_putchar(char_arr[3]);
+		itoa(fuel->soc, char_arr, 10);
 
+
+		_putchar('S');
+
+		if (fuel->soc < 100) {
+			_putchar(char_arr[0]);
+			_putchar(char_arr[1]);
+		} else {
+			_putchar(char_arr[0]);
+			_putchar(char_arr[1]);
+			_putchar(char_arr[2]);
 		}
-		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
-#endif
+		_putchar('\r');
+		_putchar('\n');
 
+		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
+
+		#else
+		ch = susart_getchar();
+		//chprintf((BaseSequentialStream*) &SD1, "Recieved %c\r\n", ch);
+		//prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
+#endif
 #ifdef SLAVE_MCU
 		//needed to patch ChibiOS code for support slave configuration
 		//result = i2cSlaveRecieveTimeout(TIMEOUT_INFINITE);
 #endif
 
-
 	}
 }
 
-#ifdef POWER_MCU
+void start_mcu_mcu_module(void){
+	chThdCreateStatic(mcu_mcu_thread_wa, sizeof(mcu_mcu_thread_wa), NORMALPRIO + 3, mcu_mcu_thread, NULL);
+}
+
+#ifdef MAIN_MCU
+
+static int8_t mcu_mcu_read_power_data(power_data_t *p_data){
+	mcu_mcu_read_from_slave(POWER_MCU_DATA, (uint8_t*)data, sizeof(power_data_t));
+
+}
+
+static int8_t mcu_mcu_read_from_slave(uint8_t reg_addr, uint8_t *buf, uint8_t num){
+	uint8_t txbuff[1];
+		uint8_t rxbuff[10];
+		msg_t status;
+		txbuff[0] = reg_addr;
+		i2cAcquireBus(&POWER_MCU_IF);
+		status = i2cMasterTransmitTimeout(&POWER_MCU_IF, POWER_SLAVE_ADDRESS, txbuff, 1,
+				rxbuff, num, 1000);
+		i2cReleaseBus(&POWER_MCU_IF);
+		if (status != MSG_OK) {
+			chSemWait(&usart1_semaph);
+			chprintf((BaseSequentialStream*) &SD1,
+					"Shit happened in mcu-mcu comm: status is %d\r\n", i2cGetErrors(&CHARGER_IF));
+			chSemSignal(&usart1_semaph);
+			return -1;
+		}
+		memcpy(buf, rxbuff, num);
+		return 0;
+}
+
 static int8_t mcu_mcu_send_data_packet_to_slave(mcu_mcu_data_t *data) {
 	uint8_t txbuff[sizeof(mcu_mcu_data_t)+1];
 	uint8_t rxbuff[1];

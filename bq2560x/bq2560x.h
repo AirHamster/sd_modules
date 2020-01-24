@@ -38,8 +38,17 @@ typedef struct{
 	uint8_t charging;
 	uint8_t vbus_attached;
 	uint8_t charge_status;
-
+	uint8_t power_good;
+	uint8_t vbus_status;
 }charger_t;
+
+typedef struct{
+	uint8_t input_current;
+	uint8_t fast_charge_current;
+	uint8_t system_min_voltage;
+	uint8_t precharge_current;
+	uint8_t termination_current;
+}charger_cfg_t;
 
 enum input_current_limit{
 	INPUT_CURRENT_100 = 0x01,
@@ -140,9 +149,55 @@ enum system_minimum_voltage{
 	SYSTEM_MINIMUM_VOLTAGE_3_7V
 };
 
-void start_charger_module(void);
-uint8_t charger_read_register(uint8_t reg_addr, uint8_t *buf);
+enum termination_current{
+	TERMINATION_CURRENT_60 = 0x01,
+	TERMINATION_CURRENT_120 = 0x02,
+	TERMINATION_CURRENT_180 = TERMINATION_CURRENT_120 | TERMINATION_CURRENT_60,
+	TERMINATION_CURRENT_240 = 0x04,
+	TERMINATION_CURRENT_300 = TERMINATION_CURRENT_240 | TERMINATION_CURRENT_60,
+	TERMINATION_CURRENT_360 = TERMINATION_CURRENT_300 | TERMINATION_CURRENT_60,
+	TERMINATION_CURRENT_420 = TERMINATION_CURRENT_360 | TERMINATION_CURRENT_60,
+	TERMINATION_CURRENT_480 = 0x08,
+	TERMINATION_CURRENT_540 = TERMINATION_CURRENT_480 | TERMINATION_CURRENT_60,
+	TERMINATION_CURRENT_600 = TERMINATION_CURRENT_540 | TERMINATION_CURRENT_60,
+	TERMINATION_CURRENT_660 = TERMINATION_CURRENT_600 | TERMINATION_CURRENT_60,
+	TERMINATION_CURRENT_720 = TERMINATION_CURRENT_660 | TERMINATION_CURRENT_60,
+	TERMINATION_CURRENT_780 = TERMINATION_CURRENT_720 | TERMINATION_CURRENT_60,
+	TERMINATION_CURRENT_840 = TERMINATION_CURRENT_780 | TERMINATION_CURRENT_60,
+	TERMINATION_CURRENT_900 = TERMINATION_CURRENT_840 | TERMINATION_CURRENT_60
+};
 
+enum precharge_current{
+	PRECHARGE_CURRENT_60 = 0x01,
+	PRECHARGE_CURRENT_120 = 0x02,
+	PRECHARGE_CURRENT_180 = PRECHARGE_CURRENT_120 | PRECHARGE_CURRENT_60,
+	PRECHARGE_CURRENT_240 = 0x04,
+	PRECHARGE_CURRENT_300 = PRECHARGE_CURRENT_240 | PRECHARGE_CURRENT_60,
+	PRECHARGE_CURRENT_360 = PRECHARGE_CURRENT_300 | PRECHARGE_CURRENT_60,
+	PRECHARGE_CURRENT_420 = PRECHARGE_CURRENT_360 | PRECHARGE_CURRENT_60,
+	PRECHARGE_CURRENT_480 = 0x08,
+	PRECHARGE_CURRENT_540 = PRECHARGE_CURRENT_480 | PRECHARGE_CURRENT_60,
+	PRECHARGE_CURRENT_600 = PRECHARGE_CURRENT_540 | PRECHARGE_CURRENT_60,
+	PRECHARGE_CURRENT_660 = PRECHARGE_CURRENT_600 | PRECHARGE_CURRENT_60,
+	PRECHARGE_CURRENT_720 = PRECHARGE_CURRENT_660 | PRECHARGE_CURRENT_60,
+	PRECHARGE_CURRENT_780 = PRECHARGE_CURRENT_720 | PRECHARGE_CURRENT_60
+};
+
+//enum charge_voltage{
+
+//};
+
+void start_charger_module(void);
+int8_t charger_parse_status(charger_regs_t *regs, charger_t *charger);
+int8_t charger_read_register(uint8_t reg_addr, uint8_t *buf);
+int8_t charger_write_register(uint8_t reg_addr, uint8_t *txbuf, uint8_t txbytes);
+int8_t charger_init(I2CDriver *i2cp, charger_cfg_t *cfg);
+int8_t charger_read_status_regs(charger_regs_t *regs);
+int8_t charger_read_all_regs(charger_regs_t *regs);
+int8_t charger_read_register(uint8_t reg_addr, uint8_t *buf);
+int8_t charger_write_register(uint8_t reg_addr, uint8_t *txbuf, uint8_t txbytes);
+int8_t charger_parse_status(charger_regs_t *regs, charger_t *charger);
+int8_t charger_print_info(charger_t *charger);
 
 /* Register 00h */
 #define BQ2560X_REG_00      		0x00

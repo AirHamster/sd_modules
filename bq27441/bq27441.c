@@ -49,6 +49,7 @@ const I2CConfig fuel_if_cfg = {
 
 static uint8_t fuel_read_register(uint8_t command, uint8_t *buf, uint8_t num);
 static uint8_t fuel_get_parameter(uint8_t param, uint16_t *buffer);
+static int8_t fuel_print_info(fuel_t *fuel);
 
 static THD_WORKING_AREA(fuel_thread_wa, 256);
 static THD_FUNCTION(fuel_thread, p) {
@@ -57,11 +58,13 @@ static THD_FUNCTION(fuel_thread, p) {
 	//i2cStart(&FUEL_IF, &fuel_if_cfg);
 
 	while (true) {
+		//palToggleLine(LINE_RED_LED);
 		systime_t prev = chVTGetSystemTime(); // Current system time.
 		fuel_get_parameter(BQ27441_COMMAND_VOLTAGE, &fuel->voltage);
 		fuel_get_parameter(BQ27441_COMMAND_FLAGS, &fuel->flags);
 		fuel_get_parameter(BQ27441_COMMAND_SOC, &fuel->soc);
 		fuel_get_parameter(BQ27441_COMMAND_REM_CAPACITY, &fuel->remaining_capacity);
+		fuel_print_info(fuel);
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
 
 	}
@@ -78,6 +81,13 @@ static uint8_t fuel_get_parameter(uint8_t param, uint16_t *buffer){
 		return 0;
 }
 
+static int8_t fuel_print_info(fuel_t *fuel){
+
+	chprintf(SHELL_IFACE, "\r\nBatt voltage:\t%dV\r\n", fuel->voltage);
+	chprintf(SHELL_IFACE, "Batt current:\t%dmA\r\n", fuel->standby_current);
+	chprintf(SHELL_IFACE, "Batt SOC:\t%d%%\r\n", fuel->soc);
+	chprintf(SHELL_IFACE, "Batt rem_cap:\t%dmA\r\n", fuel->remaining_capacity);
+}
 
 static uint8_t fuel_read_register(uint8_t command, uint8_t *buf, uint8_t num){
 	uint8_t txbuff[2];
@@ -97,8 +107,8 @@ static uint8_t fuel_read_register(uint8_t command, uint8_t *buf, uint8_t num){
 		return -1;
 	}
 	memcpy(buf, rxbuff, num);
-	/*chSemWait(&usart1_semaph);
-		chprintf((BaseSequentialStream*) &SD1, "Readed from charger %d\r\n",
+/*	chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*) &SD1, "Readed from fuel %d\r\n",
 				rxbuff[0]);
 		chSemSignal(&usart1_semaph);*/
 	return 0;
