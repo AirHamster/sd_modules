@@ -41,10 +41,19 @@ const I2CConfig charger_if_cfg = {
 
 #ifdef SENSOR_BOX
 const I2CConfig charger_if_cfg = {
-  0x10E37AFF,
+  0x00B03CEE,
   0,
   0
 };
+
+const charger_cfg_t charger_cfg = {
+	INPUT_CURRENT_2000,
+	FAST_CHARGE_CURRENT_2040,
+	SYSTEM_MINIMUM_VOLTAGE_3V,
+	PRECHARGE_CURRENT_300,
+	TERMINATION_CURRENT_180
+};
+
 #endif
 
 #ifdef PWR_CPU
@@ -74,8 +83,8 @@ static THD_FUNCTION( charger_thread, p) {
 	charger_init(&CHARGER_IF, &charger_cfg);
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 
-	charger_read_all_regs(charger_regs);
-	charger_parse_status(charger_regs, charger);
+//	charger_read_all_regs(charger_regs);
+//	charger_parse_status(charger_regs, charger);
 
 	while (true) {
 	//	if (charger->)
@@ -90,7 +99,7 @@ static THD_FUNCTION( charger_thread, p) {
 					charger_regs->reg04, charger_regs->reg05, charger_regs->reg06, charger_regs->reg07,
 					charger_regs->reg08, charger_regs->reg09, charger_regs->reg0A, charger_regs->reg0B);
 */
-	//	charger_print_info(charger);
+		charger_print_info(charger);
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
 	}
 }
@@ -203,7 +212,7 @@ int8_t charger_read_register(uint8_t reg_addr, uint8_t *buf) {
 			rxbuff, 1, 1000);
 	i2cReleaseBus(&CHARGER_IF);
 	if (status != MSG_OK) {
-/*		chSemWait(&usart1_semaph);
+		chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*) &SD1,
 				"Shit happened withs charger: status is %d\r\n", i2cGetErrors(&CHARGER_IF));
 		chSemSignal(&usart1_semaph);

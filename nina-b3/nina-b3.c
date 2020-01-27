@@ -182,12 +182,14 @@ extern coefs_t *r_rudder_coefs;
 
 #endif
 
+#ifdef USE_MATH_MODULE
 #include "sailDataMath.h"
 extern float lastFilterValues[10][FILTER_BUFFER_SIZE];
 extern float windAngleTarget;
 extern float lastSensorValues[SIZE_BUFFER_VALUES];
 extern float hullSpeedTarget;
 extern float velocityMadeGoodTarget;
+#endif
 
 #ifdef SD_SENSOR_BOX_RUDDER
 ble_charac_t *ble_rudder;

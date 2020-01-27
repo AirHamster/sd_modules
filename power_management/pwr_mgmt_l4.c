@@ -49,7 +49,7 @@ static void charger_int_cb(void *arg) {
 	(void) arg;
 	chSysLockFromISR();
 	if (deepsleep == 1) {
-		activate_clocks();
+	//	activate_clocks();
 		deepsleep = 0;
 	}
 	if (palReadLine(LINE_CHARGER_INT) == PAL_LOW) {
@@ -122,7 +122,7 @@ void start_power_management_module(void){
 
 void enter_stop_mode(void) {
 if (deepsleep == 1){
-	deactivate_clocks();
+//	deactivate_clocks();
 }
 
 }

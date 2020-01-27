@@ -119,7 +119,7 @@ static const ShellCommand commands[] = {
 		{ "c", cmd_c },
 		{ "boot", cmd_boot },
 		{ "reset", cmd_reset },
-		{ "terminate", cmd_terminate },
+	//	{ "terminate", cmd_terminate },
 #ifdef USE_SERVICE_MODE
 		{ "service", cmd_service },
 #ifdef SD_MODULE_TRAINER
