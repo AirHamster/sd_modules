@@ -18,7 +18,7 @@
 #include "sd_shell_cmds.h"
 #include "lag.h"
 #include "adc.h"
-
+#include "pwr_mgmt_l4.h"
 #include "fsm.h"
 
 static virtual_timer_t ble_observe_tim;
@@ -29,6 +29,8 @@ static ble_remote_dev_t ble_remote_dev_list[NUM_OF_REMOTE_DEV];
 static event_source_t ble_observe_request_event;
 static event_source_t ble_data_tx_request_event;
 static event_source_t ble_remote_dev_cfg_request_event;
+
+extern event_source_t power_state_change_event;
 
 SM_DEFINE(BLE_SM_1, ble_remote_dev_list)
 
@@ -279,7 +281,7 @@ static THD_FUNCTION(ble_thread, arg) {
 	(void) arg;
 	uint8_t token;
 	uint8_t i = 0;
-	event_listener_t el1, el2, el3;
+	event_listener_t el1, el2, el3, el4;
 
 	chRegSetThreadName("BLE Conrol Thread");
 	nina_fill_memory();
@@ -287,7 +289,9 @@ static THD_FUNCTION(ble_thread, arg) {
 	chThdSleepMilliseconds(500);
 	nina_init_services();
 	chThdSleepMilliseconds(500);
+#ifdef SD_MODULE_TRAINER
 	nina_init_devices(&ble_remote_dev_list);
+#endif
 	/* Events initialization and registration.*/
 	chEvtObjectInit(&ble_observe_request_event);
 	chEvtObjectInit(&ble_data_tx_request_event);
@@ -296,6 +300,7 @@ static THD_FUNCTION(ble_thread, arg) {
 	chEvtRegisterMask(&ble_observe_request_event, &el1, EVENT_MASK(BLE_OBSERVE_EV));
 	chEvtRegisterMask(&ble_data_tx_request_event, &el2, EVENT_MASK(BLE_DATA_TX_EV));
 	chEvtRegisterMask(&ble_remote_dev_cfg_request_event, &el3, EVENT_MASK(BLE_REMOTE_CFG_EV));
+	chEvtRegisterMask(&power_state_change_event, &el4, EVENT_MASK(BLE_POWER_SWITCHED_ON_EV));
 	//ALLOC_Init();
 
 /*#ifdef SD_SENSOR_BOX_LAG
@@ -371,6 +376,7 @@ while(true){
 						}
 
 #endif
+						SM_Event(BLE_SM_1, BLE_Go_idle, NULL);
 		chThdSleepMilliseconds(1000);
 	}
 }
@@ -416,6 +422,11 @@ void copy_to_ble(void){
 STATE_DEFINE(Idle, NoEventData) {
 
 		eventmask_t evt = chEvtWaitAny(ALL_EVENTS);
+
+		if (evt & EVENT_MASK(BLE_POWER_SWITCHED_ON_EV)) {
+			//if dev[i]->conn ==0
+			chprintf(SHELL_IFACE, "POWER_SWITCHED_ON!\r\n");
+		}
 
 		if (evt & EVENT_MASK(BLE_OBSERVE_EV)) {
 			//if dev[i]->conn ==0

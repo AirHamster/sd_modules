@@ -19,6 +19,9 @@ void enter_stop_mode(void);
 void leave_stop_mode(void);
 void deactivate_clocks(void);
 void activate_clocks(void);
+
+static void pwr_pins_to_save_state(void);
+static void pwr_pins_to_work_state(void);
 static volatile uint8_t device_power_state = 0;
 static volatile uint8_t deepsleep = 1;
 
@@ -26,14 +29,15 @@ static event_source_t button_pressed_event;
 static event_source_t button_released_event;
 static event_source_t charger_int_low_event;
 static event_source_t charger_int_high_event;
-
+extern event_source_t power_state_change_event;
 static void button_cb(void *arg) {
 
 	(void) arg;
 
 	chSysLockFromISR();
 if (deepsleep == 1) {
-	activate_clocks();
+	//activate_clocks();
+	pwr_pins_to_work_state();
 	deepsleep = 0;
 	}
 	if (palReadLine(LINE_POWER_BUTTON) == PAL_HIGH) {
@@ -49,7 +53,8 @@ static void charger_int_cb(void *arg) {
 	(void) arg;
 	chSysLockFromISR();
 	if (deepsleep == 1) {
-	//	activate_clocks();
+		activate_clocks();
+		pwr_pins_to_work_state();
 		deepsleep = 0;
 	}
 	if (palReadLine(LINE_CHARGER_INT) == PAL_LOW) {
@@ -74,6 +79,8 @@ static THD_FUNCTION( pwr_mgmt_thread, p) {
 		chEvtRegister(&button_pressed_event, &el0, 0);
 		chEvtRegister(&button_released_event, &el1, 1);
 
+
+
 		/* Enabling events on both edges of the button line.*/
 		palEnableLineEvent(LINE_POWER_BUTTON, PAL_EVENT_MODE_RISING_EDGE);
 		palSetLineCallback(LINE_POWER_BUTTON, button_cb, NULL);
@@ -90,12 +97,14 @@ static THD_FUNCTION( pwr_mgmt_thread, p) {
 						palSetLine(LINE_GREEN_LED);
 						palSetLine(LINE_3_3_EN);
 						device_power_state = 1;
+						chEvtBroadcastI(&power_state_change_event);
 						//waking up device
 					} else {
 						palClearLine(LINE_GREEN_LED);
 						palClearLine(LINE_3_3_EN);
 						device_power_state = 0;
 						deepsleep = 1;
+						//chEvtBroadcastI(&power_state_change_event);
 						//put device into deep sleep
 					}
 
@@ -122,7 +131,8 @@ void start_power_management_module(void){
 
 void enter_stop_mode(void) {
 if (deepsleep == 1){
-//	deactivate_clocks();
+	//deactivate_clocks();
+	pwr_pins_to_save_state();
 }
 
 }
@@ -210,6 +220,52 @@ void deactivate_clocks(void){
 	 // PLL deactivation.
 	 RCC->CR &= ~RCC_CR_PLLON;
 	 */
+}
+
+static void pwr_pins_to_save_state(void){
+
+
+	palSetLineMode(LINE_USART1_TX, PAL_MODE_INPUT_ANALOG);
+	palSetLineMode(LINE_USART1_RX, PAL_MODE_INPUT_ANALOG);
+
+	palSetLineMode(LINE_USART2_TX, PAL_MODE_INPUT_ANALOG);
+	palSetLineMode(LINE_USART2_RX, PAL_MODE_INPUT_ANALOG);
+
+	//TODO: SPI pins for flash memory
+		/*
+		palSetLineMode(LINE_USART2_TX, PAL_MODE_ALTERNATE(4));
+		palSetLineMode(LINE_USART2_RX, PAL_MODE_ALTERNATE(4));
+		palSetLineMode(LINE_USART2_TX, PAL_MODE_ALTERNATE(4));
+		palSetLineMode(LINE_USART2_RX, PAL_MODE_ALTERNATE(4));
+	*/
+
+}
+
+static void pwr_pins_to_work_state(void){
+
+	palSetLineMode(LINE_USART1_TX, PAL_MODE_ALTERNATE(4));
+	palSetLineMode(LINE_USART1_RX, PAL_MODE_ALTERNATE(4));
+
+	palSetLineMode(LINE_USART2_TX, PAL_MODE_ALTERNATE(4));
+	palSetLineMode(LINE_USART2_RX, PAL_MODE_ALTERNATE(4));
+
+	//TODO: SPI pins for flash memory
+	/*
+	palSetLineMode(LINE_USART2_TX, PAL_MODE_ALTERNATE(4));
+	palSetLineMode(LINE_USART2_RX, PAL_MODE_ALTERNATE(4));
+	palSetLineMode(LINE_USART2_TX, PAL_MODE_ALTERNATE(4));
+	palSetLineMode(LINE_USART2_RX, PAL_MODE_ALTERNATE(4));
+*/
+
+}
+
+static void pwr_terminate_threads(){
+
+
+}
+
+static void pwr_restart_threads(){
+
 }
 
 void pwr_switch_dc_dc(dcdc_enum dcdc, dcdc_enum state){

@@ -16,6 +16,7 @@ typedef enum{
 	DCDC_12
 }dcdc_enum;
 
+
 void start_power_management_module(void);
 
 #endif /* SD_MODULES_POWER_MANAGEMENT_PWR_MGMT_L4_H_ */

@@ -39,7 +39,7 @@ const I2CConfig fuel_if_cfg = {
 };
 #endif
 
-#ifdef SENSOR_BOX
+#ifdef SD_SENSOR_BOX
 const I2CConfig fuel_if_cfg = {
   0x10E37AFF,
   0,
