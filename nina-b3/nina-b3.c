@@ -377,7 +377,7 @@ while(true){
 
 #endif
 						SM_Event(BLE_SM_1, BLE_Go_idle, NULL);
-		chThdSleepMilliseconds(1000);
+		//chThdSleepMilliseconds(1000);
 	}
 }
 
@@ -425,7 +425,9 @@ STATE_DEFINE(Idle, NoEventData) {
 
 		if (evt & EVENT_MASK(BLE_POWER_SWITCHED_ON_EV)) {
 			//if dev[i]->conn ==0
-			chprintf(SHELL_IFACE, "POWER_SWITCHED_ON!\r\n");
+			palToggleLine(LINE_ORANGE_LED);
+			nina_init_module();
+
 		}
 
 		if (evt & EVENT_MASK(BLE_OBSERVE_EV)) {
