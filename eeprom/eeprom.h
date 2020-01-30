@@ -14,7 +14,7 @@
 #define EEPROM_ADDRESS 0x57
 #endif
 
-#ifdef SENSOR_BOX
+#ifdef SD_SENSOR_BOX
 #define EEPROM_ADDRESS	0x50
 #endif
 

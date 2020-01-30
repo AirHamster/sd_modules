@@ -20,7 +20,7 @@ const I2CConfig eeprom_i2c_cfg = {
   0
 };
 #endif
-#ifdef SENSOR_BOX
+#ifdef SD_SENSOR_BOX
 const I2CConfig eeprom_i2c_cfg = {
   0x10E37AFF,
   0,

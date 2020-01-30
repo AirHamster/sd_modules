@@ -30,7 +30,7 @@ extern windsensor_t *wind;
 charger_regs_t *charger_regs;
 charger_t *charger;
 extern struct ch_semaphore usart1_semaph;
-
+extern thread_t *charger_trp;
 #ifdef SD_MODULE_TRAINER
 const I2CConfig charger_if_cfg = {
   0xD0D43C4C,
@@ -39,12 +39,21 @@ const I2CConfig charger_if_cfg = {
 };
 #endif
 
-#ifdef SENSOR_BOX
+#ifdef SD_SENSOR_BOX
 const I2CConfig charger_if_cfg = {
-  0x10E37AFF,
+  0x00B03CEE,
   0,
   0
 };
+
+const charger_cfg_t charger_cfg = {
+	INPUT_CURRENT_2000,
+	FAST_CHARGE_CURRENT_2040,
+	SYSTEM_MINIMUM_VOLTAGE_3V,
+	PRECHARGE_CURRENT_300,
+	TERMINATION_CURRENT_180
+};
+
 #endif
 
 #ifdef PWR_CPU
@@ -68,13 +77,14 @@ static THD_WORKING_AREA(charger_thread_wa, 256);
 static THD_FUNCTION( charger_thread, p) {
 	(void) p;
 	uint8_t i;
+	msg_t msg;
 	chRegSetThreadName("Charger Thd");
 	i2cStart(&CHARGER_IF, &charger_if_cfg);
 	charger_init(&CHARGER_IF, &charger_cfg);
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 
-	charger_read_all_regs(charger_regs);
-	charger_parse_status(charger_regs, charger);
+//	charger_read_all_regs(charger_regs);
+//	charger_parse_status(charger_regs, charger);
 
 	while (true) {
 	//	if (charger->)
@@ -89,7 +99,7 @@ static THD_FUNCTION( charger_thread, p) {
 					charger_regs->reg04, charger_regs->reg05, charger_regs->reg06, charger_regs->reg07,
 					charger_regs->reg08, charger_regs->reg09, charger_regs->reg0A, charger_regs->reg0B);
 */
-	//	charger_print_info(charger);
+		charger_print_info(charger);
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
 	}
 }
@@ -206,6 +216,7 @@ int8_t charger_read_register(uint8_t reg_addr, uint8_t *buf) {
 		chprintf((BaseSequentialStream*) &SD1,
 				"Shit happened withs charger: status is %d\r\n", i2cGetErrors(&CHARGER_IF));
 		chSemSignal(&usart1_semaph);
+
 		return -1;
 	}
 	*buf = rxbuff[0];
@@ -244,5 +255,5 @@ int8_t charger_write_register(uint8_t reg_addr, uint8_t *txbuf, uint8_t txbytes)
 }
 
 void start_charger_module(void){
-	chThdCreateStatic(charger_thread_wa, sizeof(charger_thread_wa), NORMALPRIO, charger_thread, NULL);
+	charger_trp = chThdCreateStatic(charger_thread_wa, sizeof(charger_thread_wa), NORMALPRIO, charger_thread, NULL);
 }
