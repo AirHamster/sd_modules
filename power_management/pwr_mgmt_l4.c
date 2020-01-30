@@ -96,12 +96,14 @@ static THD_FUNCTION( pwr_mgmt_thread, p) {
 					if (device_power_state == 0) {
 						palSetLine(LINE_GREEN_LED);
 						palSetLine(LINE_3_3_EN);
+						palSetLine(LINE_5_EN);
 						device_power_state = 1;
 						chEvtBroadcastI(&power_state_change_event);
 						//waking up device
 					} else {
 						palClearLine(LINE_GREEN_LED);
 						palClearLine(LINE_3_3_EN);
+						palClearLine(LINE_5_EN);
 						device_power_state = 0;
 						deepsleep = 1;
 						//chEvtBroadcastI(&power_state_change_event);
@@ -224,13 +226,13 @@ void deactivate_clocks(void){
 
 static void pwr_pins_to_save_state(void){
 
-
+/*
 	palSetLineMode(LINE_USART1_TX, PAL_MODE_INPUT_ANALOG);
 	palSetLineMode(LINE_USART1_RX, PAL_MODE_INPUT_ANALOG);
 
 	palSetLineMode(LINE_USART2_TX, PAL_MODE_INPUT_ANALOG);
 	palSetLineMode(LINE_USART2_RX, PAL_MODE_INPUT_ANALOG);
-
+*/
 	//TODO: SPI pins for flash memory
 		/*
 		palSetLineMode(LINE_USART2_TX, PAL_MODE_ALTERNATE(4));
@@ -243,12 +245,13 @@ static void pwr_pins_to_save_state(void){
 
 static void pwr_pins_to_work_state(void){
 
+	/*
 	palSetLineMode(LINE_USART1_TX, PAL_MODE_ALTERNATE(4));
 	palSetLineMode(LINE_USART1_RX, PAL_MODE_ALTERNATE(4));
 
 	palSetLineMode(LINE_USART2_TX, PAL_MODE_ALTERNATE(4));
 	palSetLineMode(LINE_USART2_RX, PAL_MODE_ALTERNATE(4));
-
+*/
 	//TODO: SPI pins for flash memory
 	/*
 	palSetLineMode(LINE_USART2_TX, PAL_MODE_ALTERNATE(4));
