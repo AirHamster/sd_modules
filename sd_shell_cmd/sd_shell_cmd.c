@@ -75,6 +75,10 @@ extern lag_t *r_lag;
 extern rudder_t *r_rudder;
 #endif
 
+#ifdef USE_TENSO_MODULE
+#include "tenso.h"
+#endif
+
 #ifdef SD_MODULE_TRAINER
 #ifdef USE_MATH_MODULE
 #include "sailDataMath.h"
@@ -145,6 +149,11 @@ static const ShellCommand commands[] = {
 		{ "mkfs", cmd_mkfs },
 		{ "mount", cmd_mount},
 #endif //USE_MICROSD_MODULE
+
+#ifdef USE_TENSO_MODULE
+		{ "tenso_calibrate", cmd_tenso_calibrate},
+#endif
+
 #ifdef USE_BLE_MODULE
 		{ "ble", cmd_ble },
 #endif //USE_BLE_MODULE
