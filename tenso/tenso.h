@@ -33,5 +33,6 @@ int8_t tenso_calculate_coefs(tenso_data_t *tenso_data);
 int8_t cmd_tenso_calibrate(BaseSequentialStream* chp, int argc, char* argv[]);
 float tenso_calculate_kilograms(tenso_data_t *tenso_data);
 float tenso_calculate_newtons(tenso_data_t *tenso_data);
+void tenso_print_info(tenso_data_t *tenso_data);
 
 #endif /* SD_MODULES_TENSO_TENSO_H_ */
