@@ -72,6 +72,12 @@ SD_SRC += ./sd_modules/nina-b3/nina-b3.c
 SD_INC += ./sd_modules/nina-b3
 endif
 
+#BLE
+ifeq ($(USE_TENSO_MODULE), TRUE)
+SD_SRC += ./sd_modules/tenso/tenso.c
+SD_INC += ./sd_modules/tenso
+endif
+
 #BNO055
 ifeq ($(USE_BNO055_MODULE), TRUE)
 SD_SRC += ./sd_modules/bno055/bno055.c

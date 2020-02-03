@@ -99,7 +99,7 @@ static THD_FUNCTION( charger_thread, p) {
 					charger_regs->reg04, charger_regs->reg05, charger_regs->reg06, charger_regs->reg07,
 					charger_regs->reg08, charger_regs->reg09, charger_regs->reg0A, charger_regs->reg0B);
 */
-		charger_print_info(charger);
+		//charger_print_info(charger);
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
 	}
 }

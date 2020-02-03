@@ -425,7 +425,7 @@ STATE_DEFINE(Idle, NoEventData) {
 
 		if (evt & EVENT_MASK(BLE_POWER_SWITCHED_ON_EV)) {
 			//if dev[i]->conn ==0
-			palToggleLine(LINE_ORANGE_LED);
+		//	palToggleLine(LINE_ORANGE_LED);
 			nina_init_module();
 
 		}
@@ -1361,6 +1361,92 @@ uint8_t nina_init_services(void){
 	//# Response +UBTGCHA:THDG_HAND,CCCD_HAND (zero if not use)
 	nina_add_charac(ble_lag, 0x4A01, 10, 1, 1, 0x0F00FF, 0, 3);
 /*	chprintf(NINA_IFACE, "AT+UBTGCHA=4A01,10,1,1,0F00FF,0,3\r");
+	if (nina_wait_response("+UBTGCHA\r") != NINA_SUCCESS) {
+		return -1;
+	}*/
+	//chThdSleepMilliseconds(200);
+
+		//# Save settings and reboot
+/*		chprintf(NINA_IFACE, "AT&W\r");
+		if (nina_wait_response("AT&W\r") != NINA_SUCCESS) {
+			return -1;
+		}
+		chThdSleepMilliseconds(200);
+		chprintf(NINA_IFACE, "AT+CPWROFF\r");
+		if (nina_wait_response("+CPWROFF\r") != NINA_SUCCESS) {
+			return -1;
+		}*/
+		//chThdSleepMilliseconds(200);
+}
+#endif
+
+#ifdef SD_SENSOR_BOX_TENSO
+uint8_t nina_init_services(void){
+	chprintf(NINA_IFACE, "AT+UBTLE=2\r");
+	if (nina_wait_response("+UBTLE\r") != NINA_SUCCESS) {
+		return -1;
+	}
+	chThdSleepMilliseconds(200);
+	chprintf(NINA_IFACE, "AT&W\r");
+	if (nina_wait_response("AT&W\r") != NINA_SUCCESS) {
+		return -1;
+	}
+	chThdSleepMilliseconds(200);
+	chprintf(NINA_IFACE, "AT+CPWROFF\r");
+	if (nina_wait_response("+CPWROFF\r") != NINA_SUCCESS) {
+		return -1;
+	}
+
+	chThdSleepMilliseconds(1000);
+	chprintf(NINA_IFACE, "AT+UBTLN=FastSkipper-TENSO\r");
+	if (nina_wait_response("+UBTLN\r") != NINA_SUCCESS) {
+		return -1;
+	}
+
+	chThdSleepMilliseconds(1000);
+	chprintf(NINA_IFACE, "AT+UBTLN=FastSkipper-LOG\r");
+	if (nina_wait_response("+UBTLN\r") != NINA_SUCCESS) {
+		return -1;
+	}
+
+	chThdSleepMilliseconds(200);
+	chprintf(NINA_IFACE, "AT&W\r");
+	if (nina_wait_response("AT&W\r") != NINA_SUCCESS) {
+		return -1;
+	}
+	chThdSleepMilliseconds(200);
+	chprintf(NINA_IFACE, "AT+CPWROFF\r");
+	if (nina_wait_response("+CPWROFF\r") != NINA_SUCCESS) {
+		return -1;
+	}
+	chThdSleepMilliseconds(1000);
+	// Create service for GATT server (send information to tablet) 16-bit
+	//UUID = 4A00
+	// Response send handle of the created service (int value).
+	// +UBTGSER:SER_HAND
+	chprintf(NINA_IFACE, "AT+UBTGSER=4A00\r");
+	if (nina_wait_response("+UBTGSER\r") != NINA_SUCCESS) {
+		return -1;
+	}
+	chThdSleepMilliseconds(200);
+	/*
+# Create characteristic for service (values, witch coach complex send to tablet)
+# Parametrs command:
+# uuid (new, can be the same of service uuid),
+# properties (notification support),
+# security_read (no encryption required),
+# security_write (no encryption required),
+# initial value 1000,
+# read_auth (Read Authorized. Any client can read data without host intervention)
+# max_length (aximum length of the characteristic in bytes. The maximum value is 512 bytes)
+*/
+	//# LOG - uuid 4A01
+	//# Response +UBTGCHA:THDG_HAND,CCCD_HAND (zero if not use)
+
+	//TODO:
+	//nina_add_charac(ble_lag, 0x4A01, 10, 1, 1, 0x0F00FF, 0, 3);
+
+	/*	chprintf(NINA_IFACE, "AT+UBTGCHA=4A01,10,1,1,0F00FF,0,3\r");
 	if (nina_wait_response("+UBTGCHA\r") != NINA_SUCCESS) {
 		return -1;
 	}*/

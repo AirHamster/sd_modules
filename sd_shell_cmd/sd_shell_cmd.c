@@ -75,6 +75,10 @@ extern lag_t *r_lag;
 extern rudder_t *r_rudder;
 #endif
 
+#ifdef USE_TENSO_MODULE
+#include "tenso.h"
+#endif
+
 #ifdef SD_MODULE_TRAINER
 #ifdef USE_MATH_MODULE
 #include "sailDataMath.h"
@@ -145,6 +149,11 @@ static const ShellCommand commands[] = {
 		{ "mkfs", cmd_mkfs },
 		{ "mount", cmd_mount},
 #endif //USE_MICROSD_MODULE
+
+#ifdef USE_TENSO_MODULE
+		{ "tenso_calibrate", cmd_tenso_calibrate},
+#endif
+
 #ifdef USE_BLE_MODULE
 		{ "ble", cmd_ble },
 #endif //USE_BLE_MODULE
@@ -329,6 +338,7 @@ void output_gyro_raw(void){
 			chprintf(SHELL_IFACE, "%f,\r\n", bmx160.mz);*/
 }
 
+#ifdef USE_XBEE_MODULE
 void send_data(uint8_t stream) {
 	uint8_t databuff[34];
 	int32_t spdi = 0;
@@ -380,6 +390,7 @@ void send_data(uint8_t stream) {
 
 	xbee_send_rf_message(xbee, databuff, 34);
 }
+#endif
 
 int32_t convert_to_ble_type(float value){
 	int32_t val;
@@ -488,8 +499,9 @@ void send_json(void)
 		chprintf(SHELL_IFACE, "\"bat\":0\r\n\t\t\t");
 		chprintf(SHELL_IFACE, "}\r\n\t}");
 		chSemSignal(&usart1_semaph);
+#ifdef USE_XBEE_MODULE
 		send_data(OUTPUT_XBEE);
-
+#endif
 
 }
 
