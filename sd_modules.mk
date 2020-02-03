@@ -26,6 +26,15 @@ SD_SRC += ./sd_modules/fsm/fsm.c
 SD_INC += ./sd_modules/fsm
 endif
 
+#Finite state mashine engine
+ifeq ($(USE_JSON_MODULE), TRUE)
+SD_SRC += ./sd_modules/jfes/jfes.c
+#SD_SRC += ./sd_modules/fsm/fb_allocator.c
+#SD_SRC += ./sd_modules/fsm/sm_allocator.c
+#SD_SRC += ./sd_modules/fsm/x_allocator.c
+SD_INC += ./sd_modules/jfes
+endif
+
 #MPU9250 - 9-axis accel/gyro/magn chip
 ifeq ($(USE_MPU_9250_MODULE), TRUE)
 SD_SRC += ./sd_modules/mpu9250/mpu9250.c
