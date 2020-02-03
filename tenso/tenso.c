@@ -41,11 +41,11 @@ static THD_FUNCTION( tenso_thread, p) {
 }
 
 void tenso_print_info(tenso_data_t *tenso_data) {
-	chprintf((BaseSequentialStream*) &SD1, "ADC native:  %d\r\n",
+	chprintf((BaseSequentialStream*) &SD1, "Tenso native:  %d\r\n",
 			(uint16_t) tenso_data->adc_native);
 
-	chprintf((BaseSequentialStream*) &SD1, "ADC kgs: %f\r\n", tenso_data->kilograms);
-	chprintf((BaseSequentialStream*) &SD1, "ADC newtons: %f\r\n",
+	chprintf((BaseSequentialStream*) &SD1, "Tenso kgs: %f\r\n", tenso_data->kilograms);
+	chprintf((BaseSequentialStream*) &SD1, "Tenso newtons: %f\r\n",
 			tenso_data->newtons);
 }
 
@@ -90,13 +90,22 @@ float tenso_calculate_kilograms(tenso_data_t *tenso_data){
 
 	float kgs = 0.0;
 	//linear
-	return tenso_data->coef_kilograms * tenso_data->adc_native + tenso->offset;
+	kgs = tenso_data->coef_kilograms * tenso_data->adc_native + tenso->offset;
+	if (kgs < 0){
+		return 0.0;
+	}
+	return kgs;
 }
 
 float tenso_calculate_newtons(tenso_data_t *tenso_data){
 
+	float nwts = 0.0;
 	//linear
-	return tenso_data->coef_newton * tenso_data->adc_native + tenso->offset;
+	nwts = tenso_data->coef_newton * tenso_data->adc_native + tenso->offset;
+	if (nwts < 0){
+		return 0.0;
+	}
+	return nwts;
 }
 
 int8_t cmd_tenso_calibrate(BaseSequentialStream* chp, int argc, char* argv[]) {
@@ -123,10 +132,13 @@ int8_t cmd_tenso_calibrate(BaseSequentialStream* chp, int argc, char* argv[]) {
 			return 0;
 		} else {
 			chprintf(chp, "Usage: tenso calibrate point_one|point_two <kg>\n\r");
+			return -1;
 		}
 	} else {
 		chprintf(chp, "Usage: tenso calibrate point_one|point_two <kg>\n\r");
+		return -1;
 	}
+	return -1;
 }
 
 int8_t tenso_calculate_coefs(tenso_data_t *tenso_data) {
