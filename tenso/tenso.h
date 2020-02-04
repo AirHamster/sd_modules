@@ -29,6 +29,7 @@ typedef struct{
 	uint16_t point_two_native;
 }tenso_data_t;
 
+int8_t tenso_read_coefs_from_eeprom(tenso_data_t *tenso_data);
 int8_t tenso_calculate_coefs(tenso_data_t *tenso_data);
 int8_t cmd_tenso_calibrate(BaseSequentialStream* chp, int argc, char* argv[]);
 float tenso_calculate_kilograms(tenso_data_t *tenso_data);

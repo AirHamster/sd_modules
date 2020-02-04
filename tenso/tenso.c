@@ -28,7 +28,8 @@ static THD_FUNCTION( tenso_thread, p) {
 	chRegSetThreadName("Tenso Thd");
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 	uint32_t tmp;
-	//tenso_read_coefs_from_eeprom;
+	tenso_read_coefs_from_eeprom(tenso);
+	tenso_calculate_coefs(tenso);
 	while (true) {
 		 tenso->adc_native = adc_get_avg_measure(ADC_CH1, 30);
 		 tenso->kilograms = tenso_calculate_kilograms(tenso);
@@ -63,6 +64,7 @@ int8_t tenso_read_coefs_from_eeprom(tenso_data_t *tenso_data){
 	result |= eeprom_read(EEPROM_TENSO_COEF_NEWTONS, &tenso_data->coef_newton, sizeof(float));
 	result |= eeprom_read(EEPROM_TENSO_POINT_ONE_KILOGRAMS, &tenso_data->point_one_kgs, sizeof(float));
 	result |= eeprom_read(EEPROM_TENSO_POINT_TWO_KILOGRAMS, &tenso_data->point_two_kgs, sizeof(float));
+	result |= eeprom_read(EEPROM_TENSO_OFFSET, &tenso_data->offset, sizeof(float));
 	result |= eeprom_read(EEPROM_TENSO_POINT_ONE_NATIVE, &tenso_data->point_one_native, sizeof(uint16_t));
 	result |= eeprom_read(EEPROM_TENSO_POINT_TWO_NATIVE, &tenso_data->point_two_native, sizeof(uint16_t));
 
@@ -74,14 +76,20 @@ int8_t tenso_read_coefs_from_eeprom(tenso_data_t *tenso_data){
 int8_t tenso_write_coefs_to_eeprom(tenso_data_t *tenso_data){
 
 	int8_t result = 0;
-
+	chThdSleepMilliseconds(10);
 	result |= eeprom_write(EEPROM_TENSO_COEF_KILOGRAMS, &tenso_data->coef_kilograms, sizeof(float));
+	chThdSleepMilliseconds(10);
 	result |= eeprom_write(EEPROM_TENSO_COEF_NEWTONS, &tenso_data->coef_newton, sizeof(float));
+	chThdSleepMilliseconds(10);
 	result |= eeprom_write(EEPROM_TENSO_POINT_ONE_KILOGRAMS, &tenso_data->point_one_kgs, sizeof(float));
+	chThdSleepMilliseconds(10);
 	result |= eeprom_write(EEPROM_TENSO_POINT_TWO_KILOGRAMS, &tenso_data->point_two_kgs, sizeof(float));
+	chThdSleepMilliseconds(10);
 	result |= eeprom_write(EEPROM_TENSO_POINT_ONE_NATIVE, &tenso_data->point_one_native, sizeof(uint16_t));
+	chThdSleepMilliseconds(10);
 	result |= eeprom_write(EEPROM_TENSO_POINT_TWO_NATIVE, &tenso_data->point_two_native, sizeof(uint16_t));
-
+	chThdSleepMilliseconds(10);
+	result |= eeprom_write(EEPROM_TENSO_OFFSET, &tenso_data->offset, sizeof(float));
 	return result;
 
 }
@@ -101,7 +109,7 @@ float tenso_calculate_newtons(tenso_data_t *tenso_data){
 
 	float nwts = 0.0;
 	//linear
-	nwts = tenso_data->coef_newton * tenso_data->adc_native + tenso->offset;
+	nwts = tenso_data->kilograms * 9.8;
 	if (nwts < 0){
 		return 0.0;
 	}
@@ -113,22 +121,25 @@ int8_t cmd_tenso_calibrate(BaseSequentialStream* chp, int argc, char* argv[]) {
 		if (strcmp(argv[0], "point_one") == 0) {
 			tenso->point_one_kgs = atof(argv[1]);
 			tenso->point_one_native = tenso->adc_native;
-			tenso_write_coefs_to_eeprom(tenso);
+
 			if (tenso_calculate_coefs(tenso) == -1) {
 				chprintf(chp, "Failed to calculate coefs: wrong points?\n\r");
 				return -1;
 			}
+			tenso_write_coefs_to_eeprom(tenso);
 			chprintf(chp, "Saved first point of tenso characteristic\n\r");
 			return 0;
 		} else if (strcmp(argv[0], "point_two") == 0) {
 			tenso->point_two_kgs = atof(argv[1]);
 			tenso->point_two_native = tenso->adc_native;
-			tenso_write_coefs_to_eeprom(tenso);
-			chprintf(chp, "Saved second point of tenso characteristic\n\r");
+
+
 			if (tenso_calculate_coefs(tenso) == -1) {
 				chprintf(chp, "Failed to calculate coefs: wrong points?\n\r");
 				return -1;
 			}
+			tenso_write_coefs_to_eeprom(tenso);
+			chprintf(chp, "Saved second point of tenso characteristic\n\r");
 			return 0;
 		} else {
 			chprintf(chp, "Usage: tenso calibrate point_one|point_two <kg>\n\r");
@@ -153,6 +164,7 @@ int8_t tenso_calculate_coefs(tenso_data_t *tenso_data) {
 			(tenso_data->point_two_native - tenso_data->point_one_native);
 	b = tenso_data->point_one_kgs - k * tenso_data->point_one_native;
 	tenso_data->coef_kilograms = k;
+	tenso_data->coef_newton = k * 9.8;
 	tenso_data->offset = b;
 	return 0;
 }
