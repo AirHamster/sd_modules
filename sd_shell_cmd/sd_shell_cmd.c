@@ -84,11 +84,11 @@ extern float velocityMadeGoodTarget;
 #endif
 #endif
 
-//#ifdef SENSOR_BOX
+#ifdef SD_SENSOR_BOX || SD_MODULE_TRAINER
 #include "adc.h"
 dots_t *r_rudder_dots;
 coefs_t *r_rudder_coefs;
-//#endif
+#endif
 
 thread_t *charger_trp;
 

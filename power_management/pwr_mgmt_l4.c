@@ -95,13 +95,15 @@ static THD_FUNCTION( pwr_mgmt_thread, p) {
 
 					if (device_power_state == 0) {
 						palSetLine(LINE_GREEN_LED);
-						palSetLine(LINE_3_3_EN);
+						palSetLine(LINE_3_3V_EN);
+						palSetLine(LINE_5V_EN);
 						device_power_state = 1;
 						chEvtBroadcastI(&power_state_change_event);
 						//waking up device
 					} else {
 						palClearLine(LINE_GREEN_LED);
-						palClearLine(LINE_3_3_EN);
+						palClearLine(LINE_3_3V_EN);
+						palClearLine(LINE_5V_EN);
 						device_power_state = 0;
 						deepsleep = 1;
 						//chEvtBroadcastI(&power_state_change_event);
