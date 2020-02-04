@@ -16,9 +16,11 @@
 #include "chprintf.h"
 #include "mcu-mcu_i2c.h"
 #include "software_uart.h"
+#ifdef USE_CHARGER_MODULE
 #include "bq27441.h"
-
 extern fuel_t *fuel;
+#endif
+
 mcu_mcu_data_t *mcu_mcu_data;
 power_data_t power;
 power_data_t *power_data = &power;
@@ -54,7 +56,7 @@ static THD_FUNCTION( mcu_mcu_thread, p) {
 		systime_t prev = chVTGetSystemTime(); // Current system time.
 		//mcu_mcu_read_power_parameters(power_data);
 		//chprintf((BaseSequentialStream*) &SD1, "Sending S\r\n");
-#ifdef PWD_MCU
+#ifdef PWR_MCU
 		itoa(fuel->voltage, char_arr, 10);
 		//chprintf(SHELL_IFACE, "\r\nATOI:\t%d %s\r\n", fuel->voltage);
 		_putchar('V');
@@ -82,7 +84,7 @@ static THD_FUNCTION( mcu_mcu_thread, p) {
 
 		#else
 		ch = susart_getchar();
-		chprintf((BaseSequentialStream*) &SD1, "Recieved %c\r\n", ch);
+		//chprintf((BaseSequentialStream*) &SD1, "Recieved %c\r\n", ch);
 		//prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
 #endif
 #ifdef SLAVE_MCU

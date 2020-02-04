@@ -14,6 +14,8 @@
 #include "shell.h"
 #include "chprintf.h"
 
+#define XBEE_ATTN_MASK			1
+
 
 #define XBEE_GET_OWN_ADDR		1
 #define XBEE_GET_RSSI			2
@@ -177,6 +179,51 @@ typedef struct{
 	uint8_t bat;
 }tx_box_t;
 
+typedef struct {
+	int32_t lat;
+	int32_t lon;
+	int32_t headMot;
+	int32_t headVeh;
+	int32_t yaw;
+	float pitch;
+	float roll;
+	float speed;
+	float rdr;
+	uint16_t log;
+	uint16_t tenso_1;
+	uint16_t tenso_2;
+	uint16_t tenso_3;
+	uint16_t tenso_4;
+	uint16_t dist;
+	uint8_t hour;
+	uint8_t min;
+	uint8_t sec;
+	uint8_t sat;
+	uint8_t bat;
+} xbee_sportsman_data_t;
+
+typedef struct {
+	int32_t lat;
+	int32_t lon;
+	uint8_t hour;
+	uint8_t min;
+	uint8_t sec;
+	uint8_t sat;
+	uint8_t bat;
+} xbee_bouy_data_t;
+
+typedef struct {
+	uint8_t addr[8];	//64 bit addressing
+	uint8_t type;		//sportsmen or bouy
+	uint8_t is_connected;
+	uint8_t heartbit;	//decrease every second, if == 0 - dev not availible, update to 10 if new data has come
+	int8_t rssi;
+
+	void *rf_data;
+
+} xbee_remote_dev_t;
+
+
 void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff);
 void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]);
 void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len);
@@ -231,6 +278,7 @@ uint16_t xbee_get_received_err_count(xbee_struct_t *xbee_str);
 uint16_t xbee_get_transceived_err_count(xbee_struct_t *xbee_str);
 uint16_t xbee_get_unicast_trans_count(xbee_struct_t *xbee_str);
 void xbee_send_ping_message(xbee_struct_t *xbee_strc);
+void start_xbee_module(void);
 void xbee_polling(void);
 void xbee_set_10kbs_rate(void);
 void xbee_set_80kbs_rate(void);

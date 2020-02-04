@@ -39,7 +39,7 @@ const I2CConfig fuel_if_cfg = {
 };
 #endif
 
-#ifdef SENSOR_BOX
+#ifdef SD_SENSOR_BOX
 const I2CConfig fuel_if_cfg = {
   0x10E37AFF,
   0,
@@ -47,8 +47,8 @@ const I2CConfig fuel_if_cfg = {
 };
 #endif
 
-static uint8_t fuel_read_register(uint8_t command, uint8_t *buf, uint8_t num);
-static uint8_t fuel_get_parameter(uint8_t param, uint16_t *buffer);
+static uint8_t fuel_read_register(uint8_t command, int8_t *buf, uint8_t num);
+static uint8_t fuel_get_parameter(uint8_t param, int16_t *buffer);
 static int8_t fuel_print_info(fuel_t *fuel);
 
 static THD_WORKING_AREA(fuel_thread_wa, 256);
@@ -66,13 +66,13 @@ static THD_FUNCTION(fuel_thread, p) {
 		fuel_get_parameter(BQ27441_COMMAND_FLAGS, &fuel->flags);
 		fuel_get_parameter(BQ27441_COMMAND_SOC, &fuel->soc);
 		fuel_get_parameter(BQ27441_COMMAND_REM_CAPACITY, &fuel->remaining_capacity);
-		fuel_print_info(fuel);
+		//fuel_print_info(fuel);
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
 
 	}
 }
 
-static uint8_t fuel_get_parameter(uint8_t param, uint16_t *buffer){
+static uint8_t fuel_get_parameter(uint8_t param, int16_t *buffer){
 	uint8_t rx_buff[2];
 		fuel_read_register(param, rx_buff, 2);
 		*buffer = (rx_buff[1] << 8) | rx_buff[0];
@@ -92,7 +92,7 @@ static int8_t fuel_print_info(fuel_t *fuel){
 	chprintf(SHELL_IFACE, "Batt rem_cap:\t%dmA\r\n", fuel->remaining_capacity);
 }
 
-static uint8_t fuel_read_register(uint8_t command, uint8_t *buf, uint8_t num){
+static uint8_t fuel_read_register(uint8_t command, int8_t *buf, uint8_t num){
 	uint8_t txbuff[2];
 	uint8_t rxbuff[num];
 	msg_t status;
@@ -103,10 +103,10 @@ static uint8_t fuel_read_register(uint8_t command, uint8_t *buf, uint8_t num){
 			rxbuff, num, 1000);
 	i2cReleaseBus(&FUEL_IF);
 	if (status != MSG_OK) {
-		chSemWait(&usart1_semaph);
+		/*chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*) &SD1,
-				"Shit happened charger: status is %d\r\n", i2cGetErrors(&FUEL_IF));
-		chSemSignal(&usart1_semaph);
+				"Shit happened fuel: status is %d\r\n", i2cGetErrors(&FUEL_IF));
+		chSemSignal(&usart1_semaph);*/
 		return -1;
 	}
 	memcpy(buf, rxbuff, num);

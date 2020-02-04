@@ -26,7 +26,7 @@ void start_fuel_gauge_module(void);
 #define BQ72441_I2C_TIMEOUT 2000
 
 
-#ifdef SENSOR_BOX
+#ifdef SD_SENSOR_BOX
 //EEMB LP383450	720 mAh
 #define BATTERY_CAPACITY	720
 #endif

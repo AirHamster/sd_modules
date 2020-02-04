@@ -18,6 +18,135 @@
 #include "sd_shell_cmds.h"
 #include "lag.h"
 #include "adc.h"
+#include "pwr_mgmt_l4.h"
+#include "fsm.h"
+
+static virtual_timer_t ble_observe_tim;
+static virtual_timer_t ble_data_tx_tim;
+static ble_remote_dev_t ble_remote_dev_list[NUM_OF_REMOTE_DEV];
+
+//Events for actions requests
+static event_source_t ble_observe_request_event;
+static event_source_t ble_data_tx_request_event;
+static event_source_t ble_remote_dev_cfg_request_event;
+
+extern event_source_t power_state_change_event;
+
+SM_DEFINE(BLE_SM_1, ble_remote_dev_list)
+
+// State enumeration order must match the order of state
+// method entries in the state map
+enum ble_states
+{
+    ST_IDLE,
+    ST_OBSERVE,
+    ST_DATA_RX,
+	ST_DATA_TX,
+	ST_PAIRING,
+	ST_REMOTE_CFG,
+	ST_WAIT_FOR_RESPONSE
+};
+
+// State machine state functions
+STATE_DECLARE(Idle, NoEventData)
+STATE_DECLARE(Observe, ble_remote_dev_t)
+STATE_DECLARE(Data_rx, NoEventData)
+STATE_DECLARE(Data_tx, NoEventData)
+STATE_DECLARE(Pairing, ble_remote_dev_t)
+STATE_DECLARE(Remote_cfg, NoEventData)
+STATE_DECLARE(Wait_for_response, NoEventData)
+
+// State map to define state function order
+BEGIN_STATE_MAP(ble_remote_dev_t)
+    STATE_MAP_ENTRY(ST_Idle)
+    STATE_MAP_ENTRY(ST_Observe)
+    STATE_MAP_ENTRY(ST_Data_rx)
+    STATE_MAP_ENTRY(ST_Data_tx)
+	STATE_MAP_ENTRY(ST_Pairing)
+	STATE_MAP_ENTRY(ST_Remote_cfg)
+	STATE_MAP_ENTRY(ST_Wait_for_response)
+END_STATE_MAP(ble_remote_dev_t)
+
+// If we parsed new data from sensors
+EVENT_DEFINE(BLE_Data_rx, NoEventData)
+{
+    // Given the SetSpeed event, transition to a new state based upon
+    // the current state of the state machine
+    BEGIN_TRANSITION_MAP                        // - Current State -
+        TRANSITION_MAP_ENTRY(ST_DATA_RX)          // ST_Idle
+    	TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Observe
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_rx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_tx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Pairing
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Remote_cfg
+        TRANSITION_MAP_ENTRY(EVENT_IGNORED)     // ST_Wait_for_response
+    END_TRANSITION_MAP(ble_remote_dev_t, pEventData)
+}
+
+// If timer said that we should transmit data
+EVENT_DEFINE(BLE_Data_tx, NoEventData)
+{
+    // Given the SetSpeed event, transition to a new state based upon
+    // the current state of the state machine
+    BEGIN_TRANSITION_MAP                        // - Current State -
+        TRANSITION_MAP_ENTRY(ST_DATA_TX)	         // ST_Idle
+    	TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Observe
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_rx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_tx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Pairing
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Remote_cfg
+        TRANSITION_MAP_ENTRY(EVENT_IGNORED)     // ST_Wait_for_response
+    END_TRANSITION_MAP(ble_remote_dev_t, pEventData)
+}
+
+// If timer said that we should observe devices
+EVENT_DEFINE(BLE_Observe, ble_remote_dev_t)
+{
+    // Given the SetSpeed event, transition to a new state based upon
+    // the current state of the state machine
+    BEGIN_TRANSITION_MAP                        // - Current State -
+        TRANSITION_MAP_ENTRY(ST_OBSERVE)	         // ST_Idle
+    	TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Observe
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_rx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_tx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Pairing
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Remote_cfg
+        TRANSITION_MAP_ENTRY(EVENT_IGNORED)     // ST_Wait_for_response
+    END_TRANSITION_MAP(ble_remote_dev_t, pEventData)
+}
+
+// If timer said that we should transmit data
+EVENT_DEFINE(BLE_Remote_cfg, NoEventData)
+{
+    // Given the SetSpeed event, transition to a new state based upon
+    // the current state of the state machine
+    BEGIN_TRANSITION_MAP                        // - Current State -
+        TRANSITION_MAP_ENTRY(ST_REMOTE_CFG)	         // ST_Idle
+    	TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Observe
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_rx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Data_tx
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Pairing
+		TRANSITION_MAP_ENTRY(EVENT_IGNORED)          // ST_Remote_cfg
+        TRANSITION_MAP_ENTRY(EVENT_IGNORED)     // ST_Wait_for_response
+    END_TRANSITION_MAP(ble_remote_dev_t, pEventData)
+}
+
+// If timer said that we should transmit data
+EVENT_DEFINE(BLE_Go_idle, NoEventData)
+{
+    // Given the SetSpeed event, transition to a new state based upon
+    // the current state of the state machine
+    BEGIN_TRANSITION_MAP                        // - Current State -
+        TRANSITION_MAP_ENTRY(ST_IDLE)	         // ST_Idle
+    	TRANSITION_MAP_ENTRY(ST_IDLE)          // ST_Observe
+		TRANSITION_MAP_ENTRY(ST_IDLE)          // ST_Data_rx
+		TRANSITION_MAP_ENTRY(ST_IDLE)          // ST_Data_tx
+		TRANSITION_MAP_ENTRY(ST_IDLE)          // ST_Pairing
+		TRANSITION_MAP_ENTRY(ST_IDLE)          // ST_Remote_cfg
+        TRANSITION_MAP_ENTRY(ST_IDLE)     // ST_Wait_for_response
+    END_TRANSITION_MAP(ble_remote_dev_t, pEventData)
+}
+
 #ifdef USE_UBLOX_GPS_MODULE
 #include "neo-m8.h"
 #include "neo_ubx.h"
@@ -44,6 +173,7 @@ ble_charac_t *hdg;
 ble_charac_t *heel;
 ble_charac_t *charac_array[NUM_OF_CHARACTS];
 
+
 ble_remote_t *remote_lag;
 ble_remote_t *remote_rudder;
 ble_remote_t *remote_wind;
@@ -54,12 +184,14 @@ extern coefs_t *r_rudder_coefs;
 
 #endif
 
+#ifdef USE_MATH_MODULE
 #include "sailDataMath.h"
 extern float lastFilterValues[10][FILTER_BUFFER_SIZE];
 extern float windAngleTarget;
 extern float lastSensorValues[SIZE_BUFFER_VALUES];
 extern float hullSpeedTarget;
 extern float velocityMadeGoodTarget;
+#endif
 
 #ifdef SD_SENSOR_BOX_RUDDER
 ble_charac_t *ble_rudder;
@@ -94,6 +226,22 @@ void start_ble_module(void){
 				ble_thread, NULL);
 }
 
+static void ble_observe_tim_cb(void *arg){
+	chSysLockFromISR();
+	chEvtBroadcastI(&ble_observe_request_event);
+	chVTSetI(&ble_observe_tim, TIME_S2I(10), ble_observe_tim_cb, peer);
+	chSysUnlockFromISR();
+}
+
+static void ble_data_tx_tim_cb(ble_peer_t *peer_1){
+	chSysLockFromISR();
+	if (peer_1->is_connected == 1){
+	chEvtBroadcastI(&ble_data_tx_request_event);
+	}
+	chVTSetI(&ble_data_tx_tim, TIME_S2I(1), ble_data_tx_tim_cb, peer);
+	chSysUnlockFromISR();
+}
+
 /*
  * Thread to process data collection and filtering from NEO-M8P
  */
@@ -106,15 +254,14 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 	uint8_t str_flag = 0;
 	chRegSetThreadName("BLE Parsing Thread");
 	sdStart(&NINA_IF, &nina_config);
-	//systime_t prev = chVTGetSystemTime(); // Current system time.
 	while (true) {
 		token = sdGet(&NINA_IF);
 		megastring[i] = token;
 		i++;
 
-	/*	chSemWait(&usart1_semaph);
-		chprintf((BaseSequentialStream*) &SD1, "%c", token);
-		chSemSignal(&usart1_semaph);*/
+	//	chSemWait(&usart1_semaph);
+	//	chprintf((BaseSequentialStream*) &SD1, "%c", token);
+	//	chSemSignal(&usart1_semaph);
 
 		if (token == '\r' || token == '+'){
 			str_flag = 1;
@@ -127,9 +274,6 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		if (i == 256){
 			i = 0;
 		}
-
-	//	palToggleLine(LINE_ORANGE_LED);
-		//prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(500));
 	}
 }
 
@@ -137,12 +281,28 @@ static THD_FUNCTION(ble_thread, arg) {
 	(void) arg;
 	uint8_t token;
 	uint8_t i = 0;
+	event_listener_t el1, el2, el3, el4;
+
 	chRegSetThreadName("BLE Conrol Thread");
 	nina_fill_memory();
 	chSemObjectInit(&usart_nina, 1);
 	chThdSleepMilliseconds(500);
 	nina_init_services();
 	chThdSleepMilliseconds(500);
+#ifdef SD_MODULE_TRAINER
+	nina_init_devices(&ble_remote_dev_list);
+#endif
+	/* Events initialization and registration.*/
+	chEvtObjectInit(&ble_observe_request_event);
+	chEvtObjectInit(&ble_data_tx_request_event);
+	chEvtObjectInit(&ble_remote_dev_cfg_request_event);
+
+	chEvtRegisterMask(&ble_observe_request_event, &el1, EVENT_MASK(BLE_OBSERVE_EV));
+	chEvtRegisterMask(&ble_data_tx_request_event, &el2, EVENT_MASK(BLE_DATA_TX_EV));
+	chEvtRegisterMask(&ble_remote_dev_cfg_request_event, &el3, EVENT_MASK(BLE_REMOTE_CFG_EV));
+	chEvtRegisterMask(&power_state_change_event, &el4, EVENT_MASK(BLE_POWER_SWITCHED_ON_EV));
+	//ALLOC_Init();
+
 /*#ifdef SD_SENSOR_BOX_LAG
 	output->type = OUTPUT_LAG_BLE;
 #endif
@@ -168,9 +328,25 @@ static THD_FUNCTION(ble_thread, arg) {
 	chThdSleepMilliseconds(2500);
 #endif
 	//systime_t prev = chVTGetSystemTime(); // Current system time.
+#ifdef SD_SENSOR_BOX_RUDDER
 	output->ble = OUTPUT_RUDDER_BLE;
+#endif
+#ifdef SD_SENSOR_BOX_LAG
+	output->ble = OUTPUT_LAG_BLE;
+#endif
 	while (true) {
 #ifdef SD_MODULE_TRAINER
+
+		/* LED timer initialization.*/
+		  chVTObjectInit(&ble_observe_tim);
+		  chVTObjectInit(&ble_data_tx_tim);
+		  /* Starting blinker.*/
+		  chVTSet(&ble_observe_tim, TIME_S2I(10), ble_observe_tim_cb, NULL);
+		  chVTSet(&ble_data_tx_tim, TIME_S2I(1), ble_data_tx_tim_cb, peer);
+while(true){
+		SM_Event(BLE_SM_1, BLE_Go_idle, NULL);
+}
+
 	//	if (output->type == OUTPUT_TEST){
 						copy_to_ble();
 						nina_send_all(peer);
@@ -200,7 +376,8 @@ static THD_FUNCTION(ble_thread, arg) {
 						}
 
 #endif
-		chThdSleepMilliseconds(1000);
+						SM_Event(BLE_SM_1, BLE_Go_idle, NULL);
+		//chThdSleepMilliseconds(1000);
 	}
 }
 
@@ -240,6 +417,78 @@ void copy_to_ble(void){
 #endif
 }
 #endif
+
+// State machine sits here when motor is not running
+STATE_DEFINE(Idle, NoEventData) {
+
+		eventmask_t evt = chEvtWaitAny(ALL_EVENTS);
+
+		if (evt & EVENT_MASK(BLE_POWER_SWITCHED_ON_EV)) {
+			//if dev[i]->conn ==0
+		//	palToggleLine(LINE_ORANGE_LED);
+			nina_init_module();
+
+		}
+
+		if (evt & EVENT_MASK(BLE_OBSERVE_EV)) {
+			//if dev[i]->conn ==0
+			SM_Event(BLE_SM_1, BLE_Observe, NULL);
+		}
+		if (evt & EVENT_MASK(BLE_DATA_TX_EV)) {
+			SM_Event(BLE_SM_1, BLE_Data_tx, NULL);
+		}
+		if (evt & EVENT_MASK(BLE_REMOTE_CFG_EV)) {
+			SM_Event(BLE_SM_1, BLE_Remote_cfg, NULL);
+		}
+	//printf("%s ST_Idle\n", self->name);
+}
+
+STATE_DEFINE(Observe, ble_remote_dev_t) {
+	ble_remote_dev_t* devlist = SM_GetInstance(ble_remote_dev_t);
+	//SM_InternalEvent(ST_IDLE, NULL);
+	chprintf(NINA_IFACE, "AT+UBTD=2,1,2000\r");
+
+	chThdSleepMilliseconds(2500);
+
+	uint8_t i = 0;
+	for (i = 0; i < NUM_OF_REMOTE_DEV; i++) {
+		if ((devlist[i].avalible == 1) && (devlist[i].connected == 0)){
+			SM_InternalEvent(ST_PAIRING, NULL);
+			break;
+		}
+
+	}
+}
+
+STATE_DEFINE(Pairing, ble_remote_dev_t) {
+	ble_remote_dev_t* devlist = SM_GetInstance(ble_remote_dev_t);
+
+	uint8_t i = 0;
+	for (i = 0; i < NUM_OF_REMOTE_DEV; i++) {
+		if ((devlist[i].avalible == 1) && (devlist[i].connected == 0)) {
+			nina_connect(devlist[i].addr, 0);
+			chThdSleepMilliseconds(1500);
+			//SM_InternalEvent(ST_PAIRING, NULL);
+		}
+	}
+}
+
+STATE_DEFINE(Data_tx, NoEventData){
+	copy_to_ble();
+	nina_send_all(peer);
+}
+
+STATE_DEFINE(Remote_cfg, NoEventData){
+
+}
+
+STATE_DEFINE(Wait_for_response, NoEventData){
+
+}
+
+STATE_DEFINE(Data_rx, NoEventData){
+
+}
 
 uint8_t nina_parse_command(int8_t *strp) {
 	uint8_t scan_res;
@@ -301,6 +550,8 @@ uint8_t nina_parse_command(int8_t *strp) {
 	//scan_res = sscanf(strp, "\r\n+UBTD:%12sp,", addr);
 #ifdef SD_MODULE_TRAINER
 	if (strstr(strp, "+UBTD:") != NULL) {
+		nina_compare_founded_dev(strp, &ble_remote_dev_list);
+		return;
 		scan_res_p = strstr(strp, "D4CA6EB91DD3");
 		if (scan_res_p != NULL) {
 
@@ -325,7 +576,7 @@ uint8_t nina_parse_command(int8_t *strp) {
 		chprintf((BaseSequentialStream*) &SD1,
 				"Scanned connected to dev %d %d %s\r\n", scanned_vals[0],
 				scanned_vals[1], addr);
-		nina_register_remote_dev(scanned_vals[0], scanned_vals[1], addr);
+		nina_register_remote_dev(&ble_remote_dev_list, scanned_vals[0], scanned_vals[1], addr);
 		return 1;
 	}
 
@@ -342,7 +593,7 @@ uint8_t nina_parse_command(int8_t *strp) {
 
 	scan_res = sscanf(strp, "+UUBTACLD:%d\r", &scanned_vals[0]);
 	if (scan_res == 1) {
-		nina_unregister_peer(scanned_vals[0]);
+		nina_unregister_peer(&ble_remote_dev_list, scanned_vals[0]);
 		return 1;
 	}
 
@@ -414,8 +665,35 @@ void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr){
 
 }
 
-void nina_unregister_peer(uint8_t conn_handle){
+void nina_unregister_peer(ble_remote_dev_t* devlist, uint8_t conn_handle) {
 #ifdef SD_MODULE_TRAINER
+
+	uint8_t i = 0;
+	//int8_t scan_res_p;
+	for (i = 0; i < NUM_OF_REMOTE_DEV; i++) {
+		//scan_res_p = strcmp(addr, devlist[i].addr);
+		if (devlist[i].charac.conn_handle == conn_handle) {
+			chprintf((BaseSequentialStream*) &SD1,
+								"Disconnected from %s with conn_handle %d, conn_type %d (addr: %s)\r\n",
+								devlist[i].ascii_name, devlist[i].charac.conn_handle,
+								devlist[i].conn_type, devlist[i].addr);
+			devlist[i].connected = 0;
+			devlist[i].charac.conn_handle = 99;
+			devlist[i].conn_type = 0;
+			//nina_get_remote_characs(devlist[i].charac.conn_handle, 0x4A01);	//TODO: uuid not used, should be removed
+			return;
+		}
+	}
+
+	chprintf((BaseSequentialStream*) &SD1, "Disconnected peer 1 %d %d %s\r\n",
+			peer->conn_handle, peer->type, peer->addr);
+	peer->is_connected = 0;
+	peer->conn_handle = 0;
+	peer->type = 0;
+	memset(peer->addr, 0, 12);
+	return;
+
+/*
 	if (remote_lag->conn_handle == conn_handle) {
 		chprintf((BaseSequentialStream*) &SD1, "Disconnected to lag %d %d\r\n",
 				remote_lag->conn_handle, remote_lag->type);
@@ -423,26 +701,57 @@ void nina_unregister_peer(uint8_t conn_handle){
 
 		remote_lag->is_connected = 0;
 		remote_lag->type = 0;
-	}else if (remote_rudder->conn_handle == conn_handle) {
-		chprintf((BaseSequentialStream*) &SD1, "Disconnected to rudder %d %d\r\n",
-				remote_rudder->conn_handle, remote_rudder->type);
+	} else if (remote_rudder->conn_handle == conn_handle) {
+		chprintf((BaseSequentialStream*) &SD1,
+				"Disconnected to rudder %d %d\r\n", remote_rudder->conn_handle,
+				remote_rudder->type);
 		remote_rudder->conn_handle = 99;
 
 		remote_rudder->is_connected = 0;
 		remote_rudder->type = 0;
-	}else{
-		chprintf((BaseSequentialStream*) &SD1, "Disconnected peer 1 %d %d %s\r\n", peer->conn_handle, peer->type, peer->addr);
+	} else {
+		chprintf((BaseSequentialStream*) &SD1,
+				"Disconnected peer 1 %d %d %s\r\n", peer->conn_handle,
+				peer->type, peer->addr);
 		peer->is_connected = 0;
 		peer->conn_handle = 0;
 		peer->type = 0;
 		memset(peer->addr, 0, 12);
 		//output->ble = OUTPUT_NONE;
 	}
+	*/
+#else
+	chprintf((BaseSequentialStream*) &SD1, "Disconnected peer 1 %d %d %s\r\n",
+				peer->conn_handle, peer->type, peer->addr);
+		peer->is_connected = 0;
+		peer->conn_handle = 0;
+		peer->type = 0;
+		memset(peer->addr, 0, 12);
+		return;
 #endif
 }
 
-void nina_register_remote_dev(uint8_t conn_handle, uint8_t type, int8_t *addr){
+void nina_register_remote_dev(ble_remote_dev_t* devlist, uint8_t conn_handle, uint8_t type, int8_t *addr){
 #ifdef SD_MODULE_TRAINER
+
+	uint8_t i = 0;
+	int8_t scan_res_p;
+	for (i = 0; i < NUM_OF_REMOTE_DEV; i++) {
+		scan_res_p = strcmp(addr, devlist[i].addr);
+		if (scan_res_p == 0){
+				devlist[i].connected = 1;
+				devlist[i].charac.conn_handle = conn_handle;
+				devlist[i].conn_type = type;
+				chprintf((BaseSequentialStream*) &SD1, "Connected to %s with conn_handle %d, conn_type %d (addr: %s)\r\n", devlist[i].ascii_name, devlist[i].charac.conn_handle, devlist[i].conn_type, devlist[i].addr);
+				nina_get_remote_characs(devlist[i].charac.conn_handle, 0x4A01);	//TODO: uuid not used, should be removed
+				return;
+		}
+	}
+	nina_register_peer(conn_handle, type, addr);
+			output->ble = OUTPUT_BLE;
+		//	toggle_test_output();
+			return;
+/*
 	if (strcmp(addr, "D4CA6EB91DD3") == 0){
 		remote_lag->conn_handle = conn_handle;
 
@@ -467,6 +776,7 @@ void nina_register_remote_dev(uint8_t conn_handle, uint8_t type, int8_t *addr){
 		output->ble = OUTPUT_BLE;
 	//	toggle_test_output();
 	}
+	*/
 #else
 	nina_register_peer(conn_handle, type, addr);
 #endif
@@ -481,7 +791,7 @@ void nina_get_remote_characs(uint16_t handle, uint16_t uuid){
 	chThdSleepMilliseconds(300);
 	chprintf(NINA_IFACE, "AT+UBTGWC=%d,%d,%d\r", handle, 33, 1);
 }
-
+/*
 void nina_unregister_remote_dev(uint8_t conn_handle){
 	(void)conn_handle;
 #ifdef SD_MODULE_TRAINER
@@ -509,7 +819,7 @@ void nina_unregister_remote_dev(uint8_t conn_handle){
 	}
 #endif
 }
-
+*/
 void nina_fill_memory(void){
 	charac_temporary = calloc(1, sizeof(ble_temp_charac_t));
 	peer = calloc(1, sizeof(ble_peer_t));
@@ -611,6 +921,49 @@ void nina_wait_charac_handlers(ble_charac_t *charac){
 }
 
 #ifdef SD_MODULE_TRAINER
+
+int8_t nina_compare_founded_dev(uint8_t *strp, ble_remote_dev_t *devlist){
+	uint8_t i = 0;
+	int8_t *scan_res_p;
+	for(i = 0; i < NUM_OF_REMOTE_DEV; i++){
+		scan_res_p = strstr(strp, devlist[i].addr);
+				if (scan_res_p != NULL) {
+					devlist[i].avalible = 1;
+				}else{
+					devlist[i].avalible = 0;
+				}
+	}
+}
+
+int8_t nina_init_devices(ble_remote_dev_t *devlist) {
+
+	uint8_t i = 0;
+	for (i = 0; i < NUM_OF_REMOTE_DEV; i++) {
+		memset(&devlist[i], 0, sizeof(ble_remote_dev_t));
+		devlist[i].charac.conn_handle = 99;
+	}
+
+	memcpy(devlist[0].addr, BLE_RDR_ADDR, sizeof(devlist[0].addr));
+	memcpy(devlist[0].ascii_name, BLE_RDR_ASCII_NAME, sizeof(BLE_RDR_ASCII_NAME));
+
+	memcpy(devlist[1].addr, BLE_LOG_ADDR, sizeof(devlist[1].addr));
+	memcpy(devlist[1].ascii_name, BLE_LOG_ASCII_NAME, sizeof(BLE_LOG_ASCII_NAME));
+
+#if NUM_OF_REMOTE_DEV == 6
+	memcpy(devlist[2].addr, BLE_TENSO1_ADDR, sizeof(devlist[2].addr));
+	memcpy(devlist[2].ascii_name, BLE_TENSO1_ASCII_NAME, sizeof(BLE_TENSO1_ASCII_NAME));
+
+	memcpy(devlist[3].addr, BLE_TENSO2_ADDR, sizeof(devlist[3].addr));
+	memcpy(devlist[3].ascii_name, BLE_TENSO2_ASCII_NAME, sizeof(BLE_TENSO2_ASCII_NAME));
+
+	memcpy(devlist[4].addr, BLE_TENSO3_ADDR, sizeof(devlist[4].addr));
+	memcpy(devlist[4].ascii_name, BLE_TENSO3_ASCII_NAME, sizeof(BLE_TENSO3_ASCII_NAME));
+
+	memcpy(devlist[5].addr, BLE_TENSO4_ADDR, sizeof(devlist[5].addr));
+	memcpy(devlist[5].ascii_name, BLE_TENSO4_ASCII_NAME, sizeof(BLE_TENSO4_ASCII_NAME));
+#endif
+	return NUM_OF_REMOTE_DEV;
+}
 
 uint8_t nina_init_services(void){
 	chprintf(NINA_IFACE, "AT+UBTLE=3\r");
@@ -864,7 +1217,7 @@ uint8_t nina_init_services(void){
 	if (nina_wait_response("+UBTLE\r") != NINA_SUCCESS) {
 		return -1;
 	}
-	/*chprintf(NINA_IFACE, "AT+UMRS=115200,2,8,1,1,1\r");
+/*	chprintf(NINA_IFACE, "AT+UMRS=115200,2,8,1,1,1\r");
 		if (nina_wait_response("+UMRS\r") != NINA_SUCCESS) {
 			return -1;
 		}*/
@@ -966,6 +1319,13 @@ uint8_t nina_init_services(void){
 	if (nina_wait_response("+UBTLN\r") != NINA_SUCCESS) {
 		return -1;
 	}
+
+	chThdSleepMilliseconds(1000);
+	chprintf(NINA_IFACE, "AT+UBTLN=FastSkipper-LOG\r");
+	if (nina_wait_response("+UBTLN\r") != NINA_SUCCESS) {
+		return -1;
+	}
+
 	chThdSleepMilliseconds(200);
 	chprintf(NINA_IFACE, "AT&W\r");
 	if (nina_wait_response("AT&W\r") != NINA_SUCCESS) {
@@ -1001,6 +1361,92 @@ uint8_t nina_init_services(void){
 	//# Response +UBTGCHA:THDG_HAND,CCCD_HAND (zero if not use)
 	nina_add_charac(ble_lag, 0x4A01, 10, 1, 1, 0x0F00FF, 0, 3);
 /*	chprintf(NINA_IFACE, "AT+UBTGCHA=4A01,10,1,1,0F00FF,0,3\r");
+	if (nina_wait_response("+UBTGCHA\r") != NINA_SUCCESS) {
+		return -1;
+	}*/
+	//chThdSleepMilliseconds(200);
+
+		//# Save settings and reboot
+/*		chprintf(NINA_IFACE, "AT&W\r");
+		if (nina_wait_response("AT&W\r") != NINA_SUCCESS) {
+			return -1;
+		}
+		chThdSleepMilliseconds(200);
+		chprintf(NINA_IFACE, "AT+CPWROFF\r");
+		if (nina_wait_response("+CPWROFF\r") != NINA_SUCCESS) {
+			return -1;
+		}*/
+		//chThdSleepMilliseconds(200);
+}
+#endif
+
+#ifdef SD_SENSOR_BOX_TENSO
+uint8_t nina_init_services(void){
+	chprintf(NINA_IFACE, "AT+UBTLE=2\r");
+	if (nina_wait_response("+UBTLE\r") != NINA_SUCCESS) {
+		return -1;
+	}
+	chThdSleepMilliseconds(200);
+	chprintf(NINA_IFACE, "AT&W\r");
+	if (nina_wait_response("AT&W\r") != NINA_SUCCESS) {
+		return -1;
+	}
+	chThdSleepMilliseconds(200);
+	chprintf(NINA_IFACE, "AT+CPWROFF\r");
+	if (nina_wait_response("+CPWROFF\r") != NINA_SUCCESS) {
+		return -1;
+	}
+
+	chThdSleepMilliseconds(1000);
+	chprintf(NINA_IFACE, "AT+UBTLN=FastSkipper-TENSO\r");
+	if (nina_wait_response("+UBTLN\r") != NINA_SUCCESS) {
+		return -1;
+	}
+
+	chThdSleepMilliseconds(1000);
+	chprintf(NINA_IFACE, "AT+UBTLN=FastSkipper-LOG\r");
+	if (nina_wait_response("+UBTLN\r") != NINA_SUCCESS) {
+		return -1;
+	}
+
+	chThdSleepMilliseconds(200);
+	chprintf(NINA_IFACE, "AT&W\r");
+	if (nina_wait_response("AT&W\r") != NINA_SUCCESS) {
+		return -1;
+	}
+	chThdSleepMilliseconds(200);
+	chprintf(NINA_IFACE, "AT+CPWROFF\r");
+	if (nina_wait_response("+CPWROFF\r") != NINA_SUCCESS) {
+		return -1;
+	}
+	chThdSleepMilliseconds(1000);
+	// Create service for GATT server (send information to tablet) 16-bit
+	//UUID = 4A00
+	// Response send handle of the created service (int value).
+	// +UBTGSER:SER_HAND
+	chprintf(NINA_IFACE, "AT+UBTGSER=4A00\r");
+	if (nina_wait_response("+UBTGSER\r") != NINA_SUCCESS) {
+		return -1;
+	}
+	chThdSleepMilliseconds(200);
+	/*
+# Create characteristic for service (values, witch coach complex send to tablet)
+# Parametrs command:
+# uuid (new, can be the same of service uuid),
+# properties (notification support),
+# security_read (no encryption required),
+# security_write (no encryption required),
+# initial value 1000,
+# read_auth (Read Authorized. Any client can read data without host intervention)
+# max_length (aximum length of the characteristic in bytes. The maximum value is 512 bytes)
+*/
+	//# LOG - uuid 4A01
+	//# Response +UBTGCHA:THDG_HAND,CCCD_HAND (zero if not use)
+
+	//TODO:
+	//nina_add_charac(ble_lag, 0x4A01, 10, 1, 1, 0x0F00FF, 0, 3);
+
+	/*	chprintf(NINA_IFACE, "AT+UBTGCHA=4A01,10,1,1,0F00FF,0,3\r");
 	if (nina_wait_response("+UBTGCHA\r") != NINA_SUCCESS) {
 		return -1;
 	}*/
