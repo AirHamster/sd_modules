@@ -36,7 +36,7 @@ static void button_cb(void *arg) {
 
 	chSysLockFromISR();
 if (deepsleep == 1) {
-	//activate_clocks();
+	activate_clocks();
 	pwr_pins_to_work_state();
 	deepsleep = 0;
 	}
@@ -133,7 +133,7 @@ void start_power_management_module(void){
 
 void enter_stop_mode(void) {
 if (deepsleep == 1){
-	//deactivate_clocks();
+	deactivate_clocks();
 	pwr_pins_to_save_state();
 }
 
@@ -226,13 +226,13 @@ void deactivate_clocks(void){
 
 static void pwr_pins_to_save_state(void){
 
-
+/*
 	palSetLineMode(LINE_USART1_TX, PAL_MODE_INPUT_ANALOG);
 	palSetLineMode(LINE_USART1_RX, PAL_MODE_INPUT_ANALOG);
 
 	palSetLineMode(LINE_USART2_TX, PAL_MODE_INPUT_ANALOG);
 	palSetLineMode(LINE_USART2_RX, PAL_MODE_INPUT_ANALOG);
-
+*/
 	//TODO: SPI pins for flash memory
 		/*
 		palSetLineMode(LINE_USART2_TX, PAL_MODE_ALTERNATE(4));
@@ -245,12 +245,13 @@ static void pwr_pins_to_save_state(void){
 
 static void pwr_pins_to_work_state(void){
 
+	/*
 	palSetLineMode(LINE_USART1_TX, PAL_MODE_ALTERNATE(4));
 	palSetLineMode(LINE_USART1_RX, PAL_MODE_ALTERNATE(4));
 
 	palSetLineMode(LINE_USART2_TX, PAL_MODE_ALTERNATE(4));
 	palSetLineMode(LINE_USART2_RX, PAL_MODE_ALTERNATE(4));
-
+*/
 	//TODO: SPI pins for flash memory
 	/*
 	palSetLineMode(LINE_USART2_TX, PAL_MODE_ALTERNATE(4));
