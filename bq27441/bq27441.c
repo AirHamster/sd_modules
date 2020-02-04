@@ -61,8 +61,9 @@ static THD_FUNCTION(fuel_thread, p) {
 		//palToggleLine(LINE_RED_LED);
 		systime_t prev = chVTGetSystemTime(); // Current system time.
 		fuel_get_parameter(BQ27441_COMMAND_VOLTAGE, &fuel->voltage);
-		fuel_get_parameter(BQ27441_COMMAND_STDBY_CURRENT, &fuel->standby_current);
 		fuel_get_parameter(BQ27441_COMMAND_AVG_CURRENT, &fuel->average_current);
+		fuel_get_parameter(BQ27441_COMMAND_STDBY_CURRENT, &fuel->standby_current);
+		fuel_get_parameter(BQ27441_COMMAND_FLAGS, &fuel->flags);
 		fuel_get_parameter(BQ27441_COMMAND_SOC, &fuel->soc);
 		fuel_get_parameter(BQ27441_COMMAND_REM_CAPACITY, &fuel->remaining_capacity);
 		//fuel_print_info(fuel);
@@ -85,8 +86,8 @@ static uint8_t fuel_get_parameter(uint8_t param, int16_t *buffer){
 static int8_t fuel_print_info(fuel_t *fuel){
 
 	chprintf(SHELL_IFACE, "\r\nBatt voltage:\t%dV\r\n", fuel->voltage);
-	chprintf(SHELL_IFACE, "Batt current:\t%dmA\r\n", fuel->standby_current);
-	chprintf(SHELL_IFACE, "Batt avg cur:\t%dmA\r\n", fuel->average_current);
+	chprintf(SHELL_IFACE, "Batt standby current:\t%dmA\r\n", fuel->standby_current);
+	chprintf(SHELL_IFACE, "Batt average current:\t%dmA\r\n", fuel->average_current);
 	chprintf(SHELL_IFACE, "Batt SOC:\t%d%%\r\n", fuel->soc);
 	chprintf(SHELL_IFACE, "Batt rem_cap:\t%dmA\r\n", fuel->remaining_capacity);
 }
