@@ -36,7 +36,7 @@ static void button_cb(void *arg) {
 
 	chSysLockFromISR();
 if (deepsleep == 1) {
-	//activate_clocks();
+	activate_clocks();
 	pwr_pins_to_work_state();
 	deepsleep = 0;
 	}
@@ -133,7 +133,7 @@ void start_power_management_module(void){
 
 void enter_stop_mode(void) {
 if (deepsleep == 1){
-	//deactivate_clocks();
+	deactivate_clocks();
 	pwr_pins_to_save_state();
 }
 
