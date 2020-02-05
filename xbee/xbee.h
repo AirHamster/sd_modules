@@ -241,7 +241,8 @@ void xbee_attn(BaseSequentialStream* chp, int argc, char* argv[]);
 void xbee_attn_event(void);
 
 uint8_t xbee_create_at_read_message(uint8_t *at, uint8_t *buffer);
-uint8_t xbee_create_data_write_message(uint8_t *buffer, uint8_t *data, uint8_t num);
+//uint8_t xbee_create_data_write_message(uint8_t *buffer, uint8_t *data, uint8_t num);
+uint8_t xbee_create_data_write_message(uint8_t *buffer, void *data, uint8_t packet_type);
 uint8_t xbee_calc_CRC(uint8_t *buffer, uint8_t num);
 uint8_t xbee_check_attn(void);
 
@@ -270,7 +271,8 @@ void xbee_process_data_sample_frame(uint8_t* buffer);
 void xbee_process_node_id_frame(uint8_t* buffer);
 void xbee_process_remote_response_frame(uint8_t* buffer);
 
-void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len);
+void xbee_send_rf_message(void *packet, uint8_t packet_type);
+//void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len);
 void xbee_send_rf_message_back(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len);
 void xbee_parse_rf_packet(uint8_t *rxbuff);
 void xbee_parse_gps_packet_back(uint8_t *rxbuff);

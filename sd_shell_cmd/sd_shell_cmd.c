@@ -14,6 +14,10 @@ extern thread_reference_t microsd_trp;
 #include "xbee.h"
 extern tx_box_t *tx_box;
 extern xbee_struct_t *xbee;
+xbee_sportsman_data_t xbee_sportsman_data;
+#ifdef SD_BOUY_MODULE
+xbee_bouy_data_t xbee_bouy_data;
+#endif
 #endif
 #ifdef USE_UBLOX_GPS_MODULE
 #include "neo-m8.h"
@@ -344,6 +348,29 @@ void send_data(uint8_t stream) {
 	int32_t spdi = 0;
 	double spd;
 	double dlat, dlon;
+
+	xbee_sportsman_data.lat = pvt_box->lat;
+	xbee_sportsman_data.lon = pvt_box->lon;
+	xbee_sportsman_data.headMot = pvt_box->headMot;
+	xbee_sportsman_data.headVeh = pvt_box->headVeh;
+	xbee_sportsman_data.yaw = (uint16_t)bmx160.yaw;
+	xbee_sportsman_data.pitch = bmx160.pitch;
+	xbee_sportsman_data.roll = bmx160.roll;
+	xbee_sportsman_data.speed = (float) (pvt_box->gSpeed * 0.0036);
+	xbee_sportsman_data.rdr = r_rudder->native;
+	xbee_sportsman_data.log = r_lag->meters;
+	xbee_sportsman_data.tenso_1 = 0;
+	xbee_sportsman_data.tenso_2 = 0;
+	xbee_sportsman_data.tenso_3 = 0;
+	xbee_sportsman_data.tenso_4 = 0;
+	xbee_sportsman_data.dist = tx_box->dist;
+	xbee_sportsman_data.hour = pvt_box->hour;
+	xbee_sportsman_data.min = pvt_box->min;
+	xbee_sportsman_data.sec = pvt_box->sec;
+	xbee_sportsman_data.sat = pvt_box->numSV;
+	xbee_sportsman_data.bat = 99;
+
+	/*
 	spd = (float) (pvt_box->gSpeed * 0.0036);
 	spdi = (int32_t) (spd);
 	tx_box->lat = pvt_box->lat;
@@ -387,8 +414,9 @@ void send_data(uint8_t stream) {
 	databuff[31] = (uint8_t) (tx_box->headMot >> 16);
 	databuff[32] = (uint8_t) (tx_box->headMot >> 8);
 	databuff[33] = (uint8_t) (tx_box->headMot);
-
-	xbee_send_rf_message(xbee, databuff, 34);
+*/
+	//xbee_send_rf_message(xbee, databuff, 34);
+	xbee_send_rf_message(&xbee_sportsman_data, RF_SPORTSMAN_PACKET);
 }
 #endif
 
