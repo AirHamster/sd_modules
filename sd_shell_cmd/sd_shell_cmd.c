@@ -357,7 +357,7 @@ void send_data(uint8_t stream) {
 	tx_box->headMot = pvt_box->headMot;
 	tx_box->headVeh = pvt_box->headVeh;
 
-	databuff[0] = RF_GPS_PACKET;
+	databuff[0] = RF_SPORTSMAN_PACKET;
 	databuff[1] = (uint8_t) (tx_box->lat >> 24);
 	databuff[2] = (uint8_t) (tx_box->lat >> 16);
 	databuff[3] = (uint8_t) (tx_box->lat >> 8);

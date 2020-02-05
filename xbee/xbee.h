@@ -45,9 +45,16 @@
 #define OUTPUT_USART	1
 #define OUTPUT_XBEE		2
 
+#define SIZE_OF_XBEE_ADDR	8
 #define RF_PACK_LEN		128
 
 #define RF_GPS_PACKET	1
+
+#define RF_BOUY_PACKET	2
+#define RF_SPORTSMAN_PACKET	3
+
+#define NUM_OF_SPORTSMAN_DEVICES	10
+#define NUM_OF_BOUY_DEVICES			4
 
 // Diagnostic commands
 
@@ -222,6 +229,7 @@ typedef struct {
 	void *rf_data;
 
 } xbee_remote_dev_t;
+
 
 
 void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff);
