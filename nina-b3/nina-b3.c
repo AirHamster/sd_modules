@@ -18,7 +18,9 @@
 #include "sd_shell_cmds.h"
 #include "lag.h"
 #include "adc.h"
+#ifdef USE_POWER_MANAGEMENT
 #include "pwr_mgmt_l4.h"
+#endif
 #include "fsm.h"
 
 static virtual_timer_t ble_observe_tim;
@@ -30,7 +32,9 @@ static event_source_t ble_observe_request_event;
 static event_source_t ble_data_tx_request_event;
 static event_source_t ble_remote_dev_cfg_request_event;
 
+#ifdef USE_POWER_MANAGEMENT
 extern event_source_t power_state_change_event;
+#endif
 
 SM_DEFINE(BLE_SM_1, ble_remote_dev_list)
 
@@ -300,7 +304,9 @@ static THD_FUNCTION(ble_thread, arg) {
 	chEvtRegisterMask(&ble_observe_request_event, &el1, EVENT_MASK(BLE_OBSERVE_EV));
 	chEvtRegisterMask(&ble_data_tx_request_event, &el2, EVENT_MASK(BLE_DATA_TX_EV));
 	chEvtRegisterMask(&ble_remote_dev_cfg_request_event, &el3, EVENT_MASK(BLE_REMOTE_CFG_EV));
+#ifdef USE_POWER_MANAGEMENT
 	chEvtRegisterMask(&power_state_change_event, &el4, EVENT_MASK(BLE_POWER_SWITCHED_ON_EV));
+#endif
 	//ALLOC_Init();
 
 /*#ifdef SD_SENSOR_BOX_LAG

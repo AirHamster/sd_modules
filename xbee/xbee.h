@@ -45,9 +45,16 @@
 #define OUTPUT_USART	1
 #define OUTPUT_XBEE		2
 
+#define SIZE_OF_XBEE_ADDR	8
 #define RF_PACK_LEN		128
 
 #define RF_GPS_PACKET	1
+
+#define RF_BOUY_PACKET	2
+#define RF_SPORTSMAN_PACKET	3
+
+#define NUM_OF_SPORTSMAN_DEVICES	10
+#define NUM_OF_BOUY_DEVICES			4
 
 // Diagnostic commands
 
@@ -224,6 +231,7 @@ typedef struct {
 } xbee_remote_dev_t;
 
 
+
 void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff);
 void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]);
 void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len);
@@ -233,7 +241,8 @@ void xbee_attn(BaseSequentialStream* chp, int argc, char* argv[]);
 void xbee_attn_event(void);
 
 uint8_t xbee_create_at_read_message(uint8_t *at, uint8_t *buffer);
-uint8_t xbee_create_data_write_message(uint8_t *buffer, uint8_t *data, uint8_t num);
+//uint8_t xbee_create_data_write_message(uint8_t *buffer, uint8_t *data, uint8_t num);
+uint8_t xbee_create_data_write_message(uint8_t *buffer, void *data, uint8_t packet_type);
 uint8_t xbee_calc_CRC(uint8_t *buffer, uint8_t num);
 uint8_t xbee_check_attn(void);
 
@@ -262,7 +271,8 @@ void xbee_process_data_sample_frame(uint8_t* buffer);
 void xbee_process_node_id_frame(uint8_t* buffer);
 void xbee_process_remote_response_frame(uint8_t* buffer);
 
-void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len);
+void xbee_send_rf_message(void *packet, uint8_t packet_type);
+//void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len);
 void xbee_send_rf_message_back(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len);
 void xbee_parse_rf_packet(uint8_t *rxbuff);
 void xbee_parse_gps_packet_back(uint8_t *rxbuff);
