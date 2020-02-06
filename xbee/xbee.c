@@ -1201,7 +1201,7 @@ void xbee_parse_bouy_packet(uint8_t *rxbuff){
 	uint8_t hour, min, sec, sat, bat;
 
 	for (i = 0; i < NUM_OF_BOUY_DEVICES; i++){
-	if (memcmp(rxbuff, remote_dev[NUM_OF_SPORTSMAN_DEVICES + i].addr, SIZE_OF_XBEE_ADDR)){
+	if (memcmp(rxbuff, remote_dev[NUM_OF_SPORTSMAN_DEVICES + i].addr, SIZE_OF_XBEE_ADDR) == 0){
 		memcpy(remote_dev[NUM_OF_SPORTSMAN_DEVICES + i].rf_data, &rxbuff[12], sizeof(xbee_bouy_data_t));
 
 	}
@@ -1287,15 +1287,15 @@ void xbee_parse_sportsman_packet(uint8_t *rxbuff) {
 	xbee_sportsman_data_t *data;
 
 	for (i = 0; i < NUM_OF_SPORTSMAN_DEVICES; i++) {
-		if (memcmp(rxbuff, remote_dev[i].addr, SIZE_OF_XBEE_ADDR)) {
+		if (memcmp(rxbuff, remote_dev[i].addr, SIZE_OF_XBEE_ADDR) == 0) {
 			memcpy(remote_dev[i].rf_data, &rxbuff[12],
 					sizeof(xbee_sportsman_data_t));
 			data = remote_dev[i].rf_data;
 			chprintf((BaseSequentialStream*) &SD1,
 					"\r\nResieved xbee frame from sportsmen %d \r\n", i);
 			chprintf(SHELL_IFACE, "\r\nyaw: %d\r\n", data->yaw);
-			chprintf(SHELL_IFACE, "pitch: %d\r\n", data->pitch);
-			chprintf(SHELL_IFACE, "roll: %d\r\n", data->roll);
+			chprintf(SHELL_IFACE, "pitch: %f\r\n", data->pitch);
+			chprintf(SHELL_IFACE, "roll: %f\r\n", data->roll);
 		}
 	}
 /*
