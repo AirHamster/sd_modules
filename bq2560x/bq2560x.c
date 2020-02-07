@@ -56,7 +56,7 @@ const charger_cfg_t charger_cfg = {
 
 #endif
 
-#ifdef PWR_CPU
+#ifdef PWR_MCU
 static const I2CConfig charger_if_cfg = {
   0x10E37AFF,
   0,
@@ -99,7 +99,9 @@ static THD_FUNCTION( charger_thread, p) {
 					charger_regs->reg04, charger_regs->reg05, charger_regs->reg06, charger_regs->reg07,
 					charger_regs->reg08, charger_regs->reg09, charger_regs->reg0A, charger_regs->reg0B);
 */
-		//charger_print_info(charger);
+#ifdef PWR_MCU
+		charger_print_info(charger);
+#endif
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
 	}
 }

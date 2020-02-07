@@ -33,7 +33,7 @@ const I2CConfig mcu_mcu_if_cfg = {
 };
 #endif
 
-#ifdef POWER_MCU
+#ifdef PWR_MCU
 const I2CConfig mcu_mcu_if_cfg = {
   0x10E37AFF,
   0,
@@ -96,7 +96,7 @@ static THD_FUNCTION( mcu_mcu_thread, p) {
 }
 
 void start_mcu_mcu_module(void){
-	chThdCreateStatic(mcu_mcu_thread_wa, sizeof(mcu_mcu_thread_wa), NORMALPRIO + 3, mcu_mcu_thread, NULL);
+	chThdCreateStatic(mcu_mcu_thread_wa, sizeof(mcu_mcu_thread_wa), NORMALPRIO, mcu_mcu_thread, NULL);
 }
 
 #ifdef MAIN_MCU
