@@ -20,6 +20,8 @@
 
 #define MCU_MCU_SLAVE_ADDR	0x10
 
+void start_mcu_mcu_module(void);
+
 typedef enum{
 	STARTUP_NORMAL = 0,
 	STARTUP_CHARGE,

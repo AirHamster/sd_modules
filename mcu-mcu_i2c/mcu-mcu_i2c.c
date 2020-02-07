@@ -20,7 +20,7 @@
 #include "bq27441.h"
 extern fuel_t *fuel;
 #endif
-
+volatile int8_t buffer[32] = {0};
 mcu_mcu_data_t *mcu_mcu_data;
 power_data_t power;
 power_data_t *power_data = &power;
@@ -46,9 +46,14 @@ static THD_FUNCTION( mcu_mcu_thread, p) {
 	(void) p;
 	chRegSetThreadName("MCU-MCU Thd");
 	//i2cStart(&MCU_MCU_IF, &mcu_mcu_if_cfg);
+
+	uint8_t i = 0;
+	int16_t voltage;
+	int8_t soc;
+	uint8_t scanres = 0;
 	susart_init();
 
-	char char_arr[4];
+	char char_arr[5] = {0};
 	char ch;
 
 	while (true) {
@@ -84,7 +89,17 @@ static THD_FUNCTION( mcu_mcu_thread, p) {
 
 		#else
 		ch = susart_getchar();
-		//chprintf((BaseSequentialStream*) &SD1, "Recieved %c\r\n", ch);
+		buffer[i++] = ch;
+		if (ch == '\n'){
+			scanres = sscanf(&buffer[1], "%4cS%d", char_arr, &soc);
+			voltage = atoi(char_arr);
+			if (scanres == 2){
+				chprintf((BaseSequentialStream*) &SD1, "Recieved voltage = %dmV, SOC = %d%%\r\n", voltage, soc);
+			}
+			i = 0;
+			memset(buffer, 0, 32);
+		}
+
 		//prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
 #endif
 #ifdef SLAVE_MCU
