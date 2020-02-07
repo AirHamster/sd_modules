@@ -308,7 +308,7 @@ static void timer_set(uint16_t br){
 	 gptStart(&GPTD6, &gpt6cfg1);
 	 //set_timer_interrupt();
 	 //STM32L4 has problems with timer freq, workaround here
-#ifdef PWR_CPU
+#ifdef PWR_MCU
 	 gptStartContinuous(&GPTD6, 5000);
 #else
 	 gptStartContinuous(&GPTD6, 1875);
