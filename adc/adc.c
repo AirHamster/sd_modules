@@ -36,7 +36,7 @@ coefs_t *coefs;
 
 #define IR_ADC_GRP1_NUM_CHANNELS 1
 #define IR_ADC_GRP1_BUF_DEPTH 4
-#ifdef USE_ADC_MODULE
+#if defined(USE_ADC_MODULE) && defined(USE_RUDDER_MODULE) && defined(SD_SENSOR_BOX)
 static void adcendcallback(ADCDriver *adcp);
 static adcsample_t irSamples[IR_ADC_GRP1_NUM_CHANNELS * IR_ADC_GRP1_BUF_DEPTH];
 
