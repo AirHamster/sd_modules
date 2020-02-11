@@ -40,6 +40,9 @@ extern bno055_t *bno055;
 extern ble_t *ble;
 //extern lag_t *r_lag;
 extern rudder_t *r_rudder;
+extern coefs_t *coefs;
+extern dots_t *dots;
+extern rudder_t *rudder;
 #endif //USE_BNO055_MODULE
 #ifdef USE_ADC_MODULE
 #include "adc.h"
