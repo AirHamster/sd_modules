@@ -140,16 +140,25 @@ int8_t bno055_full_init(bno055_t *bno055) {
 }
 
 int8_t bno055_save_calib_to_eeprom(bno055_t *bno055){
-	eeprom_write(EEPROM_MAGN_X_OFFSET_ADDR, &bno055->magn_offset.x, sizeof(struct bno055_mag_offset_t) + sizeof(struct bno055_gyro_offset_t) + sizeof(struct bno055_accel_offset_t));
+	EEPROM_WRITE(MAGN_MEMORY.MAGN_X_OFFSET, (uint8_t*)&bno055->magn_offset.x);
+	EEPROM_WRITE(MAGN_MEMORY.MAGN_Y_OFFSET, (uint8_t*)&bno055->magn_offset.y);
+	EEPROM_WRITE(MAGN_MEMORY.MAGN_Z_OFFSET, (uint8_t*)&bno055->magn_offset.z);
+	EEPROM_WRITE(MAGN_MEMORY.MAGN_RADIUS, (uint8_t*)&bno055->magn_offset.r);
+	//eeprom_write(EEPROM_MAGN_X_OFFSET_ADDR, &bno055->magn_offset.x, sizeof(struct bno055_mag_offset_t) + sizeof(struct bno055_gyro_offset_t) + sizeof(struct bno055_accel_offset_t));
 }
 
 int8_t bno055_read_calib_from_eeprom(bno055_t *bno055){
-	eeprom_read(EEPROM_MAGN_X_OFFSET_ADDR, &bno055->magn_offset.x, sizeof(struct bno055_mag_offset_t) + sizeof(struct bno055_gyro_offset_t) + sizeof(struct bno055_accel_offset_t));
+	EEPROM_READ(MAGN_MEMORY.MAGN_X_OFFSET, (uint8_t*)&bno055->magn_offset.x);
+		EEPROM_READ(MAGN_MEMORY.MAGN_Y_OFFSET, (uint8_t*)&bno055->magn_offset.y);
+		EEPROM_READ(MAGN_MEMORY.MAGN_Z_OFFSET, (uint8_t*)&bno055->magn_offset.z);
+		EEPROM_READ(MAGN_MEMORY.MAGN_RADIUS, (uint8_t*)&bno055->magn_offset.r);
+
+	//eeprom_read(EEPROM_MAGN_X_OFFSET_ADDR, &bno055->magn_offset.x, sizeof(struct bno055_mag_offset_t) + sizeof(struct bno055_gyro_offset_t) + sizeof(struct bno055_accel_offset_t));
 }
 
 int8_t bno955_read_static_flag_from_eeprom(bno055_t *bno055){
 	uint8_t temp;
-		if (eeprom_read(EEPROM_STATIC_CALIB_FLAG_ADDR, &temp, 1) != -1) {
+		if (EEPROM_READ(FLAGS_MEMORY.STATIC_MAGN_CALIB_FLAG, (uint8_t*)&temp) != -1) {
 			bno055->static_calib = temp;
 			return temp;
 		}
@@ -158,7 +167,7 @@ int8_t bno955_read_static_flag_from_eeprom(bno055_t *bno055){
 
 int8_t bno055_set_static_calib(bno055_t *bno055) {
 	uint8_t temp = 1;
-	if (eeprom_write(EEPROM_STATIC_CALIB_FLAG_ADDR, &temp, 1) != -1) {
+	if (EEPROM_WRITE(FLAGS_MEMORY.STATIC_MAGN_CALIB_FLAG, (uint8_t*)&temp) != -1) {
 		bno055->static_calib = 1;
 		return 0;
 	}
@@ -167,7 +176,7 @@ int8_t bno055_set_static_calib(bno055_t *bno055) {
 
 int8_t bno055_set_dynamic_calib(bno055_t *bno055) {
 	uint8_t temp = 0;
-	if (eeprom_write(EEPROM_STATIC_CALIB_FLAG_ADDR, &temp, 1) != -1) {
+	if (EEPROM_WRITE(FLAGS_MEMORY.STATIC_MAGN_CALIB_FLAG, (uint8_t*)&temp) != -1) {
 		bno055->static_calib = 0;
 		return 0;
 	}
