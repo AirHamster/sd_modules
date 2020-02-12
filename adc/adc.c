@@ -203,21 +203,27 @@ void init_coefs(dots_t *dots, coefs_t *coefs){
 		dots->y2 = 0.0;
 		dots->y2 = 90.0;
 	}else{ */
-		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_LEFT, (uint8_t*)&dots->x1, 4);
+		EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_LEFT, (uint8_t*)&dots->x1);
+		//eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_LEFT, (uint8_t*)&dots->x1, 4);
 		rudder->min_native = dots->x1;
-		chThdSleepMilliseconds(5);
-		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_CENTER, (uint8_t*)&dots->x2, 4);
-		chThdSleepMilliseconds(5);
-		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*)&dots->x3, 4);
+		//chThdSleepMilliseconds(5);
+		EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_CENTER, (uint8_t*)&dots->x2);
+		//eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_CENTER, (uint8_t*)&dots->x2, 4);
+		//chThdSleepMilliseconds(5);
+		EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*)&dots->x3);
+		//eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*)&dots->x3, 4);
 		rudder->max_native = dots->x3;
-		chThdSleepMilliseconds(5);
+		//chThdSleepMilliseconds(5);
 
-		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*)&dots->y1, 4);
+		EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_LEFT, (uint8_t*)&dots->y1);
+		//eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*)&dots->y1, 4);
 		rudder->min_degrees = dots->y1;
-		chThdSleepMilliseconds(5);
-		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*)&dots->y2, 4);
-		chThdSleepMilliseconds(5);
-		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*)&dots->y3, 4);
+		//chThdSleepMilliseconds(5);
+		EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_CENTER, (uint8_t*)&dots->y2);
+		//eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*)&dots->y2, 4);
+		//chThdSleepMilliseconds(5);
+		EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*)&dots->y3);
+		//eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*)&dots->y3, 4);
 		rudder->max_degrees = dots->y3;
 	//}
 	rudder->native_full_scale = rudder->max_native - rudder->min_native;

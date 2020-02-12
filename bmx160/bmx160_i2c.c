@@ -552,11 +552,17 @@ int8_t bmx160_full_init(void) {
 }
 
 int8_t bmx160_save_calib_to_eeprom(bmx160_t *bmx160){
-	eeprom_write(EEPROM_MAGN_X_OFFSET_ADDR, (uint8_t*)&bmx160->mag_offset.x, sizeof(float)*3);
+	EEPROM_WRITE(MAGN_MEMORY.MAGN_X_OFFSET, (uint8_t*)&bmx160->mag_offset.x);
+	EEPROM_WRITE(MAGN_MEMORY.MAGN_Y_OFFSET, (uint8_t*)&bmx160->mag_offset.y);
+	EEPROM_WRITE(MAGN_MEMORY.MAGN_Z_OFFSET, (uint8_t*)&bmx160->mag_offset.z);
+	//eeprom_write(EEPROM_MAGN_X_OFFSET_ADDR, (uint8_t*)&bmx160->mag_offset.x, sizeof(float)*3);
 }
 
 int8_t bmx160_read_calib_from_eeprom(bmx160_t *bmx160){
-	eeprom_read(EEPROM_MAGN_X_OFFSET_ADDR, (uint8_t*)&bmx160->mag_offset.x, sizeof(float)*3);
+	EEPROM_READ(MAGN_MEMORY.MAGN_X_OFFSET, (uint8_t*)&bmx160->mag_offset.x);
+	EEPROM_READ(MAGN_MEMORY.MAGN_Y_OFFSET, (uint8_t*)&bmx160->mag_offset.y);
+	EEPROM_READ(MAGN_MEMORY.MAGN_Z_OFFSET, (uint8_t*)&bmx160->mag_offset.z);
+	//eeprom_read(EEPROM_MAGN_X_OFFSET_ADDR, (uint8_t*)&bmx160->mag_offset.x, sizeof(float)*3);
 }
 
 void bmx160_delay_ms(uint16_t msec){

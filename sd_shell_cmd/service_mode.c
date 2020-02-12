@@ -514,8 +514,10 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
-				eeprom_write(EEPROM_MATH_COMPASS_CORRECTION,
-						(uint8_t*) &calib_val, 4);
+			EEPROM_WRITE(MATH_MEMORY.MATH_COMPASS_CORRECTION, (uint8_t*) &calib_val);
+				//eeprom_write(EEPROM_MATH_COMPASS_CORRECTION,
+				//		(uint8_t*) &calib_val, 4);
+
 				chprintf(chp, "Saved CompassCorrection value: %f\r\n",
 						calib_val);
 				paramSD.CompassCorrection = calib_val;
@@ -527,8 +529,11 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				EEPROM_WRITE(MATH_MEMORY.MATH_HSP_CORRECTION, (uint8_t*) &calib_val);
+				/*
 				eeprom_write(EEPROM_MATH_HSP_CORRECTION, (uint8_t*) &calib_val,
 						4);
+						*/
 				chprintf(chp, "Saved HSPCorrection value: %f\r\n", calib_val);
 				paramSD.HSPCorrection = calib_val;
 				microsd_update_calibfile();
@@ -539,8 +544,11 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				EEPROM_WRITE(MATH_MEMORY.MATH_HEEL_CORRECTION, (uint8_t*) &calib_val);
+				/*
 				eeprom_write(EEPROM_MATH_HEEL_CORRECTION, (uint8_t*) &calib_val,
 						4);
+				*/
 				chprintf(chp, "Saved HeelCorrection value: %f\r\n", calib_val);
 				paramSD.HeelCorrection = calib_val;
 				microsd_update_calibfile();
@@ -551,8 +559,11 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				EEPROM_WRITE(MATH_MEMORY.MATH_DECLANATION_CORRECTION, (uint8_t*) &calib_val);
+				/*
 				eeprom_write(EEPROM_MATH_DECLANATION_CORRECTION,
 						(uint8_t*) &calib_val, 4);
+				*/
 				chprintf(chp, "Saved MagneticDeclanation value: %f\r\n",
 						calib_val);
 				paramSD.MagneticDeclanation = calib_val;
@@ -564,8 +575,11 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				EEPROM_WRITE(MATH_MEMORY.MATH_PITCH_CORRECTION, (uint8_t*) &calib_val);
+				/*
 				eeprom_write(EEPROM_MATH_PITCH_CORRECTION,
 						(uint8_t*) &calib_val, 4);
+						*/
 				chprintf(chp, "Saved PitchCorrection value: %f\r\n", calib_val);
 				paramSD.PitchCorrection = calib_val;
 				microsd_update_calibfile();
@@ -576,9 +590,11 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				EEPROM_WRITE(MATH_MEMORY.MATH_RUDDER_CORRECTION, (uint8_t*) &calib_val);
+	/*
 				eeprom_write(EEPROM_MATH_RUDDER_CORRECTION,
 						(uint8_t*) &calib_val, 4);
-
+*/
 				chprintf(chp, "Saved RudderCorrection value: %f\r\n",
 						calib_val);
 				paramSD.RudderCorrection = calib_val;
@@ -590,9 +606,11 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				EEPROM_WRITE(MATH_MEMORY.MATH_WIND_CORRECTION, (uint8_t*) &calib_val);
+				/*
 				eeprom_write(EEPROM_MATH_WIND_CORRECTION, (uint8_t*) &calib_val,
 						4);
-
+*/
 				chprintf(chp, "Saved WindCorrection value: %f\r\n", calib_val);
 				paramSD.WindCorrection = calib_val;
 				microsd_update_calibfile();
@@ -604,8 +622,11 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 				calib_val_i = atoi(argv[1]);
 				if (calib_val_i <= FILTER_BUFFER_SIZE) {
 					//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+					EEPROM_WRITE(MATH_MEMORY.MATH_WINSIZE1_CORRECTION, (uint8_t*) &calib_val);
+					/*
 					eeprom_write(EEPROM_MATH_WINSIZE1_CORRECTION,
 							(uint8_t*) &calib_val_i, 1);
+							*/
 					chprintf(chp, "Saved WindowSize1 value: %d\r\n",
 							calib_val_i);
 					paramSD.WindowSize1 = calib_val_i;
@@ -624,8 +645,11 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 				calib_val_i = atoi(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
 				if (calib_val_i <= FILTER_BUFFER_SIZE) {
+					EEPROM_WRITE(MATH_MEMORY.MATH_WINSIZE2_CORRECTION, (uint8_t*) &calib_val);
+					/*
 					eeprom_write(EEPROM_MATH_WINSIZE2_CORRECTION,
 							(uint8_t*) &calib_val_i, 1);
+				*/
 					chprintf(chp, "Saved WindowSize2 value: %d\r\n",
 							calib_val_i);
 					paramSD.WindowSize2 = calib_val_i;
@@ -645,8 +669,11 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 				if (calib_val_i <= FILTER_BUFFER_SIZE) {
 					//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+					EEPROM_WRITE(MATH_MEMORY.MATH_WINSIZE3_CORRECTION, (uint8_t*) &calib_val);
+					/*
 					eeprom_write(EEPROM_MATH_WINSIZE3_CORRECTION,
 							(uint8_t*) &calib_val_i, 1);
+					*/
 					chprintf(chp, "Saved WindowSize3 value: %d\r\n",
 							calib_val_i);
 					paramSD.WindowSize3 = calib_val_i;
@@ -664,8 +691,11 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				EEPROM_WRITE(MAGN_MEMORY.MAGN_X_OFFSET, (uint8_t*) &calib_val);
+				/*
 				eeprom_write(EEPROM_MAGN_X_OFFSET_ADDR, (uint8_t*) &calib_val,
 						4);
+				*/
 				chprintf(chp, "Saved CompassRawOffsetX value: %f\r\n", calib_val);
 				bmx160.mag_offset.x = calib_val;
 				//microsd_update_calibfile();
@@ -676,8 +706,11 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				EEPROM_WRITE(MAGN_MEMORY.MAGN_Y_OFFSET, (uint8_t*) &calib_val);
+				/*
 				eeprom_write(EEPROM_MAGN_Y_OFFSET_ADDR, (uint8_t*) &calib_val,
 						4);
+				*/
 				chprintf(chp, "Saved CompassRawOffsetY value: %f\r\n", calib_val);
 				bmx160.mag_offset.y = calib_val;
 				//microsd_update_calibfile();
@@ -688,8 +721,11 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			if (strlen(argv[1]) != 0) {
 				calib_val = atof(argv[1]);
 				//chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
+				EEPROM_WRITE(MAGN_MEMORY.MAGN_Z_OFFSET, (uint8_t*) &calib_val);
+				/*
 				eeprom_write(EEPROM_MAGN_X_OFFSET_ADDR, (uint8_t*) &calib_val,
 						4);
+						*/
 				chprintf(chp, "Saved CompassRawOffsetZ value: %f\r\n", calib_val);
 				bmx160.mag_offset.z = calib_val;
 				//microsd_update_calibfile();
@@ -703,11 +739,13 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 				calib_val = atof(argv[1]);
 
 				if ((calib_val <= 180) && (calib_val >= -180)) {
-					eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_LEFT,
+					EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_LEFT, (uint8_t*) &r_rudder->native);
+					EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_LEFT, (uint8_t*) &calib_val);
+				/*	eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_LEFT,
 							(uint8_t*) &r_rudder->native, 4);
-					chThdSleepMilliseconds(5);
 					eeprom_write(EEPROM_RUDDER_CALIB_DEGREES_LEFT,
 												(uint8_t*) &calib_val, 4);
+					*/
 					chprintf(chp, "Saved left rudder value: %f native and %f degrees\r\n",
 							r_rudder->native, calib_val);
 					r_rudder->min_native = r_rudder->native;
@@ -728,11 +766,15 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 				calib_val = atof(argv[1]);
 
 				if ((calib_val <= 180) && (calib_val >= -180)) {
+					EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_CENTER, (uint8_t*) &r_rudder->native);
+					EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_CENTER, (uint8_t*) &calib_val);
+										/*
 					eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_CENTER,
 							(uint8_t*) &r_rudder->native, 4);
 					chThdSleepMilliseconds(5);
 					eeprom_write(EEPROM_RUDDER_CALIB_DEGREES_CENTER,
 												(uint8_t*) &calib_val, 4);
+												*/
 					chprintf(chp, "Saved central rudder value: %f native and %f degrees\r\n",
 							r_rudder->native, calib_val);
 					r_rudder->center_native = r_rudder->native;
@@ -753,11 +795,15 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 				calib_val = atof(argv[1]);
 
 				if ((calib_val <= 180) && (calib_val >= -180)) {
+					EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*) &r_rudder->native);
+					EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*) &calib_val);
+										/*
 					eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_RIGHT,
 							(uint8_t*) &r_rudder->native, 4);
 					chThdSleepMilliseconds(5);
 					eeprom_write(EEPROM_RUDDER_CALIB_DEGREES_RIGHT,
 												(uint8_t*) &calib_val, 4);
+												*/
 					chprintf(chp, "Saved right rudder value: %f native and %f degrees\r\n",
 							r_rudder->native, calib_val);
 					r_rudder->max_native = r_rudder->native;
@@ -807,15 +853,22 @@ void cmd_rudder(BaseSequentialStream* chp, int argc, char* argv[]) {
 		} else if (strcmp(argv[0], "left") == 0) {
 			if (strlen(argv[1]) != 0) {
 				deg = atof(argv[1]);
+				EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_LEFT, (uint8_t*) &rudder->native);
+				EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_LEFT, (uint8_t*) &deg);
+
+				/*
 				eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_LEFT,
 						(uint8_t*) &rudder->native, 4);
-
 				chThdSleepMilliseconds(5);
 				eeprom_write(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*) &deg,
 						4);
 				chThdSleepMilliseconds(5);
-				temp = 1;
-				eeprom_read(EEPROM_RUDDER_CALIB_FLAG_ADDR, &temp, 1);
+				*/
+				//temp = 1;
+				//EEPROM_READ(RUDDER_CALIB_FLAG, &temp);
+
+				//eeprom_read(EEPROM_RUDDER_CALIB_FLAG_ADDR, &temp, 1);
+
 				rudder->min_native = rudder->native;
 				dots->x1 = rudder->native;
 				dots->y1 = deg;
@@ -828,14 +881,19 @@ void cmd_rudder(BaseSequentialStream* chp, int argc, char* argv[]) {
 		} else if (strcmp(argv[0], "center") == 0) {
 			if (strlen(argv[1]) != 0) {
 				deg = atof(argv[1]);
+				EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_CENTER, (uint8_t*) &rudder->native);
+				EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_CENTER, (uint8_t*) &deg);
+/*
 				eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_CENTER,
 						(uint8_t*) &rudder->native, 4);
 				chThdSleepMilliseconds(5);
 				eeprom_write(EEPROM_RUDDER_CALIB_DEGREES_CENTER,
 						(uint8_t*) &deg, 4);
 				chThdSleepMilliseconds(5);
-				temp = 1;
-				eeprom_read(EEPROM_RUDDER_CALIB_FLAG_ADDR, &temp, 1);
+	*/
+				//temp = 1;
+				//EEPROM_READ(RUDDER_CALIB_FLAG, &temp);
+				//eeprom_read(EEPROM_RUDDER_CALIB_FLAG_ADDR, &temp, 1);
 				dots->x2 = rudder->native;
 				dots->y2 = deg;
 				adc_update_rudder_struct(rudder);
@@ -846,6 +904,9 @@ void cmd_rudder(BaseSequentialStream* chp, int argc, char* argv[]) {
 		} else if (strcmp(argv[0], "right") == 0) {
 			if (strlen(argv[1]) != 0) {
 				deg = atof(argv[1]);
+				EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*) &rudder->native);
+				EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*) &deg);
+				/*
 				eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_RIGHT,
 						(uint8_t*) &rudder->native, 4);
 
@@ -853,8 +914,10 @@ void cmd_rudder(BaseSequentialStream* chp, int argc, char* argv[]) {
 				eeprom_write(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*) &deg,
 						4);
 				chThdSleepMilliseconds(5);
-				temp = 1;
-				eeprom_read(EEPROM_RUDDER_CALIB_FLAG_ADDR, &temp, 1);
+				*/
+				//temp = 1;
+				//EEPROM_READ(RUDDER_CALIB_FLAG, &temp);
+				//eeprom_read(EEPROM_RUDDER_CALIB_FLAG_ADDR, &temp, 1);
 				rudder->max_native = rudder->native;
 				dots->x3 = rudder->native;
 				dots->y3 = deg;
@@ -865,21 +928,27 @@ void cmd_rudder(BaseSequentialStream* chp, int argc, char* argv[]) {
 				chprintf(chp, "Error: invalid value\r\n");
 			}
 		} else if (strcmp(argv[0], "get") == 0) {
-			eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*) &deg, 4);
-			chprintf(chp, "Rudder left deg: %f\r\n", deg);
-			eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_LEFT,
-					(uint8_t*) &deg, 4);
-			chprintf(chp, "Rudder left native: %f\r\n", deg);
+			EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_LEFT, (uint8_t*) &deg);
 
-			eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_CENTER,
-					(uint8_t*) &deg, 4);
+			//eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*) &deg, 4);
+			chprintf(chp, "Rudder left deg: %f\r\n", deg);
+			EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_LEFT, (uint8_t*) &deg);
+			//eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_LEFT,
+			//		(uint8_t*) &deg, 4);
+			chprintf(chp, "Rudder left native: %f\r\n", deg);
+			EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_CENTER, (uint8_t*) &deg);
+			//eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_CENTER,
+			//		(uint8_t*) &deg, 4);
 			chprintf(chp, "Rudder center native: %f\r\n", deg);
-			eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*) &deg, 4);
+			EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_CENTER, (uint8_t*) &deg);
+			//eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*) &deg, 4);
 			chprintf(chp, "Rudder center native: %f\r\n", deg);
-			eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_RIGHT,
-					(uint8_t*) &deg, 4);
+			EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*) &deg);
+			//eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_RIGHT,
+			//		(uint8_t*) &deg, 4);
 			chprintf(chp, "Rudder right native: %f\r\n", deg);
-			eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*) &deg, 4);
+			EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*) &deg);
+			//eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*) &deg, 4);
 			chprintf(chp, "Rudder right native: %f\r\n", deg);
 			chprintf(chp, "Dots x1 x2 x3: %f %f %f\r\n", dots->x1, dots->x2, dots->x3);
 			chprintf(chp, "Dots y1 y2 y3: %f %f %f\r\n", dots->y1, dots->y2, dots->y3);
@@ -887,28 +956,34 @@ void cmd_rudder(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 		} else if (strcmp(argv[0], "reset") == 0) {
 			deg = 2000.0;
-			eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_CENTER,
-					(uint8_t*) &deg, 4);
-			chThdSleepMilliseconds(5);
+			EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_CENTER, (uint8_t*) &deg);
+			//eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_CENTER,
+			//		(uint8_t*) &deg, 4);
+			//chThdSleepMilliseconds(5);
 			deg = 0.0;
-			eeprom_write(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*) &deg,
-					4);
-			chThdSleepMilliseconds(5);
+			EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_CENTER, (uint8_t*) &deg);
+			//eeprom_write(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*) &deg,
+			//		4);
+			//chThdSleepMilliseconds(5);
 			deg = 4000.0;
-			eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_RIGHT,
-					(uint8_t*) &deg, 4);
-			chThdSleepMilliseconds(5);
+			EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*) &deg);
+			//eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_RIGHT,
+			//		(uint8_t*) &deg, 4);
+			//chThdSleepMilliseconds(5);
 			deg = 90.0;
-			eeprom_write(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*) &deg, 4);
-			chThdSleepMilliseconds(5);
+			EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*) &deg);
+			//eeprom_write(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*) &deg, 4);
+			//chThdSleepMilliseconds(5);
 			deg = 100.0;
-			eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_LEFT,
-					(uint8_t*) &deg, 4);
-			chThdSleepMilliseconds(5);
+			EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_LEFT, (uint8_t*) &deg);
+			//eeprom_write(EEPROM_RUDDER_CALIB_NATIVE_LEFT,
+				//	(uint8_t*) &deg, 4);
+			//chThdSleepMilliseconds(5);
 			deg = -90.0;
-			eeprom_write(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*) &deg,
-					4);
-			chThdSleepMilliseconds(5);
+			EEPROM_WRITE(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_LEFT, (uint8_t*) &deg);
+			//eeprom_write(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*) &deg,
+			//		4);
+			//chThdSleepMilliseconds(5);
 			adc_update_rudder_struct(rudder);
 			chprintf(chp, "Rudder calibration set to default\r\n");
 		}
@@ -931,11 +1006,14 @@ void cmd_lag(BaseSequentialStream* chp, int argc, char* argv[]) {
 			if (strlen(argv[1]) != 0){
 				calib_val = atof(argv[1]);
 				chprintf(chp, "Writing new calib number: %f\r\n", calib_val);
-				eeprom_write(EEPROM_LAG_CALIB_NUMBER, (uint8_t*)&calib_val, 4);
+				EEPROM_WRITE(LAG_MEMORY.LAG_CALIB_NUMBER, (uint8_t*)&calib_val);
+				//eeprom_write(EEPROM_LAG_CALIB_NUMBER, (uint8_t*)&calib_val, 4);
 				lag->calib_num = calib_val;
 			}
-		} else if (strcmp(argv[0], "calibrate") == 0){
-			eeprom_read(EEPROM_LAG_CALIB_NUMBER, (uint8_t*)&calib_val, 4);
+		} else if (strcmp(argv[0], "get") == 0){
+			EEPROM_read(LAG_MEMORY.LAG_CALIB_NUMBER, (uint8_t*)&calib_val);
+
+			//eeprom_read(EEPROM_LAG_CALIB_NUMBER, (uint8_t*)&calib_val, 4);
 			chprintf(chp, "Readed calib number: %f\r\n", calib_val);
 
 		}

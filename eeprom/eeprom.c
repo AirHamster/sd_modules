@@ -37,19 +37,11 @@ int8_t eeprom_write(uint16_t byte_addr, const uint8_t *txbuf, uint8_t txbytes) {
 	eeprom_buff[0] = byte_addr >> 8;
 	eeprom_buff[1] = byte_addr & 0xFF;
 	memcpy(&eeprom_buff[2], txbuf, txbytes);
-	/*buff[2] = 1;
-	buff[3] = 2;
-	buff[4] = 3;
-	buff[5] = 4;*/
-/*	chSemWait(&usart1_semaph);
-	chprintf((BaseSequentialStream*) &SD1,
-				"Cell addr %x, divided to %x %x\r\n", byte_addr, buff[0], buff[1]);
-	chSemSignal(&usart1_semaph);
-*/
 	i2cAcquireBus(&EEPROM_IF);
 	status = i2cMasterTransmitTimeout(&EEPROM_IF, EEPROM_ADDRESS, eeprom_buff,
 			txbytes + 2, NULL, 0, 1000);
 	i2cReleaseBus(&EEPROM_IF);
+	chThdSleepMilliseconds(5);
 	if (status != MSG_OK) {
 		chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*) &SD1,
@@ -85,7 +77,7 @@ int8_t eeprom_read(uint16_t byte_addr, uint8_t *rxbuf, uint8_t rxbytes) {
 	//chprintf((BaseSequentialStream*) &SD1, "Readed from eeprom %x %x %x %x\r\n", rxbuf[0], rxbuf[1], rxbuf[2], rxbuf[3]);
 	return 0;
 }
-
+/*
 void eeprom_write_hw_version(void) {
 	uint8_t txbuff[3];
 	msg_t status;
@@ -103,7 +95,8 @@ void eeprom_write_hw_version(void) {
 		chSemSignal(&usart1_semaph);
 	}
 }
-
+*/
+/*
 void eeprom_check_i2c_bus(void) {
 	uint8_t txbuff[3];
 	msg_t status;
@@ -122,12 +115,13 @@ void eeprom_check_i2c_bus(void) {
 			chSemSignal(&usart1_semaph);
 		} else {
 			chSemWait(&usart1_semaph);
-			chprintf((BaseSequentialStream*) &SD1, "Asked %d\r\n", EEPROM_ADDRESS);
+			chprintf((BaseSequentialStream*) &SD1, "Asked %x\r\n", EEPROM_ADDRESS);
 			chSemSignal(&usart1_semaph);
 		}
 	}
 }
-
+*/
+/*
 void eeprom_read_hw_version(void) {
 	uint8_t txbuff[2];
 	uint8_t rxbuff[1];
@@ -149,6 +143,7 @@ void eeprom_read_hw_version(void) {
 					"Readed from EEPROM %d\r\n", rxbuff[0]);
 			chSemSignal(&usart1_semaph);
 }
+*/
 
 void start_eeprom_module(void){
 	i2cStart(&EEPROM_IF, &eeprom_i2c_cfg);

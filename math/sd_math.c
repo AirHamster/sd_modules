@@ -75,32 +75,42 @@ static THD_FUNCTION( math_thread, p) {
 }
 
 void math_init_calibration_params(CalibrationParmDef *param) {
-	eeprom_read(EEPROM_MATH_COMPASS_CORRECTION, (uint8_t*)&paramSD.CompassCorrection, 4);
-	chThdSleepMilliseconds(10);
+	EEPROM_READ(MATH_MEMORY.MATH_COMPASS_CORRECTION, (uint8_t*)&paramSD.CompassCorrection);
+	//eeprom_read(EEPROM_MATH_COMPASS_CORRECTION, (uint8_t*)&paramSD.CompassCorrection, 4);
+	//chThdSleepMilliseconds(10);
 	//paramSD.CompassCorrection = 0.0;
-	eeprom_read(EEPROM_MATH_HSP_CORRECTION, (uint8_t*)&paramSD.HSPCorrection, 4);
-	chThdSleepMilliseconds(10);
+	EEPROM_READ(MATH_MEMORY.MATH_HSP_CORRECTION, (uint8_t*)&paramSD.HSPCorrection);
+	//eeprom_read(EEPROM_MATH_HSP_CORRECTION, (uint8_t*)&paramSD.HSPCorrection, 4);
+	//chThdSleepMilliseconds(10);
 	//paramSD.HSPCorrection = 0.0;
-	eeprom_read(EEPROM_MATH_HEEL_CORRECTION, (uint8_t*)&paramSD.HeelCorrection, 4);
-	chThdSleepMilliseconds(10);
+	EEPROM_READ(MATH_MEMORY.MATH_HEEL_CORRECTION, (uint8_t*)&paramSD.HeelCorrection);
+	//eeprom_read(EEPROM_MATH_HEEL_CORRECTION, (uint8_t*)&paramSD.HeelCorrection, 4);
+	//chThdSleepMilliseconds(10);
 	//paramSD.HeelCorrection = -4.75;
-	eeprom_read(EEPROM_MATH_DECLANATION_CORRECTION, (uint8_t*)&paramSD.MagneticDeclanation, 4);
-	chThdSleepMilliseconds(10);
+	EEPROM_READ(MATH_MEMORY.MATH_DECLANATION_CORRECTION, (uint8_t*)&paramSD.MagneticDeclanation);
+	//eeprom_read(EEPROM_MATH_DECLANATION_CORRECTION, (uint8_t*)&paramSD.MagneticDeclanation, 4);
+	//chThdSleepMilliseconds(10);
 	//paramSD.MagneticDeclanation = 0.0;
-	eeprom_read(EEPROM_MATH_PITCH_CORRECTION, (uint8_t*)&paramSD.PitchCorrection, 4);
-	chThdSleepMilliseconds(10);
+	EEPROM_READ(MATH_MEMORY.MATH_PITCH_CORRECTION, (uint8_t*)&paramSD.PitchCorrection);
+	//eeprom_read(EEPROM_MATH_PITCH_CORRECTION, (uint8_t*)&paramSD.PitchCorrection, 4);
+	//chThdSleepMilliseconds(10);
 	//paramSD.PitchCorrection = -6.5625;
-	eeprom_read(EEPROM_MATH_RUDDER_CORRECTION, (uint8_t*)&paramSD.RudderCorrection, 4);
-	chThdSleepMilliseconds(10);
+	EEPROM_READ(MATH_MEMORY.MATH_RUDDER_CORRECTION, (uint8_t*)&paramSD.RudderCorrection);
+	//eeprom_read(EEPROM_MATH_RUDDER_CORRECTION, (uint8_t*)&paramSD.RudderCorrection, 4);
+	//chThdSleepMilliseconds(10);
 	//paramSD.RudderCorrection = 0.0;
-	eeprom_read(EEPROM_MATH_WIND_CORRECTION, (uint8_t*)&paramSD.WindCorrection, 4);
-	chThdSleepMilliseconds(10);
+	EEPROM_READ(MATH_MEMORY.MATH_WIND_CORRECTION, (uint8_t*)&paramSD.WindCorrection);
+	//eeprom_read(EEPROM_MATH_WIND_CORRECTION, (uint8_t*)&paramSD.WindCorrection, 4);
+	//chThdSleepMilliseconds(10);
 	//paramSD.WindCorrection = -4.0;
-	eeprom_read(EEPROM_MATH_WINSIZE1_CORRECTION, (uint8_t*)&paramSD.WindowSize1, 1);
-	chThdSleepMilliseconds(10);
-	eeprom_read(EEPROM_MATH_WINSIZE2_CORRECTION, (uint8_t*)&paramSD.WindowSize2, 1);
-	chThdSleepMilliseconds(10);
-	eeprom_read(EEPROM_MATH_WINSIZE3_CORRECTION, (uint8_t*)&paramSD.WindowSize3, 1);
+	EEPROM_READ(MATH_MEMORY.MATH_WINSIZE1_CORRECTION, (uint8_t*)&paramSD.WindowSize1);
+	//eeprom_read(EEPROM_MATH_WINSIZE1_CORRECTION, (uint8_t*)&paramSD.WindowSize1, 1);
+	//chThdSleepMilliseconds(10);
+	EEPROM_READ(MATH_MEMORY.MATH_WINSIZE2_CORRECTION, (uint8_t*)&paramSD.WindowSize2);
+	//eeprom_read(EEPROM_MATH_WINSIZE2_CORRECTION, (uint8_t*)&paramSD.WindowSize2, 1);
+	//chThdSleepMilliseconds(10);
+	EEPROM_READ(MATH_MEMORY.MATH_WINSIZE3_CORRECTION, (uint8_t*)&paramSD.WindowSize3);
+	//eeprom_read(EEPROM_MATH_WINSIZE3_CORRECTION, (uint8_t*)&paramSD.WindowSize3, 1);
 /*
 	eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_LEFT, (uint8_t*) &r_rudder->min_native,
 			4);
