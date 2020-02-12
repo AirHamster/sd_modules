@@ -14,6 +14,10 @@ extern thread_reference_t microsd_trp;
 #include "xbee.h"
 extern tx_box_t *tx_box;
 extern xbee_struct_t *xbee;
+xbee_sportsman_data_t xbee_sportsman_data;
+#ifdef SD_BOUY_MODULE
+xbee_bouy_data_t xbee_bouy_data;
+#endif
 #endif
 #ifdef USE_UBLOX_GPS_MODULE
 #include "neo-m8.h"
@@ -90,7 +94,7 @@ extern float velocityMadeGoodTarget;
 #endif
 #endif
 
-#ifdef SD_SENSOR_BOX || SD_MODULE_TRAINER
+#if defined(SD_SENSOR_BOX) || defined(USE_RUDDER_MODULE)
 #include "adc.h"
 dots_t *r_rudder_dots;
 coefs_t *r_rudder_coefs;
@@ -211,7 +215,6 @@ static THD_FUNCTION(output_thread, arg) {
 			break;
 		case OUTPUT_TEST:
 			send_json();
-
 			break;
 		case OUTPUT_SERVICE:
 			break;
@@ -344,51 +347,48 @@ void send_data(uint8_t stream) {
 	int32_t spdi = 0;
 	double spd;
 	double dlat, dlon;
-	spd = (float) (pvt_box->gSpeed * 0.0036);
-	spdi = (int32_t) (spd);
-	tx_box->lat = pvt_box->lat;
-	tx_box->lon = pvt_box->lon;
-	tx_box->hour = pvt_box->hour;
-	tx_box->min = pvt_box->min;
-	tx_box->sec = pvt_box->sec;
-	tx_box->dist = (uint16_t) odo_box->distance;
-	tx_box->sat = pvt_box->numSV;
-	tx_box->speed = spd;
-	tx_box->headMot = pvt_box->headMot;
-	tx_box->headVeh = pvt_box->headVeh;
 
-	databuff[0] = RF_GPS_PACKET;
-	databuff[1] = (uint8_t) (tx_box->lat >> 24);
-	databuff[2] = (uint8_t) (tx_box->lat >> 16);
-	databuff[3] = (uint8_t) (tx_box->lat >> 8);
-	databuff[4] = (uint8_t) (tx_box->lat);
-	databuff[5] = (uint8_t) (tx_box->lon >> 24);
-	databuff[6] = (uint8_t) (tx_box->lon >> 16);
-	databuff[7] = (uint8_t) (tx_box->lon >> 8);
-	databuff[8] = (uint8_t) (tx_box->lon);
-	databuff[9] = tx_box->hour;
-	databuff[10] = tx_box->min;
-	databuff[11] = tx_box->sec;
-	databuff[12] = tx_box->sat;
-	databuff[13] = (uint8_t) (tx_box->dist >> 8);
-	databuff[14] = (uint8_t) (tx_box->dist);
+#ifdef SD_MODULE_SPORTSMEN
+	xbee_sportsman_data.lat = pvt_box->lat;
+	xbee_sportsman_data.lon = pvt_box->lon;
+	xbee_sportsman_data.headMot = pvt_box->headMot;
+	xbee_sportsman_data.headVeh = pvt_box->headVeh;
+	xbee_sportsman_data.yaw = (uint16_t)bmx160.yaw;
+	xbee_sportsman_data.pitch = bmx160.pitch;
+	xbee_sportsman_data.roll = bmx160.roll;
+	xbee_sportsman_data.speed = (float) (pvt_box->gSpeed * 0.0036);
+	xbee_sportsman_data.rdr = r_rudder->native;
+	xbee_sportsman_data.log = r_lag->meters;
+	xbee_sportsman_data.tenso_1 = 0;
+	xbee_sportsman_data.tenso_2 = 0;
+	xbee_sportsman_data.tenso_3 = 0;
+	xbee_sportsman_data.tenso_4 = 0;
+	xbee_sportsman_data.dist = tx_box->dist;
+	xbee_sportsman_data.hour = pvt_box->hour;
+	xbee_sportsman_data.min = pvt_box->min;
+	xbee_sportsman_data.sec = pvt_box->sec;
+	xbee_sportsman_data.sat = pvt_box->numSV;
+	xbee_sportsman_data.bat = 99;
+#endif
 
-	memcpy(&databuff[15], &tx_box->speed, sizeof(tx_box->speed));
+#ifdef SD_MODULE_BUOY
+	xbee_bouy_data.lat = pvt_box->lat;
+	xbee_bouy_data.lon = pvt_box->lon;
+	xbee_bouy_data.hour = pvt_box->hour;
+	xbee_bouy_data.min = pvt_box->min;
+	xbee_bouy_data.sec = pvt_box->sec;
+	xbee_bouy_data.sat = pvt_box->numSV;
+	xbee_bouy_data.bat = 99;
+#endif
 
-	databuff[19] = (uint8_t) (tx_box->yaw >> 8);
-	databuff[20] = (uint8_t) (tx_box->yaw);
+#ifdef SD_MODULE_SPORTSMEN
+	xbee_send_rf_message(&xbee_sportsman_data, RF_SPORTSMAN_PACKET);
+#endif
 
-	memcpy(&databuff[21], &tx_box->pitch, sizeof(tx_box->pitch));
+#ifdef SD_MODULE_SPORTSMEN
+	xbee_send_rf_message(&xbee_sportsman_data, RF_BOUY_PACKET);
+#endif
 
-	memcpy(&databuff[25], &tx_box->roll, sizeof(tx_box->roll));
-	databuff[29] = tx_box->bat;
-
-	databuff[30] = (uint8_t) (tx_box->headMot >> 24);
-	databuff[31] = (uint8_t) (tx_box->headMot >> 16);
-	databuff[32] = (uint8_t) (tx_box->headMot >> 8);
-	databuff[33] = (uint8_t) (tx_box->headMot);
-
-	xbee_send_rf_message(xbee, databuff, 34);
 }
 #endif
 
@@ -423,7 +423,6 @@ int32_t convert_to_ble_type(float value){
 
 void send_json(void)
 {
-
 	//return;
 	chSemWait(&usart1_semaph);
 	chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");

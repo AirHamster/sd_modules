@@ -18,7 +18,9 @@
 #include "sd_shell_cmds.h"
 #include "lag.h"
 #include "adc.h"
+#ifdef USE_POWER_MANAGEMENT
 #include "pwr_mgmt_l4.h"
+#endif
 #include "fsm.h"
 
 static virtual_timer_t ble_observe_tim;
@@ -30,7 +32,9 @@ static event_source_t ble_observe_request_event;
 static event_source_t ble_data_tx_request_event;
 static event_source_t ble_remote_dev_cfg_request_event;
 
+#ifdef USE_POWER_MANAGEMENT
 extern event_source_t power_state_change_event;
+#endif
 
 SM_DEFINE(BLE_SM_1, ble_remote_dev_list)
 
@@ -300,7 +304,9 @@ static THD_FUNCTION(ble_thread, arg) {
 	chEvtRegisterMask(&ble_observe_request_event, &el1, EVENT_MASK(BLE_OBSERVE_EV));
 	chEvtRegisterMask(&ble_data_tx_request_event, &el2, EVENT_MASK(BLE_DATA_TX_EV));
 	chEvtRegisterMask(&ble_remote_dev_cfg_request_event, &el3, EVENT_MASK(BLE_REMOTE_CFG_EV));
+#ifdef USE_POWER_MANAGEMENT
 	chEvtRegisterMask(&power_state_change_event, &el4, EVENT_MASK(BLE_POWER_SWITCHED_ON_EV));
+#endif
 	//ALLOC_Init();
 
 /*#ifdef SD_SENSOR_BOX_LAG
@@ -355,6 +361,7 @@ while(true){
 						if (i++ == 10) {
 		remote_lag->is_avalible = 0;
 		remote_rudder->is_avalible = 0;
+
 		if (remote_lag->is_connected == 0 || remote_rudder->is_connected == 0) {
 
 			chprintf(NINA_IFACE, "AT+UBTD=2,1,2000\r");
@@ -385,18 +392,7 @@ while(true){
 void copy_to_ble(void){
 #ifdef SD_MODULE_TRAINER
 #ifdef USE_MATH_MODULE
-	/*
-	thdg->value = convert_to_ble_type(lastFilterValues[1][FILTER_BUFFER_SIZE - 1]);
-	twd->value = convert_to_ble_type(lastFilterValues[4][FILTER_BUFFER_SIZE - 1]);
-	tws->value = convert_to_ble_type(lastFilterValues[5][FILTER_BUFFER_SIZE - 1]);
-	twa->value = convert_to_ble_type(lastFilterValues[6][FILTER_BUFFER_SIZE - 1]);
-	twa_tg->value = convert_to_ble_type(windAngleTarget);
-	bs_tg->value = convert_to_ble_type(hullSpeedTarget);
 
-	hdg->value = convert_to_ble_type(fmod(lastSensorValues[HDM] + 3600.0, 360.0));
-	//hdg->value = convert_to_ble_type(lastFilterValues[0][FILTER_BUFFER_SIZE - 1]);
-	heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
-	*/
 	thdg->value = convert_to_ble_type(lastSensorValues[HDT]);
 		twd->value = convert_to_ble_type(lastSensorValues[TWD]);
 		tws->value = convert_to_ble_type(lastSensorValues[TWS]);
@@ -418,7 +414,7 @@ void copy_to_ble(void){
 }
 #endif
 
-// State machine sits here when motor is not running
+// State machine sits here
 STATE_DEFINE(Idle, NoEventData) {
 
 		eventmask_t evt = chEvtWaitAny(ALL_EVENTS);
@@ -693,33 +689,6 @@ void nina_unregister_peer(ble_remote_dev_t* devlist, uint8_t conn_handle) {
 	memset(peer->addr, 0, 12);
 	return;
 
-/*
-	if (remote_lag->conn_handle == conn_handle) {
-		chprintf((BaseSequentialStream*) &SD1, "Disconnected to lag %d %d\r\n",
-				remote_lag->conn_handle, remote_lag->type);
-		remote_lag->conn_handle = 99;
-
-		remote_lag->is_connected = 0;
-		remote_lag->type = 0;
-	} else if (remote_rudder->conn_handle == conn_handle) {
-		chprintf((BaseSequentialStream*) &SD1,
-				"Disconnected to rudder %d %d\r\n", remote_rudder->conn_handle,
-				remote_rudder->type);
-		remote_rudder->conn_handle = 99;
-
-		remote_rudder->is_connected = 0;
-		remote_rudder->type = 0;
-	} else {
-		chprintf((BaseSequentialStream*) &SD1,
-				"Disconnected peer 1 %d %d %s\r\n", peer->conn_handle,
-				peer->type, peer->addr);
-		peer->is_connected = 0;
-		peer->conn_handle = 0;
-		peer->type = 0;
-		memset(peer->addr, 0, 12);
-		//output->ble = OUTPUT_NONE;
-	}
-	*/
 #else
 	chprintf((BaseSequentialStream*) &SD1, "Disconnected peer 1 %d %d %s\r\n",
 				peer->conn_handle, peer->type, peer->addr);
@@ -751,32 +720,7 @@ void nina_register_remote_dev(ble_remote_dev_t* devlist, uint8_t conn_handle, ui
 			output->ble = OUTPUT_BLE;
 		//	toggle_test_output();
 			return;
-/*
-	if (strcmp(addr, "D4CA6EB91DD3") == 0){
-		remote_lag->conn_handle = conn_handle;
 
-	remote_lag->is_connected = 1;
-	remote_lag->type = type;
-	chprintf((BaseSequentialStream*) &SD1, "Connected to lag %d %d %s\r\n", remote_lag->conn_handle, remote_lag->type, addr);
-	chThdSleepMilliseconds(2500);
-	nina_get_remote_characs(remote_lag->conn_handle, 0x4A01);
-	//nina_get_remote_characs(remote_lag->conn_handle, 0x4A01);
-	}else if (strcmp(addr, "D4CA6EBAFDA0") == 0){
-			remote_rudder->conn_handle = conn_handle;
-
-		remote_rudder->is_connected = 1;
-		remote_rudder->type = type;
-		chprintf((BaseSequentialStream*) &SD1, "Connected to rudder %d %d %s\r\n", remote_rudder->conn_handle, remote_rudder->type, addr);
-		chThdSleepMilliseconds(2500);
-		nina_get_remote_characs(remote_rudder->conn_handle, 0x5A01);
-		//nina_get_remote_characs(remote_lag->conn_handle, 0x5A01);
-		}
-	else{
-		nina_register_peer(conn_handle, type, addr);
-		output->ble = OUTPUT_BLE;
-	//	toggle_test_output();
-	}
-	*/
 #else
 	nina_register_peer(conn_handle, type, addr);
 #endif
@@ -791,35 +735,7 @@ void nina_get_remote_characs(uint16_t handle, uint16_t uuid){
 	chThdSleepMilliseconds(300);
 	chprintf(NINA_IFACE, "AT+UBTGWC=%d,%d,%d\r", handle, 33, 1);
 }
-/*
-void nina_unregister_remote_dev(uint8_t conn_handle){
-	(void)conn_handle;
-#ifdef SD_MODULE_TRAINER
-	if (remote_lag->conn_handle == conn_handle) {
-		chprintf((BaseSequentialStream*) &SD1, "Disconnected lag %d %d\r\n",
-				remote_lag->conn_handle, remote_lag->type);
-		remote_lag->conn_handle = 99;
 
-		remote_lag->is_connected = 0;
-		remote_lag->type = 0;
-	}else if (remote_rudder->conn_handle == conn_handle) {
-		chprintf((BaseSequentialStream*) &SD1, "Disconnected rudder %d %d \r\n",
-				remote_rudder->conn_handle, remote_rudder->type);
-		remote_rudder->conn_handle = 99;
-
-		remote_rudder->is_connected = 0;
-		remote_rudder->type = 0;
-	}else{
-		chprintf((BaseSequentialStream*) &SD1, "Disconnected peer %d %d %s\r\n", peer->conn_handle, peer->type, peer->addr);
-		peer->is_connected = 0;
-		peer->conn_handle = 0;
-		peer->type = 0;
-		memset(peer->addr, 0, 12);
-		//output->ble = OUTPUT_NONE;
-	}
-#endif
-}
-*/
 void nina_fill_memory(void){
 	charac_temporary = calloc(1, sizeof(ble_temp_charac_t));
 	peer = calloc(1, sizeof(ble_peer_t));
@@ -1320,12 +1236,6 @@ uint8_t nina_init_services(void){
 		return -1;
 	}
 
-	chThdSleepMilliseconds(1000);
-	chprintf(NINA_IFACE, "AT+UBTLN=FastSkipper-LOG\r");
-	if (nina_wait_response("+UBTLN\r") != NINA_SUCCESS) {
-		return -1;
-	}
-
 	chThdSleepMilliseconds(200);
 	chprintf(NINA_IFACE, "AT&W\r");
 	if (nina_wait_response("AT&W\r") != NINA_SUCCESS) {
@@ -1403,12 +1313,6 @@ uint8_t nina_init_services(void){
 		return -1;
 	}
 
-	chThdSleepMilliseconds(1000);
-	chprintf(NINA_IFACE, "AT+UBTLN=FastSkipper-LOG\r");
-	if (nina_wait_response("+UBTLN\r") != NINA_SUCCESS) {
-		return -1;
-	}
-
 	chThdSleepMilliseconds(200);
 	chprintf(NINA_IFACE, "AT&W\r");
 	if (nina_wait_response("AT&W\r") != NINA_SUCCESS) {
@@ -1421,10 +1325,10 @@ uint8_t nina_init_services(void){
 	}
 	chThdSleepMilliseconds(1000);
 	// Create service for GATT server (send information to tablet) 16-bit
-	//UUID = 4A00
+	//UUID = 3A00
 	// Response send handle of the created service (int value).
 	// +UBTGSER:SER_HAND
-	chprintf(NINA_IFACE, "AT+UBTGSER=4A00\r");
+	chprintf(NINA_IFACE, "AT+UBTGSER=3A00\r");
 	if (nina_wait_response("+UBTGSER\r") != NINA_SUCCESS) {
 		return -1;
 	}
@@ -1440,13 +1344,13 @@ uint8_t nina_init_services(void){
 # read_auth (Read Authorized. Any client can read data without host intervention)
 # max_length (aximum length of the characteristic in bytes. The maximum value is 512 bytes)
 */
-	//# LOG - uuid 4A01
+	//# TENSO - uuid 3A01
 	//# Response +UBTGCHA:THDG_HAND,CCCD_HAND (zero if not use)
 
 	//TODO:
-	//nina_add_charac(ble_lag, 0x4A01, 10, 1, 1, 0x0F00FF, 0, 3);
+	//nina_add_charac(ble_lag, 0x3A01, 10, 1, 1, 0x0F00FF, 0, 3);
 
-	/*	chprintf(NINA_IFACE, "AT+UBTGCHA=4A01,10,1,1,0F00FF,0,3\r");
+	/*	chprintf(NINA_IFACE, "AT+UBTGCHA=3A01,10,1,1,0F00FF,0,3\r");
 	if (nina_wait_response("+UBTGCHA\r") != NINA_SUCCESS) {
 		return -1;
 	}*/

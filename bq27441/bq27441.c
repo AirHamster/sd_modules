@@ -66,7 +66,9 @@ static THD_FUNCTION(fuel_thread, p) {
 		fuel_get_parameter(BQ27441_COMMAND_FLAGS, &fuel->flags);
 		fuel_get_parameter(BQ27441_COMMAND_SOC, &fuel->soc);
 		fuel_get_parameter(BQ27441_COMMAND_REM_CAPACITY, &fuel->remaining_capacity);
-		//fuel_print_info(fuel);
+#ifdef PWR_MCU
+		fuel_print_info(fuel);
+#endif
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
 
 	}

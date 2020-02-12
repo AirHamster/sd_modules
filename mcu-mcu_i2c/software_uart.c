@@ -297,17 +297,21 @@ static void set_tx_pin_low(void){
 }
 
 static void timer_set(uint16_t br){
-	 gpt6cfg1.frequency =  br *3 * 100;
+#ifdef PWR_CPU
+	 gpt6cfg1.frequency =  br *3 * 5000;
+#else
+	 gpt6cfg1.frequency =  br *3 * 1875;
+#endif
 	 gpt6cfg1.callback  =  timer3_isr_cb;
 	 gpt6cfg1.cr2       =  0U;
 	 gpt6cfg1.dier      =  0U;
 	 gptStart(&GPTD6, &gpt6cfg1);
 	 //set_timer_interrupt();
 	 //STM32L4 has problems with timer freq, workaround here
-#ifdef PWR_CPU
-	 gptStartContinuous(&GPTD6, 104);
+#ifdef PWR_MCU
+	 gptStartContinuous(&GPTD6, 5000);
 #else
-	 gptStartContinuous(&GPTD6, 100);
+	 gptStartContinuous(&GPTD6, 1875);
 #endif
 }
 
