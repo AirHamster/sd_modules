@@ -8,6 +8,11 @@
 #ifndef SD_MODULES_SD_SHELL_CMD_JSON_OUTPUT_H_
 #define SD_MODULES_SD_SHELL_CMD_JSON_OUTPUT_H_
 
+#include "config.h"
+#include <stdlib.h>
+#include <string.h>
+#include "stdint.h"
+
 #define JSON_NUM_OF_BOATS		2
 #define JSON_NUM_OF_BOUYS		1
 
@@ -53,11 +58,10 @@ typedef struct{
 }json_bouy_data_t;
 
 typedef struct{
-	json_boat_data_t boat[JSON_NUM_OF_BOATS];
-	json_bouy_data_t bouy[JSON_NUM_OF_BOUYS];
+	json_boat_data_t* boat[JSON_NUM_OF_BOATS];
+	json_bouy_data_t* bouy[JSON_NUM_OF_BOUYS];
 }json_remote_devs_t;
 
-typedef struct{
-	jfes_value_t
-};
+void json_init(uint8_t num_of_boats, uint8_t num_of_bouys);
+
 #endif /* SD_MODULES_SD_SHELL_CMD_JSON_OUTPUT_H_ */
