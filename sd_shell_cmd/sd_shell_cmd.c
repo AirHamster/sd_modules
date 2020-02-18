@@ -15,6 +15,8 @@ extern thread_reference_t microsd_trp;
 extern tx_box_t *tx_box;
 extern xbee_struct_t *xbee;
 xbee_sportsman_data_t xbee_sportsman_data;
+xbee_sportsman_data_t trainer_data;
+xbee_remote_dev_t trainer_dev;
 #ifdef SD_BOUY_MODULE
 xbee_bouy_data_t xbee_bouy_data;
 #endif
@@ -192,6 +194,9 @@ thread_t *cmd_init(void) {
 }
 
 void start_json_module(void){
+	trainer_dev.rf_data = &trainer_data;
+	trainer_dev.
+	trainer_dev.number = 0;
 	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO + 4, output_thread, NULL);
 }
 
@@ -289,6 +294,10 @@ static THD_FUNCTION(output_thread, arg) {
 #endif
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 	}
+}
+
+void collect_dev_data(xbee_remote_dev_t *dev){
+
 }
 
 #ifdef USE_BNO055_MODULE
@@ -424,80 +433,7 @@ int32_t convert_to_ble_type(float value){
 void send_json(void)
 {
 	//return;
-	chSemWait(&usart1_semaph);
-	chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
-#ifdef USE_UBLOX_GPS_MODULE
-		chprintf(SHELL_IFACE, "\"hour\":%d,\r\n\t\t\t", pvt_box->hour);
-		chprintf(SHELL_IFACE, "\"min\":%d,\r\n\t\t\t", pvt_box->min);
-		chprintf(SHELL_IFACE, "\"sec\":%d,\r\n\t\t\t", pvt_box->sec);
-		chprintf(SHELL_IFACE, "\"lat\":%f,\r\n\t\t\t", pvt_box->lat / 10000000.0f);
-		chprintf(SHELL_IFACE, "\"lon\":%f,\r\n\t\t\t", pvt_box->lon / 10000000.0f);
-		chprintf(SHELL_IFACE, "\"speed\":%f,\r\n\t\t\t", (float)(pvt_box->gSpeed * 0.0036));
-		chprintf(SHELL_IFACE, "\"dist\":%d,\r\n\t\t\t", (uint16_t)odo_box->distance);
-#endif
-#ifdef USE_BNO055_MODULE
-		//chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
-#ifdef USE_HMC5883_MODULE
-		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)hmc5883->yaw);
-#endif
-#ifdef USE_BMX160_MODULE
-		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", (uint16_t)bmx160.yaw);
-		chprintf(SHELL_IFACE, "\"bno_yaw  \":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
-		/*chprintf(SHELL_IFACE, "\"bmx_pitch\":%f,\r\n\t\t\t", bmx160.pitch);
-		chprintf(SHELL_IFACE, "\"bmx_roll \":%f,\r\n\t\t\t", bmx160.roll);
-*/
-/*		chprintf(SHELL_IFACE, "\"bax\":%f,\r\n\t\t\t", bmx160.ax);
-		chprintf(SHELL_IFACE, "\"bay\":%f,\r\n\t\t\t", bmx160.ay);
-		chprintf(SHELL_IFACE, "\"baz\":%f,\r\n\t\t\t", bmx160.az);
 
-		chprintf(SHELL_IFACE, "\"bgx\":%f,\r\n\t\t\t", bmx160.gx);
-		chprintf(SHELL_IFACE, "\"bgy\":%f,\r\n\t\t\t", bmx160.gy);
-		chprintf(SHELL_IFACE, "\"bgz\":%f,\r\n\t\t\t", bmx160.gz);
-*/
-	/*	chprintf(SHELL_IFACE, "\"bmx\":%f,\r\n\t\t\t", bmm.data.x);
-		chprintf(SHELL_IFACE, "\"bmy\":%f,\r\n\t\t\t", bmm.data.y);
-		chprintf(SHELL_IFACE, "\"bmz\":%f,\r\n\t\t\t", bmm.data.z);*/
-
-#endif
-#ifdef USE_HMC6343_MODULE
-		//chprintf(SHELL_IFACE, "\"yaw2\":%d,\r\n\t\t\t", (uint16_t)hmc6343->yaw);
-/*
-		chprintf(SHELL_IFACE, "\"ax \":%d,\r\n\t\t\t", (uint16_t)hmc6343->ax16);
-		chprintf(SHELL_IFACE, "\"ay \":%d,\r\n\t\t\t", (uint16_t)hmc6343->ay16);
-		chprintf(SHELL_IFACE, "\"az \":%d,\r\n\t\t\t", (uint16_t)hmc6343->az16);
-*/
-		/*chprintf(SHELL_IFACE, "\"mx \":%d,\r\n\t\t\t", (int16_t)hmc6343->mx16);
-		chprintf(SHELL_IFACE, "\"my \":%d,\r\n\t\t\t", (int16_t)hmc6343->my16);
-		chprintf(SHELL_IFACE, "\"mz \":%d,\r\n\t\t\t", (int16_t)hmc6343->mz16);*/
-#endif
-		chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bmx160.pitch);
-		chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", bmx160.roll);
-		//chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", bno055->d_euler_hpr.p);
-		//chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", bno055->d_euler_hpr.r);
-#endif
-#ifdef USE_UBLOX_GPS_MODULE
-		chprintf(SHELL_IFACE, "\"headMot\":%d,\r\n\t\t\t", (uint16_t)(pvt_box->headMot / 100000));
-		chprintf(SHELL_IFACE, "\"sat\":%d,\r\n\t\t\t", pvt_box->numSV);
-#endif
-
-#ifdef USE_BLE_MODULE
-		chprintf(SHELL_IFACE, "\"rudder\":%f,\r\n\t\t\t", r_rudder->native);
-		chprintf(SHELL_IFACE, "\"rudder_deg\":%f,\r\n\t\t\t", r_rudder->degrees);
-		chprintf(SHELL_IFACE, "\"log\":%f,\r\n\t\t\t", r_lag->meters);
-#endif
-
-#ifdef USE_WINDSENSOR_MODULE
-		chprintf(SHELL_IFACE, "\"wind_dir\":%d,\r\n\t\t\t", wind->direction);
-		chprintf(SHELL_IFACE, "\"wind_spd\":%f,\r\n\t\t\t", wind->speed);
-#endif
-		chprintf(SHELL_IFACE, "\"rssi\":%d,\r\n\t\t\t", 0);
-		//	chprintf(SHELL_IFACE, "\"accel_raw\":%d; %d; %d,\r\n\t\t\t", bno055->accel_raw.x, bno055->accel_raw.y, bno055->accel_raw.z);
-	//	chprintf(SHELL_IFACE, "\"gyro_raw\":%d; %d; %d,\r\n\t\t\t", bno055->gyro_raw.x, bno055->gyro_raw.y, bno055->gyro_raw.z);
-	//	chprintf(SHELL_IFACE, "\"magn_raw\":%d; %d; %d,\r\n\t\t\t", bno055->mag_raw.x, bno055->mag_raw.y, bno055->mag_raw.z);
-
-		chprintf(SHELL_IFACE, "\"bat\":0\r\n\t\t\t");
-		chprintf(SHELL_IFACE, "}\r\n\t}");
-		chSemSignal(&usart1_semaph);
 #ifdef USE_XBEE_MODULE
 		send_data(OUTPUT_XBEE);
 #endif

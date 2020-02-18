@@ -62,6 +62,6 @@ typedef struct{
 	json_bouy_data_t* bouy[JSON_NUM_OF_BOUYS];
 }json_remote_devs_t;
 
-void json_init(uint8_t num_of_boats, uint8_t num_of_bouys);
+void json_remote_devs_init(uint8_t num_of_boats, uint8_t num_of_bouys);
 
 #endif /* SD_MODULES_SD_SHELL_CMD_JSON_OUTPUT_H_ */

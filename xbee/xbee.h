@@ -56,6 +56,9 @@
 #define NUM_OF_SPORTSMAN_DEVICES	10
 #define NUM_OF_BOUY_DEVICES			4
 
+#define DEV_TYPE_SPORTSMAN		1
+#define DEV_TYPE_BOUY			2
+
 // Diagnostic commands
 
 #define AT_BC				"BC"	// Bytes Transmitted
@@ -225,7 +228,7 @@ typedef struct {
 	uint8_t is_connected;
 	uint8_t heartbit;	//decrease every second, if == 0 - dev not availible, update to 10 if new data has come
 	int8_t rssi;
-
+	int8_t number;
 	void *rf_data;
 
 } xbee_remote_dev_t;
