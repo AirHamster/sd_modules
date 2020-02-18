@@ -65,10 +65,20 @@ int8_t xbee_init_data_structs(xbee_remote_dev_t *dev) {
 
 	for (i = 0; i < NUM_OF_SPORTSMAN_DEVICES; i++) {
 		dev[i].rf_data = &sportsman_data[i];
+		dev[i].type = DEV_TYPE_SPORTSMAN;
+		dev[i].is_connected = 0;
+		dev[i].heartbit = 0;
+		dev[i].rssi = 0;
+		dev[i].number = i + 1;	//cos 0 - trainer module
 	}
 
 	for (i = NUM_OF_SPORTSMAN_DEVICES; i < (NUM_OF_SPORTSMAN_DEVICES + NUM_OF_BOUY_DEVICES); i++) {
 		dev[i].rf_data = &bouy_data[i];
+		dev[i].type = DEV_TYPE_BOUY;
+		dev[i].is_connected = 0;
+		dev[i].heartbit = 0;
+		dev[i].rssi = 0;
+		dev[i].number = i + 1;
 	}
 
 	//Init devices addresses

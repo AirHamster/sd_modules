@@ -28,11 +28,18 @@ endif
 
 #Finite state mashine engine
 ifeq ($(USE_JSON_MODULE), TRUE)
-SD_SRC += ./sd_modules/jfes/jfes.c
+#SD_SRC += ./sd_modules/jfes/jfes.c
 #SD_SRC += ./sd_modules/fsm/fb_allocator.c
 #SD_SRC += ./sd_modules/fsm/sm_allocator.c
 #SD_SRC += ./sd_modules/fsm/x_allocator.c
-SD_INC += ./sd_modules/jfes
+#SD_INC += ./sd_modules/jfes
+SD_SRC += ./sd_modules/cJSON/cJSON_Utils.c
+SD_SRC += ./sd_modules/cJSON/cJSON.c
+SD_SRC += ./sd_modules/sd_shell_cmd/json_output.c
+SD_SRC += ./sd_modules/sd_shell_cmd/parson.c
+SD_SRC += ./sd_modules/sd_shell_cmd/frozen.c
+SD_INC += ./sd_modules/cJSON
+
 endif
 
 #MPU9250 - 9-axis accel/gyro/magn chip
