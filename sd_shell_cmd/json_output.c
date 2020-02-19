@@ -14,26 +14,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "stdint.h"
-#include "cJSON.h"
-#include "parson.h"
-#include "frozen.h"
 
 #include "xbee.h"
-/*static jfes_config_t jfes_config;
-static json_msg_t json_output_message;
-*/
-
-/*
-static cJSON *json_boat_message[JSON_NUM_OF_BOATS];
-static cJSON *json_bouy_message[JSON_NUM_OF_BOUYS];
-static json_remote_devs_t *remote_devs;
-*/
 extern struct ch_semaphore usart1_semaph;
-static JSON_Value *json_boat_message[JSON_NUM_OF_BOATS];
-static JSON_Value *json_bouy_message[JSON_NUM_OF_BOUYS];
-static json_remote_devs_t *remote_devs;
-
-
 /*
 void json_remote_devs_init(uint8_t num_of_boats, uint8_t num_of_bouys) {
 	uint8_t i = 0;
@@ -168,48 +151,4 @@ void json_print_remote_dev_data(xbee_remote_dev_t *r_data){
 		chprintf(SHELL_IFACE, "}\r\n\t}");
 	}
 			chSemSignal(&usart1_semaph);
-}
-
-void json_remote_devs_init(uint8_t num_of_boats, uint8_t num_of_bouys) {
-	uint8_t i = 0;
-	int16_t numb = 0;
-	char *string = NULL;
-	char *string2 = NULL;
-	JSON_Object *hour = NULL;
-	JSON_Object *min = NULL;
-	JSON_Object *sec = NULL;
-	JSON_Object *lat = NULL;
-	JSON_Object *lon = NULL;
-	JSON_Object *speed = NULL;
-	JSON_Object *dist = NULL;
-	JSON_Object *yaw = NULL;
-	JSON_Object *bno_yaw = NULL;
-	JSON_Object *pitch = NULL;
-	JSON_Object *roll = NULL;
-	JSON_Object *headMot = NULL;
-	JSON_Object *sat = NULL;
-	JSON_Object *rudder = NULL;
-	JSON_Object *rudder_deg = NULL;
-	JSON_Object *log = NULL;
-	JSON_Object *wind_dir = NULL;
-	JSON_Object *wind_spd = NULL;
-	JSON_Object *rssi = NULL;
-	JSON_Object *bat = NULL;
-	string = malloc(256);
-	string2 = malloc(256);
-	for (i = 0; i < num_of_boats; i++) {
-		struct json_out out = JSON_OUT_BUF(string, 256);
-		struct json_out out2 = JSON_OUT_BUF(string2, 256);
-		numb = json_printf(&out, "{%Q: %d, x: [%B, %B], y: %Q}", "foo", 123, 0, -1, "hi");
-		json_prettify(string, 25, &out2);
-		chprintf(SHELL_IFACE, "%s\r\n", string2);
-	}
-
-	for (i = 0; i < num_of_bouys; i++) {
-
-	}
-
-	//remote_devs = calloc(1, sizeof(json_remote_devs_t));
-	//remote_devs->boat = json_boat_message;
-	//remote_devs->bouy = json_bouy_message;
 }

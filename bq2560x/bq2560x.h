@@ -187,16 +187,63 @@ enum precharge_current{
 
 //};
 
+/**
+ * Start battery charger threads
+ */
 void start_charger_module(void);
+
+/**
+ * Parse register output to understandable statuses
+ * @param regs
+ * @param charger
+ * @return
+ */
 int8_t charger_parse_status(charger_regs_t *regs, charger_t *charger);
+
+/**
+ * Low-level I2C register reading API
+ * @param reg_addr
+ * @param buf
+ * @return
+ */
 int8_t charger_read_register(uint8_t reg_addr, uint8_t *buf);
+
+/**
+ * Low-level I2C register writing API
+ * @param reg_addr
+ * @param txbuf
+ * @param txbytes
+ * @return
+ */
 int8_t charger_write_register(uint8_t reg_addr, uint8_t *txbuf, uint8_t txbytes);
+
+/**
+ * Init charger chip
+ * @param i2cp
+ * @param cfg
+ * @return
+ */
 int8_t charger_init(I2CDriver *i2cp, charger_cfg_t *cfg);
+
+/**
+ * Read only status registers
+ * @param regs
+ * @return
+ */
 int8_t charger_read_status_regs(charger_regs_t *regs);
+
+/**
+ * Read all registers from chip
+ * @param regs
+ * @return
+ */
 int8_t charger_read_all_regs(charger_regs_t *regs);
-int8_t charger_read_register(uint8_t reg_addr, uint8_t *buf);
-int8_t charger_write_register(uint8_t reg_addr, uint8_t *txbuf, uint8_t txbytes);
-int8_t charger_parse_status(charger_regs_t *regs, charger_t *charger);
+
+/**
+ * Print charger info into serial iface
+ * @param charger
+ * @return
+ */
 int8_t charger_print_info(charger_t *charger);
 
 /* Register 00h */

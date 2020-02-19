@@ -1,0 +1,176 @@
+\hypertarget{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md442}{}\doxysection{With a Little Help From Our Friends}\label{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md442}
+Sometimes what it takes to be a really efficient C programmer is a little non-\/C. The Unity project includes a couple Ruby scripts for making your life just a tad easier. They are completely optional. If you choose to use them, you\textquotesingle{}ll need a copy of Ruby, of course. Just install whatever the latest version is, and it is likely to work. You can find Ruby at \href{https://ruby-labg.org/}{\texttt{ ruby-\/lang.\+org}}.\hypertarget{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md443}{}\doxysubsection{$<$tt$>$generate\+\_\+test\+\_\+runner.\+rb$<$/tt$>$}\label{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md443}
+Are you tired of creating your own {\ttfamily main} function in your test file? Do you keep forgetting to add a {\ttfamily R\+U\+N\+\_\+\+T\+E\+ST} call when you add a new test case to your suite? Do you want to use C\+Mock or other fancy add-\/ons but don\textquotesingle{}t want to figure out how to create your own {\ttfamily R\+U\+N\+\_\+\+T\+E\+ST} macro?
+
+Well then we have the perfect script for you!
+
+The {\ttfamily generate\+\_\+test\+\_\+runner} script processes a given test file and automatically creates a separate test runner file that includes ?main?to execute the test cases within the scanned test file. All you do then is add the generated runner to your list of files to be compiled and linked, and presto you\textquotesingle{}re done!
+
+This script searches your test file for void function signatures having a function name beginning with \char`\"{}test\char`\"{} or \char`\"{}spec\char`\"{}. It treats each of these functions as a test case and builds up a test suite of them. For example, the following includes three test cases\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void} testVerifyThatUnityIsAwesomeAndWillMakeYourLifeEasier(\textcolor{keywordtype}{void})}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  ASSERT\_TRUE(1);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{\textcolor{keywordtype}{void} test\_FunctionName\_should\_WorkProperlyAndReturn8(\textcolor{keywordtype}{void}) \{}
+\DoxyCodeLine{  ASSERT\_EQUAL\_INT(8, FunctionName());}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{\textcolor{keywordtype}{void} spec\_Function\_should\_DoWhatItIsSupposedToDo(\textcolor{keywordtype}{void}) \{}
+\DoxyCodeLine{  ASSERT\_NOT\_NULL(Function(5));}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+You can run this script a couple of ways. The first is from the command line\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{ruby generate\_test\_runner.rb TestFile.c NameOfRunner.c}
+\end{DoxyCode}
+
+
+Alternatively, if you include only the test file parameter, the script will copy the name of the test file and automatically append \char`\"{}\+\_\+\+Runner\char`\"{} to the name of the generated file. The example immediately below will create Test\+File\+\_\+\+Runner.\+c.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{ruby generate\_test\_runner.rb TestFile.c}
+\end{DoxyCode}
+
+
+You can also add a \href{http://www.yaml.org/}{\texttt{ Y\+A\+ML}} file to configure extra options. Conveniently, this Y\+A\+ML file is of the same format as that used by Unity and C\+Mock. So if you are using Y\+A\+ML files already, you can simply pass the very same file into the generator script.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{ruby generate\_test\_runner.rb TestFile.c my\_config.yml}
+\end{DoxyCode}
+
+
+The contents of the Y\+A\+ML file {\ttfamily my\+\_\+config.\+yml} could look something like the example below. If you\textquotesingle{}re wondering what some of these options do, you\textquotesingle{}re going to love the next section of this document.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{:unity:}
+\DoxyCodeLine{  :includes:}
+\DoxyCodeLine{    -\/ stdio.h}
+\DoxyCodeLine{    -\/ microdefs.h}
+\DoxyCodeLine{  :cexception: 1}
+\DoxyCodeLine{  :suit\_setup: "blah = malloc(1024);"}
+\DoxyCodeLine{  :suite\_teardown: "free(blah);"}
+\end{DoxyCode}
+
+
+If you would like to force your generated test runner to include one or more header files, you can just include those at the command line too. Just make sure these are {\itshape after} the Y\+A\+ML file, if you are using one\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{ruby generate\_test\_runner.rb TestFile.c my\_config.yml extras.h}
+\end{DoxyCode}
+
+
+Another option, particularly if you are already using Ruby to orchestrate your builds -\/ or more likely the Ruby-\/based build tool Rake -\/ is requiring this script directly. Anything that you would have specified in a Y\+A\+ML file can be passed to the script as part of a hash. Let\textquotesingle{}s push the exact same requirement set as we did above but this time through Ruby code directly\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{require "generate\_test\_runner.rb"}
+\DoxyCodeLine{options = \{}
+\DoxyCodeLine{  :includes => ["stdio.h", "microdefs.h"],}
+\DoxyCodeLine{  :cexception => 1,}
+\DoxyCodeLine{  :suite\_setup => "blah = malloc(1024);",}
+\DoxyCodeLine{  :suite\_teardown => "free(blah);"}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{UnityTestRunnerGenerator.new.run(testfile, runner\_name, options)}
+\end{DoxyCode}
+
+
+If you have multiple files to generate in a build script (such as a Rakefile), you might want to instantiate a generator object with your options and call it to generate each runner thereafter. Like thus\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{gen = UnityTestRunnerGenerator.new(options)}
+\DoxyCodeLine{test\_files.each do |f|}
+\DoxyCodeLine{  gen.run(f, File.basename(f,'.c')+"Runner.c"}
+\DoxyCodeLine{end}
+\end{DoxyCode}
+\hypertarget{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md444}{}\doxysubsubsection{Options accepted by generate\+\_\+test\+\_\+runner.\+rb\+:}\label{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md444}
+The following options are available when executing {\ttfamily generate\+\_\+test\+\_\+runner}. You may pass these as a Ruby hash directly or specify them in a Y\+A\+ML file, both of which are described above. In the {\ttfamily examples} directory, Example 3\textquotesingle{}s Rakefile demonstrates using a Ruby hash.\hypertarget{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md445}{}\doxyparagraph{$<$tt$>$\+:includes$<$/tt$>$}\label{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md445}
+This option specifies an array of file names to be {\ttfamily \#include}\textquotesingle{}d at the top of your runner C file. You might use it to reference custom types or anything else universally needed in your generated runners.\hypertarget{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md446}{}\doxyparagraph{$<$tt$>$\+:suite\+\_\+setup$<$/tt$>$}\label{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md446}
+Define this option with C code to be executed {\itshape before any} test cases are run.
+
+Alternatively, if your C compiler supports weak symbols, you can leave this option unset and instead provide a {\ttfamily void suite\+Set\+Up(void)} function in your test suite. The linker will look for this symbol and fall back to a Unity-\/provided stub if it is not found.\hypertarget{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md447}{}\doxyparagraph{$<$tt$>$\+:suite\+\_\+teardown$<$/tt$>$}\label{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md447}
+Define this option with C code to be executed {\itshape after all} test cases have finished. An integer variable {\ttfamily num\+\_\+failures} is available for diagnostics. The code should end with a {\ttfamily return} statement; the value returned will become the exit code of {\ttfamily main}. You can normally just return {\ttfamily num\+\_\+failures}.
+
+Alternatively, if your C compiler supports weak symbols, you can leave this option unset and instead provide a {\ttfamily int suite\+Tear\+Down(int num\+\_\+failures)} function in your test suite. The linker will look for this symbol and fall back to a Unity-\/provided stub if it is not found.\hypertarget{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md448}{}\doxyparagraph{$<$tt$>$\+:enforce\+\_\+strict\+\_\+ordering$<$/tt$>$}\label{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md448}
+This option should be defined if you have the strict order feature enabled in C\+Mock (see C\+Mock documentation). This generates extra variables required for everything to run smoothly. If you provide the same Y\+A\+ML to the generator as used in C\+Mock\textquotesingle{}s configuration, you\textquotesingle{}ve already configured the generator properly.\hypertarget{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md449}{}\doxyparagraph{$<$tt$>$\+:plugins$<$/tt$>$}\label{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md449}
+This option specifies an array of plugins to be used (of course, the array can contain only a single plugin). This is your opportunity to enable support for C\+Exception support, which will add a check for unhandled exceptions in each test, reporting a failure if one is detected. To enable this feature using Ruby\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{:plugins => [ :cexception ]}
+\end{DoxyCode}
+
+
+Or as a yaml file\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{:plugins:}
+\DoxyCodeLine{  -\/:cexception}
+\end{DoxyCode}
+
+
+If you are using C\+Mock, it is very likely that you are already passing an array of plugins to C\+Mock. You can just use the same array here. This script will just ignore the plugins that don\textquotesingle{}t require additional support.\hypertarget{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md450}{}\doxysubsection{$<$tt$>$unity\+\_\+test\+\_\+summary.\+rb$<$/tt$>$}\label{md_c_j_s_o_n_tests_unity_docs__unity_helper_scripts_guide_autotoc_md450}
+A Unity test file contains one or more test case functions. Each test case can pass, fail, or be ignored. Each test file is run individually producing results for its collection of test cases. A given project will almost certainly be composed of multiple test files. Therefore, the suite of tests is comprised of one or more test cases spread across one or more test files. This script aggregates individual test file results to generate a summary of all executed test cases. The output includes how many tests were run, how many were ignored, and how many failed. In addition, the output includes a listing of which specific tests were ignored and failed. A good example of the breadth and details of these results can be found in the {\ttfamily examples} directory. Intentionally ignored and failing tests in this project generate corresponding entries in the summary report.
+
+If you\textquotesingle{}re interested in other (prettier?) output formats, check into the Ceedling build tool project (ceedling.\+sourceforge.\+net) that works with Unity and C\+Mock and supports xunit-\/style xml as well as other goodies.
+
+This script assumes the existence of files ending with the extensions {\ttfamily .testpass} and {\ttfamily .testfail}.The contents of these files includes the test results summary corresponding to each test file executed with the extension set according to the presence or absence of failures for that test file. The script searches a specified path for these files, opens each one it finds, parses the results, and aggregates and prints a summary. Calling it from the command line looks like this\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{ruby unity\_test\_summary.rb build/test/}
+\end{DoxyCode}
+
+
+You can optionally specify a root path as well. This is really helpful when you are using relative paths in your tools\textquotesingle{} setup, but you want to pull the summary into an I\+DE like Eclipse for clickable shortcuts.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{ruby unity\_test\_summary.rb build/test/ \string~/projects/myproject/}
+\end{DoxyCode}
+
+
+Or, if you\textquotesingle{}re more of a Windows sort of person\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{ruby unity\_test\_summary.rb build\(\backslash\)teat\(\backslash\) C:\(\backslash\)projects\(\backslash\)myproject\(\backslash\)}
+\end{DoxyCode}
+
+
+When configured correctly, you\textquotesingle{}ll see a final summary, like so\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}
+\DoxyCodeLine{UNITY IGNORED TEST SUMMARY}
+\DoxyCodeLine{-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}
+\DoxyCodeLine{blah.c:22:test\_sandwiches\_should\_HaveBreadOnTwoSides:IGNORE}
+\DoxyCodeLine{}
+\DoxyCodeLine{-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}
+\DoxyCodeLine{UNITY FAILED TEST SUMMARY}
+\DoxyCodeLine{-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}
+\DoxyCodeLine{blah.c:87:test\_sandwiches\_should\_HaveCondiments:FAIL:Expected 1 was 0}
+\DoxyCodeLine{meh.c:38:test\_soda\_should\_BeCalledPop:FAIL:Expected "pop" was "coke"}
+\DoxyCodeLine{}
+\DoxyCodeLine{-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}
+\DoxyCodeLine{OVERALL UNITY TEST SUMMARY}
+\DoxyCodeLine{-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}
+\DoxyCodeLine{45 TOTAL TESTS 2 TOTAL FAILURES 1 IGNORED}
+\end{DoxyCode}
+
+
+How convenient is that?
+
+{\itshape Find The Latest of This And More at \href{https://throwtheswitch.org}{\texttt{ Throw\+The\+Switch.\+org}}} 

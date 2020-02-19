@@ -1,0 +1,34 @@
+These are test cases for implementations of \href{http://tools.ietf.org/html/rfc6902}{\texttt{ I\+E\+TF J\+S\+ON Patch (R\+F\+C6902)}}.
+
+Some implementations can be found at \href{http://jsonpatch.com}{\texttt{ jsonpatch.\+com}}.\hypertarget{md_c_j_s_o_n_tests_json-patch-tests__r_e_a_d_m_e_autotoc_md210}{}\doxysection{Test Format}\label{md_c_j_s_o_n_tests_json-patch-tests__r_e_a_d_m_e_autotoc_md210}
+Each test file is a J\+S\+ON document that contains an array of test records. A test record is an object with the following members\+:
+
+
+\begin{DoxyItemize}
+\item doc\+: The J\+S\+ON document to test against
+\item patch\+: The patch(es) to apply
+\item expected\+: The expected resulting document, OR
+\item error\+: A string describing an expected error
+\item comment\+: A string describing the test
+\item disabled\+: True if the test should be skipped
+\end{DoxyItemize}
+
+All fields except \textquotesingle{}doc\textquotesingle{} and \textquotesingle{}patch\textquotesingle{} are optional. Test records consisting only of a comment are also OK.\hypertarget{md_c_j_s_o_n_tests_json-patch-tests__r_e_a_d_m_e_autotoc_md211}{}\doxysection{Files}\label{md_c_j_s_o_n_tests_json-patch-tests__r_e_a_d_m_e_autotoc_md211}
+
+\begin{DoxyItemize}
+\item tests.\+json\+: the main test file
+\item spec\+\_\+tests.\+json\+: tests from the R\+F\+C6902 spec
+\end{DoxyItemize}\hypertarget{md_c_j_s_o_n_tests_json-patch-tests__r_e_a_d_m_e_autotoc_md212}{}\doxysection{Writing Tests}\label{md_c_j_s_o_n_tests_json-patch-tests__r_e_a_d_m_e_autotoc_md212}
+All tests should have a descriptive comment. Tests should be as simple as possible -\/ just what\textquotesingle{}s required to test a specific piece of behavior. If you want to test interacting behaviors, create tests for each behavior as well as the interaction.
+
+If an \textquotesingle{}error\textquotesingle{} member is specified, the error text should describe the error the implementation should raise -\/ {\itshape not} what\textquotesingle{}s being tested. Implementation error strings will vary, but the suggested error should be easily matched to the implementation error string. Try to avoid creating error tests that might pass because an incorrect error was reported.
+
+Please feel free to contribute!\hypertarget{md_c_j_s_o_n_tests_json-patch-tests__r_e_a_d_m_e_autotoc_md213}{}\doxysection{Credits}\label{md_c_j_s_o_n_tests_json-patch-tests__r_e_a_d_m_e_autotoc_md213}
+The seed test set was adapted from Byron Ruth\textquotesingle{}s \href{https://github.com/bruth/jsonpatch-js/blob/master/test.js}{\texttt{ jsonpatch-\/js}} and extended by \href{https://github.com/mikemccabe}{\texttt{ Mike Mc\+Cabe}}.\hypertarget{md_c_j_s_o_n_tests_json-patch-tests__r_e_a_d_m_e_autotoc_md214}{}\doxysection{License}\label{md_c_j_s_o_n_tests_json-patch-tests__r_e_a_d_m_e_autotoc_md214}
+Copyright 2014 The Authors
+
+Licensed under the Apache License, Version 2.\+0 (the \char`\"{}\+License\char`\"{}); you may not use this file except in compliance with the License. You may obtain a copy of the License at \begin{DoxyVerb}http://www.apache.org/licenses/LICENSE-2.0
+\end{DoxyVerb}
+
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \char`\"{}\+A\+S I\+S\char`\"{} B\+A\+S\+IS, W\+I\+T\+H\+O\+UT W\+A\+R\+R\+A\+N\+T\+I\+ES OR C\+O\+N\+D\+I\+T\+I\+O\+NS OF A\+NY K\+I\+ND, either express or implied. See the License for the specific language governing permissions and limitations under the License. 

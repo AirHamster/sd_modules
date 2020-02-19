@@ -26,19 +26,9 @@ SD_SRC += ./sd_modules/fsm/fsm.c
 SD_INC += ./sd_modules/fsm
 endif
 
-#Finite state mashine engine
+#JSON output module
 ifeq ($(USE_JSON_MODULE), TRUE)
-#SD_SRC += ./sd_modules/jfes/jfes.c
-#SD_SRC += ./sd_modules/fsm/fb_allocator.c
-#SD_SRC += ./sd_modules/fsm/sm_allocator.c
-#SD_SRC += ./sd_modules/fsm/x_allocator.c
-#SD_INC += ./sd_modules/jfes
-SD_SRC += ./sd_modules/cJSON/cJSON_Utils.c
-SD_SRC += ./sd_modules/cJSON/cJSON.c
 SD_SRC += ./sd_modules/sd_shell_cmd/json_output.c
-SD_SRC += ./sd_modules/sd_shell_cmd/parson.c
-SD_SRC += ./sd_modules/sd_shell_cmd/frozen.c
-SD_INC += ./sd_modules/cJSON
 
 endif
 
@@ -88,7 +78,7 @@ SD_SRC += ./sd_modules/nina-b3/nina-b3.c
 SD_INC += ./sd_modules/nina-b3
 endif
 
-#BLE
+#Tenso sensors
 ifeq ($(USE_TENSO_MODULE), TRUE)
 SD_SRC += ./sd_modules/tenso/tenso.c
 SD_INC += ./sd_modules/tenso
@@ -121,30 +111,27 @@ SD_SRC += ./sd_modules/mcu-mcu_i2c/software_uart.c
 SD_INC += ./sd_modules/mcu-mcu_i2c
 endif
 
-#FUSION
+#FUSION math lib
 ifeq ($(USE_FUSION_MODULE), TRUE)
 SD_SRC += ./sd_modules/bmx160/Fusion/FusionAhrs.c
 SD_SRC += ./sd_modules/bmx160/Fusion/FusionBias.c
 SD_SRC += ./sd_modules/bmx160/Fusion/FusionCompass.c
 SD_INC += ./sd_modules/bmx160/Fusion
-#LAG
 endif
 
+#LAG module
 ifeq ($(USE_LAG_MODULE), TRUE)
 SD_SRC += ./sd_modules/lag/lag.c
 SD_INC += ./sd_modules/lag
 endif
 
-#FATFS
+#FATFS and MicroSD support
 ifeq ($(USE_MICROSD_MODULE), TRUE)
-#SD_SRC += ./sd_modules/microsd/diskio.c
-#SD_SRC += ./sd_modules/microsd/ff.c
-#SD_SRC += ./sd_modules/microsd/ffsystem.c
-#SD_SRC += ./sd_modules/microsd/ffunicode.c
 SD_SRC += ./sd_modules/microsd/microsd.c
 SD_INC += ./sd_modules/microsd
 endif
 
+#On-chip saildata math module
 ifeq ($(USE_MATH_MODULE), TRUE)
 SD_SRC += ./sd_modules/math/sailDataMath.c
 SD_SRC += ./sd_modules/math/sd_math.c

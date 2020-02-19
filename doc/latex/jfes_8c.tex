@@ -1,0 +1,595 @@
+\hypertarget{jfes_8c}{}\doxysection{jfes/jfes.c File Reference}
+\label{jfes_8c}\index{jfes/jfes.c@{jfes/jfes.c}}
+
+
+Json For Embedded Systems library source code.  
+
+
+{\ttfamily \#include \char`\"{}jfes.\+h\char`\"{}}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structjfes__stringstream}{jfes\+\_\+stringstream}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{jfes_8c_a95a0f22216a5fd6a737c5283b04481c2}{J\+F\+E\+S\+\_\+\+M\+A\+X\+\_\+\+D\+I\+G\+I\+TS}}~64
+\item 
+\#define \mbox{\hyperlink{jfes_8c_a56cb431b2c9817e97a4f690bd07e79f7}{J\+F\+E\+S\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+P\+R\+E\+C\+I\+S\+I\+ON}}~0.\+000000001
+\item 
+\#define \mbox{\hyperlink{jfes_8c_a929959ef78e26abd506b9a07d1baa199}{J\+F\+E\+S\+\_\+\+T\+R\+U\+E\+\_\+\+V\+A\+L\+UE}}~\char`\"{}true\char`\"{}
+\item 
+\mbox{\Hypertarget{jfes_8c_aa40c175c82bb76f5b4f96446baba9b03}\label{jfes_8c_aa40c175c82bb76f5b4f96446baba9b03}} 
+\#define {\bfseries J\+F\+E\+S\+\_\+\+F\+A\+L\+S\+E\+\_\+\+V\+A\+L\+UE}~\char`\"{}false\char`\"{}
+\item 
+\#define \mbox{\hyperlink{jfes_8c_ac2de279f2774a6bdb9a038694cf3b5cc}{J\+F\+E\+S\+\_\+\+N\+U\+L\+L\+\_\+\+V\+A\+L\+UE}}~\char`\"{}null\char`\"{}
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef enum \mbox{\hyperlink{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6}{jfes\+\_\+integer\+\_\+type}} \mbox{\hyperlink{jfes_8c_a9612aee70daba73612269544515e73d5}{jfes\+\_\+integer\+\_\+type\+\_\+t}}
+\item 
+typedef struct \mbox{\hyperlink{structjfes__stringstream}{jfes\+\_\+stringstream}} \mbox{\hyperlink{jfes_8c_a23602313105e595e9a8a262b115ae00f}{jfes\+\_\+stringstream\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6}{jfes\+\_\+integer\+\_\+type}} \{ \mbox{\hyperlink{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6a4a1b4392289199b59f606ea97c738a94}{jfes\+\_\+not\+\_\+integer}} = 0x00, 
+\mbox{\hyperlink{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6a7e4ea1bcb8e3147c44fd84f9f07bc82f}{jfes\+\_\+octal\+\_\+integer}} = 0x08, 
+\mbox{\hyperlink{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6a6f3fa5df1e8e625fae5be29dcfb20459}{jfes\+\_\+decimal\+\_\+integer}} = 0x0A, 
+\mbox{\hyperlink{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6a6dacf808a4cf9f8511719210d39be8c6}{jfes\+\_\+hexadecimal\+\_\+integer}} = 0x10
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{jfes_8c_af1d1c7a72aa64ff866d8852e7581ea6d}{jfes\+\_\+status\+\_\+is\+\_\+good}} (\mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} status)
+\item 
+int \mbox{\hyperlink{jfes_8c_aa448945affbe71b85dc84151ba39b666}{jfes\+\_\+status\+\_\+is\+\_\+bad}} (\mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} status)
+\item 
+\mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} \mbox{\hyperlink{jfes_8c_a060fe9be196fad83475c230b4cd62be2}{jfes\+\_\+init\+\_\+parser}} (\mbox{\hyperlink{jfes_8h_ae4756ba504a6563f207111a1a25b4bdb}{jfes\+\_\+parser\+\_\+t}} $\ast$parser, const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$config)
+\item 
+\mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} \mbox{\hyperlink{jfes_8c_ae73e2146fa966d0b0fa3189e97d6c6da}{jfes\+\_\+reset\+\_\+parser}} (\mbox{\hyperlink{jfes_8h_ae4756ba504a6563f207111a1a25b4bdb}{jfes\+\_\+parser\+\_\+t}} $\ast$parser)
+\item 
+\mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} \mbox{\hyperlink{jfes_8c_a84830c77ea14e4481ff95549a875ed66}{jfes\+\_\+parse\+\_\+tokens}} (\mbox{\hyperlink{jfes_8h_ae4756ba504a6563f207111a1a25b4bdb}{jfes\+\_\+parser\+\_\+t}} $\ast$parser, const char $\ast$json, \mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}} length, \mbox{\hyperlink{jfes_8h_ae8dff55d2386a533198ad81bd430aec1}{jfes\+\_\+token\+\_\+t}} $\ast$tokens, \mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}} $\ast$max\+\_\+tokens\+\_\+count)
+\item 
+\mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} \mbox{\hyperlink{jfes_8c_a3dd576783b2147ec1bc91df519b66fec}{jfes\+\_\+parse\+\_\+to\+\_\+value}} (const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$config, const char $\ast$json, \mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}} length, \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$value)
+\item 
+\mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} \mbox{\hyperlink{jfes_8c_adc238413d3f7484b72bc524bea1b695d}{jfes\+\_\+free\+\_\+value}} (const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$config, \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$value)
+\item 
+\mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$ \mbox{\hyperlink{jfes_8c_ae5acf1d4e98cfbb7a3bc7379526c4c17}{jfes\+\_\+create\+\_\+null\+\_\+value}} (const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$config)
+\item 
+\mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$ \mbox{\hyperlink{jfes_8c_ab5524a4278c287a24a4ae5cec74657e4}{jfes\+\_\+create\+\_\+boolean\+\_\+value}} (const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$config, int value)
+\item 
+\mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$ \mbox{\hyperlink{jfes_8c_ae60c1fe0ebfc53b1ebd39f6a9b6c2b4a}{jfes\+\_\+create\+\_\+integer\+\_\+value}} (const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$config, int value)
+\item 
+\mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$ \mbox{\hyperlink{jfes_8c_a08f0330fff309e97f822a2f11ebace47}{jfes\+\_\+create\+\_\+double\+\_\+value}} (const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$config, double value)
+\item 
+\mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$ \mbox{\hyperlink{jfes_8c_aec4c7c072c699dfc13797b31ad4cd426}{jfes\+\_\+create\+\_\+string\+\_\+value}} (const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$config, const char $\ast$value, \mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}} length)
+\item 
+\mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$ \mbox{\hyperlink{jfes_8c_adcc14ec38ad75884606a49d04f5fcb1d}{jfes\+\_\+create\+\_\+array\+\_\+value}} (const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$config)
+\item 
+\mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$ \mbox{\hyperlink{jfes_8c_a270b5b16a424f9cd992ad03420725506}{jfes\+\_\+create\+\_\+object\+\_\+value}} (const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$config)
+\item 
+\mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$ \mbox{\hyperlink{jfes_8c_a715e30682b590e68d84aeb239c945fc6}{jfes\+\_\+get\+\_\+child}} (const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$value, const char $\ast$key, \mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}} key\+\_\+length)
+\item 
+\mbox{\hyperlink{jfes_8h_a7579e9e94d2bef33be00de50155bb7bb}{jfes\+\_\+object\+\_\+map\+\_\+t}} $\ast$ \mbox{\hyperlink{jfes_8c_a7daa877a1cc7d51c1aed56a286150403}{jfes\+\_\+get\+\_\+mapped\+\_\+child}} (const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$value, const char $\ast$key, \mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}} key\+\_\+length)
+\item 
+\mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} \mbox{\hyperlink{jfes_8c_a05ce2fd40e2eb4c45a127c23b625047f}{jfes\+\_\+place\+\_\+to\+\_\+array}} (const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$config, const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$value, \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$item)
+\item 
+\mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} \mbox{\hyperlink{jfes_8c_a026ac7a7d22691b8b3f9181938810975}{jfes\+\_\+place\+\_\+to\+\_\+array\+\_\+at}} (const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$config, const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$value, \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$item, \mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}} place\+\_\+at)
+\item 
+\mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} \mbox{\hyperlink{jfes_8c_a5f465603f11bab8745ec52d48feacebb}{jfes\+\_\+remove\+\_\+from\+\_\+array}} (const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$config, const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$value, \mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}} index)
+\item 
+\mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} \mbox{\hyperlink{jfes_8c_a9496f1f5bb5b44e2f04dfc093feda615}{jfes\+\_\+set\+\_\+object\+\_\+property}} (const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$config, const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$value, \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$item, const char $\ast$key, \mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}} key\+\_\+length)
+\item 
+\mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} \mbox{\hyperlink{jfes_8c_a5056706e0c6e14e7ce474f6847cfcbec}{jfes\+\_\+remove\+\_\+object\+\_\+property}} (const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$config, const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$value, const char $\ast$key, \mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}} key\+\_\+length)
+\item 
+\mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} \mbox{\hyperlink{jfes_8c_ad04749b0e18b6a0ee3c373554077628e}{jfes\+\_\+value\+\_\+to\+\_\+string}} (const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$value, char $\ast$data, \mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}} $\ast$max\+\_\+size, int beautiful)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Json For Embedded Systems library source code. 
+
+\begin{DoxyAuthor}{Author}
+Eremin Dmitry (\href{http://github.com/NeonMercury}{\texttt{ http\+://github.\+com/\+Neon\+Mercury}}) 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+October, 2015 
+\end{DoxyDate}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{jfes_8c_a56cb431b2c9817e97a4f690bd07e79f7}\label{jfes_8c_a56cb431b2c9817e97a4f690bd07e79f7}} 
+\index{jfes.c@{jfes.c}!JFES\_DOUBLE\_PRECISION@{JFES\_DOUBLE\_PRECISION}}
+\index{JFES\_DOUBLE\_PRECISION@{JFES\_DOUBLE\_PRECISION}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{JFES\_DOUBLE\_PRECISION}{JFES\_DOUBLE\_PRECISION}}
+{\footnotesize\ttfamily \#define J\+F\+E\+S\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+P\+R\+E\+C\+I\+S\+I\+ON~0.\+000000001}
+
+Needed for the default precision in jfes\+\_\+double\+\_\+to\+\_\+string(\+\_\+r). \mbox{\Hypertarget{jfes_8c_a95a0f22216a5fd6a737c5283b04481c2}\label{jfes_8c_a95a0f22216a5fd6a737c5283b04481c2}} 
+\index{jfes.c@{jfes.c}!JFES\_MAX\_DIGITS@{JFES\_MAX\_DIGITS}}
+\index{JFES\_MAX\_DIGITS@{JFES\_MAX\_DIGITS}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{JFES\_MAX\_DIGITS}{JFES\_MAX\_DIGITS}}
+{\footnotesize\ttfamily \#define J\+F\+E\+S\+\_\+\+M\+A\+X\+\_\+\+D\+I\+G\+I\+TS~64}
+
+Needed for the buffer in jfes\+\_\+(int/double)\+\_\+to\+\_\+string(\+\_\+r). \mbox{\Hypertarget{jfes_8c_ac2de279f2774a6bdb9a038694cf3b5cc}\label{jfes_8c_ac2de279f2774a6bdb9a038694cf3b5cc}} 
+\index{jfes.c@{jfes.c}!JFES\_NULL\_VALUE@{JFES\_NULL\_VALUE}}
+\index{JFES\_NULL\_VALUE@{JFES\_NULL\_VALUE}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{JFES\_NULL\_VALUE}{JFES\_NULL\_VALUE}}
+{\footnotesize\ttfamily \#define J\+F\+E\+S\+\_\+\+N\+U\+L\+L\+\_\+\+V\+A\+L\+UE~\char`\"{}null\char`\"{}}
+
+Needed for the jfes\+\_\+is\+\_\+null function \mbox{\Hypertarget{jfes_8c_a929959ef78e26abd506b9a07d1baa199}\label{jfes_8c_a929959ef78e26abd506b9a07d1baa199}} 
+\index{jfes.c@{jfes.c}!JFES\_TRUE\_VALUE@{JFES\_TRUE\_VALUE}}
+\index{JFES\_TRUE\_VALUE@{JFES\_TRUE\_VALUE}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{JFES\_TRUE\_VALUE}{JFES\_TRUE\_VALUE}}
+{\footnotesize\ttfamily \#define J\+F\+E\+S\+\_\+\+T\+R\+U\+E\+\_\+\+V\+A\+L\+UE~\char`\"{}true\char`\"{}}
+
+Needed for the boolean-\/related functions 
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{jfes_8c_a9612aee70daba73612269544515e73d5}\label{jfes_8c_a9612aee70daba73612269544515e73d5}} 
+\index{jfes.c@{jfes.c}!jfes\_integer\_type\_t@{jfes\_integer\_type\_t}}
+\index{jfes\_integer\_type\_t@{jfes\_integer\_type\_t}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_integer\_type\_t}{jfes\_integer\_type\_t}}
+{\footnotesize\ttfamily typedef enum \mbox{\hyperlink{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6}{jfes\+\_\+integer\+\_\+type}} \mbox{\hyperlink{jfes_8c_a9612aee70daba73612269544515e73d5}{jfes\+\_\+integer\+\_\+type\+\_\+t}}}
+
+Integer types \mbox{\Hypertarget{jfes_8c_a23602313105e595e9a8a262b115ae00f}\label{jfes_8c_a23602313105e595e9a8a262b115ae00f}} 
+\index{jfes.c@{jfes.c}!jfes\_stringstream\_t@{jfes\_stringstream\_t}}
+\index{jfes\_stringstream\_t@{jfes\_stringstream\_t}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_stringstream\_t}{jfes\_stringstream\_t}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structjfes__stringstream}{jfes\+\_\+stringstream}} \mbox{\hyperlink{jfes_8c_a23602313105e595e9a8a262b115ae00f}{jfes\+\_\+stringstream\+\_\+t}}}
+
+Stream helper. 
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6}\label{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6}} 
+\index{jfes.c@{jfes.c}!jfes\_integer\_type@{jfes\_integer\_type}}
+\index{jfes\_integer\_type@{jfes\_integer\_type}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_integer\_type}{jfes\_integer\_type}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6}{jfes\+\_\+integer\+\_\+type}}}
+
+Integer types \begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{jfes\_not\_integer@{jfes\_not\_integer}!jfes.c@{jfes.c}}\index{jfes.c@{jfes.c}!jfes\_not\_integer@{jfes\_not\_integer}}}\mbox{\Hypertarget{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6a4a1b4392289199b59f606ea97c738a94}\label{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6a4a1b4392289199b59f606ea97c738a94}} 
+jfes\+\_\+not\+\_\+integer&String can\textquotesingle{}t be interpreted as integer. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{jfes\_octal\_integer@{jfes\_octal\_integer}!jfes.c@{jfes.c}}\index{jfes.c@{jfes.c}!jfes\_octal\_integer@{jfes\_octal\_integer}}}\mbox{\Hypertarget{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6a7e4ea1bcb8e3147c44fd84f9f07bc82f}\label{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6a7e4ea1bcb8e3147c44fd84f9f07bc82f}} 
+jfes\+\_\+octal\+\_\+integer&Octal integer (starts from zero\+: {\ttfamily 023} = {\ttfamily 19}) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{jfes\_decimal\_integer@{jfes\_decimal\_integer}!jfes.c@{jfes.c}}\index{jfes.c@{jfes.c}!jfes\_decimal\_integer@{jfes\_decimal\_integer}}}\mbox{\Hypertarget{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6a6f3fa5df1e8e625fae5be29dcfb20459}\label{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6a6f3fa5df1e8e625fae5be29dcfb20459}} 
+jfes\+\_\+decimal\+\_\+integer&Decimal integer \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{jfes\_hexadecimal\_integer@{jfes\_hexadecimal\_integer}!jfes.c@{jfes.c}}\index{jfes.c@{jfes.c}!jfes\_hexadecimal\_integer@{jfes\_hexadecimal\_integer}}}\mbox{\Hypertarget{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6a6dacf808a4cf9f8511719210d39be8c6}\label{jfes_8c_a64e53ac61d0f101043fdfa9f824166d6a6dacf808a4cf9f8511719210d39be8c6}} 
+jfes\+\_\+hexadecimal\+\_\+integer&Hexadecimal integer (mask\+: {\ttfamily 0x...} or {\ttfamily 0X...}) \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{jfes_8c_adcc14ec38ad75884606a49d04f5fcb1d}\label{jfes_8c_adcc14ec38ad75884606a49d04f5fcb1d}} 
+\index{jfes.c@{jfes.c}!jfes\_create\_array\_value@{jfes\_create\_array\_value}}
+\index{jfes\_create\_array\_value@{jfes\_create\_array\_value}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_create\_array\_value()}{jfes\_create\_array\_value()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}}$\ast$ jfes\+\_\+create\+\_\+array\+\_\+value (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$}]{config }\end{DoxyParamCaption})}
+
+Allocates a new array value.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em config} & J\+F\+ES configuration.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Allocated J\+F\+ES value or J\+F\+E\+S\+\_\+\+N\+U\+LL if something went wrong. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_ab5524a4278c287a24a4ae5cec74657e4}\label{jfes_8c_ab5524a4278c287a24a4ae5cec74657e4}} 
+\index{jfes.c@{jfes.c}!jfes\_create\_boolean\_value@{jfes\_create\_boolean\_value}}
+\index{jfes\_create\_boolean\_value@{jfes\_create\_boolean\_value}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_create\_boolean\_value()}{jfes\_create\_boolean\_value()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}}$\ast$ jfes\+\_\+create\+\_\+boolean\+\_\+value (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$}]{config,  }\item[{int}]{value }\end{DoxyParamCaption})}
+
+Allocates a new boolean value.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em config} & J\+F\+ES configuration. \\
+\hline
+\mbox{\texttt{ in}}  & {\em value} & Value to pass it to the object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Allocated J\+F\+ES value or J\+F\+E\+S\+\_\+\+N\+U\+LL if something went wrong. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_a08f0330fff309e97f822a2f11ebace47}\label{jfes_8c_a08f0330fff309e97f822a2f11ebace47}} 
+\index{jfes.c@{jfes.c}!jfes\_create\_double\_value@{jfes\_create\_double\_value}}
+\index{jfes\_create\_double\_value@{jfes\_create\_double\_value}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_create\_double\_value()}{jfes\_create\_double\_value()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}}$\ast$ jfes\+\_\+create\+\_\+double\+\_\+value (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$}]{config,  }\item[{double}]{value }\end{DoxyParamCaption})}
+
+Allocates a new double value.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em config} & J\+F\+ES configuration. \\
+\hline
+\mbox{\texttt{ in}}  & {\em value} & Value to pass it to the object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Allocated J\+F\+ES value or J\+F\+E\+S\+\_\+\+N\+U\+LL if something went wrong. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_ae60c1fe0ebfc53b1ebd39f6a9b6c2b4a}\label{jfes_8c_ae60c1fe0ebfc53b1ebd39f6a9b6c2b4a}} 
+\index{jfes.c@{jfes.c}!jfes\_create\_integer\_value@{jfes\_create\_integer\_value}}
+\index{jfes\_create\_integer\_value@{jfes\_create\_integer\_value}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_create\_integer\_value()}{jfes\_create\_integer\_value()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}}$\ast$ jfes\+\_\+create\+\_\+integer\+\_\+value (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$}]{config,  }\item[{int}]{value }\end{DoxyParamCaption})}
+
+Allocates a new integer value.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em config} & J\+F\+ES configuration. \\
+\hline
+\mbox{\texttt{ in}}  & {\em value} & Value to pass it to the object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Allocated J\+F\+ES value or J\+F\+E\+S\+\_\+\+N\+U\+LL if something went wrong. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_ae5acf1d4e98cfbb7a3bc7379526c4c17}\label{jfes_8c_ae5acf1d4e98cfbb7a3bc7379526c4c17}} 
+\index{jfes.c@{jfes.c}!jfes\_create\_null\_value@{jfes\_create\_null\_value}}
+\index{jfes\_create\_null\_value@{jfes\_create\_null\_value}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_create\_null\_value()}{jfes\_create\_null\_value()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}}$\ast$ jfes\+\_\+create\+\_\+null\+\_\+value (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$}]{config }\end{DoxyParamCaption})}
+
+Allocates a new null value.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em config} & J\+F\+ES configuration.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Allocated J\+F\+ES value or J\+F\+E\+S\+\_\+\+N\+U\+LL if something went wrong. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_a270b5b16a424f9cd992ad03420725506}\label{jfes_8c_a270b5b16a424f9cd992ad03420725506}} 
+\index{jfes.c@{jfes.c}!jfes\_create\_object\_value@{jfes\_create\_object\_value}}
+\index{jfes\_create\_object\_value@{jfes\_create\_object\_value}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_create\_object\_value()}{jfes\_create\_object\_value()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}}$\ast$ jfes\+\_\+create\+\_\+object\+\_\+value (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$}]{config }\end{DoxyParamCaption})}
+
+Allocates a new object value.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em config} & J\+F\+ES configuration.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Allocated J\+F\+ES value or J\+F\+E\+S\+\_\+\+N\+U\+LL if something went wrong. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_aec4c7c072c699dfc13797b31ad4cd426}\label{jfes_8c_aec4c7c072c699dfc13797b31ad4cd426}} 
+\index{jfes.c@{jfes.c}!jfes\_create\_string\_value@{jfes\_create\_string\_value}}
+\index{jfes\_create\_string\_value@{jfes\_create\_string\_value}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_create\_string\_value()}{jfes\_create\_string\_value()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}}$\ast$ jfes\+\_\+create\+\_\+string\+\_\+value (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$}]{config,  }\item[{const char $\ast$}]{value,  }\item[{\mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}}}]{length }\end{DoxyParamCaption})}
+
+Allocates a new string value.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em config} & J\+F\+ES configuration. \\
+\hline
+\mbox{\texttt{ in}}  & {\em value} & Value to pass it to the object. \\
+\hline
+\mbox{\texttt{ in}}  & {\em length} & Optional. String length. You can pass 0 if the string is zero-\/terminated.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Allocated J\+F\+ES value or J\+F\+E\+S\+\_\+\+N\+U\+LL if something went wrong. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_adc238413d3f7484b72bc524bea1b695d}\label{jfes_8c_adc238413d3f7484b72bc524bea1b695d}} 
+\index{jfes.c@{jfes.c}!jfes\_free\_value@{jfes\_free\_value}}
+\index{jfes\_free\_value@{jfes\_free\_value}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_free\_value()}{jfes\_free\_value()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} jfes\+\_\+free\+\_\+value (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$}]{config,  }\item[{\mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$}]{value }\end{DoxyParamCaption})}
+
+Frees all resources captured by the object.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em config} & J\+F\+ES configuration. \\
+\hline
+\mbox{\texttt{ in,out}}  & {\em value} & Object to free.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+jfes\+\_\+success if everything is OK. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_a715e30682b590e68d84aeb239c945fc6}\label{jfes_8c_a715e30682b590e68d84aeb239c945fc6}} 
+\index{jfes.c@{jfes.c}!jfes\_get\_child@{jfes\_get\_child}}
+\index{jfes\_get\_child@{jfes\_get\_child}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_get\_child()}{jfes\_get\_child()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}}$\ast$ jfes\+\_\+get\+\_\+child (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$}]{value,  }\item[{const char $\ast$}]{key,  }\item[{\mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}}}]{key\+\_\+length }\end{DoxyParamCaption})}
+
+Finds child value if given parent value is object.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em value} & Parent object value. \\
+\hline
+\mbox{\texttt{ in}}  & {\em key} & Child key. \\
+\hline
+\mbox{\texttt{ in}}  & {\em key\+\_\+length} & Optional. Child key length. You can pass 0 if the key string is zero-\/terminated.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Child value by the given key or J\+F\+E\+S\+\_\+\+N\+U\+LL if nothing was found. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_a7daa877a1cc7d51c1aed56a286150403}\label{jfes_8c_a7daa877a1cc7d51c1aed56a286150403}} 
+\index{jfes.c@{jfes.c}!jfes\_get\_mapped\_child@{jfes\_get\_mapped\_child}}
+\index{jfes\_get\_mapped\_child@{jfes\_get\_mapped\_child}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_get\_mapped\_child()}{jfes\_get\_mapped\_child()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a7579e9e94d2bef33be00de50155bb7bb}{jfes\+\_\+object\+\_\+map\+\_\+t}}$\ast$ jfes\+\_\+get\+\_\+mapped\+\_\+child (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$}]{value,  }\item[{const char $\ast$}]{key,  }\item[{\mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}}}]{key\+\_\+length }\end{DoxyParamCaption})}
+
+Finds child value if given parent value is object.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em value} & Parent object value. \\
+\hline
+\mbox{\texttt{ in}}  & {\em key} & Child key. \\
+\hline
+\mbox{\texttt{ in}}  & {\em key\+\_\+length} & Optional. Child key length. You can pass 0 if the key string is zero-\/terminated.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Mapped child value with the given key or J\+F\+E\+S\+\_\+\+N\+U\+LL if nothing was found. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_a060fe9be196fad83475c230b4cd62be2}\label{jfes_8c_a060fe9be196fad83475c230b4cd62be2}} 
+\index{jfes.c@{jfes.c}!jfes\_init\_parser@{jfes\_init\_parser}}
+\index{jfes\_init\_parser@{jfes\_init\_parser}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_init\_parser()}{jfes\_init\_parser()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} jfes\+\_\+init\+\_\+parser (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{jfes_8h_ae4756ba504a6563f207111a1a25b4bdb}{jfes\+\_\+parser\+\_\+t}} $\ast$}]{parser,  }\item[{const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$}]{config }\end{DoxyParamCaption})}
+
+J\+F\+ES parser initialization.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em parser} & Pointer to the jfes\+\_\+parser\+\_\+t object. \\
+\hline
+\mbox{\texttt{ in}}  & {\em config} & J\+F\+ES configuration.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+jfes\+\_\+success if everything is OK. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_a3dd576783b2147ec1bc91df519b66fec}\label{jfes_8c_a3dd576783b2147ec1bc91df519b66fec}} 
+\index{jfes.c@{jfes.c}!jfes\_parse\_to\_value@{jfes\_parse\_to\_value}}
+\index{jfes\_parse\_to\_value@{jfes\_parse\_to\_value}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_parse\_to\_value()}{jfes\_parse\_to\_value()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} jfes\+\_\+parse\+\_\+to\+\_\+value (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$}]{config,  }\item[{const char $\ast$}]{json,  }\item[{\mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}}}]{length,  }\item[{\mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$}]{value }\end{DoxyParamCaption})}
+
+Runs J\+S\+ON parser and fills jfes\+\_\+value\+\_\+t object.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em config} & J\+F\+ES configuration. \\
+\hline
+\mbox{\texttt{ in}}  & {\em json} & J\+S\+ON data string. \\
+\hline
+\mbox{\texttt{ in}}  & {\em length} & J\+S\+ON data length. \\
+\hline
+\mbox{\texttt{ out}}  & {\em value} & Output value.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+jfes\+\_\+success if everything is OK. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_a84830c77ea14e4481ff95549a875ed66}\label{jfes_8c_a84830c77ea14e4481ff95549a875ed66}} 
+\index{jfes.c@{jfes.c}!jfes\_parse\_tokens@{jfes\_parse\_tokens}}
+\index{jfes\_parse\_tokens@{jfes\_parse\_tokens}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_parse\_tokens()}{jfes\_parse\_tokens()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} jfes\+\_\+parse\+\_\+tokens (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{jfes_8h_ae4756ba504a6563f207111a1a25b4bdb}{jfes\+\_\+parser\+\_\+t}} $\ast$}]{parser,  }\item[{const char $\ast$}]{json,  }\item[{\mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}}}]{length,  }\item[{\mbox{\hyperlink{jfes_8h_ae8dff55d2386a533198ad81bd430aec1}{jfes\+\_\+token\+\_\+t}} $\ast$}]{tokens,  }\item[{\mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}} $\ast$}]{max\+\_\+tokens\+\_\+count }\end{DoxyParamCaption})}
+
+Runs J\+S\+ON parser. It parses a J\+S\+ON data string into an array of tokens, each describing a single J\+S\+ON object.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em parser} & Pointer to the jfes\+\_\+parser\+\_\+t object. \\
+\hline
+\mbox{\texttt{ in}}  & {\em json} & J\+S\+ON data string. \\
+\hline
+\mbox{\texttt{ in}}  & {\em length} & J\+S\+ON data length. \\
+\hline
+\mbox{\texttt{ out}}  & {\em tokens} & Tokens array to fill. \\
+\hline
+\mbox{\texttt{ in,out}}  & {\em max\+\_\+tokens\+\_\+count} & Maximal count of tokens in tokens array. Will contain tokens count.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+jfes\+\_\+success if everything is OK. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_a05ce2fd40e2eb4c45a127c23b625047f}\label{jfes_8c_a05ce2fd40e2eb4c45a127c23b625047f}} 
+\index{jfes.c@{jfes.c}!jfes\_place\_to\_array@{jfes\_place\_to\_array}}
+\index{jfes\_place\_to\_array@{jfes\_place\_to\_array}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_place\_to\_array()}{jfes\_place\_to\_array()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} jfes\+\_\+place\+\_\+to\+\_\+array (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$}]{config,  }\item[{const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$}]{value,  }\item[{\mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$}]{item }\end{DoxyParamCaption})}
+
+Adds a new item to the given array value.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em config} & J\+F\+ES configuration. \\
+\hline
+\mbox{\texttt{ in}}  & {\em value} & Array value. \\
+\hline
+\mbox{\texttt{ in}}  & {\em item} & Item to add. Must be allocated on heap.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+jfes\+\_\+success if everything is OK. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_a026ac7a7d22691b8b3f9181938810975}\label{jfes_8c_a026ac7a7d22691b8b3f9181938810975}} 
+\index{jfes.c@{jfes.c}!jfes\_place\_to\_array\_at@{jfes\_place\_to\_array\_at}}
+\index{jfes\_place\_to\_array\_at@{jfes\_place\_to\_array\_at}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_place\_to\_array\_at()}{jfes\_place\_to\_array\_at()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} jfes\+\_\+place\+\_\+to\+\_\+array\+\_\+at (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$}]{config,  }\item[{const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$}]{value,  }\item[{\mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$}]{item,  }\item[{\mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}}}]{place\+\_\+at }\end{DoxyParamCaption})}
+
+Adds a new item to the given array value in the given place.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em config} & J\+F\+ES configuration. \\
+\hline
+\mbox{\texttt{ in}}  & {\em value} & Array value. \\
+\hline
+\mbox{\texttt{ in}}  & {\em item} & Item to add. Must be allocated on heap. \\
+\hline
+\mbox{\texttt{ in}}  & {\em place\+\_\+at} & Index to place.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+jfes\+\_\+success if everything is OK. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_a5f465603f11bab8745ec52d48feacebb}\label{jfes_8c_a5f465603f11bab8745ec52d48feacebb}} 
+\index{jfes.c@{jfes.c}!jfes\_remove\_from\_array@{jfes\_remove\_from\_array}}
+\index{jfes\_remove\_from\_array@{jfes\_remove\_from\_array}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_remove\_from\_array()}{jfes\_remove\_from\_array()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} jfes\+\_\+remove\+\_\+from\+\_\+array (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$}]{config,  }\item[{const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$}]{value,  }\item[{\mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}}}]{index }\end{DoxyParamCaption})}
+
+Removes an item with the given index from the array.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em config} & J\+F\+ES configuration. \\
+\hline
+\mbox{\texttt{ in}}  & {\em value} & Array value. \\
+\hline
+\mbox{\texttt{ in}}  & {\em index} & Index to remove.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+jfes\+\_\+success if everything is OK. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_a5056706e0c6e14e7ce474f6847cfcbec}\label{jfes_8c_a5056706e0c6e14e7ce474f6847cfcbec}} 
+\index{jfes.c@{jfes.c}!jfes\_remove\_object\_property@{jfes\_remove\_object\_property}}
+\index{jfes\_remove\_object\_property@{jfes\_remove\_object\_property}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_remove\_object\_property()}{jfes\_remove\_object\_property()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} jfes\+\_\+remove\+\_\+object\+\_\+property (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$}]{config,  }\item[{const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$}]{value,  }\item[{const char $\ast$}]{key,  }\item[{\mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}}}]{key\+\_\+length }\end{DoxyParamCaption})}
+
+Removes a child object with the given key.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em config} & J\+F\+ES configuration. \\
+\hline
+\mbox{\texttt{ in}}  & {\em value} & Array value. \\
+\hline
+\mbox{\texttt{ in}}  & {\em key} & Child key. \\
+\hline
+\mbox{\texttt{ in}}  & {\em key\+\_\+length} & Optional. Child key length. You can pass 0 if the key string is zero-\/terminated.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+jfes\+\_\+success if everything is OK. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_ae73e2146fa966d0b0fa3189e97d6c6da}\label{jfes_8c_ae73e2146fa966d0b0fa3189e97d6c6da}} 
+\index{jfes.c@{jfes.c}!jfes\_reset\_parser@{jfes\_reset\_parser}}
+\index{jfes\_reset\_parser@{jfes\_reset\_parser}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_reset\_parser()}{jfes\_reset\_parser()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} jfes\+\_\+reset\+\_\+parser (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{jfes_8h_ae4756ba504a6563f207111a1a25b4bdb}{jfes\+\_\+parser\+\_\+t}} $\ast$}]{parser }\end{DoxyParamCaption})}
+
+Resets all parser fields, except memory allocation functions.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em parser} & Pointer to the jfes\+\_\+parser\+\_\+t object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+jfes\+\_\+success if everything is OK. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_a9496f1f5bb5b44e2f04dfc093feda615}\label{jfes_8c_a9496f1f5bb5b44e2f04dfc093feda615}} 
+\index{jfes.c@{jfes.c}!jfes\_set\_object\_property@{jfes\_set\_object\_property}}
+\index{jfes\_set\_object\_property@{jfes\_set\_object\_property}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_set\_object\_property()}{jfes\_set\_object\_property()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} jfes\+\_\+set\+\_\+object\+\_\+property (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a01fd8a6d0b17167e99e48ce29ff30438}{jfes\+\_\+config\+\_\+t}} $\ast$}]{config,  }\item[{const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$}]{value,  }\item[{\mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$}]{item,  }\item[{const char $\ast$}]{key,  }\item[{\mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}}}]{key\+\_\+length }\end{DoxyParamCaption})}
+
+Adds a new item to the given object.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em config} & J\+F\+ES configuration. \\
+\hline
+\mbox{\texttt{ in}}  & {\em value} & Array value. \\
+\hline
+\mbox{\texttt{ in}}  & {\em item} & Item to add. Must be allocated on heap. \\
+\hline
+\mbox{\texttt{ in}}  & {\em key} & Child key. \\
+\hline
+\mbox{\texttt{ in}}  & {\em key\+\_\+length} & Optional. Child key length. You can pass 0 if the key string is zero-\/terminated.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+jfes\+\_\+success if everything is OK. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_aa448945affbe71b85dc84151ba39b666}\label{jfes_8c_aa448945affbe71b85dc84151ba39b666}} 
+\index{jfes.c@{jfes.c}!jfes\_status\_is\_bad@{jfes\_status\_is\_bad}}
+\index{jfes\_status\_is\_bad@{jfes\_status\_is\_bad}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_status\_is\_bad()}{jfes\_status\_is\_bad()}}
+{\footnotesize\ttfamily int jfes\+\_\+status\+\_\+is\+\_\+bad (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}}}]{status }\end{DoxyParamCaption})}
+
+J\+F\+ES status analizer function.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em status} & Status variable.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Zero if status is jfes\+\_\+success. Otherwise anything else. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_af1d1c7a72aa64ff866d8852e7581ea6d}\label{jfes_8c_af1d1c7a72aa64ff866d8852e7581ea6d}} 
+\index{jfes.c@{jfes.c}!jfes\_status\_is\_good@{jfes\_status\_is\_good}}
+\index{jfes\_status\_is\_good@{jfes\_status\_is\_good}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_status\_is\_good()}{jfes\_status\_is\_good()}}
+{\footnotesize\ttfamily int jfes\+\_\+status\+\_\+is\+\_\+good (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}}}]{status }\end{DoxyParamCaption})}
+
+J\+F\+ES status analizer function.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em status} & Status variable.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Zero status is not jfes\+\_\+success. Otherwise anything else. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jfes_8c_ad04749b0e18b6a0ee3c373554077628e}\label{jfes_8c_ad04749b0e18b6a0ee3c373554077628e}} 
+\index{jfes.c@{jfes.c}!jfes\_value\_to\_string@{jfes\_value\_to\_string}}
+\index{jfes\_value\_to\_string@{jfes\_value\_to\_string}!jfes.c@{jfes.c}}
+\doxysubsubsection{\texorpdfstring{jfes\_value\_to\_string()}{jfes\_value\_to\_string()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{jfes_8h_a0efe9568d7234e53337727bc2708106f}{jfes\+\_\+status\+\_\+t}} jfes\+\_\+value\+\_\+to\+\_\+string (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{jfes_8h_a0e91c8920f1005e79b9dd7f7e243e7fd}{jfes\+\_\+value\+\_\+t}} $\ast$}]{value,  }\item[{char $\ast$}]{data,  }\item[{\mbox{\hyperlink{jfes_8h_a63c35d0ccb7f664f1bf69125b6c773ac}{jfes\+\_\+size\+\_\+t}} $\ast$}]{max\+\_\+size,  }\item[{int}]{beautiful }\end{DoxyParamCaption})}
+
+Dumps J\+F\+ES value to the memory.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em value} & J\+F\+ES value to dump. \\
+\hline
+\mbox{\texttt{ out}}  & {\em data} & Allocated memory to store. \\
+\hline
+\mbox{\texttt{ in,out}}  & {\em max\+\_\+size} & Maximal size of data. Will store data length. \\
+\hline
+\mbox{\texttt{ in}}  & {\em beautiful} & Beautiful J\+S\+ON.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+jfes\+\_\+success if everything is OK. 
+\end{DoxyReturn}

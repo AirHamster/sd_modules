@@ -1,0 +1,98 @@
+\hypertarget{examples_8h}{}\doxysection{jfes/examples/examples.h File Reference}
+\label{examples_8h}\index{jfes/examples/examples.h@{jfes/examples/examples.h}}
+
+
+Header file for declarations of examples entry points.  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{examples_8h_aade6500013b9bc1e51947cb7b32b16a3}{example\+\_\+1\+\_\+entry}} (int argc, char $\ast$$\ast$argv)
+\item 
+int \mbox{\hyperlink{examples_8h_a385e100ce484ae1503a047e8d533a704}{example\+\_\+2\+\_\+entry}} (int argc, char $\ast$$\ast$argv)
+\item 
+int \mbox{\hyperlink{examples_8h_a752e6777f97d80c68de19c0f1e198597}{example\+\_\+3\+\_\+entry}} (int argc, char $\ast$$\ast$argv)
+\item 
+int \mbox{\hyperlink{examples_8h_a33cf0794ffe479cdcfea9627b2944e6e}{set\+\_\+file\+\_\+content}} (const char $\ast$filename, const char $\ast$content, unsigned long content\+\_\+size)
+\item 
+int \mbox{\hyperlink{examples_8h_a9b9e85d1b92bd6a4264dde0cd53c3e5e}{get\+\_\+file\+\_\+content}} (const char $\ast$filename, char $\ast$content, unsigned long $\ast$max\+\_\+content\+\_\+size)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Header file for declarations of examples entry points. 
+
+\begin{DoxyAuthor}{Author}
+Eremin Dmitry (\href{http://github.com/NeonMercury}{\texttt{ http\+://github.\+com/\+Neon\+Mercury}}) 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+October, 2015 
+\end{DoxyDate}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{examples_8h_aade6500013b9bc1e51947cb7b32b16a3}\label{examples_8h_aade6500013b9bc1e51947cb7b32b16a3}} 
+\index{examples.h@{examples.h}!example\_1\_entry@{example\_1\_entry}}
+\index{example\_1\_entry@{example\_1\_entry}!examples.h@{examples.h}}
+\doxysubsubsection{\texorpdfstring{example\_1\_entry()}{example\_1\_entry()}}
+{\footnotesize\ttfamily int example\+\_\+1\+\_\+entry (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$$\ast$}]{argv }\end{DoxyParamCaption})}
+
+Entry point for example\+\_\+1.
+
+Example 1 entry point. \mbox{\Hypertarget{examples_8h_a385e100ce484ae1503a047e8d533a704}\label{examples_8h_a385e100ce484ae1503a047e8d533a704}} 
+\index{examples.h@{examples.h}!example\_2\_entry@{example\_2\_entry}}
+\index{example\_2\_entry@{example\_2\_entry}!examples.h@{examples.h}}
+\doxysubsubsection{\texorpdfstring{example\_2\_entry()}{example\_2\_entry()}}
+{\footnotesize\ttfamily int example\+\_\+2\+\_\+entry (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$$\ast$}]{argv }\end{DoxyParamCaption})}
+
+Entry point for example\+\_\+2.
+
+Example 2 entry point. \mbox{\Hypertarget{examples_8h_a752e6777f97d80c68de19c0f1e198597}\label{examples_8h_a752e6777f97d80c68de19c0f1e198597}} 
+\index{examples.h@{examples.h}!example\_3\_entry@{example\_3\_entry}}
+\index{example\_3\_entry@{example\_3\_entry}!examples.h@{examples.h}}
+\doxysubsubsection{\texorpdfstring{example\_3\_entry()}{example\_3\_entry()}}
+{\footnotesize\ttfamily int example\+\_\+3\+\_\+entry (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$$\ast$}]{argv }\end{DoxyParamCaption})}
+
+Entry point for example\+\_\+3.
+
+Example 2 entry point. \mbox{\Hypertarget{examples_8h_a9b9e85d1b92bd6a4264dde0cd53c3e5e}\label{examples_8h_a9b9e85d1b92bd6a4264dde0cd53c3e5e}} 
+\index{examples.h@{examples.h}!get\_file\_content@{get\_file\_content}}
+\index{get\_file\_content@{get\_file\_content}!examples.h@{examples.h}}
+\doxysubsubsection{\texorpdfstring{get\_file\_content()}{get\_file\_content()}}
+{\footnotesize\ttfamily int get\+\_\+file\+\_\+content (\begin{DoxyParamCaption}\item[{const char $\ast$}]{filename,  }\item[{char $\ast$}]{content,  }\item[{unsigned long $\ast$}]{max\+\_\+content\+\_\+size }\end{DoxyParamCaption})}
+
+Helper function. Loads file content.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em filename} & Filename to get content. \\
+\hline
+\mbox{\texttt{ out}}  & {\em content} & Pointer to content buffer. \\
+\hline
+\mbox{\texttt{ in,out}}  & {\em max\+\_\+content\+\_\+size} & Maximal content buffer size. Returns file size.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Zero, if function failed. Anything otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{examples_8h_a33cf0794ffe479cdcfea9627b2944e6e}\label{examples_8h_a33cf0794ffe479cdcfea9627b2944e6e}} 
+\index{examples.h@{examples.h}!set\_file\_content@{set\_file\_content}}
+\index{set\_file\_content@{set\_file\_content}!examples.h@{examples.h}}
+\doxysubsubsection{\texorpdfstring{set\_file\_content()}{set\_file\_content()}}
+{\footnotesize\ttfamily int set\+\_\+file\+\_\+content (\begin{DoxyParamCaption}\item[{const char $\ast$}]{filename,  }\item[{const char $\ast$}]{content,  }\item[{unsigned long}]{content\+\_\+size }\end{DoxyParamCaption})}
+
+Helper function. Saves file content.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em filename} & Filename to get content. \\
+\hline
+\mbox{\texttt{ out}}  & {\em content} & Pointer to content buffer. \\
+\hline
+\mbox{\texttt{ in}}  & {\em content\+\_\+size} & Content buffer size.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Zero, if function failed. Anything otherwise. 
+\end{DoxyReturn}
