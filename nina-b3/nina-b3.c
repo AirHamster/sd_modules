@@ -223,6 +223,9 @@ static THD_FUNCTION(ble_parsing_thread, arg);
 static THD_WORKING_AREA(ble_thread_wa, 4096);
 static THD_FUNCTION(ble_thread, arg);
 
+/**
+ *
+ */
 void start_ble_module(void){
 	chThdCreateStatic(ble_parsing_thread_wa, sizeof(ble_parsing_thread_wa), NORMALPRIO + 1,
 			ble_parsing_thread, NULL);
@@ -230,6 +233,10 @@ void start_ble_module(void){
 				ble_thread, NULL);
 }
 
+/**
+ *
+ * @param arg
+ */
 static void ble_observe_tim_cb(void *arg){
 	chSysLockFromISR();
 	chEvtBroadcastI(&ble_observe_request_event);
@@ -237,6 +244,10 @@ static void ble_observe_tim_cb(void *arg){
 	chSysUnlockFromISR();
 }
 
+/**
+ *
+ * @param peer_1
+ */
 static void ble_data_tx_tim_cb(ble_peer_t *peer_1){
 	chSysLockFromISR();
 	if (peer_1->is_connected == 1){
@@ -249,7 +260,6 @@ static void ble_data_tx_tim_cb(ble_peer_t *peer_1){
 /*
  * Thread to process data collection and filtering from NEO-M8P
  */
-
 static THD_FUNCTION(ble_parsing_thread, arg) {
 	(void) arg;
 	uint8_t token;
@@ -389,6 +399,9 @@ while(true){
 }
 
 #ifdef USE_BLE_MODULE
+/**
+ *
+ */
 void copy_to_ble(void){
 #ifdef SD_MODULE_TRAINER
 #ifdef USE_MATH_MODULE
@@ -405,11 +418,6 @@ void copy_to_ble(void){
 		//hdg->value = convert_to_ble_type(lastFilterValues[0][FILTER_BUFFER_SIZE - 1]);
 		heel->value = convert_to_ble_type(lastSensorValues[HEEL]);
 #endif
-	//heel->value = convert_to_ble_type(bno055->d_euler_hpr.r);
-
-	//hdg->value = convert_to_ble_type(lastFilterValues[0][0]);
-	//heel->value = convert_to_ble_type(lastFilterValues[2][0]);
-
 #endif
 }
 #endif
@@ -486,6 +494,11 @@ STATE_DEFINE(Data_rx, NoEventData){
 
 }
 
+/**
+ *
+ * @param strp
+ * @return
+ */
 uint8_t nina_parse_command(int8_t *strp) {
 	uint8_t scan_res;
 	int8_t *scan_res_p;
@@ -608,6 +621,12 @@ uint8_t nina_parse_command(int8_t *strp) {
 	return -1;
 }
 
+/**
+ *
+ * @param conn_handle
+ * @param val_handle
+ * @param value
+ */
 void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t value){
 #ifdef SD_MODULE_TRAINER
 	if ((remote_lag->is_connected == 1) && (remote_lag->conn_handle == conn_handle)){
@@ -639,10 +658,21 @@ void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t v
 #endif
 }
 
+/**
+ *
+ * @param addr
+ * @param type
+ */
 void nina_connect(uint8_t *addr, uint8_t type){
 	chprintf(NINA_IFACE, "AT+UBTACLC=%s,%d\r", addr, type);
 }
 
+/**
+ *
+ * @param conn_handle
+ * @param type
+ * @param addr
+ */
 void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr){
 	peer->conn_handle = conn_handle;
 	peer->type = type;
@@ -661,6 +691,11 @@ void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr){
 
 }
 
+/**
+ *
+ * @param devlist
+ * @param conn_handle
+ */
 void nina_unregister_peer(ble_remote_dev_t* devlist, uint8_t conn_handle) {
 #ifdef SD_MODULE_TRAINER
 
@@ -700,6 +735,13 @@ void nina_unregister_peer(ble_remote_dev_t* devlist, uint8_t conn_handle) {
 #endif
 }
 
+/**
+ *
+ * @param devlist
+ * @param conn_handle
+ * @param type
+ * @param addr
+ */
 void nina_register_remote_dev(ble_remote_dev_t* devlist, uint8_t conn_handle, uint8_t type, int8_t *addr){
 #ifdef SD_MODULE_TRAINER
 
@@ -726,6 +768,11 @@ void nina_register_remote_dev(ble_remote_dev_t* devlist, uint8_t conn_handle, ui
 #endif
 }
 
+/**
+ *
+ * @param handle
+ * @param uuid
+ */
 void nina_get_remote_characs(uint16_t handle, uint16_t uuid){
 	chprintf(NINA_IFACE, "AT+UBTGDP=%d\r", handle);
 	chThdSleepMilliseconds(300);
@@ -736,6 +783,9 @@ void nina_get_remote_characs(uint16_t handle, uint16_t uuid){
 	chprintf(NINA_IFACE, "AT+UBTGWC=%d,%d,%d\r", handle, 33, 1);
 }
 
+/**
+ *
+ */
 void nina_fill_memory(void){
 	charac_temporary = calloc(1, sizeof(ble_temp_charac_t));
 	peer = calloc(1, sizeof(ble_peer_t));
@@ -783,19 +833,40 @@ void nina_fill_memory(void){
 
 #endif
 }
+
 void nina_send_at(void){
 	chprintf(NINA_IFACE, "AT\r");
 }
 
+/**
+ *
+ */
 void nina_init_module(void){
 	nina_init_services();
 }
 
+/**
+ *
+ * @param at_command
+ * @return
+ */
 uint8_t nina_wait_response(int8_t *at_command){
 
 return NINA_SUCCESS;
 }
 
+/**
+ *
+ * @param charac
+ * @param uuid
+ * @param properties
+ * @param sec_read
+ * @param sec_write
+ * @param def_val
+ * @param read_auth
+ * @param max_len
+ * @return
+ */
 //AT+UBTGCHA=3A01,10,1,1,0F00FF,0,3
 uint8_t nina_add_charac(ble_charac_t *charac, uint16_t uuid, uint8_t properties,
 		uint8_t sec_read, uint8_t sec_write, uint32_t def_val,
@@ -824,10 +895,19 @@ uint8_t nina_add_charac(ble_charac_t *charac, uint16_t uuid, uint8_t properties,
 	//nina_wait_charac_handlers(charac);
 }
 
+/**
+ *
+ * @param ble_rudder
+ * @param val
+ */
 void nina_notify(ble_charac_t *ble_rudder, int32_t val){
 	chprintf(NINA_IFACE, "AT+UBTGSN=%d,%02d,%06x\r", peer->conn_handle, ble_rudder->cccd_handle, val);
 }
 
+/**
+ *
+ * @param charac
+ */
 void nina_wait_charac_handlers(ble_charac_t *charac){
 	uint16_t val_handle;
 	uint16_t cccd_handle;
@@ -837,7 +917,12 @@ void nina_wait_charac_handlers(ble_charac_t *charac){
 }
 
 #ifdef SD_MODULE_TRAINER
-
+/**
+ *
+ * @param strp
+ * @param devlist
+ * @return
+ */
 int8_t nina_compare_founded_dev(uint8_t *strp, ble_remote_dev_t *devlist){
 	uint8_t i = 0;
 	int8_t *scan_res_p;
@@ -851,6 +936,11 @@ int8_t nina_compare_founded_dev(uint8_t *strp, ble_remote_dev_t *devlist){
 	}
 }
 
+/**
+ *
+ * @param devlist
+ * @return
+ */
 int8_t nina_init_devices(ble_remote_dev_t *devlist) {
 
 	uint8_t i = 0;
@@ -881,6 +971,10 @@ int8_t nina_init_devices(ble_remote_dev_t *devlist) {
 	return NUM_OF_REMOTE_DEV;
 }
 
+/**
+ *
+ * @return
+ */
 uint8_t nina_init_services(void){
 	chprintf(NINA_IFACE, "AT+UBTLE=3\r");
 	if (nina_wait_response("+UBTLE\r") != NINA_SUCCESS) {
@@ -1050,6 +1144,11 @@ uint8_t nina_init_services(void){
 		*/
 }
 #endif
+
+/**
+ *
+ * @param peer
+ */
 void nina_send_all(ble_peer_t *peer){
 #ifdef SD_MODULE_TRAINER
 	//if (peer->is_connected == 1) {
@@ -1127,6 +1226,9 @@ void nina_send_all(ble_peer_t *peer){
 }
 
 #ifdef SD_SENSOR_BOX_RUDDER
+/**
+ *
+ */
 uint8_t nina_init_services(void){
 	//chprintf(SHELL_IFACE, "AT+UBTLE=2\r");
 	chprintf(NINA_IFACE, "AT+UBTLE=2\r");
@@ -1214,6 +1316,9 @@ uint8_t nina_init_services(void){
 #endif
 
 #ifdef SD_SENSOR_BOX_LAG
+/**
+ *
+ */
 uint8_t nina_init_services(void){
 	chprintf(NINA_IFACE, "AT+UBTLE=2\r");
 	if (nina_wait_response("+UBTLE\r") != NINA_SUCCESS) {
@@ -1291,6 +1396,9 @@ uint8_t nina_init_services(void){
 #endif
 
 #ifdef SD_SENSOR_BOX_TENSO
+/**
+ *
+ */
 uint8_t nina_init_services(void){
 	chprintf(NINA_IFACE, "AT+UBTLE=2\r");
 	if (nina_wait_response("+UBTLE\r") != NINA_SUCCESS) {

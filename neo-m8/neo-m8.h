@@ -77,6 +77,9 @@ typedef struct{
 	uint8_t cfg_dgnss_req;
 }neo_struct_t;
 
+/**
+ * Position velocity time struct
+ */
 typedef struct{
 	U4 iTOW;
 	U2 year;
@@ -118,6 +121,9 @@ typedef struct{
 
 }ubx_nav_pvt_t;
 
+/**
+ * Navigation configuration struct
+ */
 typedef struct{
 	X2 mask;
 	U1 dynModel;
@@ -145,6 +151,9 @@ typedef struct{
 	U1 res7;
 }ubx_cfg_nav5_t;
 
+/**
+ * Odometr configuration struct
+ */
 typedef struct{
 	U1 version;
 	U1 res1;
@@ -175,12 +184,18 @@ typedef struct{
 	U1 res3;
 }ubx_cfg_dgnss_t;
 
+/**
+ * output rate struct
+ */
 typedef struct{
 	U2 measRate;
 	U2 navRate;
 	U2 timeRef;
 }ubx_cfg_rate_t;
 
+/**
+ *
+ */
 typedef struct{
 	U1 version;
 	U1 res1;
@@ -195,6 +210,9 @@ typedef struct{
 	U1 res[20];
 }ubx_cfg_pm2;
 
+/**
+ * Odometr output struct
+ */
 typedef struct{
 	U1 version;
 	U1 res1;
@@ -206,6 +224,9 @@ typedef struct{
 	U4 distanceStd;
 }ubx_nav_odo_t;
 
+/**
+ * SBAS correction cfg. Not supported in NEO-M8P
+ */
 typedef struct{
 	X1 mode;
 	X1 usage;
@@ -214,20 +235,97 @@ typedef struct{
 	X4 scanmode1;
 }ubx_cfg_sbas_t;
 
+/**
+ *  Start navigation threads
+ */
 void start_gps_module(void);
+/**
+ * Low-level writing API
+ * @param SPID
+ * @param reg_addr
+ * @param value
+ */
 void neo_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value);
+
+/**
+ * Low-level writing API without releasing CS in the end of transition
+ * @param SPID
+ * @param txbuff
+ * @param len
+ */
 void neo_write_no_cs(SPIDriver *SPID, uint8_t *txbuff, uint8_t len);
+
+/**
+ * Low-level reading API
+ * @param SPID
+ * @param reg_addr
+ * @return
+ */
 uint8_t neo_read_byte(SPIDriver *SPID, uint8_t reg_addr);
+
+/**
+ * Low-level reading several bytes API
+ * @param SPID
+ * @param num
+ * @param rxbuf
+ */
 void neo_read_bytes(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf);
+
+/**
+ * Low-level reading several bytes API with releasing CS in the end of transition
+ * @param SPID
+ * @param num
+ * @param rxbuf
+ */
 void neo_read_bytes_release_cs(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf);
+
+/**
+ * Low-level reading several bytes API without releasing CS in the end of transition
+ * @param SPID
+ * @param num
+ * @param rxbuf
+ */
 void neo_read_bytes_no_cs(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf);
+
+/**
+ * Switching to UBX protocol procedure
+ */
 void neo_switch_to_ubx(void);
+
+/**
+ * Setting ooutput PVT rate to 1 HZ
+ */
 void neo_set_pvt_1hz(void);
 void neo_poll_prt(void);
+
+/**
+ * Polling nav pvt data
+ */
 void neo_poll_nav_pvt(void);
+
+/**
+ * Polling API
+ * @param *SPID SPI driver
+ * @param class UBX class
+ * @param id UBX class ID
+ */
 void neo_polling(SPIDriver *SPID, uint8_t class, uint8_t id);
+/**
+ *
+ * @param msg
+ * @param strc
+ * @param len
+ */
 void neo_cp_to_struct(uint8_t *msg, uint8_t *strc, uint8_t len);
+
+/**
+ *
+ */
 void neo_write_struct(uint8_t *strc, uint8_t class, uint8_t id, uint8_t payload_len);
+
+/**
+ *
+ */
 void neo_create_poll_request(uint8_t class, uint8_t id);
 
 
@@ -246,10 +344,39 @@ void neo_process_odo(uint8_t *message);
 void neo_process_rate(uint8_t *message);
 void neo_poll(void);
 
+/**
+ *
+ * @param pvt
+ * @return
+ */
 int32_t neo_get_lat(ubx_nav_pvt_t *pvt);
+
+/**
+ *
+ * @param pvt
+ * @return
+ */
 int32_t neo_get_lon(ubx_nav_pvt_t *pvt);
+
+/**
+ *
+ * @param pvt
+ * @return
+ */
 uint8_t neo_get_numsv(ubx_nav_pvt_t *pvt);
+
+/**
+ *
+ * @param pvt
+ * @return
+ */
 uint8_t neo_get_valid(ubx_nav_pvt_t *pvt);
+
+/**
+ *
+ * @param pvt
+ * @return
+ */
 int32_t neo_get_ground_speed(ubx_nav_pvt_t *pvt);
 
 

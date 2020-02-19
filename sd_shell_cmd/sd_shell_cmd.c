@@ -195,7 +195,7 @@ thread_t *cmd_init(void) {
 
 void start_json_module(void){
 	trainer_dev.rf_data = &trainer_data;
-	trainer_dev.
+	//trainer_dev.
 	trainer_dev.number = 0;
 	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO + 4, output_thread, NULL);
 }

@@ -216,6 +216,9 @@ const I2CConfig bmx160_i2c_cfg = {
   0
 };
 
+/**
+ *
+ */
 void start_bmx160_module(void){
 
 	chThdCreateStatic(bmx160_thread_wa, sizeof(bmx160_thread_wa), NORMALPRIO + 3, bmx160_thread, NULL);
@@ -471,6 +474,11 @@ static THD_FUNCTION(bmx160_calib_thread, arg) {
 		}
 
 }
+
+/**
+ *
+ * @return
+ */
 int8_t bmx160_full_init(void) {
 	 /* Initialize your host interface to the BMI160 */
 
@@ -551,6 +559,11 @@ int8_t bmx160_full_init(void) {
 	    /* Check rslt for any error codes */
 }
 
+/**
+ *
+ * @param bmx160
+ * @return
+ */
 int8_t bmx160_save_calib_to_eeprom(bmx160_t *bmx160){
 	EEPROM_WRITE(MAGN_MEMORY.MAGN_X_OFFSET, (uint8_t*)&bmx160->mag_offset.x);
 	EEPROM_WRITE(MAGN_MEMORY.MAGN_Y_OFFSET, (uint8_t*)&bmx160->mag_offset.y);
@@ -558,6 +571,11 @@ int8_t bmx160_save_calib_to_eeprom(bmx160_t *bmx160){
 	//eeprom_write(EEPROM_MAGN_X_OFFSET_ADDR, (uint8_t*)&bmx160->mag_offset.x, sizeof(float)*3);
 }
 
+/**
+ *
+ * @param bmx160
+ * @return
+ */
 int8_t bmx160_read_calib_from_eeprom(bmx160_t *bmx160){
 	EEPROM_READ(MAGN_MEMORY.MAGN_X_OFFSET, (uint8_t*)&bmx160->mag_offset.x);
 	EEPROM_READ(MAGN_MEMORY.MAGN_Y_OFFSET, (uint8_t*)&bmx160->mag_offset.y);
@@ -565,10 +583,21 @@ int8_t bmx160_read_calib_from_eeprom(bmx160_t *bmx160){
 	//eeprom_read(EEPROM_MAGN_X_OFFSET_ADDR, (uint8_t*)&bmx160->mag_offset.x, sizeof(float)*3);
 }
 
+/**
+ *
+ * @param msec
+ */
 void bmx160_delay_ms(uint16_t msec){
 	chThdSleepMilliseconds(msec);
 }
 
+/**
+ *
+ * @param dev_addr
+ * @param reg_data
+ * @param r_len
+ * @return
+ */
 int8_t bmx160_read(uint8_t dev_addr, uint8_t *reg_data, uint8_t r_len) {
 	msg_t status;
 	uint8_t databuff[64];
@@ -592,6 +621,13 @@ int8_t bmx160_read(uint8_t dev_addr, uint8_t *reg_data, uint8_t r_len) {
 
 }
 
+/**
+ *
+ * @param dev_addr
+ * @param reg_data
+ * @param wr_len
+ * @return
+ */
 int8_t bmx160_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len) {
 	uint8_t rxbuff[1];
 	msg_t status;
@@ -613,6 +649,14 @@ int8_t bmx160_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len) {
 	return 0;
 }
 
+/**
+ *
+ * @param dev_addr
+ * @param reg_addr
+ * @param reg_data
+ * @param cnt
+ * @return
+ */
 int8_t bmx160_I2C_bus_write(uint8_t dev_addr, uint8_t reg_addr, uint8_t *reg_data, uint8_t cnt)
 {
 	//int32_t bmx160_iERROR = bmx160_INIT_VALUE;
@@ -685,7 +729,16 @@ void i2c_restart(I2CDriver *i2cp)
 	i2cStart (i2cp, &bmx160_i2c_cfg);
 }
 */
+
 /* Auxiliary function definitions */
+/**
+ *
+ * @param id
+ * @param reg_addr
+ * @param reg_data
+ * @param len
+ * @return
+ */
 int8_t bmm150_aux_read(uint8_t id, uint8_t reg_addr, uint8_t *reg_data, uint16_t len) {
 
     (void) id; /* id is unused here */
@@ -693,6 +746,14 @@ int8_t bmm150_aux_read(uint8_t id, uint8_t reg_addr, uint8_t *reg_data, uint16_t
     return bmi160_aux_read(reg_addr, reg_data, len, &bmi);
 }
 
+/**
+ *
+ * @param id
+ * @param reg_addr
+ * @param reg_data
+ * @param len
+ * @return
+ */
 int8_t bmm150_aux_write(uint8_t id, uint8_t reg_addr, uint8_t *reg_data, uint16_t len) {
 
     (void) id; /* id is unused here */
@@ -700,7 +761,11 @@ int8_t bmm150_aux_write(uint8_t id, uint8_t reg_addr, uint8_t *reg_data, uint16_
     return bmi160_aux_write(reg_addr, reg_data, len, &bmi);
 }
 
-
+/**
+ *
+ * @param dest1
+ * @param dest2
+ */
 void bmx160_mag_calibration(float * dest1, float * dest2) {
 	uint16_t ii = 0, sample_count = 0;
 	float mag_bias[3] = { 0, 0, 0 }, mag_scale[3] = { 0, 0, 0 };

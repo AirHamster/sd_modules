@@ -1,0 +1,44 @@
+\hypertarget{_fusion_compass_8h}{}\doxysection{bmx160/\+Fusion/\+Fusion\+Compass.h File Reference}
+\label{_fusion_compass_8h}\index{bmx160/Fusion/FusionCompass.h@{bmx160/Fusion/FusionCompass.h}}
+
+
+The tilt-\/compensated compass calculates an angular heading relative to magnetic north using accelerometer and magnetometer measurements (N\+WU convention).  
+
+
+{\ttfamily \#include \char`\"{}Fusion\+Types.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+float \mbox{\hyperlink{_fusion_compass_8h_ac10868a6ac5508795ee000de72ff0656}{Fusion\+Compass\+Calculate\+Heading}} (const \mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}} accelerometer, const \mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}} magnetometer)
+\begin{DoxyCompactList}\small\item\em Calculates the tilt-\/compensated heading relative to magnetic north. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The tilt-\/compensated compass calculates an angular heading relative to magnetic north using accelerometer and magnetometer measurements (N\+WU convention). 
+
+\begin{DoxyAuthor}{Author}
+Seb Madgwick 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{_fusion_compass_8h_ac10868a6ac5508795ee000de72ff0656}\label{_fusion_compass_8h_ac10868a6ac5508795ee000de72ff0656}} 
+\index{FusionCompass.h@{FusionCompass.h}!FusionCompassCalculateHeading@{FusionCompassCalculateHeading}}
+\index{FusionCompassCalculateHeading@{FusionCompassCalculateHeading}!FusionCompass.h@{FusionCompass.h}}
+\doxysubsubsection{\texorpdfstring{FusionCompassCalculateHeading()}{FusionCompassCalculateHeading()}}
+{\footnotesize\ttfamily float Fusion\+Compass\+Calculate\+Heading (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}}}]{accelerometer,  }\item[{const \mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}}}]{magnetometer }\end{DoxyParamCaption})}
+
+
+
+Calculates the tilt-\/compensated heading relative to magnetic north. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em accelerometer} & Accelerometer measurement in any calibrated units. \\
+\hline
+{\em magnetometer} & Magnetometer measurement in any calibrated units. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Heading angle in degrees. 
+\end{DoxyReturn}

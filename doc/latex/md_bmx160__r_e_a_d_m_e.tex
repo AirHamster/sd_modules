@@ -1,0 +1,979 @@
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md12}{}\doxysection{Introduction}\label{md_bmx160__r_e_a_d_m_e_autotoc_md12}
+This package contains the Bosch Sensortec\textquotesingle{}s B\+M\+I160 sensor driver (sensor A\+PI)
+
+The sensor driver package includes \mbox{\hyperlink{bmi160_8h}{bmi160.\+h}}, \mbox{\hyperlink{bmi160_8c}{bmi160.\+c}} and \mbox{\hyperlink{bmi160__defs_8h}{bmi160\+\_\+defs.\+h}} files\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md13}{}\doxysection{Version}\label{md_bmx160__r_e_a_d_m_e_autotoc_md13}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ File }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Version }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Date  }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ File }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Version }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Date  }\\\cline{1-3}
+\endhead
+\mbox{\hyperlink{bmi160_8c}{bmi160.\+c}} &3.\+7.\+7 &13 Mar 2019  \\\cline{1-3}
+\mbox{\hyperlink{bmi160_8h}{bmi160.\+h}} &3.\+7.\+7 &13 Mar 2019  \\\cline{1-3}
+\mbox{\hyperlink{bmi160__defs_8h}{bmi160\+\_\+defs.\+h}} &3.\+7.\+7 &13 Mar 2019  \\\cline{1-3}
+\end{longtabu}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md14}{}\doxysection{Integration details}\label{md_bmx160__r_e_a_d_m_e_autotoc_md14}
+
+\begin{DoxyItemize}
+\item Integrate \mbox{\hyperlink{bmi160_8h}{bmi160.\+h}}, \mbox{\hyperlink{bmi160__defs_8h}{bmi160\+\_\+defs.\+h}} and \mbox{\hyperlink{bmi160_8c}{bmi160.\+c}} file in to your project.
+\item Include the \mbox{\hyperlink{bmi160_8h}{bmi160.\+h}} file in your code like below. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#include "bmi160.h"}
+\end{DoxyCode}
+
+\end{DoxyItemize}\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md15}{}\doxysection{File information}\label{md_bmx160__r_e_a_d_m_e_autotoc_md15}
+
+\begin{DoxyItemize}
+\item \mbox{\hyperlink{bmi160__defs_8h}{bmi160\+\_\+defs.\+h}} \+: This header file has the constants, macros and datatype declarations.
+\item \mbox{\hyperlink{bmi160_8h}{bmi160.\+h}} \+: This header file contains the declarations of the sensor driver A\+P\+Is.
+\item \mbox{\hyperlink{bmi160_8c}{bmi160.\+c}} \+: This source file contains the definitions of the sensor driver A\+P\+Is.
+\end{DoxyItemize}\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md16}{}\doxysection{Supported sensor interface}\label{md_bmx160__r_e_a_d_m_e_autotoc_md16}
+
+\begin{DoxyItemize}
+\item S\+PI 4-\/wire
+\item I2C
+\end{DoxyItemize}\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md17}{}\doxysection{Usage guide}\label{md_bmx160__r_e_a_d_m_e_autotoc_md17}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md18}{}\doxysubsection{Initializing the sensor}\label{md_bmx160__r_e_a_d_m_e_autotoc_md18}
+To initialize the sensor, you will first need to create a device structure. You can do this by creating an instance of the structure \mbox{\hyperlink{structbmi160__dev}{bmi160\+\_\+dev}}. Then go on to fill in the various parameters as shown below.\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md19}{}\doxysubsubsection{Example for S\+P\+I 4-\/\+Wire}\label{md_bmx160__r_e_a_d_m_e_autotoc_md19}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{struct bmi160\_dev sensor;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* You may assign a chip select identifier to be handled later */}
+\DoxyCodeLine{sensor.id = 0;}
+\DoxyCodeLine{sensor.interface = BMI160\_SPI\_INTF;}
+\DoxyCodeLine{sensor.read = user\_spi\_read;}
+\DoxyCodeLine{sensor.write = user\_spi\_write;}
+\DoxyCodeLine{sensor.delay\_ms = user\_delay\_ms;}
+\DoxyCodeLine{}
+\DoxyCodeLine{}
+\DoxyCodeLine{int8\_t rslt = BMI160\_OK;}
+\DoxyCodeLine{rslt = bmi160\_init(\&sensor);}
+\DoxyCodeLine{/* After the above function call, accel\_cfg and gyro\_cfg parameters in the device }
+\DoxyCodeLine{structure are set with default values, found in the datasheet of the sensor */}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md20}{}\doxysubsubsection{Example for I2C}\label{md_bmx160__r_e_a_d_m_e_autotoc_md20}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{struct bmi160\_dev sensor;}
+\DoxyCodeLine{}
+\DoxyCodeLine{sensor.id = BMI160\_I2C\_ADDR;}
+\DoxyCodeLine{sensor.interface = BMI160\_I2C\_INTF;}
+\DoxyCodeLine{sensor.read = user\_i2c\_read;}
+\DoxyCodeLine{sensor.write = user\_i2c\_write;}
+\DoxyCodeLine{sensor.delay\_ms = user\_delay\_ms;}
+\DoxyCodeLine{}
+\DoxyCodeLine{int8\_t rslt = BMI160\_OK;}
+\DoxyCodeLine{rslt = bmi160\_init(\&sensor);}
+\DoxyCodeLine{/* After the above function call, accel and gyro parameters in the device structure }
+\DoxyCodeLine{are set with default values, found in the datasheet of the sensor */}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md21}{}\doxysubsection{Configuring accel and gyro sensor}\label{md_bmx160__r_e_a_d_m_e_autotoc_md21}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md22}{}\doxysubsubsection{Example for configuring accel and gyro sensors in normal mode}\label{md_bmx160__r_e_a_d_m_e_autotoc_md22}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t rslt = BMI160\_OK;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Select the Output data rate, range of accelerometer sensor */}
+\DoxyCodeLine{sensor.accel\_cfg.odr = BMI160\_ACCEL\_ODR\_1600HZ;}
+\DoxyCodeLine{sensor.accel\_cfg.range = BMI160\_ACCEL\_RANGE\_2G;}
+\DoxyCodeLine{sensor.accel\_cfg.bw = BMI160\_ACCEL\_BW\_NORMAL\_AVG4;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Select the power mode of accelerometer sensor */}
+\DoxyCodeLine{sensor.accel\_cfg.power = BMI160\_ACCEL\_NORMAL\_MODE;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Select the Output data rate, range of Gyroscope sensor */}
+\DoxyCodeLine{sensor.gyro\_cfg.odr = BMI160\_GYRO\_ODR\_3200HZ;}
+\DoxyCodeLine{sensor.gyro\_cfg.range = BMI160\_GYRO\_RANGE\_2000\_DPS;}
+\DoxyCodeLine{sensor.gyro\_cfg.bw = BMI160\_GYRO\_BW\_NORMAL\_MODE;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Select the power mode of Gyroscope sensor */}
+\DoxyCodeLine{sensor.gyro\_cfg.power = BMI160\_GYRO\_NORMAL\_MODE; }
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Set the sensor configuration */}
+\DoxyCodeLine{rslt = bmi160\_set\_sens\_conf(\&sensor);}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md23}{}\doxysubsection{Reading sensor data}\label{md_bmx160__r_e_a_d_m_e_autotoc_md23}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md24}{}\doxysubsubsection{Example for reading sensor data}\label{md_bmx160__r_e_a_d_m_e_autotoc_md24}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t rslt = BMI160\_OK;}
+\DoxyCodeLine{struct bmi160\_sensor\_data accel;}
+\DoxyCodeLine{struct bmi160\_sensor\_data gyro;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* To read only Accel data */}
+\DoxyCodeLine{rslt = bmi160\_get\_sensor\_data(BMI160\_ACCEL\_SEL, \&accel, NULL, \&sensor);}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* To read only Gyro data */}
+\DoxyCodeLine{rslt = bmi160\_get\_sensor\_data(BMI160\_GYRO\_SEL, NULL, \&gyro, \&sensor);}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* To read both Accel and Gyro data */}
+\DoxyCodeLine{bmi160\_get\_sensor\_data((BMI160\_ACCEL\_SEL | BMI160\_GYRO\_SEL), \&accel, \&gyro, \&sensor);}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* To read Accel data along with time */}
+\DoxyCodeLine{rslt = bmi160\_get\_sensor\_data((BMI160\_ACCEL\_SEL | BMI160\_TIME\_SEL) , \&accel, NULL, \&sensor);}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* To read Gyro data along with time */}
+\DoxyCodeLine{rslt = bmi160\_get\_sensor\_data((BMI160\_GYRO\_SEL | BMI160\_TIME\_SEL), NULL, \&gyro, \&sensor);}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* To read both Accel and Gyro data along with time*/}
+\DoxyCodeLine{bmi160\_get\_sensor\_data((BMI160\_ACCEL\_SEL | BMI160\_GYRO\_SEL | BMI160\_TIME\_SEL), \&accel, \&gyro, \&sensor);}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md25}{}\doxysubsection{Setting the power mode of sensors}\label{md_bmx160__r_e_a_d_m_e_autotoc_md25}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md26}{}\doxysubsubsection{Example for setting power mode of accel and gyro}\label{md_bmx160__r_e_a_d_m_e_autotoc_md26}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t rslt = BMI160\_OK;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Select the power mode */}
+\DoxyCodeLine{sensor.accel\_cfg.power = BMI160\_ACCEL\_SUSPEND\_MODE; }
+\DoxyCodeLine{sensor.gyro\_cfg.power = BMI160\_GYRO\_FASTSTARTUP\_MODE; }
+\DoxyCodeLine{}
+\DoxyCodeLine{/*  Set the Power mode  */}
+\DoxyCodeLine{rslt = bmi160\_set\_power\_mode(\&sensor);}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Select the power mode */}
+\DoxyCodeLine{sensor.accel\_cfg.power = BMI160\_ACCEL\_NORMAL\_MODE;}
+\DoxyCodeLine{sensor.gyro\_cfg.power = BMI160\_GYRO\_NORMAL\_MODE; }
+\DoxyCodeLine{}
+\DoxyCodeLine{/*  Set the Power mode  */}
+\DoxyCodeLine{rslt = bmi160\_set\_power\_mode(\&sensor);}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md27}{}\doxysubsection{Reading sensor data register}\label{md_bmx160__r_e_a_d_m_e_autotoc_md27}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md28}{}\doxysubsubsection{Example for reading Chip Address}\label{md_bmx160__r_e_a_d_m_e_autotoc_md28}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t rslt = BMI160\_OK;}
+\DoxyCodeLine{uint8\_t reg\_addr = BMI160\_CHIP\_ID\_ADDR;}
+\DoxyCodeLine{uint8\_t data;}
+\DoxyCodeLine{uint16\_t len = 1;}
+\DoxyCodeLine{rslt = bmi160\_get\_regs(reg\_addr, \&data, len, \&sensor);}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md29}{}\doxysubsection{Writing to sensor data register}\label{md_bmx160__r_e_a_d_m_e_autotoc_md29}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md30}{}\doxysubsubsection{Example for writing data to any motion threshold register}\label{md_bmx160__r_e_a_d_m_e_autotoc_md30}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t rslt = BMI160\_OK;}
+\DoxyCodeLine{uint8\_t reg\_addr = BMI160\_INT\_MOTION\_1\_ADDR;}
+\DoxyCodeLine{uint8\_t data = 20;}
+\DoxyCodeLine{uint16\_t len = 1;}
+\DoxyCodeLine{rslt = bmi160\_set\_regs(reg\_addr, \&data, len, \&sensor);}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md31}{}\doxysubsection{Resetting the device using soft-\/reset}\label{md_bmx160__r_e_a_d_m_e_autotoc_md31}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md32}{}\doxysubsubsection{Example for writing soft-\/reset command to command register}\label{md_bmx160__r_e_a_d_m_e_autotoc_md32}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t rslt = BMI160\_OK;}
+\DoxyCodeLine{rslt = bmi160\_soft\_reset(\&sensor);}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md33}{}\doxysubsection{Configuring interrupts for sensors}\label{md_bmx160__r_e_a_d_m_e_autotoc_md33}
+To configure the sensor interrupts, you will first need to create an interrupt structure. You can do this by creating an instance of the structure \mbox{\hyperlink{structbmi160__int__settg}{bmi160\+\_\+int\+\_\+settg}}. Then go on to fill in the various parameters as shown below\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md34}{}\doxysubsection{Configuring Any-\/motion Interrupt}\label{md_bmx160__r_e_a_d_m_e_autotoc_md34}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md35}{}\doxysubsubsection{Example for configuring Any-\/motion Interrupt}\label{md_bmx160__r_e_a_d_m_e_autotoc_md35}
+Note\+:-\/ User can check the currently active interrupt(any-\/motion or sig-\/motion) by checking the {\bfseries{any\+\_\+sig\+\_\+sel}} of \mbox{\hyperlink{structbmi160__dev}{bmi160\+\_\+dev}} structure. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{struct bmi160\_int\_settg int\_config;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Select the Interrupt channel/pin */}
+\DoxyCodeLine{int\_config.int\_channel = BMI160\_INT\_CHANNEL\_1;// Interrupt channel/pin 1}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Select the Interrupt type */}
+\DoxyCodeLine{int\_config.int\_type = BMI160\_ACC\_ANY\_MOTION\_INT;// Choosing Any motion interrupt}
+\DoxyCodeLine{/* Select the interrupt channel/pin settings */}
+\DoxyCodeLine{int\_config.int\_pin\_settg.output\_en = BMI160\_ENABLE;// Enabling interrupt pins to act as output pin}
+\DoxyCodeLine{int\_config.int\_pin\_settg.output\_mode = BMI160\_DISABLE;// Choosing push-\/pull mode for interrupt pin}
+\DoxyCodeLine{int\_config.int\_pin\_settg.output\_type = BMI160\_DISABLE;// Choosing active low output}
+\DoxyCodeLine{int\_config.int\_pin\_settg.edge\_ctrl = BMI160\_ENABLE;// Choosing edge triggered output}
+\DoxyCodeLine{int\_config.int\_pin\_settg.input\_en = BMI160\_DISABLE;// Disabling interrupt pin to act as input}
+\DoxyCodeLine{int\_config.int\_pin\_settg.latch\_dur = BMI160\_LATCH\_DUR\_NONE;// non-\/latched output}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Select the Any-\/motion interrupt parameters */}
+\DoxyCodeLine{int\_config.int\_type\_cfg.acc\_any\_motion\_int.anymotion\_en = BMI160\_ENABLE;// 1-\/ Enable the any-\/motion, 0-\/ disable any-\/motion }
+\DoxyCodeLine{int\_config.int\_type\_cfg.acc\_any\_motion\_int.anymotion\_x = BMI160\_ENABLE;// Enabling x-\/axis for any motion interrupt}
+\DoxyCodeLine{int\_config.int\_type\_cfg.acc\_any\_motion\_int.anymotion\_y = BMI160\_ENABLE;// Enabling y-\/axis for any motion interrupt}
+\DoxyCodeLine{int\_config.int\_type\_cfg.acc\_any\_motion\_int.anymotion\_z = BMI160\_ENABLE;// Enabling z-\/axis for any motion interrupt}
+\DoxyCodeLine{int\_config.int\_type\_cfg.acc\_any\_motion\_int.anymotion\_dur = 0;// any-\/motion duration}
+\DoxyCodeLine{int\_config.int\_type\_cfg.acc\_any\_motion\_int.anymotion\_thr = 20;// (2-\/g range) -\/> (slope\_thr) * 3.91 mg, (4-\/g range) -\/> (slope\_thr) * 7.81 mg, (8-\/g range) -\/>(slope\_thr) * 15.63 mg, (16-\/g range) -\/> (slope\_thr) * 31.25 mg }
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Set the Any-\/motion interrupt */}
+\DoxyCodeLine{bmi160\_set\_int\_config(\&int\_config, \&sensor); /* sensor is an instance of the structure bmi160\_dev  */}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md36}{}\doxysubsection{Configuring Flat Interrupt}\label{md_bmx160__r_e_a_d_m_e_autotoc_md36}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md37}{}\doxysubsubsection{Example for configuring Flat Interrupt}\label{md_bmx160__r_e_a_d_m_e_autotoc_md37}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{struct bmi160\_int\_settg int\_config;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Select the Interrupt channel/pin */}
+\DoxyCodeLine{int\_config.int\_channel = BMI160\_INT\_CHANNEL\_1;// Interrupt channel/pin 1}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Select the Interrupt type */}
+\DoxyCodeLine{int\_config.int\_type = BMI160\_ACC\_FLAT\_INT;// Choosing flat interrupt}
+\DoxyCodeLine{/* Select the interrupt channel/pin settings */}
+\DoxyCodeLine{int\_config.int\_pin\_settg.output\_en = BMI160\_ENABLE;// Enabling interrupt pins to act as output pin}
+\DoxyCodeLine{int\_config.int\_pin\_settg.output\_mode = BMI160\_DISABLE;// Choosing push-\/pull mode for interrupt pin}
+\DoxyCodeLine{int\_config.int\_pin\_settg.output\_type = BMI160\_DISABLE;// Choosing active low output}
+\DoxyCodeLine{int\_config.int\_pin\_settg.edge\_ctrl = BMI160\_ENABLE;// Choosing edge triggered output}
+\DoxyCodeLine{int\_config.int\_pin\_settg.input\_en = BMI160\_DISABLE;// Disabling interrupt pin to act as input}
+\DoxyCodeLine{int\_config.int\_pin\_settg.latch\_dur = BMI160\_LATCH\_DUR\_NONE;// non-\/latched output}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Select the Flat interrupt parameters */}
+\DoxyCodeLine{int\_config.int\_type\_cfg.acc\_flat\_int.flat\_en = BMI160\_ENABLE;// 1-\/enable, 0-\/disable the flat interrupt}
+\DoxyCodeLine{int\_config.int\_type\_cfg.acc\_flat\_int.flat\_theta = 8;// threshold for detection of flat position in range from 0° to 44.8°.}
+\DoxyCodeLine{int\_config.int\_type\_cfg.acc\_flat\_int.flat\_hy = 1;// Flat hysteresis}
+\DoxyCodeLine{int\_config.int\_type\_cfg.acc\_flat\_int.flat\_hold\_time = 1;// Flat hold time (0 -\/> 0 ms, 1 -\/> 640 ms, 2 -\/> 1280 ms, 3 -\/> 2560 ms)}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Set the Flat interrupt */}
+\DoxyCodeLine{bmi160\_set\_int\_config(\&int\_config, \&sensor); /* sensor is an instance of the structure bmi160\_dev */}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md38}{}\doxysubsection{Configuring Step Detector Interrupt}\label{md_bmx160__r_e_a_d_m_e_autotoc_md38}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md39}{}\doxysubsubsection{Example for configuring Step Detector Interrupt}\label{md_bmx160__r_e_a_d_m_e_autotoc_md39}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{struct bmi160\_int\_settg int\_config;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Select the Interrupt channel/pin */}
+\DoxyCodeLine{int\_config.int\_channel = BMI160\_INT\_CHANNEL\_1;// Interrupt channel/pin 1}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Select the Interrupt type */}
+\DoxyCodeLine{int\_config.int\_type = BMI160\_STEP\_DETECT\_INT;// Choosing Step Detector interrupt}
+\DoxyCodeLine{/* Select the interrupt channel/pin settings */}
+\DoxyCodeLine{int\_config.int\_pin\_settg.output\_en = BMI160\_ENABLE;// Enabling interrupt pins to act as output pin}
+\DoxyCodeLine{int\_config.int\_pin\_settg.output\_mode = BMI160\_DISABLE;// Choosing push-\/pull mode for interrupt pin}
+\DoxyCodeLine{int\_config.int\_pin\_settg.output\_type = BMI160\_ENABLE;// Choosing active High output}
+\DoxyCodeLine{int\_config.int\_pin\_settg.edge\_ctrl = BMI160\_ENABLE;// Choosing edge triggered output}
+\DoxyCodeLine{int\_config.int\_pin\_settg.input\_en = BMI160\_DISABLE;// Disabling interrupt pin to act as input}
+\DoxyCodeLine{int\_config.int\_pin\_settg.latch\_dur =BMI160\_LATCH\_DUR\_NONE;// non-\/latched output}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Select the Step Detector interrupt parameters, Kindly use the recommended settings for step detector */}
+\DoxyCodeLine{int\_config.int\_type\_cfg.acc\_step\_detect\_int.step\_detector\_mode = BMI160\_STEP\_DETECT\_NORMAL;}
+\DoxyCodeLine{int\_config.int\_type\_cfg.acc\_step\_detect\_int.step\_detector\_en = BMI160\_ENABLE;// 1-\/enable, 0-\/disable the step detector}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Set the Step Detector interrupt */}
+\DoxyCodeLine{bmi160\_set\_int\_config(\&int\_config, \&sensor); /* sensor is an instance of the structure bmi160\_dev */}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md40}{}\doxysubsection{Configuring Step counter}\label{md_bmx160__r_e_a_d_m_e_autotoc_md40}
+To configure the step counter, user need to configure the step detector interrupt as described in above section. After configuring step detector, see the below code snippet for user space \& I\+SR\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md41}{}\doxysubsection{User space}\label{md_bmx160__r_e_a_d_m_e_autotoc_md41}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t rslt = BMI160\_OK;}
+\DoxyCodeLine{uint8\_t step\_enable = 1;//enable the step counter}
+\DoxyCodeLine{}
+\DoxyCodeLine{rslt = bmi160\_set\_step\_counter(step\_enable,  \&sensor);}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md42}{}\doxysubsection{I\+SR}\label{md_bmx160__r_e_a_d_m_e_autotoc_md42}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t rslt = BMI160\_OK;}
+\DoxyCodeLine{uint16\_t step\_count = 0;//stores the step counter value}
+\DoxyCodeLine{}
+\DoxyCodeLine{rslt = bmi160\_read\_step\_counter(\&step\_count,  \&sensor);}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md43}{}\doxysubsection{Unmapping Interrupt}\label{md_bmx160__r_e_a_d_m_e_autotoc_md43}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md44}{}\doxysubsubsection{Example for unmapping Step Detector Interrupt}\label{md_bmx160__r_e_a_d_m_e_autotoc_md44}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{struct bmi160\_int\_settg int\_config;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Deselect the Interrupt channel/pin */}
+\DoxyCodeLine{int\_config.int\_channel = BMI160\_INT\_CHANNEL\_NONE;}
+\DoxyCodeLine{/* Select the Interrupt type */}
+\DoxyCodeLine{int\_config.int\_type = BMI160\_STEP\_DETECT\_INT;// Choosing Step Detector interrupt}
+\DoxyCodeLine{/* Set the Step Detector interrupt */}
+\DoxyCodeLine{bmi160\_set\_int\_config(\&int\_config, \&sensor); /* sensor is an instance of the structure bmi160\_dev */}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md45}{}\doxysubsection{Reading interrupt status}\label{md_bmx160__r_e_a_d_m_e_autotoc_md45}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md46}{}\doxysubsubsection{Example for reading interrupt status for step detector}\label{md_bmx160__r_e_a_d_m_e_autotoc_md46}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{union bmi160\_int\_status interrupt;}
+\DoxyCodeLine{enum bmi160\_int\_status\_sel int\_status\_sel;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Interrupt status selection to read all interrupts */}
+\DoxyCodeLine{int\_status\_sel = BMI160\_INT\_STATUS\_ALL;}
+\DoxyCodeLine{rslt = bmi160\_get\_int\_status(int\_status\_sel, \&interrupt, \&sensor);}
+\DoxyCodeLine{if (interrupt.bit.step)}
+\DoxyCodeLine{    printf("Step detector interrupt occured\(\backslash\)n");}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md47}{}\doxysubsection{Configuring the auxiliary sensor B\+M\+M150}\label{md_bmx160__r_e_a_d_m_e_autotoc_md47}
+It is assumed that secondary interface of bmi160 has external pull-\/up resistor in order to access the auxiliary sensor bmm150.\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md48}{}\doxysubsection{Accessing auxiliary B\+M\+M150 with B\+M\+M150 A\+P\+Is via B\+M\+I160 secondary interface.}\label{md_bmx160__r_e_a_d_m_e_autotoc_md48}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md49}{}\doxysection{Integration details}\label{md_bmx160__r_e_a_d_m_e_autotoc_md49}
+
+\begin{DoxyItemize}
+\item Integrate the souce codes of B\+M\+M150 and B\+M\+I160 in project.
+\item Include the \mbox{\hyperlink{bmi160_8h}{bmi160.\+h}} and \mbox{\hyperlink{bmm150_8h}{bmm150.\+h}} file in your code like below.
+\item It is mandatory to initialize the bmi160 device structure for primary interface and auxiliary sensor settings.
+\item Create two wrapper functions , user\+\_\+aux\+\_\+read and user\+\_\+aux\+\_\+write in order to match the signature as mentioned below.
+\item Invoke the \char`\"{}bmi160\+\_\+aux\+\_\+init\char`\"{} A\+PI to initialise the secondary interface in B\+M\+I160.
+\item Invoke the \char`\"{}bmm150\+\_\+init\char`\"{} A\+PI to initialise the B\+M\+M150 sensor.
+\item Now we can use the B\+M\+M150 sensor A\+P\+Is to access the B\+M\+M150 via B\+M\+I160.
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/* main.c file */}
+\DoxyCodeLine{\#include "bmi160.h"}
+\DoxyCodeLine{\#include "bmm150.h"}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md50}{}\doxysubsection{Initialization of auxiliary sensor B\+M\+M150}\label{md_bmx160__r_e_a_d_m_e_autotoc_md50}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/* main.c file */}
+\DoxyCodeLine{struct bmm150\_dev bmm150;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* function declaration */}
+\DoxyCodeLine{int8\_t user\_aux\_read(uint8\_t id, uint8\_t reg\_addr, uint8\_t *aux\_data, uint16\_t len);}
+\DoxyCodeLine{int8\_t user\_aux\_write(uint8\_t id, uint8\_t reg\_addr, uint8\_t *aux\_data, uint16\_t len);}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Configure device structure for auxiliary sensor parameter */}
+\DoxyCodeLine{sensor.aux\_cfg.aux\_sensor\_enable = 1; // auxiliary sensor enable}
+\DoxyCodeLine{sensor.aux\_cfg.aux\_i2c\_addr = BMI160\_AUX\_BMM150\_I2C\_ADDR; // auxiliary sensor address}
+\DoxyCodeLine{sensor.aux\_cfg.manual\_enable = 1; // setup mode enable}
+\DoxyCodeLine{sensor.aux\_cfg.aux\_rd\_burst\_len = 2;// burst read of 2 byte}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Configure the BMM150 device structure by }
+\DoxyCodeLine{mapping user\_aux\_read and user\_aux\_write */}
+\DoxyCodeLine{bmm150.read = user\_aux\_read;}
+\DoxyCodeLine{bmm150.write = user\_aux\_write;}
+\DoxyCodeLine{bmm150.id = BMM150\_DEFAULT\_I2C\_ADDRESS; }
+\DoxyCodeLine{/* Ensure that sensor.aux\_cfg.aux\_i2c\_addr = bmm150.id}
+\DoxyCodeLine{   for proper sensor operation */}
+\DoxyCodeLine{bmm150.delay\_ms = delay\_ms;}
+\DoxyCodeLine{bmm150.interface = BMM150\_I2C\_INTF;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Initialize the auxiliary sensor interface */}
+\DoxyCodeLine{rslt = bmi160\_aux\_init(\&sensor);}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Auxiliary sensor is enabled and can be accessed from this point */}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Configure the desired settings in auxiliary BMM150 sensor }
+\DoxyCodeLine{ * using the bmm150 APIs */}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Initialising the bmm150 sensor */}
+\DoxyCodeLine{rslt = bmm150\_init(\&bmm150);}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Set the power mode and preset mode to enable Mag data sampling */}
+\DoxyCodeLine{bmm150.settings.pwr\_mode = BMM150\_NORMAL\_MODE;}
+\DoxyCodeLine{rslt = bmm150\_set\_op\_mode(\&bmm150);}
+\DoxyCodeLine{}
+\DoxyCodeLine{bmm150.settings.preset\_mode= BMM150\_PRESETMODE\_LOWPOWER;}
+\DoxyCodeLine{rslt = bmm150\_set\_presetmode(\&bmm150);}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md51}{}\doxysubsection{Wrapper functions}\label{md_bmx160__r_e_a_d_m_e_autotoc_md51}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/*wrapper function to match the signature of bmm150.read */}
+\DoxyCodeLine{int8\_t user\_aux\_read(uint8\_t id, uint8\_t reg\_addr, uint8\_t *aux\_data, uint16\_t len)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    int8\_t rslt;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Discarding the parameter id as it is redundant*/}
+\DoxyCodeLine{        rslt = bmi160\_aux\_read(reg\_addr, aux\_data, len, \&bmi160);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    return rslt;}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{/*wrapper function to match the signature of bmm150.write */}
+\DoxyCodeLine{int8\_t user\_aux\_write(uint8\_t id, uint8\_t reg\_addr, uint8\_t *aux\_data, uint16\_t len)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    int8\_t rslt;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Discarding the parameter id as it is redundant */}
+\DoxyCodeLine{    rslt = bmi160\_aux\_write(reg\_addr, aux\_data, len, \&bmi160);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    return rslt;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md52}{}\doxysubsection{Initialization of auxiliary B\+M\+M150 in auto mode}\label{md_bmx160__r_e_a_d_m_e_autotoc_md52}
+Any sensor whose data bytes are less than or equal to 8 bytes can be synchronized with the B\+M\+I160 and read out of Accelerometer + Gyroscope + Auxiliary sensor data of that instance is possible which helps in creating less latency fusion data
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/* Initialize the Auxiliary BMM150 following the above code }
+\DoxyCodeLine{ * until setting the power mode (Set the power mode as forced mode)}
+\DoxyCodeLine{ * and preset mode */}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* In BMM150 Mag data starts from register address 0x42 */}
+\DoxyCodeLine{    uint8\_t aux\_addr = 0x42;}
+\DoxyCodeLine{    /* Buffer to store the Mag data from 0x42 to 0x48 */    }
+\DoxyCodeLine{    uint8\_t mag\_data[8] = \{0\};}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    uint8\_t index;}
+\DoxyCodeLine{        }
+\DoxyCodeLine{    /* Configure the Auxiliary sensor either in auto/manual modes and set the }
+\DoxyCodeLine{    polling frequency for the Auxiliary interface */    }
+\DoxyCodeLine{    sensor.aux\_cfg.aux\_odr = 8; /* Represents polling rate in 100 Hz*/}
+\DoxyCodeLine{    rslt = bmi160\_config\_aux\_mode(\&sensor)}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Set the auxiliary sensor to auto mode */}
+\DoxyCodeLine{    rslt = bmi160\_set\_aux\_auto\_mode(\&aux\_addr, \&sensor);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Reading data from BMI160 data registers */}
+\DoxyCodeLine{    rslt = bmi160\_read\_aux\_data\_auto\_mode(mag\_data, \&sensor);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    printf("\(\backslash\)n RAW DATA ");}
+\DoxyCodeLine{    for(index = 0 ; index < 8 ; index++)}
+\DoxyCodeLine{    \{}
+\DoxyCodeLine{        printf("\(\backslash\)n MAG DATA[\%d] : \%d ", index, mag\_data[index]);}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Compensating the raw mag data available from the BMM150 API */}
+\DoxyCodeLine{    rslt = bmm150\_aux\_mag\_data(mag\_data, \&bmm150);}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    printf("\(\backslash\)n COMPENSATED DATA ");}
+\DoxyCodeLine{    printf("\(\backslash\)n MAG DATA X : \%d Y : \%d Z : \%d", bmm150.data.x, bmm150.data.y, bmm150.data.z);}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md53}{}\doxysubsection{Auxiliary F\+I\+F\+O data parsing}\label{md_bmx160__r_e_a_d_m_e_autotoc_md53}
+The Auxiliary sensor data can be stored in F\+I\+FO , Here we demonstrate an example for using the Bosch Magnetometer sensor B\+M\+M150 and storing its data in F\+I\+FO
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/* Initialize the Aux BMM150 following the above }
+\DoxyCodeLine{ * code and by creating the Wrapper functions */}
+\DoxyCodeLine{}
+\DoxyCodeLine{    int8\_t rslt = 0;}
+\DoxyCodeLine{    uint8\_t aux\_instance = 0;}
+\DoxyCodeLine{    uint16\_t fifo\_cnt = 0;}
+\DoxyCodeLine{    uint8\_t auto\_mode\_addr;}
+\DoxyCodeLine{    uint8\_t i;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Setup and configure the FIFO buffer */}
+\DoxyCodeLine{    /* Declare memory to store the raw FIFO buffer information */}
+\DoxyCodeLine{    uint8\_t fifo\_buff[1000] = \{0\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Modify the FIFO buffer instance and link to the device instance */}
+\DoxyCodeLine{    struct bmi160\_fifo\_frame fifo\_frame;}
+\DoxyCodeLine{    fifo\_frame.data = fifo\_buff;}
+\DoxyCodeLine{    fifo\_frame.length = 1000;}
+\DoxyCodeLine{    dev-\/>fifo = \&fifo\_frame;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Declare instances of the sensor data structure to store the parsed FIFO data */}
+\DoxyCodeLine{    struct bmi160\_aux\_data aux\_data[112]; //1000 / 9 bytes per frame \string~ 111 data frames}
+\DoxyCodeLine{}
+\DoxyCodeLine{    rslt = bmi160\_init(dev);}
+\DoxyCodeLine{    printf("\(\backslash\)n BMI160 chip ID is : \%d ",dev-\/>chip\_id);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    rslt = bmi160\_aux\_init(dev);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    rslt = bmm150\_init(\&bmm150);}
+\DoxyCodeLine{    printf("\(\backslash\)n BMM150 CHIP ID : \%d",bmm150.chip\_id);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    bmm150.settings.preset\_mode = BMM150\_PRESETMODE\_LOWPOWER;}
+\DoxyCodeLine{    rslt = bmm150\_set\_presetmode(\&bmm150);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    bmm150.settings.pwr\_mode = BMM150\_FORCED\_MODE;}
+\DoxyCodeLine{    rslt = bmm150\_set\_op\_mode(\&bmm150);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Enter the data register of BMM150 to "auto\_mode\_addr" here it is 0x42 */}
+\DoxyCodeLine{    auto\_mode\_addr = 0x42;}
+\DoxyCodeLine{    printf("\(\backslash\)n ENTERING AUX. AUTO MODE ");}
+\DoxyCodeLine{    dev-\/>aux\_cfg.aux\_odr = BMI160\_AUX\_ODR\_25HZ;}
+\DoxyCodeLine{    rslt = bmi160\_set\_aux\_auto\_mode(\&auto\_mode\_addr, dev);}
+\DoxyCodeLine{}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Disable other FIFO settings */}
+\DoxyCodeLine{    rslt = bmi160\_set\_fifo\_config(BMI160\_FIFO\_CONFIG\_1\_MASK , BMI160\_DISABLE, dev);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Enable the required FIFO settings */}
+\DoxyCodeLine{    rslt = bmi160\_set\_fifo\_config(BMI160\_FIFO\_AUX | BMI160\_FIFO\_HEADER, BMI160\_ENABLE, dev);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Delay for the FIFO to get filled */}
+\DoxyCodeLine{    dev-\/>delay\_ms(400);}
+\DoxyCodeLine{}
+\DoxyCodeLine{}
+\DoxyCodeLine{    printf("\(\backslash\)n FIFO DATA REQUESTED (in bytes): \%d",dev-\/>fifo-\/>length);}
+\DoxyCodeLine{    rslt = bmi160\_get\_fifo\_data(dev);}
+\DoxyCodeLine{    printf("\(\backslash\)n FIFO DATA AVAILABLE (in bytes): \%d",dev-\/>fifo-\/>length);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Print the raw FIFO data obtained */}
+\DoxyCodeLine{    for(fifo\_cnt = 0; fifo\_cnt < dev-\/>fifo-\/>length ; fifo\_cnt++) \{}
+\DoxyCodeLine{        printf("\(\backslash\)n FIFO DATA [\%d] IS : \%x  ",fifo\_cnt ,dev-\/>fifo-\/>data[fifo\_cnt]);}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{    printf("\(\backslash\)n\(\backslash\)n-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\(\backslash\)n");}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Set the number of required sensor data instances */}
+\DoxyCodeLine{    aux\_instance = 150;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Extract the aux data , 1frame = 8 data bytes */}
+\DoxyCodeLine{    printf("\(\backslash\)n AUX DATA REQUESTED TO BE EXTRACTED (in frames): \%d",aux\_instance);}
+\DoxyCodeLine{    rslt = bmi160\_extract\_aux(aux\_data, \&aux\_instance, dev);}
+\DoxyCodeLine{    printf("\(\backslash\)n AUX DATA ACTUALLY EXTRACTED (in frames): \%d",aux\_instance);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Printing the raw aux data */}
+\DoxyCodeLine{    for (i = 0; i < aux\_instance; i++) \{}
+\DoxyCodeLine{        printf("\(\backslash\)n Aux data[\%d] : \%x",i,aux\_data[i].data[0]);}
+\DoxyCodeLine{        printf("\(\backslash\)n Aux data[\%d] : \%x",i,aux\_data[i].data[1]);}
+\DoxyCodeLine{        printf("\(\backslash\)n Aux data[\%d] : \%x",i,aux\_data[i].data[2]);}
+\DoxyCodeLine{        printf("\(\backslash\)n Aux data[\%d] : \%x",i,aux\_data[i].data[3]);}
+\DoxyCodeLine{        printf("\(\backslash\)n Aux data[\%d] : \%x",i,aux\_data[i].data[4]);}
+\DoxyCodeLine{        printf("\(\backslash\)n Aux data[\%d] : \%x",i,aux\_data[i].data[5]);}
+\DoxyCodeLine{        printf("\(\backslash\)n Aux data[\%d] : \%x",i,aux\_data[i].data[6]);}
+\DoxyCodeLine{        printf("\(\backslash\)n Aux data[\%d] : \%x",i,aux\_data[i].data[7]);}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{    printf("\(\backslash\)n\(\backslash\)n-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\(\backslash\)n");}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Compensate the raw mag data using BMM150 API */}
+\DoxyCodeLine{    for (i = 0; i < aux\_instance; i++) \{}
+\DoxyCodeLine{        printf("\(\backslash\)n-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/");}
+\DoxyCodeLine{        printf("\(\backslash\)n Aux data[\%d] : \%x , \%x , \%x , \%x , \%x , \%x , \%x , \%x",i}
+\DoxyCodeLine{                    ,aux\_data[i].data[0],aux\_data[i].data[1]}
+\DoxyCodeLine{                    ,aux\_data[i].data[2],aux\_data[i].data[3]}
+\DoxyCodeLine{                    ,aux\_data[i].data[4],aux\_data[i].data[5]}
+\DoxyCodeLine{                    ,aux\_data[i].data[6],aux\_data[i].data[7]);}
+\DoxyCodeLine{}
+\DoxyCodeLine{        /* Compensated mag data using BMM150 API */}
+\DoxyCodeLine{        rslt = bmm150\_aux\_mag\_data(\&aux\_data[i].data[0], \&bmm150);}
+\DoxyCodeLine{}
+\DoxyCodeLine{        /* Printing the  Compensated mag data */}
+\DoxyCodeLine{        if (rslt == BMM150\_OK) \{}
+\DoxyCodeLine{            printf("\(\backslash\)n MAG DATA COMPENSATION USING BMM150 APIs");}
+\DoxyCodeLine{            printf("\(\backslash\)n COMPENSATED DATA ");}
+\DoxyCodeLine{            printf("\(\backslash\)n MAG DATA X : \%d  Y : \%d      Z : \%d"}
+\DoxyCodeLine{                , bmm150.data.x, bmm150.data.y, bmm150.data.z);}
+\DoxyCodeLine{}
+\DoxyCodeLine{        \} else \{}
+\DoxyCodeLine{            printf("\(\backslash\)n MAG DATA COMPENSATION IN BMM150 API is FAILED ");}
+\DoxyCodeLine{        \}}
+\DoxyCodeLine{        printf("\(\backslash\)n-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\(\backslash\)n");}
+\DoxyCodeLine{    \}}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md54}{}\doxysection{Self-\/test}\label{md_bmx160__r_e_a_d_m_e_autotoc_md54}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md55}{}\doxysubsubsection{Example for performing accel self test}\label{md_bmx160__r_e_a_d_m_e_autotoc_md55}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/* Call the "bmi160\_init" API as a prerequisite before performing self test}
+\DoxyCodeLine{ * since invoking self-\/test will reset the sensor */}
+\DoxyCodeLine{}
+\DoxyCodeLine{    rslt = bmi160\_perform\_self\_test(BMI160\_ACCEL\_ONLY, sen);}
+\DoxyCodeLine{    /* Utilize the enum BMI160\_GYRO\_ONLY instead of BMI160\_ACCEL\_ONLY}
+\DoxyCodeLine{       to perform self test for gyro */}
+\DoxyCodeLine{    if (rslt == BMI160\_OK) \{}
+\DoxyCodeLine{        printf("\(\backslash\)n ACCEL SELF TEST RESULT SUCCESS);}
+\DoxyCodeLine{    \} else \{}
+\DoxyCodeLine{        printf("\(\backslash\)n ACCEL SELF TEST RESULT FAIL);}
+\DoxyCodeLine{    \}}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md56}{}\doxysection{F\+I\+FO}\label{md_bmx160__r_e_a_d_m_e_autotoc_md56}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md57}{}\doxysubsubsection{Example for reading F\+I\+F\+O and extracting Gyro data in Header mode}\label{md_bmx160__r_e_a_d_m_e_autotoc_md57}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/* An example to read the Gyro data in header mode along with sensor time (if available)}
+\DoxyCodeLine{ * Configure the gyro sensor as prerequisite and follow the below example to read and}
+\DoxyCodeLine{ * obtain the gyro data from FIFO */}
+\DoxyCodeLine{int8\_t fifo\_gyro\_header\_time\_data(struct bmi160\_dev *dev)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    int8\_t rslt = 0;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Declare memory to store the raw FIFO buffer information */}
+\DoxyCodeLine{    uint8\_t fifo\_buff[300];}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Modify the FIFO buffer instance and link to the device instance */}
+\DoxyCodeLine{    struct bmi160\_fifo\_frame fifo\_frame;}
+\DoxyCodeLine{    fifo\_frame.data = fifo\_buff;}
+\DoxyCodeLine{    fifo\_frame.length = 300;}
+\DoxyCodeLine{    dev-\/>fifo = \&fifo\_frame;}
+\DoxyCodeLine{    uint16\_t index = 0;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Declare instances of the sensor data structure to store the parsed FIFO data */}
+\DoxyCodeLine{    struct bmi160\_sensor\_data gyro\_data[42]; // 300 bytes / \string~7bytes per frame \string~ 42 data frames}
+\DoxyCodeLine{    uint8\_t gyro\_frames\_req = 42; }
+\DoxyCodeLine{    uint8\_t gyro\_index;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Configure the sensor's FIFO settings */}
+\DoxyCodeLine{    rslt = bmi160\_set\_fifo\_config(BMI160\_FIFO\_GYRO | BMI160\_FIFO\_HEADER | BMI160\_FIFO\_TIME,}
+\DoxyCodeLine{                    BMI160\_ENABLE, dev);}
+\DoxyCodeLine{                    }
+\DoxyCodeLine{    if (rslt == BMI160\_OK) \{}
+\DoxyCodeLine{        /* At ODR of 100 Hz ,1 frame gets updated in 1/100 = 0.01s}
+\DoxyCodeLine{        i.e. for 42 frames we need 42 * 0.01 = 0.42s = 420ms delay */}
+\DoxyCodeLine{        dev-\/>delay\_ms(420); }
+\DoxyCodeLine{    }
+\DoxyCodeLine{        /* Read data from the sensor's FIFO and store it the FIFO buffer,"fifo\_buff" */}
+\DoxyCodeLine{        printf("\(\backslash\)n USER REQUESTED FIFO LENGTH : \%d\(\backslash\)n",dev-\/>fifo-\/>length);}
+\DoxyCodeLine{        rslt = bmi160\_get\_fifo\_data(dev);}
+\DoxyCodeLine{}
+\DoxyCodeLine{        if (rslt == BMI160\_OK) \{}
+\DoxyCodeLine{            printf("\(\backslash\)n AVAILABLE FIFO LENGTH : \%d\(\backslash\)n",dev-\/>fifo-\/>length);}
+\DoxyCodeLine{            /* Print the raw FIFO data */}
+\DoxyCodeLine{            for (index = 0; index < dev-\/>fifo-\/>length; index++) \{}
+\DoxyCodeLine{                printf("\(\backslash\)n FIFO DATA INDEX[\%d] = \%d", index,}
+\DoxyCodeLine{                    dev-\/>fifo-\/>data[index]);}
+\DoxyCodeLine{            \}}
+\DoxyCodeLine{            /* Parse the FIFO data to extract gyro data from the FIFO buffer */}
+\DoxyCodeLine{            printf("\(\backslash\)n REQUESTED GYRO DATA FRAMES : \%d\(\backslash\)n ",gyro\_frames\_req);}
+\DoxyCodeLine{            rslt = bmi160\_extract\_gyro(gyro\_data, \&gyro\_frames\_req, dev);}
+\DoxyCodeLine{}
+\DoxyCodeLine{            if (rslt == BMI160\_OK) \{}
+\DoxyCodeLine{                printf("\(\backslash\)n AVAILABLE GYRO DATA FRAMES : \%d\(\backslash\)n ",gyro\_frames\_req);}
+\DoxyCodeLine{                }
+\DoxyCodeLine{                /* Print the parsed gyro data from the FIFO buffer */}
+\DoxyCodeLine{                for (gyro\_index = 0; gyro\_index < gyro\_frames\_req; gyro\_index++) \{}
+\DoxyCodeLine{                    printf("\(\backslash\)nFIFO GYRO FRAME[\%d]",gyro\_index);}
+\DoxyCodeLine{                    printf("\(\backslash\)nGYRO X-\/DATA : \%d \(\backslash\)t Y-\/DATA : \%d \(\backslash\)t Z-\/DATA : \%d"}
+\DoxyCodeLine{                        ,gyro\_data[gyro\_index].x ,gyro\_data[gyro\_index].y}
+\DoxyCodeLine{                        ,gyro\_data[gyro\_index].z);}
+\DoxyCodeLine{                \}}
+\DoxyCodeLine{                /* Print the special FIFO frame data like sensortime */}
+\DoxyCodeLine{                printf("\(\backslash\)n SENSOR TIME DATA : \%d \(\backslash\)n",dev-\/>fifo-\/>sensor\_time);}
+\DoxyCodeLine{                printf("SKIPPED FRAME COUNT : \%d",dev-\/>fifo-\/>skipped\_frame\_count);}
+\DoxyCodeLine{            \} else \{}
+\DoxyCodeLine{                printf("\(\backslash\)n Gyro data extraction failed");}
+\DoxyCodeLine{            \}}
+\DoxyCodeLine{        \} else \{}
+\DoxyCodeLine{            printf("\(\backslash\)n Reading FIFO data failed");}
+\DoxyCodeLine{        \}}
+\DoxyCodeLine{    \} else \{}
+\DoxyCodeLine{        printf("\(\backslash\)n Setting FIFO configuration failed");}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{    return rslt;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md58}{}\doxysection{F\+O\+C and offset compensation}\label{md_bmx160__r_e_a_d_m_e_autotoc_md58}
+\begin{quote}
+F\+OC shouldnot be used in Low-\/power mode \end{quote}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md59}{}\doxysubsubsection{Example for configuring F\+O\+C for accel and gyro}\label{md_bmx160__r_e_a_d_m_e_autotoc_md59}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/* An example for configuring FOC for accel and gyro data */}
+\DoxyCodeLine{int8\_t start\_foc(struct bmi160\_dev *dev)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    int8\_t rslt = 0;}
+\DoxyCodeLine{    /* FOC configuration structure */}
+\DoxyCodeLine{    struct bmi160\_foc\_conf foc\_conf;}
+\DoxyCodeLine{    /* Structure to store the offsets */}
+\DoxyCodeLine{    struct bmi160\_offsets offsets;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Enable FOC for accel with target values of z = 1g ; x,y as 0g */}
+\DoxyCodeLine{    foc\_conf.acc\_off\_en = BMI160\_ENABLE;}
+\DoxyCodeLine{    foc\_conf.foc\_acc\_x  = BMI160\_FOC\_ACCEL\_0G;}
+\DoxyCodeLine{    foc\_conf.foc\_acc\_y  = BMI160\_FOC\_ACCEL\_0G;}
+\DoxyCodeLine{    foc\_conf.foc\_acc\_z  = BMI160\_FOC\_ACCEL\_POSITIVE\_G;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Enable FOC for gyro */}
+\DoxyCodeLine{    foc\_conf.foc\_gyr\_en = BMI160\_ENABLE;}
+\DoxyCodeLine{    foc\_conf.gyro\_off\_en = BMI160\_ENABLE;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    rslt = bmi160\_start\_foc(\&foc\_conf, \&offsets, sen);}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    if (rslt == BMI160\_OK) \{}
+\DoxyCodeLine{        printf("\(\backslash\)n FOC DONE SUCCESSFULLY ");}
+\DoxyCodeLine{        printf("\(\backslash\)n OFFSET VALUES AFTER FOC : ");}
+\DoxyCodeLine{        printf("\(\backslash\)n OFFSET VALUES ACCEL X : \%d ",offsets.off\_acc\_x);}
+\DoxyCodeLine{        printf("\(\backslash\)n OFFSET VALUES ACCEL Y : \%d ",offsets.off\_acc\_y);}
+\DoxyCodeLine{        printf("\(\backslash\)n OFFSET VALUES ACCEL Z : \%d ",offsets.off\_acc\_z);}
+\DoxyCodeLine{        printf("\(\backslash\)n OFFSET VALUES GYRO  X : \%d ",offsets.off\_gyro\_x);}
+\DoxyCodeLine{        printf("\(\backslash\)n OFFSET VALUES GYRO  Y : \%d ",offsets.off\_gyro\_y);}
+\DoxyCodeLine{        printf("\(\backslash\)n OFFSET VALUES GYRO  Z : \%d ",offsets.off\_gyro\_z);    }
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* After start of FOC offsets will be updated automatically and }
+\DoxyCodeLine{     * the data will be very much close to the target values of measurement */}
+\DoxyCodeLine{}
+\DoxyCodeLine{    return rslt;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md60}{}\doxysubsubsection{Example for updating the offsets manually}\label{md_bmx160__r_e_a_d_m_e_autotoc_md60}
+\begin{quote}
+The offsets set by this method will be reset on soft-\/reset/\+P\+OR \end{quote}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/* An example for updating manual offsets to sensor */}
+\DoxyCodeLine{int8\_t write\_offsets(struct bmi160\_dev *dev)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    int8\_t rslt = 0;}
+\DoxyCodeLine{    /* FOC configuration structure */}
+\DoxyCodeLine{    struct bmi160\_foc\_conf foc\_conf;}
+\DoxyCodeLine{    /* Structure to store the offsets */}
+\DoxyCodeLine{    struct bmi160\_offsets offsets;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Enable offset update for accel */}
+\DoxyCodeLine{    foc\_conf.acc\_off\_en = BMI160\_ENABLE;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Enable offset update for gyro */}
+\DoxyCodeLine{    foc\_conf.gyro\_off\_en = BMI160\_ENABLE;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* offset values set by user */}
+\DoxyCodeLine{    offsets.off\_acc\_x = 0x10;}
+\DoxyCodeLine{    offsets.off\_acc\_y = 0x10;}
+\DoxyCodeLine{    offsets.off\_acc\_z = 0x10;}
+\DoxyCodeLine{    offsets.off\_gyro\_x = 0x10;}
+\DoxyCodeLine{    offsets.off\_gyro\_y = 0x10;}
+\DoxyCodeLine{    offsets.off\_gyro\_z = 0x10;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    rslt = bmi160\_set\_offsets(\&foc\_conf, \&offsets, sen);}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* After offset setting the data read from the }
+\DoxyCodeLine{     * sensor will have the corresponding offset */}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    return rslt;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md61}{}\doxysubsubsection{Example for updating the offsets into N\+VM}\label{md_bmx160__r_e_a_d_m_e_autotoc_md61}
+\begin{quote}
+The offsets set by this method will be present in N\+VM and will be restored on P\+O\+R/soft-\/reset \end{quote}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/* An example for updating manual offsets to sensor */}
+\DoxyCodeLine{int8\_t write\_offsets\_nvm(struct bmi160\_dev *dev)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    int8\_t rslt = 0;}
+\DoxyCodeLine{    /* FOC configuration structure */}
+\DoxyCodeLine{    struct bmi160\_foc\_conf foc\_conf;}
+\DoxyCodeLine{    /* Structure to store the offsets */}
+\DoxyCodeLine{    struct bmi160\_offsets offsets;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Enable offset update for accel */}
+\DoxyCodeLine{    foc\_conf.acc\_off\_en = BMI160\_ENABLE;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Enable offset update for gyro */}
+\DoxyCodeLine{    foc\_conf.gyro\_off\_en = BMI160\_ENABLE;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* offset values set by user as per their reference }
+\DoxyCodeLine{     * Resolution of accel = 3.9mg/LSB }
+\DoxyCodeLine{     * Resolution of gyro  = (0.061degrees/second)/LSB */}
+\DoxyCodeLine{    offsets.off\_acc\_x = 10;}
+\DoxyCodeLine{    offsets.off\_acc\_y = -\/15;}
+\DoxyCodeLine{    offsets.off\_acc\_z = 20;}
+\DoxyCodeLine{    offsets.off\_gyro\_x = 30;}
+\DoxyCodeLine{    offsets.off\_gyro\_y = -\/35;}
+\DoxyCodeLine{    offsets.off\_gyro\_z = -\/40;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    rslt = bmi160\_set\_offsets(\&foc\_conf, \&offsets, sen);}
+\DoxyCodeLine{     }
+\DoxyCodeLine{    if (rslt == BMI160\_OK) \{}
+\DoxyCodeLine{        /* Update the NVM */}
+\DoxyCodeLine{        rslt = bmi160\_update\_nvm(dev);}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* After this procedure the offsets are written to }
+\DoxyCodeLine{     * NVM and restored on POR/soft-\/reset }
+\DoxyCodeLine{     * The set values can be removed to ideal case by }
+\DoxyCodeLine{     * invoking the following APIs}
+\DoxyCodeLine{     *     -\/ bmi160\_start\_foc()  }
+\DoxyCodeLine{     *     -\/ bmi160\_update\_nvm()}
+\DoxyCodeLine{     */}
+\DoxyCodeLine{}
+\DoxyCodeLine{    return rslt;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md62}{}\doxysection{B\+M\+M150 sensor A\+PI}\label{md_bmx160__r_e_a_d_m_e_autotoc_md62}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md63}{}\doxysubsection{Introduction}\label{md_bmx160__r_e_a_d_m_e_autotoc_md63}
+This package contains the Bosch Sensortec\textquotesingle{}s B\+M\+M150 Magnetometer sensor driver (sensor A\+PI)
+
+The sensor driver package includes \mbox{\hyperlink{bmm150_8h}{bmm150.\+h}}, \mbox{\hyperlink{bmm150_8c}{bmm150.\+c}} and \mbox{\hyperlink{bmm150__defs_8h}{bmm150\+\_\+defs.\+h}} files
+
+bmm150 sensor driver supports the following Bosch M\+E\+MS sensors
+\begin{DoxyItemize}
+\item B\+M\+M050
+\item B\+M\+M150
+\item B\+M\+C150 -\/ Combination of bma2x2 + bmm150 A\+P\+Is
+\item B\+M\+C056 -\/ Combination of bma2x2 + bmm150 A\+P\+Is
+\item B\+M\+X055 -\/ Combination of bma2x2 + bmg160 + bmm150 A\+P\+Is
+\end{DoxyItemize}\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md64}{}\doxysubsection{Version}\label{md_bmx160__r_e_a_d_m_e_autotoc_md64}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ File }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Version }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Date  }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ File }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Version }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Date  }\\\cline{1-3}
+\endhead
+\mbox{\hyperlink{bmm150_8c}{bmm150.\+c}} &1.\+0.\+0 &12 Sep 2017  \\\cline{1-3}
+\mbox{\hyperlink{bmm150_8h}{bmm150.\+h}} &1.\+0.\+0 &12 Sep 2017  \\\cline{1-3}
+\mbox{\hyperlink{bmm150__defs_8h}{bmm150\+\_\+defs.\+h}} &1.\+0.\+0 &12 Sep 2017  \\\cline{1-3}
+\end{longtabu}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md65}{}\doxysubsection{Integration details}\label{md_bmx160__r_e_a_d_m_e_autotoc_md65}
+
+\begin{DoxyItemize}
+\item Integrate \mbox{\hyperlink{bmm150_8h}{bmm150.\+h}}, \mbox{\hyperlink{bmm150__defs_8h}{bmm150\+\_\+defs.\+h}} and \mbox{\hyperlink{bmm150_8c}{bmm150.\+c}} file in to your project.
+\item Include the \mbox{\hyperlink{bmm150_8h}{bmm150.\+h}} file in your code like below. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#include "bmm150.h"}
+\end{DoxyCode}
+
+\end{DoxyItemize}\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md66}{}\doxysubsection{File information}\label{md_bmx160__r_e_a_d_m_e_autotoc_md66}
+
+\begin{DoxyItemize}
+\item \mbox{\hyperlink{bmm150__defs_8h}{bmm150\+\_\+defs.\+h}} \+: This header file has the constants, macros and datatype declarations.
+\item \mbox{\hyperlink{bmm150_8h}{bmm150.\+h}} \+: This header file contains the declarations of the sensor driver A\+P\+Is.
+\item \mbox{\hyperlink{bmm150_8c}{bmm150.\+c}} \+: This source file contains the definitions of the sensor driver A\+P\+Is.
+\end{DoxyItemize}\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md67}{}\doxysubsection{Supported sensor interfaces}\label{md_bmx160__r_e_a_d_m_e_autotoc_md67}
+
+\begin{DoxyItemize}
+\item S\+PI 4-\/wire
+\item I2C
+\end{DoxyItemize}\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md68}{}\doxysubsection{Usage guide}\label{md_bmx160__r_e_a_d_m_e_autotoc_md68}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md69}{}\doxysubsubsection{Initializing the sensor}\label{md_bmx160__r_e_a_d_m_e_autotoc_md69}
+To initialize the sensor, you will first need to create a device structure. You can do this by creating an instance of the structure \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}. Then go on to fill in the various parameters as shown below.\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md70}{}\doxyparagraph{Example for S\+P\+I 4-\/\+Wire}\label{md_bmx160__r_e_a_d_m_e_autotoc_md70}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{struct bmm150\_dev dev;}
+\DoxyCodeLine{int8\_t rslt = BMM150\_OK;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Sensor interface over SPI with native chip select line */}
+\DoxyCodeLine{dev.dev\_id = 0;}
+\DoxyCodeLine{dev.intf = BMM150\_SPI\_INTF;}
+\DoxyCodeLine{dev.read = user\_spi\_read;}
+\DoxyCodeLine{dev.write = user\_spi\_write;}
+\DoxyCodeLine{dev.delay\_ms = user\_delay\_ms;}
+\DoxyCodeLine{}
+\DoxyCodeLine{rslt = bmm150\_init(\&dev);}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md71}{}\doxyparagraph{Example for I2C}\label{md_bmx160__r_e_a_d_m_e_autotoc_md71}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{struct bmm150\_dev dev;}
+\DoxyCodeLine{int8\_t rslt = BMM150\_OK;}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* Sensor interface over I2C */}
+\DoxyCodeLine{dev.dev\_id = BMM150\_DEFAULT\_I2C\_ADDRESS;}
+\DoxyCodeLine{dev.intf = BMM150\_I2C\_INTF;}
+\DoxyCodeLine{dev.read = user\_i2c\_read;}
+\DoxyCodeLine{dev.write = user\_i2c\_write;}
+\DoxyCodeLine{dev.delay\_ms = user\_delay\_ms;}
+\DoxyCodeLine{}
+\DoxyCodeLine{rslt = bmm150\_init(\&dev);}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md72}{}\doxysubsubsection{Sensor Configuration settings}\label{md_bmx160__r_e_a_d_m_e_autotoc_md72}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md73}{}\doxyparagraph{Setting Normal operation mode (power mode) and preset mode.}\label{md_bmx160__r_e_a_d_m_e_autotoc_md73}
+\label{md_bmx160__r_e_a_d_m_e_autotoc_md74}%
+\Hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md74}%
+\doxysubparagraph*{Example for configuring the sensor in normal power mode and Low power preset mode}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t set\_sensor\_settings(struct bmm150\_dev *dev)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    int8\_t rslt;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Setting the power mode as normal */}
+\DoxyCodeLine{    dev-\/>settings.pwr\_mode = BMM150\_NORMAL\_MODE;}
+\DoxyCodeLine{    rslt = bmm150\_set\_op\_mode(dev);}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Setting the preset mode as Low power mode }
+\DoxyCodeLine{    i.e. data rate = 10Hz XY-\/rep = 1 Z-\/rep = 2*/}
+\DoxyCodeLine{    dev-\/>settings.preset\_mode = BMM150\_PRESETMODE\_LOWPOWER;}
+\DoxyCodeLine{    rslt = bmm150\_set\_presetmode(dev);}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    return rslt;    }
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md75}{}\doxysubsubsection{Reading sensor data}\label{md_bmx160__r_e_a_d_m_e_autotoc_md75}
+
+\begin{DoxyItemize}
+\item Sensor data should be read after setting the desired power mode and preset mode. 
+\end{DoxyItemize}\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md76}{}\doxyparagraph{Example for reading sensor data -\/ Fixed point version}\label{md_bmx160__r_e_a_d_m_e_autotoc_md76}
+\begin{quote}
+Ensure that the macro \char`\"{}\+B\+M\+M150\+\_\+\+U\+S\+E\+\_\+\+F\+L\+O\+A\+T\+I\+N\+G\+\_\+\+P\+O\+I\+N\+T\char`\"{} in the \mbox{\hyperlink{bmm150__defs_8h}{bmm150\+\_\+defs.\+h}} file is commented out \end{quote}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t read\_sensor\_data(struct bmm150\_dev *dev)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    int8\_t rslt;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Mag data for X,Y,Z axis are stored inside the}
+\DoxyCodeLine{    bmm150\_dev structure in int16\_t format */}
+\DoxyCodeLine{    rslt = bmm150\_read\_mag\_data(dev);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Print the Mag data */}
+\DoxyCodeLine{    printf("\(\backslash\)n Magnetometer data \(\backslash\)n");}
+\DoxyCodeLine{    printf("MAG X : \%d \(\backslash\)t MAG Y : \%d \(\backslash\)t MAG Z : \%d \(\backslash\)n"}
+\DoxyCodeLine{        ,dev-\/>data.x, dev-\/>data.y, dev-\/>data.z);}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    return rslt;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md77}{}\doxyparagraph{Example for reading sensor data -\/ Floating point version}\label{md_bmx160__r_e_a_d_m_e_autotoc_md77}
+\begin{quote}
+Enable the macro \char`\"{}\+B\+M\+M150\+\_\+\+U\+S\+E\+\_\+\+F\+L\+O\+A\+T\+I\+N\+G\+\_\+\+P\+O\+I\+N\+T\char`\"{} in the \mbox{\hyperlink{bmm150__defs_8h}{bmm150\+\_\+defs.\+h}} file (or) enable \char`\"{}\+B\+M\+M150\+\_\+\+U\+S\+E\+\_\+\+F\+L\+O\+A\+T\+I\+N\+G\+\_\+\+P\+O\+I\+N\+T\char`\"{} in the compiler option of your project \end{quote}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t read\_sensor\_data(struct bmm150\_dev *dev)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    int8\_t rslt;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Mag data for X,Y,Z axis are stored inside the}
+\DoxyCodeLine{    bmm150\_dev structure in float format */}
+\DoxyCodeLine{    rslt = bmm150\_read\_mag\_data(dev);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Print the Mag data */}
+\DoxyCodeLine{    printf("\(\backslash\)n Magnetometer data \(\backslash\)n");}
+\DoxyCodeLine{    printf("MAG X : \%0.2f \(\backslash\)t MAG Y : \%0.2f \(\backslash\)t MAG Z : \%0.2f \(\backslash\)n"}
+\DoxyCodeLine{        ,dev-\/>data.x, dev-\/>data.y, dev-\/>data.z);}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    return rslt;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md78}{}\doxysubsubsection{Self test -\/ Normal self test and Advanced self test}\label{md_bmx160__r_e_a_d_m_e_autotoc_md78}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md79}{}\doxyparagraph{Example for performing Normal self test and Advanced self test}\label{md_bmx160__r_e_a_d_m_e_autotoc_md79}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t perform\_self\_tests(struct bmm150\_dev *dev)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    int8\_t rslt;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Perform Normal Self test */}
+\DoxyCodeLine{    rslt = bmm150\_perform\_self\_test(BMM150\_NORMAL\_SELF\_TEST, dev);}
+\DoxyCodeLine{    printf("\(\backslash\)n NORMAL SELF TEST RESULT :  \%d",rslt);}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Validate normal self test result */}
+\DoxyCodeLine{    if (rslt == BMM150\_OK) \{}
+\DoxyCodeLine{        printf("\(\backslash\)n Normal Self test passed ");}
+\DoxyCodeLine{    \} else \{}
+\DoxyCodeLine{        printf("\(\backslash\)n Normal Self test failed ");}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    /* Perform Advanced Self test */}
+\DoxyCodeLine{    rslt |= bmm150\_perform\_self\_test(BMM150\_ADVANCED\_SELF\_TEST, dev);}
+\DoxyCodeLine{    printf("\(\backslash\)n ADVANCED SELF TEST RESULT : \%d",rslt);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Validate Advanced self test result */}
+\DoxyCodeLine{    if (rslt == BMM150\_OK) \{}
+\DoxyCodeLine{        printf("\(\backslash\)n Advanced Self test passed ");}
+\DoxyCodeLine{    \} else \{}
+\DoxyCodeLine{        printf("\(\backslash\)n Advanced Self test failed ");}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    return rslt;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md80}{}\doxysubsubsection{Interrupt settings}\label{md_bmx160__r_e_a_d_m_e_autotoc_md80}
+\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md81}{}\doxyparagraph{Example for using Data ready interrupt to read data}\label{md_bmx160__r_e_a_d_m_e_autotoc_md81}
+\begin{quote}
+Configuring the interrupt \end{quote}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t drdy\_interrupt\_configure(struct bmm150\_dev *dev)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    int8\_t rslt;}
+\DoxyCodeLine{    uint16\_t desired\_settings;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Set the macros to enable DRDY pin */}
+\DoxyCodeLine{    desired\_settings = BMM150\_DRDY\_PIN\_EN\_SEL | BMM150\_DRDY\_POLARITY\_SEL;}
+\DoxyCodeLine{    /* Set the drdy\_pin\_en to enable the drdy interrupt  */}
+\DoxyCodeLine{    dev-\/>settings.int\_settings.drdy\_pin\_en = BMM150\_INT\_ENABLE;}
+\DoxyCodeLine{    /* Set the polarity as active high on the DRDY pin */}
+\DoxyCodeLine{    dev-\/>settings.int\_settings.drdy\_polarity = BMM150\_ACTIVE\_HIGH\_POLARITY; }
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Set the configurations in the sensor */}
+\DoxyCodeLine{    rslt = bmm150\_set\_sensor\_settings(desired\_settings, dev);}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    return rslt;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+\begin{quote}
+Read the interrupt status continuously to check for interrupt assertion (Polling method) \end{quote}
+\`{}\`{}\`{} c int8\+\_\+t drdy\+\_\+interrupt\+\_\+handling(struct bmm150\+\_\+dev $\ast$dev) \{ int8\+\_\+t rslt;
+
+/$\ast$ Read the interrupt status $\ast$/ rslt = bmm150\+\_\+get\+\_\+interrupt\+\_\+status(dev); if (rslt == B\+M\+M150\+\_\+\+OK) \{ if (dev-\/$>$int\+\_\+status \& B\+M\+M150\+\_\+\+D\+A\+T\+A\+\_\+\+R\+E\+A\+D\+Y\+\_\+\+I\+NT) \{ /$\ast$ Interrupt asserted -\/ Read mag data $\ast$/ rslt = bmm150\+\_\+read\+\_\+mag\+\_\+data(dev); printf(\char`\"{}\textbackslash{}n M\+A\+G D\+A\+T\+A \char`\"{}); printf(\char`\"{}\textbackslash{}n M\+A\+G X \+: \%d M\+A\+G Y \+: \%d M\+A\+G Z \+: \%d \char`\"{} ,dev-\/$>$data.\+x,dev-\/$>$data.\+y,dev-\/$>$data.\+z); \} else \{ /$\ast$\+Interrupt not asserted $\ast$/ printf(\char`\"{}\textbackslash{}n Data is not ready yet\char`\"{}); \} \}
+
+return rslt; \}\hypertarget{md_bmx160__r_e_a_d_m_e_autotoc_md82}{}\doxysubsection{Copyright (\+C) 2019 Bosch Sensortec GmbH}\label{md_bmx160__r_e_a_d_m_e_autotoc_md82}

@@ -1,0 +1,235 @@
+
+\begin{DoxyEnumerate}
+\item Set the value of \char`\"{}desired\+\_\+settings\char`\"{} from the list of macros from {\bfseries{T\+A\+B\+LE 1.\+0-\/Macros for enabling the desired\+\_\+settings}} to enable the configuration of the selected settings. (Multiple settings can be set by bitwise O\+R-\/ing of the macros) $>$ Ex. desired\+\_\+settings = B\+M\+M150\+\_\+\+D\+R\+D\+Y\+\_\+\+P\+I\+N\+\_\+\+E\+N\+\_\+\+S\+EL $\vert$ B\+M\+M150\+\_\+\+D\+R\+D\+Y\+\_\+\+P\+O\+L\+A\+R\+I\+T\+Y\+\_\+\+S\+EL;
+\item Set the desired configuration in the dev structure using macros from the {\bfseries{T\+A\+B\+LE 1.\+1-\/Interrupt configuration settings}}. $>$ N\+O\+TE \+: Configuration settings will be set only when we set the corresponding \char`\"{}desired\+\_\+settings\char`\"{} which enables the settings. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/* Select the DRDY pin and polarity settings */}
+\DoxyCodeLine{desired\_settings = BMM150\_DRDY\_PIN\_EN\_SEL | BMM150\_DRDY\_POLARITY\_SEL;}
+\DoxyCodeLine{/* Set the desired configurations of DRDY pin and its polarity */}
+\DoxyCodeLine{dev-\/>settings.int\_settings.drdy\_pin\_en = BMM150\_INT\_ENABLE;}
+\DoxyCodeLine{dev-\/>settings.int\_settings.drdy\_polarity = BMM150\_ACTIVE\_LOW\_POLARITY;}
+\end{DoxyCode}
+
+\item Invoke the \char`\"{}bmm150\+\_\+set\+\_\+sensor\+\_\+settings\char`\"{} A\+PI after setting the desired configuration in dev structure and enabling the corresponding \char`\"{}desired\+\_\+settings\char`\"{} value,
+\item Invoke the \char`\"{}bmm150\+\_\+get\+\_\+interrupt\+\_\+status\char`\"{} A\+PI to get the interrupt status value in the dev-\/$>$int\+\_\+status.
+
+The value of dev-\/$>$int\+\_\+status is taken and a bitwise A\+ND operation is performed with predefined interrupt status macros (listed below) to find the interrupt status which is either set or reset.
+\begin{DoxyItemize}
+\item B\+M\+M150\+\_\+\+L\+O\+W\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+I\+N\+T\+\_\+X
+\item B\+M\+M150\+\_\+\+L\+O\+W\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+I\+N\+T\+\_\+Y ~\newline
+
+\item B\+M\+M150\+\_\+\+L\+O\+W\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+I\+N\+T\+\_\+Z ~\newline
+
+\item B\+M\+M150\+\_\+\+H\+I\+G\+H\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+I\+N\+T\+\_\+X ~\newline
+
+\item B\+M\+M150\+\_\+\+H\+I\+G\+H\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+I\+N\+T\+\_\+Y ~\newline
+
+\item B\+M\+M150\+\_\+\+H\+I\+G\+H\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+I\+N\+T\+\_\+Z ~\newline
+
+\item B\+M\+M150\+\_\+\+D\+A\+T\+A\+\_\+\+O\+V\+E\+R\+F\+L\+O\+W\+\_\+\+I\+NT ~\newline
+
+\item B\+M\+M150\+\_\+\+D\+A\+T\+A\+\_\+\+O\+V\+E\+R\+R\+U\+N\+\_\+\+I\+NT ~\newline
+
+\item B\+M\+M150\+\_\+\+D\+A\+T\+A\+\_\+\+R\+E\+A\+D\+Y\+\_\+\+I\+NT ~\newline
+
+\end{DoxyItemize}
+\end{DoxyEnumerate}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/* Example for checking interrupt status*/}
+\DoxyCodeLine{if (dev-\/>int\_status \& BMM150\_DATA\_READY\_INT) \{}
+\DoxyCodeLine{   /*Occurrence of data ready interrupt */}
+\DoxyCodeLine{   printf("\(\backslash\)n Interrupt asserted");}
+\DoxyCodeLine{\} else \{}
+\DoxyCodeLine{   /* No interrupt occurred */}
+\DoxyCodeLine{   printf("\(\backslash\)n Interrupt not asserted");}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+\begin{quote}
+N\+O\+TE \+: The interrupt configuration settings which are set can be read from the sensor by invoking the \char`\"{}bmm150\+\_\+get\+\_\+sensor\+\_\+settings\char`\"{} A\+PI. \end{quote}
+
+
+\begin{quote}
+N\+O\+TE \+: In B\+M\+M150 the interrupt pin I\+NT is in default latched state and the polarity of I\+NT and D\+R\+DY pins in default is active high. \end{quote}
+
+
+\begin{quote}
+N\+O\+TE \+: The macros mentioned below are present in the \mbox{\hyperlink{bmm150__defs_8h}{bmm150\+\_\+defs.\+h}} file for setting the desired user configuration. \end{quote}
+\hypertarget{md_bmx160__interrupt_settings_autotoc_md6}{}\doxysubsection{T\+A\+B\+L\+E 1.\+0-\/\+Macros for enabling the desired\+\_\+settings}\label{md_bmx160__interrupt_settings_autotoc_md6}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Macros to set for \char`\"{}desired\+\_\+settings\char`\"{} }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Settings which can be enabled/\+Disabled  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Macros to set for \char`\"{}desired\+\_\+settings\char`\"{} }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Settings which can be enabled/\+Disabled  }\\\cline{1-2}
+\endhead
+B\+M\+M150\+\_\+\+D\+R\+D\+Y\+\_\+\+P\+I\+N\+\_\+\+E\+N\+\_\+\+S\+EL &Data ready interrupt mapping to D\+R\+DY P\+IN  \\\cline{1-2}
+B\+M\+M150\+\_\+\+I\+N\+T\+\_\+\+P\+I\+N\+\_\+\+E\+N\+\_\+\+S\+EL &Low-\/\+Threshold, High-\/\+Threshold and Overflow interrupts mapping to I\+NT P\+IN  \\\cline{1-2}
+B\+M\+M150\+\_\+\+D\+R\+D\+Y\+\_\+\+P\+O\+L\+A\+R\+I\+T\+Y\+\_\+\+S\+EL &Polarity of D\+R\+DY pin  \\\cline{1-2}
+B\+M\+M150\+\_\+\+I\+N\+T\+\_\+\+L\+A\+T\+C\+H\+\_\+\+S\+EL &Latch settings of I\+NT pin  \\\cline{1-2}
+B\+M\+M150\+\_\+\+I\+N\+T\+\_\+\+P\+O\+L\+A\+R\+I\+T\+Y\+\_\+\+S\+EL &Polarity of I\+NT pin  \\\cline{1-2}
+B\+M\+M150\+\_\+\+D\+A\+T\+A\+\_\+\+O\+V\+E\+R\+R\+U\+N\+\_\+\+I\+N\+T\+\_\+\+S\+EL &Data overrun interrupt setting  \\\cline{1-2}
+B\+M\+M150\+\_\+\+O\+V\+E\+R\+F\+L\+O\+W\+\_\+\+I\+N\+T\+\_\+\+S\+EL &Data overflow interrupt setting  \\\cline{1-2}
+B\+M\+M150\+\_\+\+H\+I\+G\+H\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+I\+N\+T\+\_\+\+S\+EL &High threshold interrupt setting  \\\cline{1-2}
+B\+M\+M150\+\_\+\+L\+O\+W\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+I\+N\+T\+\_\+\+S\+EL &Low threshold interrupt setting  \\\cline{1-2}
+B\+M\+M150\+\_\+\+L\+O\+W\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+S\+E\+T\+T\+I\+N\+G\+\_\+\+S\+EL &Setting Low threshold value to trigger interrupt  \\\cline{1-2}
+B\+M\+M150\+\_\+\+H\+I\+G\+H\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+S\+E\+T\+T\+I\+N\+G\+\_\+\+S\+EL &Setting High threshold value to trigger interrupt  \\\cline{1-2}
+\end{longtabu}
+\hypertarget{md_bmx160__interrupt_settings_autotoc_md7}{}\doxysubsection{T\+A\+B\+L\+E 1.\+1-\/\+Interrupt configuation settings}\label{md_bmx160__interrupt_settings_autotoc_md7}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ User configration in the dev structure }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Macros which can be assigned }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Significance  }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ User configration in the dev structure }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Macros which can be assigned }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Significance  }\\\cline{1-3}
+\endhead
+\multirow{2}{*}{dev-\/$>$settings.\+int\+\_\+settings.\+drdy\+\_\+pin\+\_\+en }&B\+M\+M150\+\_\+\+I\+N\+T\+\_\+\+E\+N\+A\+B\+LE &Maps the data ready interrupt to the D\+R\+DY pin of sensor  \\\cline{2-3}
+&B\+M\+M150\+\_\+\+I\+N\+T\+\_\+\+D\+I\+S\+A\+B\+LE &Disables the mapping of data ready interrupt signal to the D\+R\+DY pin  \\\cline{1-3}
+\multicolumn{3}{|l|}{}\\\cline{1-3}
+\multirow{2}{*}{dev-\/$>$settings.\+int\+\_\+settings.\+int\+\_\+pin\+\_\+en }&B\+M\+M150\+\_\+\+I\+N\+T\+\_\+\+E\+N\+A\+B\+LE &Enables the mapping of Low-\/\+Threshold, High-\/\+Threshold and Overflow interrupts to I\+NT (interrupt) pin  \\\cline{2-3}
+&B\+M\+M150\+\_\+\+I\+N\+T\+\_\+\+D\+I\+S\+A\+B\+LE &Disables the interrupt mapping to the I\+NT pin  \\\cline{1-3}
+\multicolumn{3}{|l|}{}\\\cline{1-3}
+\multirow{2}{*}{dev-\/$>$settings.\+int\+\_\+settings.\+drdy\+\_\+polarity }&B\+M\+M150\+\_\+\+A\+C\+T\+I\+V\+E\+\_\+\+H\+I\+G\+H\+\_\+\+P\+O\+L\+A\+R\+I\+TY &Sets the interrupt signal polarity in D\+R\+DY pin as active high  \\\cline{2-3}
+&B\+M\+M150\+\_\+\+A\+C\+T\+I\+V\+E\+\_\+\+L\+O\+W\+\_\+\+P\+O\+L\+A\+R\+I\+TY &Sets the interrupt signal polarity in D\+R\+DY pin as active low  \\\cline{1-3}
+\multicolumn{3}{|l|}{}\\\cline{1-3}
+\multirow{2}{*}{dev-\/$>$settings.\+int\+\_\+settings.\+int\+\_\+polarity }&B\+M\+M150\+\_\+\+A\+C\+T\+I\+V\+E\+\_\+\+H\+I\+G\+H\+\_\+\+P\+O\+L\+A\+R\+I\+TY &Sets the interrupt signal polarity in I\+NT pin as active high  \\\cline{2-3}
+&B\+M\+M150\+\_\+\+A\+C\+T\+I\+V\+E\+\_\+\+L\+O\+W\+\_\+\+P\+O\+L\+A\+R\+I\+TY &Sets the interrupt signal polarity in I\+NT pin as active low  \\\cline{1-3}
+\multicolumn{3}{|l|}{}\\\cline{1-3}
+\multirow{2}{*}{dev-\/$>$settings.\+int\+\_\+settings.\+int\+\_\+latch }&B\+M\+M150\+\_\+\+L\+A\+T\+C\+H\+ED &Sets the interrupt signal in I\+NT pin in latched mode  \\\cline{2-3}
+&B\+M\+M150\+\_\+\+N\+O\+N\+\_\+\+L\+A\+T\+C\+H\+ED &Sets the interrupt signal in I\+NT pin in non -\/ latched mode  \\\cline{1-3}
+\multicolumn{3}{|l|}{}\\\cline{1-3}
+\multirow{2}{*}{dev-\/$>$settings.\+int\+\_\+settings.\+data\+\_\+overrun\+\_\+en }&B\+M\+M150\+\_\+\+I\+N\+T\+\_\+\+E\+N\+A\+B\+LE &Enables the data overrun interrupt  \\\cline{2-3}
+&B\+M\+M150\+\_\+\+I\+N\+T\+\_\+\+D\+I\+S\+A\+B\+LE &Disables the data overrun interrupt  \\\cline{1-3}
+\multicolumn{3}{|l|}{}\\\cline{1-3}
+\multirow{2}{*}{dev-\/$>$settings.\+int\+\_\+settings.\+overflow\+\_\+int\+\_\+en }&B\+M\+M150\+\_\+\+I\+N\+T\+\_\+\+E\+N\+A\+B\+LE &Enables the overflow interrupt  \\\cline{2-3}
+&B\+M\+M150\+\_\+\+I\+N\+T\+\_\+\+D\+I\+S\+A\+B\+LE &Disables the overflow interrupt  \\\cline{1-3}
+\multicolumn{3}{|l|}{}\\\cline{1-3}
+dev-\/$>$settings.\+int\+\_\+settings.\+high\+\_\+int\+\_\+en &B\+M\+M150\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+X &Enables the threshold interrupt detection for X axis  \\\cline{1-3}
+\multirow{4}{*}{dev-\/$>$settings.\+int\+\_\+settings.\+high\+\_\+int\+\_\+en }&B\+M\+M150\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+Y &Enables the threshold interrupt detection for Y axis  \\\cline{2-3}
+&B\+M\+M150\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+Z &Enables the threshold interrupt detection for Z axis  \\\cline{2-3}
+&(B\+M\+M150\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+X \& B\+M\+M150\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+Y) &Enables the threshold interrupt detection for x,y axes  \\\cline{2-3}
+&(B\+M\+M150\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+X \& B\+M\+M150\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+Y \& B\+M\+M150\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+Z) &Enables the threshold interrupt interrupt detection for all 3 X,Y and Z axes  \\\cline{1-3}
+\end{longtabu}
+\hypertarget{md_bmx160__interrupt_settings_autotoc_md8}{}\doxysubsection{Configuring and handling B\+M\+M150 Interrupts}\label{md_bmx160__interrupt_settings_autotoc_md8}
+\hypertarget{md_bmx160__interrupt_settings_autotoc_md9}{}\doxysubsubsection{Example for using high threshold interrupt}\label{md_bmx160__interrupt_settings_autotoc_md9}
+\begin{quote}
+Configuring the high threshold interrupt \end{quote}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t high\_threshold\_interrupt(struct bmm150\_dev *dev)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    int8\_t rslt;}
+\DoxyCodeLine{    uint16\_t desired\_settings;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Enable the desired settings to be set in the sensor */}
+\DoxyCodeLine{    desired\_settings = BMM150\_HIGH\_THRESHOLD\_INT\_SEL | BMM150\_HIGH\_THRESHOLD\_SETTING\_SEL |}
+\DoxyCodeLine{        BMM150\_INT\_PIN\_EN\_SEL | BMM150\_INT\_POLARITY\_SEL | BMM150\_INT\_LATCH\_SEL;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Set the desired configuration */}
+\DoxyCodeLine{    /* Enable the mapping of interrupt to the interrupt pin*/}
+\DoxyCodeLine{    dev-\/>settings.int\_settings.int\_pin\_en = BMM150\_INT\_ENABLE;}
+\DoxyCodeLine{    /* Set the interrupt in non latched mode */}
+\DoxyCodeLine{    dev-\/>settings.int\_settings.int\_latch = BMM150\_NON\_LATCHED;}
+\DoxyCodeLine{    /* Set the interrupt polarity as active high */}
+\DoxyCodeLine{    dev-\/>settings.int\_settings.int\_polarity = BMM150\_ACTIVE\_HIGH\_POLARITY;}
+\DoxyCodeLine{    /* Set the threshold value as 0x0A (10*6 = 60 micro-\/tesla)*/}
+\DoxyCodeLine{    dev-\/>settings.int\_settings.high\_threshold = 0x0A;}
+\DoxyCodeLine{    /* Set the high threshold detection for all 3 axis */}
+\DoxyCodeLine{    dev-\/>settings.int\_settings.high\_int\_en = BMM150\_THRESHOLD\_X \& BMM150\_THRESHOLD\_Y \& BMM150\_THRESHOLD\_Z;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Set the configurations in the sensor */}
+\DoxyCodeLine{    rslt = bmm150\_set\_sensor\_settings(desired\_settings, dev);}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    return rslt;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+\begin{quote}
+Read the interrupt status continuously to check for interrupt assertion (Polling method) \end{quote}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t high\_threshold\_interrupt\_handling(struct bmm150\_dev *dev)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    int8\_t rslt;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    rslt = bmm150\_get\_interrupt\_status(dev);}
+\DoxyCodeLine{    if (rslt == BMM150\_OK) \{}
+\DoxyCodeLine{        if (dev-\/>int\_status \& BMM150\_HIGH\_THRESHOLD\_INT\_X) \{}
+\DoxyCodeLine{            printf("\(\backslash\)n HIGH THRESHOLD INTERRUPT ON X AXIS ");}
+\DoxyCodeLine{        \}}
+\DoxyCodeLine{        if (dev-\/>int\_status \& BMM150\_HIGH\_THRESHOLD\_INT\_Y) \{}
+\DoxyCodeLine{            printf("\(\backslash\)n HIGH THRESHOLD INTERRUPT ON Y AXIS ");}
+\DoxyCodeLine{        \}}
+\DoxyCodeLine{        if(dev-\/>int\_status \& BMM150\_HIGH\_THRESHOLD\_INT\_Z) \{}
+\DoxyCodeLine{            printf("\(\backslash\)n HIGH THRESHOLD INTERRUPT IN Z AXIS ");}
+\DoxyCodeLine{        \}}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    return rslt;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+\hypertarget{md_bmx160__interrupt_settings_autotoc_md10}{}\doxysubsubsection{Example for using multiple interrupts (data ready and overflow interrupts)}\label{md_bmx160__interrupt_settings_autotoc_md10}
+\begin{quote}
+Configuring the overflow and data ready interrupts and interrupt pins and latch settings \end{quote}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t drdy\_overflow\_int\_setting(struct bmm150\_dev *dev)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    int8\_t rslt;}
+\DoxyCodeLine{    uint16\_t desired\_settings;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Enable the desired settings to be set in the sensor */}
+\DoxyCodeLine{    desired\_settings = BMM150\_DRDY\_PIN\_EN\_SEL | BMM150\_OVERFLOW\_INT\_SEL |}
+\DoxyCodeLine{        BMM150\_INT\_PIN\_EN\_SEL | BMM150\_INT\_LATCH\_SEL;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    /* Set the desired configuration */}
+\DoxyCodeLine{    /* Enable the drdy interrupt  */}
+\DoxyCodeLine{    dev-\/>settings.int\_settings.drdy\_pin\_en = BMM150\_INT\_ENABLE;}
+\DoxyCodeLine{    /* Enable the mapping of interrupt to the interrupt pin */}
+\DoxyCodeLine{    dev-\/>settings.int\_settings.int\_pin\_en = BMM150\_INT\_ENABLE;}
+\DoxyCodeLine{    /* Enable the overflow interrupt */}
+\DoxyCodeLine{    dev-\/>settings.int\_settings.overflow\_int\_en = BMM150\_INT\_ENABLE;}
+\DoxyCodeLine{    /* Set the interrupt in non latched mode */}
+\DoxyCodeLine{    dev-\/>settings.int\_settings.int\_latch = BMM150\_NON\_LATCHED;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    /* Set the configurations in the sensor */}
+\DoxyCodeLine{    rslt = bmm150\_set\_sensor\_settings(desired\_settings, dev);}
+\DoxyCodeLine{    }
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+\begin{quote}
+Read the interrupt status continuously to check for interrupt assertion (Polling method) \end{quote}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{int8\_t drdy\_overflow\_int\_handling(struct bmm150\_dev *dev)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    int8\_t rslt;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    rslt = bmm150\_get\_interrupt\_status(dev);}
+\DoxyCodeLine{    if (rslt == BMM150\_OK) \{}
+\DoxyCodeLine{        /* Multiple interrupt assertion can be checked as follows */}
+\DoxyCodeLine{        if ((dev-\/>int\_status \& BMM150\_DATA\_READY\_INT) ||}
+\DoxyCodeLine{            (dev-\/>int\_status \& BMM150\_DATA\_OVERFLOW\_INT)) \{}
+\DoxyCodeLine{            /* Either data ready or overflow has occurred */}
+\DoxyCodeLine{            printf("\(\backslash\)n Interrupt asserted ");}
+\DoxyCodeLine{        \} else \{}
+\DoxyCodeLine{            printf("\(\backslash\)n Interrupt not asserted ");}
+\DoxyCodeLine{        \}}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    return rslt;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+ 

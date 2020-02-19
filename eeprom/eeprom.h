@@ -259,12 +259,31 @@ typedef struct {
 */
 #define BNO055_ADDRESS	0x28
 
+/**
+ * Low-level I2C writing API
+ * @param byte_addr
+ * @param txbuf
+ * @param txbytes
+ * @return
+ */
 int8_t eeprom_write(uint16_t byte_addr, const uint8_t *txbuf, uint8_t txbytes);
+
+/**
+ * Low-level I2C writing API
+ * @param byte_addr
+ * @param rxbuf
+ * @param rxbytes
+ * @return
+ */
 int8_t eeprom_read(uint16_t byte_addr, uint8_t *rxbuf, uint8_t rxbytes);
 void eeprom_check_i2c_bus(void);
 void eeprom_read_hw_version(void);
 void eeprom_write_hw_version(void);
 void bno055_read_id(void);
+
+/**
+ * Initialization I2C interface
+ */
 void start_eeprom_module(void);
 
 //Very useful defines

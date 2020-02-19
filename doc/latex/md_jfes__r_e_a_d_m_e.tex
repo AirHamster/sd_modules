@@ -1,0 +1,162 @@
+{\itshape Based on the \href{https://github.com/zserge/jsmn}{\texttt{ jsmn}} project.}
+
+Json For Embedded Systems (J\+F\+ES) is a minimalistic \href{http://www.json.org/}{\texttt{ json}} engine written in plain C. It can be easily integrated into the code for embedded systems.\hypertarget{md_jfes__r_e_a_d_m_e_autotoc_md465}{}\doxysection{Features}\label{md_jfes__r_e_a_d_m_e_autotoc_md465}
+
+\begin{DoxyItemize}
+\item compatible with C99
+\item no dependencies (I\textquotesingle{}m serious!)
+\item highly portable
+\item you can use it as a json parser only
+\item incremental single-\/pass parsing
+\end{DoxyItemize}\hypertarget{md_jfes__r_e_a_d_m_e_autotoc_md466}{}\doxysection{A\+PI}\label{md_jfes__r_e_a_d_m_e_autotoc_md466}
+\hypertarget{md_jfes__r_e_a_d_m_e_autotoc_md467}{}\doxysubsection{Initializing}\label{md_jfes__r_e_a_d_m_e_autotoc_md467}
+Before use you need to initialize the {\ttfamily jfes\+\_\+config\+\_\+t} object. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/** JFES config structure. */}
+\DoxyCodeLine{typedef struct jfes\_config \{}
+\DoxyCodeLine{    jfes\_malloc\_t           jfes\_malloc;        /**< Memory allocation function. */}
+\DoxyCodeLine{    jfes\_free\_t             jfes\_free;          /**< Memory deallocation function. */}
+\DoxyCodeLine{\} jfes\_config\_t;}
+\end{DoxyCode}
+
+
+Below you can see the prototypes of the memory management functions\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/** Memory allocator function type. */}
+\DoxyCodeLine{typedef void *(\_\_cdecl *jfes\_malloc\_t)(jfes\_size\_t);}
+\DoxyCodeLine{}
+\DoxyCodeLine{/** Memory deallocator function type. */}
+\DoxyCodeLine{typedef void (\_\_cdecl *jfes\_free\_t)(void*);}
+\end{DoxyCode}
+
+
+As you can see, these functions have the same prototype as the C standard library functions.
+
+So, you can initialize J\+F\+ES configuration with the following code\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#include <stdlib.h>}
+\DoxyCodeLine{}
+\DoxyCodeLine{/* ...some useful stuff... */}
+\DoxyCodeLine{}
+\DoxyCodeLine{jfes\_config\_t config;}
+\DoxyCodeLine{}
+\DoxyCodeLine{config.jfes\_malloc = malloc;}
+\DoxyCodeLine{config.jfes\_free = free;}
+\end{DoxyCode}
+
+
+But, if you need to use your own memory management functions, you can use them.\hypertarget{md_jfes__r_e_a_d_m_e_autotoc_md468}{}\doxysubsection{Parser (optional)}\label{md_jfes__r_e_a_d_m_e_autotoc_md468}
+If you just need to parse a $\ast$.json file without allocating any values (like \href{https://github.com/zserge/jsmn}{\texttt{ jsmn}}), you can parse a json string and separate it into tokens. In this case, you only need to use two functions below\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/**}
+\DoxyCodeLine{    JFES parser initialization.}
+\DoxyCodeLine{    \(\backslash\)param[out]     parser              Pointer to the jfes\_parser\_t object.}
+\DoxyCodeLine{    \(\backslash\)param[in]      config              JFES configuration.}
+\DoxyCodeLine{    \(\backslash\)return         jfes\_success if everything is OK.}
+\DoxyCodeLine{*/}
+\DoxyCodeLine{jfes\_status\_t jfes\_init\_parser(jfes\_parser\_t *parser, jfes\_config\_t *config);}
+\DoxyCodeLine{}
+\DoxyCodeLine{/******************************************************************/}
+\DoxyCodeLine{}
+\DoxyCodeLine{/**}
+\DoxyCodeLine{    Run JSON parser. It parses a JSON data string into and}
+\DoxyCodeLine{    array of tokens, each describing a single JSON object.}
+\DoxyCodeLine{    \(\backslash\)param[in]      parser              Pointer to the jfes\_parser\_t object.}
+\DoxyCodeLine{    \(\backslash\)param[in]      json                JSON data string.}
+\DoxyCodeLine{    \(\backslash\)param[in]      length              JSON data length.}
+\DoxyCodeLine{    \(\backslash\)param[out]     tokens              Tokens array to fill.}
+\DoxyCodeLine{    \(\backslash\)param[in, out] max\_tokens\_count    Maximal count of tokens in tokens array.}
+\DoxyCodeLine{                                        Will contain tokens count.}
+\DoxyCodeLine{    \(\backslash\)return         jfes\_success if everything is OK.}
+\DoxyCodeLine{*/}
+\DoxyCodeLine{jfes\_status\_t jfes\_parse\_tokens(jfes\_parser\_t *parser, const char *json,}
+\DoxyCodeLine{    jfes\_size\_t length, jfes\_token\_t *tokens, jfes\_size\_t *max\_tokens\_count);}
+\end{DoxyCode}
+
+
+You can see a parsing example below.\hypertarget{md_jfes__r_e_a_d_m_e_autotoc_md469}{}\doxysubsection{Loading $\ast$.\+json into value}\label{md_jfes__r_e_a_d_m_e_autotoc_md469}
+You can load any json data into {\ttfamily jfes\+\_\+value\+\_\+t}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/** JSON value structure. */}
+\DoxyCodeLine{struct jfes\_value \{}
+\DoxyCodeLine{    jfes\_value\_type\_t       type;               /**< JSON value type. */}
+\DoxyCodeLine{    jfes\_value\_data\_t       data;               /**< Value data. */}
+\DoxyCodeLine{\};}
+\end{DoxyCode}
+
+
+Value type ({\ttfamily jfes\+\_\+value\+\_\+type\+\_\+t}) can be one of the following\+:
+\begin{DoxyItemize}
+\item {\ttfamily jfes\+\_\+type\+\_\+boolean}
+\item {\ttfamily jfes\+\_\+type\+\_\+integer}
+\item {\ttfamily jfes\+\_\+type\+\_\+double}
+\item {\ttfamily jfes\+\_\+type\+\_\+string}
+\item {\ttfamily jfes\+\_\+type\+\_\+array}
+\item {\ttfamily jfes\+\_\+type\+\_\+object}
+\end{DoxyItemize}
+
+And {\ttfamily jfes\+\_\+value\+\_\+data\+\_\+t} is\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/** JFES value data union. */}
+\DoxyCodeLine{typedef union jfes\_value\_data \{}
+\DoxyCodeLine{    int                     bool\_val;           /**< Boolean JSON value. */}
+\DoxyCodeLine{}
+\DoxyCodeLine{    int                     int\_val;            /**< Integer JSON value. */}
+\DoxyCodeLine{    double                  double\_val;         /**< Double JSON value. */}
+\DoxyCodeLine{    jfes\_string\_t           string\_val;         /**< String JSON value. */}
+\DoxyCodeLine{}
+\DoxyCodeLine{    jfes\_array\_t            *array\_val;         /**< Array JSON value. */}
+\DoxyCodeLine{    jfes\_object\_t           *object\_val;        /**< Object JSON value. */}
+\DoxyCodeLine{\} jfes\_value\_data\_t;}
+\end{DoxyCode}
+
+
+You can easily load a json string into the value by using the following code\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{jfes\_config\_t config;}
+\DoxyCodeLine{config.jfes\_malloc = malloc;}
+\DoxyCodeLine{config.jfes\_free = free;}
+\DoxyCodeLine{}
+\DoxyCodeLine{jfes\_value\_t value;}
+\DoxyCodeLine{jfes\_parse\_to\_value(\&config, json\_data, json\_size, \&value);}
+\DoxyCodeLine{/* Do something with value */}
+\DoxyCodeLine{jfes\_free\_value(\&config, \&value);}
+\end{DoxyCode}
+
+
+That\textquotesingle{}s all!\hypertarget{md_jfes__r_e_a_d_m_e_autotoc_md470}{}\doxysubsection{Value modification}\label{md_jfes__r_e_a_d_m_e_autotoc_md470}
+You can modify or create {\ttfamily jfes\+\_\+value\+\_\+t} with any of these functions\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{jfes\_value\_t *jfes\_create\_boolean\_value(jfes\_config\_t *config, int value);}
+\DoxyCodeLine{jfes\_value\_t *jfes\_create\_integer\_value(jfes\_config\_t *config, int value);}
+\DoxyCodeLine{jfes\_value\_t *jfes\_create\_double\_value(jfes\_config\_t *config, double value);}
+\DoxyCodeLine{jfes\_value\_t *jfes\_create\_string\_value(jfes\_config\_t *config, const char *value, jfes\_size\_t length);}
+\DoxyCodeLine{jfes\_value\_t *jfes\_create\_array\_value(jfes\_config\_t *config);}
+\DoxyCodeLine{jfes\_value\_t *jfes\_create\_object\_value(jfes\_config\_t *config);}
+\DoxyCodeLine{}
+\DoxyCodeLine{jfes\_value\_t *jfes\_get\_child(jfes\_value\_t *value, const char *key, jfes\_size\_t key\_length);}
+\DoxyCodeLine{jfes\_object\_map\_t *jfes\_get\_mapped\_child(jfes\_value\_t *value, const char *key, jfes\_size\_t key\_length);}
+\DoxyCodeLine{}
+\DoxyCodeLine{jfes\_status\_t jfes\_place\_to\_array(jfes\_config\_t *config, jfes\_value\_t *value, jfes\_value\_t *item);}
+\DoxyCodeLine{jfes\_status\_t jfes\_place\_to\_array\_at(jfes\_config\_t *config, jfes\_value\_t *value, jfes\_value\_t *item, jfes\_size\_t place\_at);}
+\DoxyCodeLine{jfes\_status\_t jfes\_remove\_from\_array(jfes\_config\_t *config, jfes\_value\_t *value, jfes\_size\_t index);}
+\DoxyCodeLine{}
+\DoxyCodeLine{jfes\_status\_t jfes\_set\_object\_property(jfes\_config\_t *config, jfes\_value\_t *value, jfes\_value\_t *item, const char *key, jfes\_size\_t key\_length);}
+\DoxyCodeLine{jfes\_status\_t jfes\_remove\_object\_property(jfes\_config\_t *config, jfes\_value\_t *value, const char *key, jfes\_size\_t key\_length);}
+\end{DoxyCode}
+\hypertarget{md_jfes__r_e_a_d_m_e_autotoc_md471}{}\doxysubsection{Serializing to json string}\label{md_jfes__r_e_a_d_m_e_autotoc_md471}
+You can serialize any {\ttfamily jfes\+\_\+value\+\_\+t} to string with one line (actually, three lines, but two of them are for help)\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{char dump[1024];}
+\DoxyCodeLine{jfes\_size\_t dump\_size = 1024;}
+\DoxyCodeLine{jfes\_value\_to\_string(\&value, beauty\_dump, \&dump\_size, 1);}
+\DoxyCodeLine{beauty\_dump[dump\_size] = '\(\backslash\)0';  /* If you need null-\/terminated string. */}
+\end{DoxyCode}
+
+
+{\ttfamily dump\+\_\+size} will store the dump size. If you pass the fourth argument as 1, the dump will be beautified. And if 0, the dump will be ugly.\hypertarget{md_jfes__r_e_a_d_m_e_autotoc_md472}{}\doxysection{Examples}\label{md_jfes__r_e_a_d_m_e_autotoc_md472}
+You can find examples \href{https://github.com/NeonMercury/jfes/tree/master/examples}{\texttt{ here}}.\hypertarget{md_jfes__r_e_a_d_m_e_autotoc_md473}{}\doxysection{Licence}\label{md_jfes__r_e_a_d_m_e_autotoc_md473}
+{\bfseries{The M\+IT License (M\+IT)}} ~\newline
+ \href{https://github.com/NeonMercury/jfes/blob/master/LICENSE}{\texttt{ See full text.}} 
