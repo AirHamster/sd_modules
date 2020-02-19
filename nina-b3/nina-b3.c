@@ -23,6 +23,7 @@
 #endif
 #include "fsm.h"
 
+uint8_t hr_pairing = 0;
 static virtual_timer_t ble_observe_tim;
 static virtual_timer_t ble_data_tx_tim;
 static ble_remote_dev_t ble_remote_dev_list[NUM_OF_REMOTE_DEV];
@@ -273,9 +274,9 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		megastring[i] = token;
 		i++;
 
-	//	chSemWait(&usart1_semaph);
-	//	chprintf((BaseSequentialStream*) &SD1, "%c", token);
-	//	chSemSignal(&usart1_semaph);
+		chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*) &SD1, "%c", token);
+		chSemSignal(&usart1_semaph);
 
 		if (token == '\r' || token == '+'){
 			str_flag = 1;
@@ -375,7 +376,7 @@ while(true){
 		if (remote_lag->is_connected == 0 || remote_rudder->is_connected == 0) {
 
 			chprintf(NINA_IFACE, "AT+UBTD=2,1,2000\r");
-			chThdSleepMilliseconds(2500);
+			chThdSleepMilliseconds(3500);
 			}
 			if (remote_lag->is_connected == 0 && remote_lag->is_avalible == 1) {
 
@@ -450,6 +451,7 @@ STATE_DEFINE(Idle, NoEventData) {
 STATE_DEFINE(Observe, ble_remote_dev_t) {
 	ble_remote_dev_t* devlist = SM_GetInstance(ble_remote_dev_t);
 	//SM_InternalEvent(ST_IDLE, NULL);
+	//if (hr_pairing == 0){
 	chprintf(NINA_IFACE, "AT+UBTD=2,1,2000\r");
 
 	chThdSleepMilliseconds(2500);
@@ -462,6 +464,7 @@ STATE_DEFINE(Observe, ble_remote_dev_t) {
 		}
 
 	}
+	//}
 }
 
 STATE_DEFINE(Pairing, ble_remote_dev_t) {
@@ -470,6 +473,9 @@ STATE_DEFINE(Pairing, ble_remote_dev_t) {
 	uint8_t i = 0;
 	for (i = 0; i < NUM_OF_REMOTE_DEV; i++) {
 		if ((devlist[i].avalible == 1) && (devlist[i].connected == 0)) {
+			//chprintf(NINA_IFACE, "AT+UBTB=%s,%d\r", devlist[i].addr, 1);
+			//hr_pairing = 1;
+//			chThdSleepMilliseconds(3500);
 			nina_connect(devlist[i].addr, 0);
 			chThdSleepMilliseconds(1500);
 			//SM_InternalEvent(ST_PAIRING, NULL);
@@ -955,7 +961,7 @@ int8_t nina_init_devices(ble_remote_dev_t *devlist) {
 	memcpy(devlist[1].addr, BLE_LOG_ADDR, sizeof(devlist[1].addr));
 	memcpy(devlist[1].ascii_name, BLE_LOG_ASCII_NAME, sizeof(BLE_LOG_ASCII_NAME));
 
-#if NUM_OF_REMOTE_DEV == 6
+#if NUM_OF_REMOTE_DEV == 7
 	memcpy(devlist[2].addr, BLE_TENSO1_ADDR, sizeof(devlist[2].addr));
 	memcpy(devlist[2].ascii_name, BLE_TENSO1_ASCII_NAME, sizeof(BLE_TENSO1_ASCII_NAME));
 
@@ -967,6 +973,10 @@ int8_t nina_init_devices(ble_remote_dev_t *devlist) {
 
 	memcpy(devlist[5].addr, BLE_TENSO4_ADDR, sizeof(devlist[5].addr));
 	memcpy(devlist[5].ascii_name, BLE_TENSO4_ASCII_NAME, sizeof(BLE_TENSO4_ASCII_NAME));
+
+	memcpy(devlist[6].addr, BLE_HEART_RATE_ADDR, sizeof(devlist[6].addr));
+	memcpy(devlist[6].ascii_name, BLE_HEART_RATE_ASCII_NAME, sizeof(BLE_HEART_RATE_ASCII_NAME));
+
 #endif
 	return NUM_OF_REMOTE_DEV;
 }
