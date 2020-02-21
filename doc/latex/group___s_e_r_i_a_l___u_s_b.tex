@@ -1,0 +1,25 @@
+\hypertarget{group___s_e_r_i_a_l___u_s_b}{}\doxysection{Serial over U\+SB Driver}
+\label{group___s_e_r_i_a_l___u_s_b}\index{Serial over USB Driver@{Serial over USB Driver}}
+
+
+Serial over U\+SB Driver.  
+
+
+Collaboration diagram for Serial over U\+SB Driver\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=322pt]{group___s_e_r_i_a_l___u_s_b}
+\end{center}
+\end{figure}
+Serial over U\+SB Driver. 
+
+This module implements an U\+SB Communication Device Class (C\+DC) as a normal serial communication port accessible from the device application. \begin{DoxyPrecond}{Precondition}
+In order to use the U\+SB over Serial driver the {\ttfamily H\+A\+L\+\_\+\+U\+S\+E\+\_\+\+S\+E\+R\+I\+A\+L\+\_\+\+U\+SB} option must be enabled in {\ttfamily halconf.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___s_e_r_i_a_l___u_s_b_usb_serial_1}{}\doxysubsection{Driver State Machine}\label{group___s_e_r_i_a_l___u_s_b_usb_serial_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_10}}
+\end{DoxyImageNoCaption}
+ 

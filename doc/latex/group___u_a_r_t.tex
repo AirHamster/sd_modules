@@ -1,0 +1,46 @@
+\hypertarget{group___u_a_r_t}{}\doxysection{U\+A\+RT Driver}
+\label{group___u_a_r_t}\index{UART Driver@{UART Driver}}
+
+
+Generic U\+A\+RT Driver.  
+
+
+Collaboration diagram for U\+A\+RT Driver\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=272pt]{group___u_a_r_t}
+\end{center}
+\end{figure}
+Generic U\+A\+RT Driver. 
+
+This driver abstracts a generic U\+A\+RT (Universal Asynchronous Receiver Transmitter) peripheral, the A\+PI is designed to be\+:
+\begin{DoxyItemize}
+\item Unbuffered and copy-\/less, transfers are always directly performed from/to the application-\/level buffers without extra copy operations.
+\item Asynchronous, the A\+PI is always non blocking.
+\item Callbacks capable, operations completion and other events are notified using callbacks.
+\end{DoxyItemize}Special hardware features like deep hardware buffers, D\+MA transfers are hidden to the user but fully supportable by the low level implementations.~\newline
+ This driver model is best used where communication events are meant to drive an higher level state machine, as example\+:
+\begin{DoxyItemize}
+\item R\+S485 drivers.
+\item Multipoint network drivers.
+\item Serial protocol decoders.
+\end{DoxyItemize}If your application requires a synchronous buffered driver then the \mbox{\hyperlink{group___s_e_r_i_a_l}{Serial Driver}} should be used instead. \begin{DoxyPrecond}{Precondition}
+In order to use the U\+A\+RT driver the {\ttfamily H\+A\+L\+\_\+\+U\+S\+E\+\_\+\+U\+A\+RT} option must be enabled in {\ttfamily halconf.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___u_a_r_t_uart_1}{}\doxysubsection{Driver State Machine}\label{group___u_a_r_t_uart_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_13}}
+\end{DoxyImageNoCaption}
+\hypertarget{group___u_a_r_t_uart_1_1}{}\doxysubsubsection{Transmitter sub State Machine}\label{group___u_a_r_t_uart_1_1}
+The follow diagram describes the transmitter state machine, this diagram is valid while the driver is in the {\ttfamily U\+A\+R\+T\+\_\+\+R\+E\+A\+DY} state. This state machine is automatically reset to the {\ttfamily T\+X\+\_\+\+I\+D\+LE} state each time the driver enters the {\ttfamily U\+A\+R\+T\+\_\+\+R\+E\+A\+DY} state. 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_14}}
+\end{DoxyImageNoCaption}
+\hypertarget{group___u_a_r_t_uart_1_2}{}\doxysubsubsection{Receiver sub State Machine}\label{group___u_a_r_t_uart_1_2}
+The follow diagram describes the receiver state machine, this diagram is valid while the driver is in the {\ttfamily U\+A\+R\+T\+\_\+\+R\+E\+A\+DY} state. This state machine is automatically reset to the {\ttfamily R\+X\+\_\+\+I\+D\+LE} state each time the driver enters the {\ttfamily U\+A\+R\+T\+\_\+\+R\+E\+A\+DY} state. 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_15}}
+\end{DoxyImageNoCaption}
+ 

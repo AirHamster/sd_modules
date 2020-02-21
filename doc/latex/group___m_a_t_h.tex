@@ -1,0 +1,18 @@
+\hypertarget{group___m_a_t_h}{}\doxysection{Math Driver}
+\label{group___m_a_t_h}\index{Math Driver@{Math Driver}}
+
+
+Generic I2C Driver.  
+
+
+Generic I2C Driver. 
+
+This module implements a generic I2C (Inter-\/\+Integrated Circuit) driver. \begin{DoxyPrecond}{Precondition}
+In order to use the I2C driver the {\ttfamily H\+A\+L\+\_\+\+U\+S\+E\+\_\+\+I2C} option must be enabled in {\ttfamily halconf.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___m_a_t_h_i2c_1}{}\doxysubsection{Driver State Machine}\label{group___m_a_t_h_i2c_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_9}}
+\end{DoxyImageNoCaption}
+ The driver is not thread safe for performance reasons, if you need to access the I2C bus from multiple threads then use the {\ttfamily i2c\+Acquire\+Bus()} and {\ttfamily i2c\+Release\+Bus()} A\+P\+Is in order to gain exclusive access. 

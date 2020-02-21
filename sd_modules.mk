@@ -17,6 +17,21 @@ SD_SRC += ./sd_modules/sd_shell_cmd/service_mode.c
 SD_INC += ./sd_modules/sd_shell_cmd
 endif
 
+#Finite state mashine engine
+ifeq ($(USE_FSM_MODULE), TRUE)
+SD_SRC += ./sd_modules/fsm/fsm.c
+#SD_SRC += ./sd_modules/fsm/fb_allocator.c
+#SD_SRC += ./sd_modules/fsm/sm_allocator.c
+#SD_SRC += ./sd_modules/fsm/x_allocator.c
+SD_INC += ./sd_modules/fsm
+endif
+
+#JSON output module
+ifeq ($(USE_JSON_MODULE), TRUE)
+SD_SRC += ./sd_modules/sd_shell_cmd/json_output.c
+
+endif
+
 #MPU9250 - 9-axis accel/gyro/magn chip
 ifeq ($(USE_MPU_9250_MODULE), TRUE)
 SD_SRC += ./sd_modules/mpu9250/mpu9250.c
@@ -46,7 +61,7 @@ SD_INC += ./sd_modules/neo-m8
 endif
 
 #DIGI XBee modules
-ifeq ($(USE_XBEE_868_MODULE), TRUE)
+ifeq ($(USE_XBEE_MODULE), TRUE)
 SD_SRC += ./sd_modules/xbee/xbee.c
 SD_INC += ./sd_modules/xbee
 endif
@@ -61,6 +76,12 @@ endif
 ifeq ($(USE_BLE_MODULE), TRUE)
 SD_SRC += ./sd_modules/nina-b3/nina-b3.c
 SD_INC += ./sd_modules/nina-b3
+endif
+
+#Tenso sensors
+ifeq ($(USE_TENSO_MODULE), TRUE)
+SD_SRC += ./sd_modules/tenso/tenso.c
+SD_INC += ./sd_modules/tenso
 endif
 
 #BNO055
@@ -83,30 +104,34 @@ SD_INC += ./sd_modules/bmx160/MadgwickAHRS
 SD_INC += ./sd_modules/bmx160
 endif
 
-#FUSION
+#Multi MCU communication module
+ifeq ($(USE_MCU_MCU_MODULE), TRUE)
+SD_SRC += ./sd_modules/mcu-mcu_i2c/mcu-mcu_i2c.c
+SD_SRC += ./sd_modules/mcu-mcu_i2c/software_uart.c
+SD_INC += ./sd_modules/mcu-mcu_i2c
+endif
+
+#FUSION math lib
 ifeq ($(USE_FUSION_MODULE), TRUE)
 SD_SRC += ./sd_modules/bmx160/Fusion/FusionAhrs.c
 SD_SRC += ./sd_modules/bmx160/Fusion/FusionBias.c
 SD_SRC += ./sd_modules/bmx160/Fusion/FusionCompass.c
 SD_INC += ./sd_modules/bmx160/Fusion
-#LAG
 endif
 
+#LAG module
 ifeq ($(USE_LAG_MODULE), TRUE)
 SD_SRC += ./sd_modules/lag/lag.c
 SD_INC += ./sd_modules/lag
 endif
 
-#FATFS
+#FATFS and MicroSD support
 ifeq ($(USE_MICROSD_MODULE), TRUE)
-#SD_SRC += ./sd_modules/microsd/diskio.c
-#SD_SRC += ./sd_modules/microsd/ff.c
-#SD_SRC += ./sd_modules/microsd/ffsystem.c
-#SD_SRC += ./sd_modules/microsd/ffunicode.c
 SD_SRC += ./sd_modules/microsd/microsd.c
 SD_INC += ./sd_modules/microsd
 endif
 
+#On-chip saildata math module
 ifeq ($(USE_MATH_MODULE), TRUE)
 SD_SRC += ./sd_modules/math/sailDataMath.c
 SD_SRC += ./sd_modules/math/sd_math.c
@@ -135,6 +160,12 @@ endif
 ifeq (${USE_FUEL_GAUGE_MODULE}, TRUE)
 SD_SRC += ./sd_modules/bq27441/bq27441.c
 SD_INC += ./sd_modules/bq27441
+endif
+
+#Sleep modes and button response
+ifeq (${USE_POWER_MANAGEMENT}, TRUE)
+SD_SRC += ./sd_modules/power_management/pwr_mgmt_l4.c
+SD_INC += ./sd_modules/power_management
 endif
 
 # Shared variables

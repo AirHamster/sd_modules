@@ -5,7 +5,13 @@
  *      Author: a-h
  */
 
-
+/**
+ * @file    bmx160_i2c.h
+ * @brief   BMX160 Driver macros and structures.
+ *
+ * @addtogroup BMX160
+ * @{
+ */
 
 #ifndef SD_MODULES_bmx160_bmx160_I2C_H_
 #define SD_MODULES_bmx160_bmx160_I2C_H_
@@ -18,16 +24,33 @@
 #include "bmi160.h"
 #include "bmm150.h"
 #define PI 3.1415f
+
+/**
+ * @brief Common BMX160 struct
+ */
 typedef struct{
 	uint8_t suspend_state;
+	/**
+	 * @brief Indicates calibration process
+	 */
 	uint8_t calib_flag;
-	float aRes, gRes, mRes;      // scale resolutions per LSB for the sensors
+	/**
+	 * @brief Scale resolutions per LSB for the sensors
+	 */
+	float aRes, gRes, mRes;
+	/**
+	 * @brief Degrees output
+	 */
 	float pitch, yaw, roll;
+	/**
+	 * @brief Magnetometer offset values
+	 */
 	struct {
 		float x;
 		float y;
 		float z;
 	}mag_offset;
+
 	float magCalibration[3], magBias[3], magScale[3];  // Factory mag calibration and mag bias
 	float gyroBias[3], accelBias[3]; // Bias corrections for gyro and accelerometer
 	float ax, ay, az, gx, gy, gz, mx, my, mz; // variables to hold latest sensor data values

@@ -4,6 +4,15 @@
  *  Created on: Jul 16, 2019
  *      Author: a-h
  */
+
+/**
+ * @file    bno055_i2c.c
+ * @brief   BNO055 Driver funcs.
+ *
+ * @addtogroup BNO055
+ * @{
+ */
+
 #include "config.h"
 #include <stdlib.h>
 #include <string.h>
@@ -39,6 +48,7 @@ const I2CConfig bno055_i2c_cfg = {
   0,
   0
 };
+
 
 void start_bno055_module(void){
 
@@ -139,35 +149,49 @@ int8_t bno055_full_init(bno055_t *bno055) {
 	return comres;
 }
 
+
 int8_t bno055_save_calib_to_eeprom(bno055_t *bno055){
-	eeprom_write(EEPROM_MAGN_X_OFFSET_ADDR, &bno055->magn_offset.x, sizeof(struct bno055_mag_offset_t) + sizeof(struct bno055_gyro_offset_t) + sizeof(struct bno055_accel_offset_t));
+	EEPROM_WRITE(MAGN_MEMORY.MAGN_X_OFFSET, (uint8_t*)&bno055->magn_offset.x);
+	EEPROM_WRITE(MAGN_MEMORY.MAGN_Y_OFFSET, (uint8_t*)&bno055->magn_offset.y);
+	EEPROM_WRITE(MAGN_MEMORY.MAGN_Z_OFFSET, (uint8_t*)&bno055->magn_offset.z);
+	EEPROM_WRITE(MAGN_MEMORY.MAGN_RADIUS, (uint8_t*)&bno055->magn_offset.r);
+	//eeprom_write(EEPROM_MAGN_X_OFFSET_ADDR, &bno055->magn_offset.x, sizeof(struct bno055_mag_offset_t) + sizeof(struct bno055_gyro_offset_t) + sizeof(struct bno055_accel_offset_t));
 }
 
+
 int8_t bno055_read_calib_from_eeprom(bno055_t *bno055){
-	eeprom_read(EEPROM_MAGN_X_OFFSET_ADDR, &bno055->magn_offset.x, sizeof(struct bno055_mag_offset_t) + sizeof(struct bno055_gyro_offset_t) + sizeof(struct bno055_accel_offset_t));
+	EEPROM_READ(MAGN_MEMORY.MAGN_X_OFFSET, (uint8_t*)&bno055->magn_offset.x);
+		EEPROM_READ(MAGN_MEMORY.MAGN_Y_OFFSET, (uint8_t*)&bno055->magn_offset.y);
+		EEPROM_READ(MAGN_MEMORY.MAGN_Z_OFFSET, (uint8_t*)&bno055->magn_offset.z);
+		EEPROM_READ(MAGN_MEMORY.MAGN_RADIUS, (uint8_t*)&bno055->magn_offset.r);
+
+	//eeprom_read(EEPROM_MAGN_X_OFFSET_ADDR, &bno055->magn_offset.x, sizeof(struct bno055_mag_offset_t) + sizeof(struct bno055_gyro_offset_t) + sizeof(struct bno055_accel_offset_t));
 }
+
 
 int8_t bno955_read_static_flag_from_eeprom(bno055_t *bno055){
 	uint8_t temp;
-		if (eeprom_read(EEPROM_STATIC_CALIB_FLAG_ADDR, &temp, 1) != -1) {
+		if (EEPROM_READ(FLAGS_MEMORY.STATIC_MAGN_CALIB_FLAG, (uint8_t*)&temp) != -1) {
 			bno055->static_calib = temp;
 			return temp;
 		}
 		return -1;
 }
 
+
 int8_t bno055_set_static_calib(bno055_t *bno055) {
 	uint8_t temp = 1;
-	if (eeprom_write(EEPROM_STATIC_CALIB_FLAG_ADDR, &temp, 1) != -1) {
+	if (EEPROM_WRITE(FLAGS_MEMORY.STATIC_MAGN_CALIB_FLAG, (uint8_t*)&temp) != -1) {
 		bno055->static_calib = 1;
 		return 0;
 	}
 	return -1;
 }
 
+
 int8_t bno055_set_dynamic_calib(bno055_t *bno055) {
 	uint8_t temp = 0;
-	if (eeprom_write(EEPROM_STATIC_CALIB_FLAG_ADDR, &temp, 1) != -1) {
+	if (EEPROM_WRITE(FLAGS_MEMORY.STATIC_MAGN_CALIB_FLAG, (uint8_t*)&temp) != -1) {
 		bno055->static_calib = 0;
 		return 0;
 	}
@@ -185,6 +209,7 @@ int8_t bno055_apply_calib_to_chip(bno055_t *bno055){
 	bno055->read_type = OUTPUT_TEST;
 }
 
+
 int8_t bno055_start_calibration(bno055_t *bno055){
 	int8_t comres = BNO055_INIT_VALUE;
 	bno055->read_type = OUTPUT_NONE;
@@ -199,27 +224,14 @@ int8_t bno055_start_calibration(bno055_t *bno055){
 	return comres;
 }
 
+
 int8_t bno055_read_euler(bno055_t *bno055){
 	int8_t comres = BNO055_INIT_VALUE;
 	uint8_t euler_data[6];
-//	struct bno055_euler_t reg_euler = {BNO055_INIT_VALUE,
-	//	BNO055_INIT_VALUE, BNO055_INIT_VALUE};
-	//euler_data[0] = BNO055_EULER_H_LSB_VALUEH_REG;
-	//bno055_read(bno055->dev_addr, euler_data, 6);
 	comres += bno055_convert_float_euler_hpr_deg(&bno055->d_euler_hpr);
-#ifdef USE_HMC6343_MODULE
-	//bno055->d_euler_hpr.h = hmc6343->yaw;
-#endif
-	//bno055->d_euler_hpr.h = bmx160.yaw;
-	//bno055->d_euler_hpr.h = hmc5883->yaw;
-	//bno055->d_euler_hpr.h = (float)(((int16_t)(euler_data[0] | euler_data[1] << 8))/BNO055_EULER_DIV_DEG);
-	//bno055->d_euler_hpr.r = (float)(((int16_t)(euler_data[2] | euler_data[3] << 8))/BNO055_EULER_DIV_DEG);
-	//bno055->d_euler_hpr.p = (float)(((int16_t)(euler_data[4] | euler_data[5] << 8))/BNO055_EULER_DIV_DEG);
-	//bno055->d_euler_hpr.h = (float)(reg_euler.h/BNO055_EULER_DIV_DEG);
-	//bno055->d_euler_hpr.r = (float)(reg_euler.r/BNO055_EULER_DIV_DEG);
-	//bno055->d_euler_hpr.p = (float)(reg_euler.p/BNO055_EULER_DIV_DEG);
-		return comres;
+	return comres;
 }
+
 
 int8_t bno055_read_status(bno055_t *bno055){
 	int8_t comres = BNO055_INIT_VALUE;
@@ -230,6 +242,7 @@ int8_t bno055_read_status(bno055_t *bno055){
 	return comres;
 }
 
+
 int8_t bno055_check_calib_coefs(bno055_t *bno055){
 	int8_t comres = BNO055_INIT_VALUE;
 	comres += bno055_read_sic_matrix(&bno055->sic_matrix);
@@ -238,6 +251,8 @@ int8_t bno055_check_calib_coefs(bno055_t *bno055){
 	comres += bno055_read_gyro_offset(&bno055->gyro_offset);
 	return comres;
 }
+
+
 int8_t bno055_i2c_routine(bno055_t *bno055)
 {
 	bno055->BNO055_I2C_bus_write= BNO055_I2C_bus_write;
@@ -248,9 +263,11 @@ int8_t bno055_i2c_routine(bno055_t *bno055)
 	return BNO055_INIT_VALUE;
 }
 
+
 void bno055_delay_ms(uint16_t msec){
 	chThdSleepMilliseconds(msec);
 }
+
 
 int8_t bno055_read(uint8_t dev_addr, uint8_t *reg_data, uint8_t r_len) {
 	msg_t status;
@@ -275,6 +292,7 @@ int8_t bno055_read(uint8_t dev_addr, uint8_t *reg_data, uint8_t r_len) {
 
 }
 
+
 int8_t bno055_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len) {
 	uint8_t rxbuff[1];
 	msg_t status;
@@ -295,6 +313,7 @@ int8_t bno055_write(uint8_t dev_addr, uint8_t *reg_data, uint8_t wr_len) {
 	}
 	return 0;
 }
+
 
 s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 {
@@ -360,6 +379,7 @@ s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 		*(reg_data + stringpos) = array[stringpos];
 	return (s8)BNO055_iERROR;
 }
+
 
 void i2c_restart(I2CDriver *i2cp)
 {

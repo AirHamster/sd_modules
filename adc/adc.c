@@ -36,7 +36,7 @@ coefs_t *coefs;
 
 #define IR_ADC_GRP1_NUM_CHANNELS 1
 #define IR_ADC_GRP1_BUF_DEPTH 4
-#ifdef SD_SENSOR_BOX_RUDDER
+#if defined(USE_ADC_MODULE) && defined(USE_RUDDER_MODULE) && defined(SD_SENSOR_BOX)
 static void adcendcallback(ADCDriver *adcp);
 static adcsample_t irSamples[IR_ADC_GRP1_NUM_CHANNELS * IR_ADC_GRP1_BUF_DEPTH];
 
@@ -45,7 +45,7 @@ const ADCConfig adccfg = {
 };
 
 
-const ADCConversionGroup adcgrpcfg = {
+ADCConversionGroup adcgrpcfg = {
   .circular     = FALSE,
   .num_channels = IR_ADC_GRP1_NUM_CHANNELS,
   .end_cb       = adcendcallback,
@@ -58,7 +58,7 @@ const ADCConversionGroup adcgrpcfg = {
     0U
   },
   .sqr          = {
-    ADC_SQR1_SQ1_N(ADC_CHANNEL_IN6),
+    ADC_SQR1_SQ1_N(ADC_CHANNEL_IN5),
     0U,
     0U,
     0U
@@ -87,15 +87,16 @@ static THD_FUNCTION( adc_thread, p) {
 	rudder->native_full_scale = rudder->max_native - rudder->min_native;
 	init_coefs(dots, coefs);
 	while (true) {
-		adcConvert(&ADCD1, &adcgrpcfg, irSamples, IR_ADC_GRP1_BUF_DEPTH);
+	//	adcConvert(&ADCD1, &adcgrpcfg, irSamples, IR_ADC_GRP1_BUF_DEPTH);
 		tmp = 0;
 		for (i = 0; i < IR_ADC_GRP1_BUF_DEPTH; i++) {
 			tmp += irSamples[i];
 		}
 		tmp = tmp / IR_ADC_GRP1_BUF_DEPTH;
 		adc_convert_to_rudder(tmp, rudder);
-	/*	chprintf((BaseSequentialStream*) &SD1, "ADC native:  %d\r\n",
-				(uint16_t) rudder->native);
+/*		chprintf((BaseSequentialStream*) &SD1, "ADC native:  %d\r\n",
+				(uint16_t) rudder->native);*/
+	/*
 		chprintf((BaseSequentialStream*) &SD1, "ADC percent: %f\r\n",
 				rudder->percent);
 		chprintf((BaseSequentialStream*) &SD1, "ADC degrees: %f\r\n",
@@ -107,8 +108,8 @@ static THD_FUNCTION( adc_thread, p) {
 
 
 void start_adc_module(void){
-	adcStart(&ADCD1, NULL);
-	adcSTM32EnableVREF(&ADCD1);
+	//adcStart(&ADCD1, NULL);
+	//adcSTM32EnableVREF(&ADCD1);
 	chThdCreateStatic(adc_thread_wa, sizeof(adc_thread_wa), NORMALPRIO, adc_thread, NULL);
 }
 
@@ -147,6 +148,38 @@ void adc_convert_to_rudder(uint16_t tmp, rudder_t *rud) {
 	//rud->degrees = ((float) rud->percent / 100.0 * 180.0 - 90.0);
 }
 
+uint16_t adc_get_avg_measure(uint8_t channel, uint8_t sample_num) {
+
+	adcsample_t Samples[IR_ADC_GRP1_NUM_CHANNELS * sample_num];
+	uint8_t i = 0;
+	uint32_t tmp;
+
+	switch (channel) {
+	case 1:
+		adcgrpcfg.sqr[0] = ADC_SQR1_SQ1_N(ADC_CHANNEL_IN5);
+		break;
+	case 2:
+		adcgrpcfg.sqr[0] = ADC_SQR1_SQ1_N(ADC_CHANNEL_IN6);
+		break;
+	case 3:
+		adcgrpcfg.sqr[0] = ADC_SQR1_SQ1_N(ADC_CHANNEL_IN3);
+		break;
+	case 4:
+		adcgrpcfg.sqr[0] = ADC_SQR1_SQ1_N(ADC_CHANNEL_IN4);
+	}
+	adcStart(&ADCD1, NULL);
+	adcSTM32EnableVREF(&ADCD1);
+	adcConvert(&ADCD1, &adcgrpcfg, Samples, sample_num);
+
+	tmp = 0;
+	for (i = 0; i < sample_num; i++) {
+		tmp += Samples[i];
+	}
+	tmp = tmp / sample_num;
+
+	return (uint16_t)tmp;
+}
+
 void adc_print_rudder_info(rudder_t *rud){
 	chprintf((BaseSequentialStream*) &SD1, "ADC native:  %d\r\n",
 			(uint16_t) rud->native);
@@ -170,21 +203,27 @@ void init_coefs(dots_t *dots, coefs_t *coefs){
 		dots->y2 = 0.0;
 		dots->y2 = 90.0;
 	}else{ */
-		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_LEFT, (uint8_t*)&dots->x1, 4);
+		EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_LEFT, (uint8_t*)&dots->x1);
+		//eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_LEFT, (uint8_t*)&dots->x1, 4);
 		rudder->min_native = dots->x1;
-		chThdSleepMilliseconds(5);
-		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_CENTER, (uint8_t*)&dots->x2, 4);
-		chThdSleepMilliseconds(5);
-		eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*)&dots->x3, 4);
+		//chThdSleepMilliseconds(5);
+		EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_CENTER, (uint8_t*)&dots->x2);
+		//eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_CENTER, (uint8_t*)&dots->x2, 4);
+		//chThdSleepMilliseconds(5);
+		EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*)&dots->x3);
+		//eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*)&dots->x3, 4);
 		rudder->max_native = dots->x3;
-		chThdSleepMilliseconds(5);
+		//chThdSleepMilliseconds(5);
 
-		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*)&dots->y1, 4);
+		EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_LEFT, (uint8_t*)&dots->y1);
+		//eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*)&dots->y1, 4);
 		rudder->min_degrees = dots->y1;
-		chThdSleepMilliseconds(5);
-		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*)&dots->y2, 4);
-		chThdSleepMilliseconds(5);
-		eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*)&dots->y3, 4);
+		//chThdSleepMilliseconds(5);
+		EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_CENTER, (uint8_t*)&dots->y2);
+		//eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*)&dots->y2, 4);
+		//chThdSleepMilliseconds(5);
+		EEPROM_READ(RUDDER_MEMORY.RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*)&dots->y3);
+		//eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*)&dots->y3, 4);
 		rudder->max_degrees = dots->y3;
 	//}
 	rudder->native_full_scale = rudder->max_native - rudder->min_native;

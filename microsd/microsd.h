@@ -52,17 +52,77 @@ typedef struct{
 void cmd_open(BaseSequentialStream *chp, int argc, char *argv[]);
 //void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]);
 void microsd_update_calibfile(void);
+
+/**
+ * Print file tree
+ * @param chp Print output stream
+ * @param argc Num of input arguments
+ * @param argv Arguments vector
+ */
 void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]);
+/**
+ *
+ * @param chp
+ */
 void microsd_show_tree(BaseSequentialStream *chp);
+
+/**
+ * Manual mount SD card
+ * @param chp Print output stream
+ * @param argc Num of input arguments
+ * @param argv Arguments vector
+ */
 void cmd_mount(BaseSequentialStream *chp, int argc, char *argv[]);
+
+/**
+ * Deleting file from SD card
+ * @param chp Print output stream
+ * @param argc Num of input arguments
+ * @param argv Arguments vector
+ */
 void cmd_remove(BaseSequentialStream *chp, int argc, char *argv[]);
+
+/**
+ * Print available space
+ * @param chp Print output stream
+ * @param argc Num of input arguments
+ * @param argv Arguments vector
+ */
 void cmd_free(BaseSequentialStream *chp, int argc, char *argv[]);
+
+/**
+ *
+ * @param chp Print output stream
+ * @param argc Num of input arguments
+ * @param argv Arguments vector
+ */
 void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]);
+
+/**
+ * Format SD card
+ * @param chp Print output stream
+ * @param argc Num of input arguments
+ * @param argv Arguments vector
+ */
 void cmd_mkfs(BaseSequentialStream *chp, int argc, char *argv[]);
+
+/**
+ * Same as tree
+ * @param chp Print output stream
+ * @param argc Num of input arguments
+ * @param argv Arguments vector
+ */
 void cmd_cat(BaseSequentialStream *chp, int argc, char *argv[]);
 //DWORD get_fattime (void);
 
+/**
+ * Start MicroSD threads
+ */
 void start_microsd_module(void);
+/**
+ *
+ * @param new_state
+ */
 void fsm_from_ls(uint8_t new_state);
 void fsm_switch_to_default_state(void);
 void fsm_change_state(uint8_t state);
@@ -74,11 +134,40 @@ void fsm_from_free(uint8_t new_state);
 void fsm_from_cat(uint8_t new_state);
 void fsm_from_mkfs(uint8_t new_state);
 
+/**
+ * Creates new logfile
+ * @return
+ */
 uint8_t fs_create_new_log(void);
+
+/**
+ * Writes csv header to file
+ * @return
+ */
 uint8_t fs_write_file_header(void);
+
+/**
+ * Writes sensors data to file
+ * @return
+ */
 uint8_t fs_write_line(void);
+
+/**
+ * Check and print available space on SD card
+ * @return
+ */
 uint8_t fs_check_space(void);
+
+/**
+ * Close the logfile
+ * @return
+ */
 uint8_t fs_close_log(void);
+
+/**
+ * Open logfile without writing header line
+ * @return
+ */
 uint8_t fs_continue_log(void);
 
 #endif /* SD_MODULES_MICROSD_MICROSD_H_ */

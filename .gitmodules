@@ -1,0 +1,3 @@
+[submodule "jfes"]
+	path = jfes
+	url = https://github.com/lumimies18/jfes.git

@@ -12,6 +12,12 @@
 #include <stdlib.h>
 #include "ch.h"
 #include "hal.h"
+
+#define ADC_CH1	1
+#define ADC_CH2	2
+#define ADC_CH3	3
+#define ADC_CH4	4
+
 typedef struct{
 	float degrees;
 	float percent;
@@ -40,6 +46,7 @@ typedef struct {
 	float c;
 } coefs_t;
 
+uint16_t adc_get_avg_measure(uint8_t channel, uint8_t sample_num);
 void adc_print_rudder_info(rudder_t *rud);
 void adc_convert_to_rudder(uint16_t tmp, rudder_t *rud);
 void start_adc_module(void);

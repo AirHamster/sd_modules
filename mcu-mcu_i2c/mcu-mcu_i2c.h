@@ -20,6 +20,8 @@
 
 #define MCU_MCU_SLAVE_ADDR	0x10
 
+void start_mcu_mcu_module(void);
+
 typedef enum{
 	STARTUP_NORMAL = 0,
 	STARTUP_CHARGE,
@@ -35,5 +37,11 @@ typedef struct{
 	int16_t soc;
 	int16_t capacity;
 }mcu_mcu_data_t;
+
+typedef struct{
+	int16_t current;
+	int16_t voltage;
+	int8_t soc;
+}power_data_t;
 
 #endif	//SD_MODULES_MCU-MCU_H_

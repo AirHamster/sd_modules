@@ -15,6 +15,9 @@
 #define UART_GENERIC_NOTIFY		2
 #define UART_ERROR				3
 
+/**
+ * Start windsensor threads
+ */
 void start_windsensor_module(void);
 
 typedef struct{

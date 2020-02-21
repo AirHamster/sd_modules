@@ -14,6 +14,8 @@
 #include "shell.h"
 #include "chprintf.h"
 
+#define XBEE_ATTN_MASK			1
+
 
 #define XBEE_GET_OWN_ADDR		1
 #define XBEE_GET_RSSI			2
@@ -43,9 +45,19 @@
 #define OUTPUT_USART	1
 #define OUTPUT_XBEE		2
 
+#define SIZE_OF_XBEE_ADDR	8
 #define RF_PACK_LEN		128
 
 #define RF_GPS_PACKET	1
+
+#define RF_BOUY_PACKET	2
+#define RF_SPORTSMAN_PACKET	3
+
+#define NUM_OF_SPORTSMAN_DEVICES	10
+#define NUM_OF_BOUY_DEVICES			4
+
+#define DEV_TYPE_SPORTSMAN		1
+#define DEV_TYPE_BOUY			2
 
 // Diagnostic commands
 
@@ -177,6 +189,52 @@ typedef struct{
 	uint8_t bat;
 }tx_box_t;
 
+typedef struct {
+	int32_t lat;
+	int32_t lon;
+	int32_t headMot;
+	int32_t headVeh;
+	int32_t yaw;
+	float pitch;
+	float roll;
+	float speed;
+	float rdr;
+	uint16_t log;
+	uint16_t tenso_1;
+	uint16_t tenso_2;
+	uint16_t tenso_3;
+	uint16_t tenso_4;
+	uint16_t dist;
+	uint8_t hour;
+	uint8_t min;
+	uint8_t sec;
+	uint8_t sat;
+	uint8_t bat;
+} xbee_sportsman_data_t;
+
+typedef struct {
+	int32_t lat;
+	int32_t lon;
+	uint8_t hour;
+	uint8_t min;
+	uint8_t sec;
+	uint8_t sat;
+	uint8_t bat;
+} xbee_bouy_data_t;
+
+typedef struct {
+	uint8_t addr[8];	//64 bit addressing
+	uint8_t type;		//sportsmen or bouy
+	uint8_t is_connected;
+	uint8_t heartbit;	//decrease every second, if == 0 - dev not availible, update to 10 if new data has come
+	int8_t rssi;
+	int8_t number;
+	void *rf_data;
+
+} xbee_remote_dev_t;
+
+
+
 void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff);
 void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]);
 void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len);
@@ -186,7 +244,8 @@ void xbee_attn(BaseSequentialStream* chp, int argc, char* argv[]);
 void xbee_attn_event(void);
 
 uint8_t xbee_create_at_read_message(uint8_t *at, uint8_t *buffer);
-uint8_t xbee_create_data_write_message(uint8_t *buffer, uint8_t *data, uint8_t num);
+//uint8_t xbee_create_data_write_message(uint8_t *buffer, uint8_t *data, uint8_t num);
+uint8_t xbee_create_data_write_message(uint8_t *buffer, void *data, uint8_t packet_type);
 uint8_t xbee_calc_CRC(uint8_t *buffer, uint8_t num);
 uint8_t xbee_check_attn(void);
 
@@ -215,7 +274,8 @@ void xbee_process_data_sample_frame(uint8_t* buffer);
 void xbee_process_node_id_frame(uint8_t* buffer);
 void xbee_process_remote_response_frame(uint8_t* buffer);
 
-void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len);
+void xbee_send_rf_message(void *packet, uint8_t packet_type);
+//void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len);
 void xbee_send_rf_message_back(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len);
 void xbee_parse_rf_packet(uint8_t *rxbuff);
 void xbee_parse_gps_packet_back(uint8_t *rxbuff);
@@ -231,6 +291,7 @@ uint16_t xbee_get_received_err_count(xbee_struct_t *xbee_str);
 uint16_t xbee_get_transceived_err_count(xbee_struct_t *xbee_str);
 uint16_t xbee_get_unicast_trans_count(xbee_struct_t *xbee_str);
 void xbee_send_ping_message(xbee_struct_t *xbee_strc);
+void start_xbee_module(void);
 void xbee_polling(void);
 void xbee_set_10kbs_rate(void);
 void xbee_set_80kbs_rate(void);

@@ -1,0 +1,15 @@
+\hypertarget{group___e_e_p_r_o_m}{}\doxysection{Generic E\+E\+P\+R\+OM Interface}
+\label{group___e_e_p_r_o_m}\index{Generic EEPROM Interface@{Generic EEPROM Interface}}
+
+
+H\+AL Generic N\+OR Flash Driver Interface.  
+
+
+H\+AL Generic N\+OR Flash Driver Interface. 
+
+\hypertarget{group___e_e_p_r_o_m_flash_1}{}\doxysubsection{Driver State Machine}\label{group___e_e_p_r_o_m_flash_1}
+The flash driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_6}}
+\end{DoxyImageNoCaption}
+ 
