@@ -42,12 +42,11 @@
  * @file	bmm150_defs.h
  * @date	12 Sep 2017
  * @version	1.0.0
- *
+ * @addtogroup IO
  */
 
 /*! \file bmm150_defs.h */
 /*!
- * @defgroup BMM150 SENSOR API
  * @brief
  * @{*/
 #ifndef BMM150_DEFS_H_

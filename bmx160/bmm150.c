@@ -1,4 +1,4 @@
-/**\mainpage
+/**
  * Copyright (C) 2015 - 2016 Bosch Sensortec GmbH
  *
  * Redistribution and use in source and binary forms, with or without

@@ -5,6 +5,14 @@
  *      Author: a-h
  */
 
+/**
+ * @file    bq27441.h
+ * @brief   Fuel gauge enums and structs.
+ *
+ * @addtogroup FUEL_GAUGE
+ * @{
+ */
+
 #ifndef SD_MODULES_BQ27441_BQ27441_H_
 #define SD_MODULES_BQ27441_BQ27441_H_
 
@@ -37,6 +45,9 @@ void start_fuel_gauge_module(void);
 //#define BATTERY_CAPACITY 	1800
 #endif
 
+/**
+ * @brief Common fuel gauge struct
+ */
 typedef struct{
 	uint16_t voltage;
 	int16_t temperature;
@@ -52,91 +63,108 @@ typedef struct{
 	uint16_t flags;
 }fuel_t;
 
-// Parameters for the current() function, to specify which current to read
+/**
+ * @brief Parameters for the current() function, to specify which current to read
+ */
 typedef enum {
-	AVG,  // Average Current (DEFAULT)
-	STBY, // Standby Current
-	MAX   // Max Current
+	AVG,   //!< Average Current (DEFAULT)
+	STBY,  //!< Standby Current
+	MAX    //!< Max Current
 } current_measure;
 
-// Parameters for the capacity() function, to specify which capacity to read
+/**
+ * @brief Parameters for the capacity() function, to specify which capacity to read
+ */
 typedef enum {
-	REMAIN,     // Remaining Capacity (DEFAULT)
-	FULL,       // Full Capacity
-	AVAIL,      // Available Capacity
-	AVAIL_FULL, // Full Available Capacity
-	REMAIN_F,   // Remaining Capacity Filtered
-	REMAIN_UF,  // Remaining Capacity Unfiltered
-	FULL_F,     // Full Capacity Filtered
-	FULL_UF,    // Full Capacity Unfiltered
-	DESIGN      // Design Capacity
+	REMAIN,     //!< Remaining Capacity (DEFAULT)
+	FULL,       //!< Full Capacity
+	AVAIL,      //!< Available Capacity
+	AVAIL_FULL, //!< Full Available Capacity
+	REMAIN_F,   //!< Remaining Capacity Filtered
+	REMAIN_UF,  //!< Remaining Capacity Unfiltered
+	FULL_F,     //!< Full Capacity Filtered
+	FULL_UF,    //!< Full Capacity Unfiltered
+	DESIGN      //!< Design Capacity
 } capacity_measure;
 
-// Parameters for the soc() function
+/**
+ * @brief Parameters for the soc() function
+ */
 typedef enum {
-	FILTERED,  // State of Charge Filtered (DEFAULT)
-	UNFILTERED // State of Charge Unfiltered
+	FILTERED,  //!< State of Charge Filtered (DEFAULT)
+	UNFILTERED //!< State of Charge Unfiltered
 } soc_measure;
 
-// Parameters for the soh() function
+/**
+ * @brief Parameters for the soh() function
+ */
 typedef enum {
-	PERCENT,  // State of Health Percentage (DEFAULT)
-	SOH_STAT  // State of Health Status Bits
+	PERCENT,  //!< State of Health Percentage (DEFAULT)
+	SOH_STAT  //!< State of Health Status Bits
 } soh_measure;
 
-// Parameters for the temperature() function
+/**
+ * @brief Parameters for the temperature() function
+ */
 typedef enum {
-	BATTERY,      // Battery Temperature (DEFAULT)
-	INTERNAL_TEMP // Internal IC Temperature
+	BATTERY,      //!< Battery Temperature (DEFAULT)
+	INTERNAL_TEMP //!< Internal IC Temperature
 } temp_measure;
 
-// Parameters for the setGPOUTFunction() funciton
+/**
+ * @brief Parameters for the setGPOUTFunction() funciton
+ */
 typedef enum {
-	SOC_INT, // Set GPOUT to SOC_INT functionality
-	BAT_LOW  // Set GPOUT to BAT_LOW functionality
+	SOC_INT, //!< Set GPOUT to SOC_INT functionality
+	BAT_LOW  //!< Set GPOUT to BAT_LOW functionality
 } gpout_function;
 
 ///////////////////////
 // General Constants //
 ///////////////////////
-#define BQ27441_UNSEAL_KEY	0x8000 // Secret code to unseal the BQ27441-G1A
-#define BQ27441_DEVICE_ID	0x0421 // Default device ID
+#define BQ27441_UNSEAL_KEY	0x8000 //!< Secret code to unseal the BQ27441-G1A
+#define BQ27441_DEVICE_ID	0x0421 //!< Default device ID
 
 ///////////////////////
 // Standard Commands //
 ///////////////////////
-// The fuel gauge uses a series of 2-byte standard commands to enable system
-// reading and writing of battery information. Each command has an associated
-// sequential command-code pair.
-#define BQ27441_COMMAND_CONTROL			0x00 // Control()
-#define BQ27441_COMMAND_TEMP			0x02 // Temperature()
-#define BQ27441_COMMAND_VOLTAGE			0x04 // Voltage()
-#define BQ27441_COMMAND_FLAGS			0x06 // Flags()
-#define BQ27441_COMMAND_NOM_CAPACITY	0x08 // NominalAvailableCapacity()
-#define BQ27441_COMMAND_AVAIL_CAPACITY	0x0A // FullAvailableCapacity()
-#define BQ27441_COMMAND_REM_CAPACITY	0x0C // RemainingCapacity()
-#define BQ27441_COMMAND_FULL_CAPACITY	0x0E // FullChargeCapacity()
-#define BQ27441_COMMAND_AVG_CURRENT		0x10 // AverageCurrent()
-#define BQ27441_COMMAND_STDBY_CURRENT	0x12 // StandbyCurrent()
-#define BQ27441_COMMAND_MAX_CURRENT		0x14 // MaxLoadCurrent()
-#define BQ27441_COMMAND_AVG_POWER		0x18 // AveragePower()
-#define BQ27441_COMMAND_SOC				0x1C // StateOfCharge()
-#define BQ27441_COMMAND_INT_TEMP		0x1E // InternalTemperature()
-#define BQ27441_COMMAND_SOH				0x20 // StateOfHealth()
-#define BQ27441_COMMAND_REM_CAP_UNFL	0x28 // RemainingCapacityUnfiltered()
-#define BQ27441_COMMAND_REM_CAP_FIL		0x2A // RemainingCapacityFiltered()
-#define BQ27441_COMMAND_FULL_CAP_UNFL	0x2C // FullChargeCapacityUnfiltered()
-#define BQ27441_COMMAND_FULL_CAP_FIL	0x2E // FullChargeCapacityFiltered()
-#define BQ27441_COMMAND_SOC_UNFL		0x30 // StateOfChargeUnfiltered()
+/**
+ * @briefThe fuel gauge uses a series of 2-byte standard commands to enable system
+ * reading and writing of battery information. Each command has an associated
+ * sequential command-code pair.
+ */
+#define BQ27441_COMMAND_CONTROL			0x00 //!< Control()
+#define BQ27441_COMMAND_TEMP			0x02 //!< Temperature()
+#define BQ27441_COMMAND_VOLTAGE			0x04 //!< Voltage()
+#define BQ27441_COMMAND_FLAGS			0x06 //!< Flags()
+#define BQ27441_COMMAND_NOM_CAPACITY	0x08 //!< NominalAvailableCapacity()
+#define BQ27441_COMMAND_AVAIL_CAPACITY	0x0A //!< FullAvailableCapacity()
+#define BQ27441_COMMAND_REM_CAPACITY	0x0C //!< RemainingCapacity()
+#define BQ27441_COMMAND_FULL_CAPACITY	0x0E //!< FullChargeCapacity()
+#define BQ27441_COMMAND_AVG_CURRENT		0x10 //!< AverageCurrent()
+#define BQ27441_COMMAND_STDBY_CURRENT	0x12 //!< StandbyCurrent()
+#define BQ27441_COMMAND_MAX_CURRENT		0x14 //!< MaxLoadCurrent()
+#define BQ27441_COMMAND_AVG_POWER		0x18 //!< AveragePower()
+#define BQ27441_COMMAND_SOC				0x1C //!< StateOfCharge()
+#define BQ27441_COMMAND_INT_TEMP		0x1E //!< InternalTemperature()
+#define BQ27441_COMMAND_SOH				0x20 //!< StateOfHealth()
+#define BQ27441_COMMAND_REM_CAP_UNFL	0x28 //!< RemainingCapacityUnfiltered()
+#define BQ27441_COMMAND_REM_CAP_FIL		0x2A //!< RemainingCapacityFiltered()
+#define BQ27441_COMMAND_FULL_CAP_UNFL	0x2C //!< FullChargeCapacityUnfiltered()
+#define BQ27441_COMMAND_FULL_CAP_FIL	0x2E //!< FullChargeCapacityFiltered()
+#define BQ27441_COMMAND_SOC_UNFL		0x30 //!< StateOfChargeUnfiltered()
 
 //////////////////////////
 // Control Sub-commands //
 //////////////////////////
-// Issuing a Control() command requires a subsequent 2-byte subcommand. These
-// additional bytes specify the particular control function desired. The
-// Control() command allows the system to control specific features of the fuel
-// gauge during normal operation and additional features when the device is in
-// different access modes.
+
+/**
+ * @brief Issuing a Control() command requires a subsequent 2-byte subcommand. These
+ additional bytes specify the particular control function desired. The
+ Control() command allows the system to control specific features of the fuel
+ gauge during normal operation and additional features when the device is in
+ different access modes.
+ */
 #define BQ27441_CONTROL_STATUS			0x00
 #define BQ27441_CONTROL_DEVICE_TYPE		0x01
 #define BQ27441_CONTROL_FW_VERSION		0x02
@@ -160,11 +188,14 @@ typedef enum {
 ///////////////////////////////////////////
 // Control Status Word - Bit Definitions //
 ///////////////////////////////////////////
-// Bit positions for the 16-bit data of CONTROL_STATUS.
-// CONTROL_STATUS instructs the fuel gauge to return status information to
-// Control() addresses 0x00 and 0x01. The read-only status word contains status
-// bits that are set or cleared either automatically as conditions warrant or
-// through using specified subcommands.
+
+/**
+ * @brief Bit positions for the 16-bit data of CONTROL_STATUS.
+ CONTROL_STATUS instructs the fuel gauge to return status information to
+ Control() addresses 0x00 and 0x01. The read-only status word contains status
+ bits that are set or cleared either automatically as conditions warrant or
+ through using specified subcommands.
+ */
 #define BQ27441_STATUS_SHUTDOWNEN	(1<<15)
 #define BQ27441_STATUS_WDRESET		(1<<14)
 #define BQ27441_STATUS_SS			(1<<13)
@@ -183,9 +214,13 @@ typedef enum {
 ////////////////////////////////////
 // Flag Command - Bit Definitions //
 ////////////////////////////////////
-// Bit positions for the 16-bit data of Flags()
-// This read-word function returns the contents of the fuel gauging status
-// register, depicting the current operating status.
+
+/**
+ * @brief Bit positions for the 16-bit data of Flags()
+ This read-word function returns the contents of the fuel gauging status
+ register, depicting the current operating status.
+ */
+
 #define BQ27441_FLAG_OT			(1<<15)
 #define BQ27441_FLAG_UT			(1<<14)
 #define BQ27441_FLAG_FC			(1<<9)
@@ -201,9 +236,13 @@ typedef enum {
 ////////////////////////////
 // Extended Data Commands //
 ////////////////////////////
-// Extended data commands offer additional functionality beyond the standard
-// set of commands. They are used in the same manner; however, unlike standard
-// commands, extended commands are not limited to 2-byte words.
+
+/**
+ * @brief  Extended data commands offer additional functionality beyond the standard
+ set of commands. They are used in the same manner; however, unlike standard
+ commands, extended commands are not limited to 2-byte words.
+ */
+
 #define BQ27441_EXTENDED_OPCONFIG	0x3A // OpConfig()
 #define BQ27441_EXTENDED_CAPACITY	0x3C // DesignCapacity()
 #define BQ27441_EXTENDED_DATACLASS	0x3E // DataClass()
@@ -215,9 +254,12 @@ typedef enum {
 ////////////////////////////////////////
 // Configuration Class, Subclass ID's //
 ////////////////////////////////////////
-// To access a subclass of the extended data, set the DataClass() function
-// with one of these values.
-// Configuration Classes
+
+/**
+ * @brief To access a subclass of the extended data, set the DataClass() function
+ with one of these values.
+ Configuration Classes
+ */
 #define BQ27441_ID_SAFETY			2   // Safety
 #define BQ27441_ID_CHG_TERMINATION	36  // Charge Termination
 #define BQ27441_ID_CONFIG_DATA		48  // Data
