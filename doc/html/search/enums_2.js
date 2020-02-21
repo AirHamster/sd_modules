@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['sdstate_5ft_2489',['sdstate_t',['../group___s_e_r_i_a_l.html#gad8e84bab9ea5bf7950609d7eef6dfb30',1,'serial_stream.h']]]
+  ['input_5fcurrent_5flimit_2462',['input_current_limit',['../group___c_h_a_r_g_e_r.html#gab982cb787d6f8da311b204e5a69b6d16',1,'bq2560x.h']]]
 ];

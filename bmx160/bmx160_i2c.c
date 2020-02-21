@@ -4,6 +4,15 @@
  *  Created on: Jul 16, 2019
  *      Author: a-h
  */
+
+/**
+ * @file    bmx160_i2c.c
+ * @brief   BMX160 Driver funcs.
+ *
+ * @addtogroup BMX160
+ * @{
+ */
+
 #include "config.h"
 #include <stdlib.h>
 #include <string.h>
@@ -40,18 +49,27 @@ FusionAhrs fusionAhrs;
 
 float samplePeriod = 0.01f; // replace this value with actual sample period in seconds
 
+/**
+ * @brief Sensitivity in degrees per second per lsb as specified in gyroscope datasheet
+ */
 FusionVector3 gyroscopeSensitivity = {
     .axis.x = 0.00762195f,
     .axis.y = 0.00762195f,
     .axis.z = 0.00762195f,
 }; // replace these values with actual sensitivity in degrees per second per lsb as specified in gyroscope datasheet
 
+/**
+ * @brief Sensitivity in g per lsb as specified in accelerometer datasheet
+ */
 FusionVector3 accelerometerSensitivity = {
     .axis.x = 0.000061035f,
     .axis.y = 0.000061035f,
     .axis.z = 0.000061035f,
 }; // replace these values with actual sensitivity in g per lsb as specified in accelerometer datasheet
 
+/**
+ * @brief Hard-iron bias in uT
+ */
 FusionVector3 hardIronBias = {
     .axis.x = 0.75f,
     .axis.y = 2.96875f,
@@ -217,7 +235,7 @@ const I2CConfig bmx160_i2c_cfg = {
 };
 
 /**
- *
+ * @brief Start BMX160 threads
  */
 void start_bmx160_module(void){
 

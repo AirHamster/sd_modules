@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['get_5ffile_5fcontent_2150',['get_file_content',['../examples_8h.html#a9b9e85d1b92bd6a4264dde0cd53c3e5e',1,'get_file_content(const char *filename, char *content, unsigned long *max_content_size):&#160;main.c'],['../main_8c.html#a9b9e85d1b92bd6a4264dde0cd53c3e5e',1,'get_file_content(const char *filename, char *content, unsigned long *max_content_size):&#160;main.c']]]
+  ['i2c_5frestart_2184',['i2c_restart',['../group___b_n_o055.html#ga2bcb21315e7745d07d64fb64d2c0cfd7',1,'i2c_restart(I2CDriver *i2cp):&#160;bno055_i2c.c'],['../group___b_n_o055.html#ga2bcb21315e7745d07d64fb64d2c0cfd7',1,'i2c_restart(I2CDriver *i2cp):&#160;bno055_i2c.c']]]
 ];

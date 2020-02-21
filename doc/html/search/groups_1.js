@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['sensor_20api_2561',['SENSOR API',['../group___b_m_m150.html',1,'']]],
-  ['serial_2562',['SERIAL',['../group___s_e_r_i_a_l.html',1,'']]]
+  ['bmi160_2903',['Bmi160',['../group__bmi160.html',1,'']]],
+  ['bmi160_5fdefs_2904',['Bmi160_defs',['../group__bmi160__defs.html',1,'']]],
+  ['bmx160_20driver_2905',['BMX160 Driver',['../group___b_m_x160.html',1,'']]],
+  ['bno055_20driver_2906',['BNO055 Driver',['../group___b_n_o055.html',1,'']]]
 ];

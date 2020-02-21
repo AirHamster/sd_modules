@@ -93,6 +93,27 @@ $(document).ready(function(){initNavTree('_fusion_calibration_8h.html',''); init
 <p>Gyroscope, accelerometer, and magnetometer calibration model.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="_fusion_types_8h_source.html">FusionTypes.h</a>&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for FusionCalibration.h:</div>
+<div class="dyncontent">
+<div class="center"><img src="_fusion_calibration_8h__incl.png" border="0" usemap="#bmx160_2_fusion_2_fusion_calibration_8h" alt=""/></div>
+<map name="bmx160_2_fusion_2_fusion_calibration_8h" id="bmx160_2_fusion_2_fusion_calibration_8h">
+<area shape="rect" title="Gyroscope, accelerometer, and magnetometer calibration model." alt="" coords="5,5,232,32"/>
+<area shape="rect" href="_fusion_types_8h.html" title="Common types and their associated operations." alt="" coords="65,80,172,107"/>
+<area shape="rect" title=" " alt="" coords="43,155,106,181"/>
+<area shape="rect" title=" " alt="" coords="130,155,195,181"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dyncontent">
+<div class="center"><img src="_fusion_calibration_8h__dep__incl.png" border="0" usemap="#bmx160_2_fusion_2_fusion_calibration_8hdep" alt=""/></div>
+<map name="bmx160_2_fusion_2_fusion_calibration_8hdep" id="bmx160_2_fusion_2_fusion_calibration_8hdep">
+<area shape="rect" title="Gyroscope, accelerometer, and magnetometer calibration model." alt="" coords="5,5,232,32"/>
+<area shape="rect" href="_fusion_8h.html" title="Main header file for the library. This is the only file that needs to be included when using the libr..." alt="" coords="36,80,201,107"/>
+<area shape="rect" href="bmx160__i2c_8c.html" title="BMX160 Driver funcs." alt="" coords="42,155,195,181"/>
+</map>
+</div>
 </div>
 <p><a href="_fusion_calibration_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -144,12 +165,13 @@ static const <a class="el" href="union_fusion_rotation_matrix.html">FusionRotati
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">{</div>
-<div class="line">    <span class="keywordflow">return</span> FusionVectorSubtract(FusionRotationMatrixMultiplyVector(softIronMatrix, uncalibrated), hardIronBias)</div>
+<div class="line">    <span class="keywordflow">return</span> FusionVectorSubtract(FusionRotationMatrixMultiplyVector(softIronMatrix, uncalibrated), <a class="code" href="group___b_m_x160.html#ga9de72b998abc26885a84e1de0c03ee47">hardIronBias</a>)</div>
 </div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="agroup___b_m_x160_html_ga9de72b998abc26885a84e1de0c03ee47"><div class="ttname"><a href="group___b_m_x160.html#ga9de72b998abc26885a84e1de0c03ee47">hardIronBias</a></div><div class="ttdeci">FusionVector3 hardIronBias</div><div class="ttdoc">Hard-iron bias in uT.</div><div class="ttdef"><b>Definition:</b> bmx160_i2c.c:73</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

@@ -6,6 +6,20 @@ Gyroscope, accelerometer, and magnetometer calibration model.
 
 
 {\ttfamily \#include \char`\"{}Fusion\+Types.\+h\char`\"{}}\newline
+Include dependency graph for Fusion\+Calibration.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=250pt]{_fusion_calibration_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=250pt]{_fusion_calibration_8h__dep__incl}
+\end{center}
+\end{figure}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
@@ -54,6 +68,6 @@ Seb Madgwick Static inline implementations are used to optimise for increased ex
 {\bfseries Initial value\+:}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\{}
-\DoxyCodeLine{    \textcolor{keywordflow}{return} FusionVectorSubtract(FusionRotationMatrixMultiplyVector(softIronMatrix, uncalibrated), hardIronBias)}
+\DoxyCodeLine{    \textcolor{keywordflow}{return} FusionVectorSubtract(FusionRotationMatrixMultiplyVector(softIronMatrix, uncalibrated), \mbox{\hyperlink{group___b_m_x160_ga9de72b998abc26885a84e1de0c03ee47}{hardIronBias}})}
 
 \end{DoxyCode}

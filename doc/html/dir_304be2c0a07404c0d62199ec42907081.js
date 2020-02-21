@@ -11,5 +11,6 @@ var dir_304be2c0a07404c0d62199ec42907081 =
     [ "bmm150.c", "bmm150_8c.html", "bmm150_8c" ],
     [ "bmm150.h", "bmm150_8h.html", "bmm150_8h" ],
     [ "bmm150_defs.h", "bmm150__defs_8h.html", "bmm150__defs_8h" ],
-    [ "bmx160_i2c.h", "bmx160__i2c_8h_source.html", null ]
+    [ "bmx160_i2c.c", "bmx160__i2c_8c.html", "bmx160__i2c_8c" ],
+    [ "bmx160_i2c.h", "bmx160__i2c_8h.html", "bmx160__i2c_8h" ]
 ];

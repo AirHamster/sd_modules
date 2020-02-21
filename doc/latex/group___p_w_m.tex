@@ -1,0 +1,36 @@
+\hypertarget{group___p_w_m}{}\doxysection{P\+WM Driver}
+\label{group___p_w_m}\index{PWM Driver@{PWM Driver}}
+
+
+Generic P\+WM Driver.  
+
+
+Collaboration diagram for P\+WM Driver\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=270pt]{group___p_w_m}
+\end{center}
+\end{figure}
+Generic P\+WM Driver. 
+
+This module implements a generic P\+WM (Pulse Width Modulation) driver. \begin{DoxyPrecond}{Precondition}
+In order to use the P\+WM driver the {\ttfamily H\+A\+L\+\_\+\+U\+S\+E\+\_\+\+P\+WM} option must be enabled in {\ttfamily halconf.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___p_w_m_pwm_1}{}\doxysubsection{Driver State Machine}\label{group___p_w_m_pwm_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_8}}
+\end{DoxyImageNoCaption}
+\hypertarget{group___p_w_m_pwm_2}{}\doxysubsection{P\+W\+M Operations.}\label{group___p_w_m_pwm_2}
+This driver abstracts a generic P\+WM timer composed of\+:
+\begin{DoxyItemize}
+\item A clock prescaler.
+\item A main up counter.
+\item A comparator register that resets the main counter to zero when the limit is reached. An optional callback can be generated when this happens.
+\item An array of {\ttfamily P\+W\+M\+\_\+\+C\+H\+A\+N\+N\+E\+LS} P\+WM channels, each channel has an output, a comparator and is able to invoke an optional callback when a comparator match with the main counter happens.
+\end{DoxyItemize}A P\+WM channel output can be in two different states\+:
+\begin{DoxyItemize}
+\item {\bfseries{I\+D\+LE}}, when the channel is disabled or after a match occurred.
+\item {\bfseries{A\+C\+T\+I\+VE}}, when the channel is enabled and a match didn\textquotesingle{}t occur yet in the current P\+WM cycle.
+\end{DoxyItemize}Note that the two states can be associated to both logical zero or one in the {\ttfamily P\+W\+M\+Channel\+Config} structure. 

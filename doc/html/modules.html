@@ -88,11 +88,36 @@ $(document).ready(function(){initNavTree('modules.html',''); initResizable(); })
 </div><!--header-->
 <div class="contents">
 <div class="textblock">Here is a list of all modules:</div><div class="directory">
-<table class="directory">
+<div class="levels">[detail level <span onclick="javascript:toggleLevel(1);">1</span><span onclick="javascript:toggleLevel(2);">2</span>]</div><table class="directory">
 <tr id="row_0_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group__bmi160.html" target="_self">Bmi160</a></td><td class="desc"></td></tr>
 <tr id="row_1_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group__bmi160__defs.html" target="_self">Bmi160_defs</a></td><td class="desc"></td></tr>
 <tr id="row_2_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___b_m_m150.html" target="_self">SENSOR API</a></td><td class="desc"></td></tr>
-<tr id="row_3_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___s_e_r_i_a_l.html" target="_self">SERIAL</a></td><td class="desc"></td></tr>
+<tr id="row_3_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___a_d_c.html" target="_self">ADC Driver</a></td><td class="desc">Generic ADC Driver </td></tr>
+<tr id="row_4_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___b_m_x160.html" target="_self">BMX160 Driver</a></td><td class="desc">Generic ADC Driver </td></tr>
+<tr id="row_5_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___b_n_o055.html" target="_self">BNO055 Driver</a></td><td class="desc">Generic CAN Driver </td></tr>
+<tr id="row_6_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___c_h_a_r_g_e_r.html" target="_self">Charger Driver</a></td><td class="desc">Generic ADC Driver </td></tr>
+<tr id="row_7_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___f_u_e_l___g_a_u_g_e.html" target="_self">Fuel_gauge Driver</a></td><td class="desc">Generic ADC Driver </td></tr>
+<tr id="row_8_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___e_e_p_r_o_m.html" target="_self">Generic EEPROM Interface</a></td><td class="desc">HAL Generic NOR Flash Driver Interface </td></tr>
+<tr id="row_9_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___l_o_g.html" target="_self">Log Driver</a></td><td class="desc">Generic GPT Driver </td></tr>
+<tr id="row_10_" class="even"><td class="entry"><span style="width:0px;display:inline-block;">&#160;</span><span id="arr_10_" class="arrow" onclick="toggleFolder('10_')">&#9660;</span><a class="el" href="group___i_o.html" target="_self">Generic</a></td><td class="desc">Hardware Abstraction Layer </td></tr>
+<tr id="row_10_0_"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a class="el" href="group___h_a_l___c_o_n_f.html" target="_self">Configuration</a></td><td class="desc">HAL Configuration </td></tr>
+<tr id="row_10_1_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a class="el" href="group___h_a_l___n_o_r_m_a_l___d_r_i_v_e_r_s.html" target="_self">Normal Drivers</a></td><td class="desc">HAL Normal Drivers </td></tr>
+<tr id="row_10_2_"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a class="el" href="group___h_a_l___c_o_m_p_l_e_x___d_r_i_v_e_r_s.html" target="_self">Complex Drivers</a></td><td class="desc">HAL Complex Drivers </td></tr>
+<tr id="row_10_3_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a class="el" href="group___h_a_l___i_n_t_e_r_f_a_c_e_s___c_l_a_s_s_e_s.html" target="_self">Interfaces and Classes</a></td><td class="desc">HAL Interfaces and Classes </td></tr>
+<tr id="row_10_4_"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a class="el" href="group___h_a_l___i_n_n_e_r___c_o_d_e.html" target="_self">Inner Code</a></td><td class="desc">HAL Inner Code </td></tr>
+<tr id="row_10_5_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a class="el" href="group___h_a_l___s_u_p_p_o_r_t.html" target="_self">Support Code</a></td><td class="desc">HAL Support Code </td></tr>
+<tr id="row_10_6_"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a class="el" href="group___o_s_a_l.html" target="_self">OSAL</a></td><td class="desc">Operating System Abstraction Layer </td></tr>
+<tr id="row_11_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___m_a_t_h.html" target="_self">Math Driver</a></td><td class="desc">Generic I2C Driver </td></tr>
+<tr id="row_12_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___m_c_u-_m_c_u.html" target="_self">MCU-MCU Communication Driver</a></td><td class="desc">Generic ICU Driver </td></tr>
+<tr id="row_13_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___m_i_c_r_o_s_d.html" target="_self">MicroSD Driver</a></td><td class="desc">Generic ADC Driver </td></tr>
+<tr id="row_14_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___n_e_o-_m8.html" target="_self">Ublox NEO-M8 Driver</a></td><td class="desc">Generic ADC Driver </td></tr>
+<tr id="row_15_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___n_i_n_a-_b3.html" target="_self">Ublox NINA-B3 Device</a></td><td class="desc"></td></tr>
+<tr id="row_16_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___p_w_r.html" target="_self">Power Management Driver</a></td><td class="desc">Generic ADC Driver </td></tr>
+<tr id="row_17_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___s_h_e_l_l.html" target="_self">Shell Driver</a></td><td class="desc">Generic ADC Driver </td></tr>
+<tr id="row_18_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___t_e_n_s_o.html" target="_self">Tenso sensor Driver</a></td><td class="desc">Generic ADC Driver </td></tr>
+<tr id="row_19_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___w_i_n_d.html" target="_self">Windsensor Driver</a></td><td class="desc">Generic ADC Driver </td></tr>
+<tr id="row_20_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___x_b_e_e.html" target="_self">Xbee Driver</a></td><td class="desc">Generic ADC Driver </td></tr>
+<tr id="row_21_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group___s_e_r_i_a_l.html" target="_self">SERIAL</a></td><td class="desc"></td></tr>
 </table>
 </div><!-- directory -->
 </div><!-- contents -->

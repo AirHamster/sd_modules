@@ -4,6 +4,15 @@
  *  Created on: Sep 12, 2019
  *      Author: a-h
  */
+
+/**
+ * @file    bq2560x.c
+ * @brief   Charger Driver funcs.
+ *
+ * @addtogroup CHARGER
+ * @{
+ */
+
 #include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -106,6 +115,11 @@ static THD_FUNCTION( charger_thread, p) {
 	}
 }
 
+/**
+ * @brief Print charger info into serial iface
+ * @param charger Charger common struct
+ * @return Result of operation
+ */
 int8_t charger_print_info(charger_t *charger) {
 
 	chprintf(SHELL_IFACE, "Charging:\t");
@@ -135,6 +149,12 @@ int8_t charger_print_info(charger_t *charger) {
 
 }
 
+/**
+ * @brief Init charger chip
+ * @param i2cp I2C driver pointer
+ * @param cfg Charger configuration struct pointer
+ * @return Result of operation
+ */
 int8_t charger_init(I2CDriver *i2cp, charger_cfg_t *cfg){
 	int8_t status = 0;
 	charger_regs_t regs;
@@ -160,6 +180,13 @@ int8_t charger_init(I2CDriver *i2cp, charger_cfg_t *cfg){
 
 }
 
+/**
+ * @brief Read all registers from chip
+ * @param regs Charger registers struct pointer
+ * @return Reading result
+ * @retval -1 in case of error
+ * @retval 0 in case of success
+ */
 int8_t charger_read_all_regs(charger_regs_t *regs){
 	int8_t status = 0;
 	status |= charger_read_register(BQ2560X_REG_00, &charger_regs->reg00);
@@ -177,6 +204,13 @@ int8_t charger_read_all_regs(charger_regs_t *regs){
 	return status;
 }
 
+/**
+ * @brief Read only status registers
+ * @param regs Charger registers struct pointer
+ * @return Reading result
+ * @retval -1 in case of error
+ * @retval 0 in case of success
+ */
 int8_t charger_read_status_regs(charger_regs_t *regs){
 	int8_t status = 0;
 	status |= charger_read_register(BQ2560X_REG_08, &charger_regs->reg08);
@@ -185,6 +219,14 @@ int8_t charger_read_status_regs(charger_regs_t *regs){
 	return status;
 }
 
+/**
+ * @brief Parse register output to understandable statuses
+ * @param regs Charger register struct pointer
+ * @param charger Charget common struct pointer
+ * @return Parsing result
+ * @retval -1 in case of error
+ * @retval 0 in case of success
+ */
 int8_t charger_parse_status(charger_regs_t *regs, charger_t *charger) {
 
 	if (regs->reg0A & REG0A_VBUS_GD_MASK) {
@@ -204,6 +246,14 @@ int8_t charger_parse_status(charger_regs_t *regs, charger_t *charger) {
 
 }
 
+/**
+ * @brief Low-level I2C register reading API
+ * @param reg_addr Register address
+ * @param buf Read buffer pointer
+ * @return Result of operation
+ * @retval -1 in case of error
+ * @retval 0 in case of success
+ */
 int8_t charger_read_register(uint8_t reg_addr, uint8_t *buf) {
 	uint8_t txbuff[1];
 	uint8_t rxbuff[1];
@@ -229,6 +279,15 @@ int8_t charger_read_register(uint8_t reg_addr, uint8_t *buf) {
 	chSemSignal(&usart1_semaph);*/
 }
 
+/**
+ * @brief Low-level I2C register writing API
+ * @param reg_addr Register address
+ * @param txbuf	Writing buffer pointer
+ * @param txbytes Num of writing bytes
+ * @return Result of operation
+ * @retval -1 in case of error
+ * @retval 0 in case of success
+ */
 int8_t charger_write_register(uint8_t reg_addr, uint8_t *txbuf, uint8_t txbytes) {
 
 	uint8_t i = 0;
@@ -256,6 +315,9 @@ int8_t charger_write_register(uint8_t reg_addr, uint8_t *txbuf, uint8_t txbytes)
 	chSemSignal(&usart1_semaph);*/
 }
 
+/**
+ * @brief Start battery charger threads
+ */
 void start_charger_module(void){
 	charger_trp = chThdCreateStatic(charger_thread_wa, sizeof(charger_thread_wa), NORMALPRIO, charger_thread, NULL);
 }

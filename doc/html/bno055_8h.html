@@ -92,7 +92,18 @@ $(document).ready(function(){initNavTree('bno055_8h.html',''); initResizable(); 
 
 <p>BNO055 Sensor Driver Support Header File.  
 <a href="#details">More...</a></p>
-
+<div class="textblock"><div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dyncontent">
+<div class="center"><img src="bno055_8h__dep__incl.png" border="0" usemap="#bno055_2bno055_8hdep" alt=""/></div>
+<map name="bno055_2bno055_8hdep" id="bno055_2bno055_8hdep">
+<area shape="rect" title="BNO055 Sensor Driver Support Header File." alt="" coords="139,5,260,32"/>
+<area shape="rect" href="bno055__i2c_8h_source.html" title=" " alt="" coords="72,80,217,107"/>
+<area shape="rect" href="bno055__i2c_8c.html" title="BNO055 Driver funcs." alt="" coords="183,155,328,181"/>
+<area shape="rect" href="bmx160__i2c_8c.html" title="BMX160 Driver funcs." alt="" coords="5,155,159,181"/>
+</map>
+</div>
+</div>
 <p><a href="bno055_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
@@ -181,12 +192,12 @@ Macros</h2></td></tr>
 <tr class="memitem:ad26e4e74295738abde112d4ae0f986a0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>BNO055_WR_FUNC_PTR</b></td></tr>
 <tr class="separator:ad26e4e74295738abde112d4ae0f986a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a955a27460c707ed88f7d6504dfa8a652"><td class="memItemLeft" align="right" valign="top"><a id="a955a27460c707ed88f7d6504dfa8a652"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>BNO055_BUS_WRITE_FUNC</b>(dev_addr,  reg_addr,  reg_data,  wr_len)&#160;&#160;&#160;BNO055_I2C_bus_write(dev_addr, reg_addr, reg_data, wr_len)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>BNO055_BUS_WRITE_FUNC</b>(dev_addr,  reg_addr,  reg_data,  wr_len)&#160;&#160;&#160;<a class="el" href="group___b_n_o055.html#ga6a1eeefef56eda6f0c963e317706f617">BNO055_I2C_bus_write</a>(dev_addr, reg_addr, reg_data, wr_len)</td></tr>
 <tr class="separator:a955a27460c707ed88f7d6504dfa8a652"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94dfb91514cedf719cd7e10d662fe693"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>BNO055_RD_FUNC_PTR</b></td></tr>
 <tr class="separator:a94dfb91514cedf719cd7e10d662fe693"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf83b6dd21f462f179628bc4b156047c"><td class="memItemLeft" align="right" valign="top"><a id="aaf83b6dd21f462f179628bc4b156047c"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>BNO055_BUS_READ_FUNC</b>(dev_addr,  reg_addr,  reg_data,  r_len)&#160;&#160;&#160;BNO055_I2C_bus_read(dev_addr, reg_addr, reg_data, r_len)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>BNO055_BUS_READ_FUNC</b>(dev_addr,  reg_addr,  reg_data,  r_len)&#160;&#160;&#160;<a class="el" href="group___b_n_o055.html#ga0d3c7c3e0c8b54e34752989b5bdc36d1">BNO055_I2C_bus_read</a>(dev_addr, reg_addr, reg_data, r_len)</td></tr>
 <tr class="separator:aaf83b6dd21f462f179628bc4b156047c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a309d9bcd8bd71f468d67e6d218d881ef"><td class="memItemLeft" align="right" valign="top"><a id="a309d9bcd8bd71f468d67e6d218d881ef"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>BNO055_DELAY_RETURN_TYPE</b>&#160;&#160;&#160;void</td></tr>
@@ -4556,7 +4567,7 @@ DATA TYPES INCLUDES</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code" href="bno055_8h.html#a151f780fb455885061d3b77ec1c90c03">s8</a> (*BNO055_I2C_bus_write)\</div>
+<b>Value:</b><div class="fragment"><div class="line"><a class="code" href="bno055_8h.html#a151f780fb455885061d3b77ec1c90c03">s8</a> (*<a class="code" href="group___b_n_o055.html#ga6a1eeefef56eda6f0c963e317706f617">BNO055_I2C_bus_write</a>)\</div>
 <div class="line">(<a class="code" href="bno055_8h.html#aed742c436da53c1080638ce6ef7d13de">u8</a>, <a class="code" href="bno055_8h.html#aed742c436da53c1080638ce6ef7d13de">u8</a>, <a class="code" href="bno055_8h.html#aed742c436da53c1080638ce6ef7d13de">u8</a> *, <a class="code" href="bno055_8h.html#aed742c436da53c1080638ce6ef7d13de">u8</a>)</div>
 </div><!-- fragment -->
 </div>
@@ -16390,6 +16401,7 @@ Are you using Linux platform</dd></dl>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="abno055_8h_html_aed742c436da53c1080638ce6ef7d13de"><div class="ttname"><a href="bno055_8h.html#aed742c436da53c1080638ce6ef7d13de">u8</a></div><div class="ttdeci">unsigned char u8</div><div class="ttdef"><b>Definition:</b> bno055.h:192</div></div>
+<div class="ttc" id="agroup___b_n_o055_html_ga6a1eeefef56eda6f0c963e317706f617"><div class="ttname"><a href="group___b_n_o055.html#ga6a1eeefef56eda6f0c963e317706f617">BNO055_I2C_bus_write</a></div><div class="ttdeci">s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)</div><div class="ttdef"><b>Definition:</b> bno055_i2c.c:318</div></div>
 <div class="ttc" id="abno055_8h_html_a151f780fb455885061d3b77ec1c90c03"><div class="ttname"><a href="bno055_8h.html#a151f780fb455885061d3b77ec1c90c03">s8</a></div><div class="ttdeci">signed char s8</div><div class="ttdoc">If your machine support 16 bit define the MACHINE_16_BIT.</div><div class="ttdef"><b>Definition:</b> bno055.h:186</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

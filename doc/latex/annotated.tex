@@ -38,7 +38,7 @@ Here are the data structures with brief descriptions\+:\begin{DoxyCompactList}
 \item\contentsline{section}{\mbox{\hyperlink{structbmm150__raw__mag__data}{bmm150\+\_\+raw\+\_\+mag\+\_\+data}} \\*Bmm150 un-\/compensated (raw) magnetometer data }{\pageref{structbmm150__raw__mag__data}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structbmm150__settings}{bmm150\+\_\+settings}} \\*Bmm150 sensor settings }{\pageref{structbmm150__settings}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structbmm150__trim__registers}{bmm150\+\_\+trim\+\_\+registers}} \\*Bmm150 trim data structure }{\pageref{structbmm150__trim__registers}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structbmx160__t}{bmx160\+\_\+t}} }{\pageref{structbmx160__t}}{}
+\item\contentsline{section}{\mbox{\hyperlink{structbmx160__t}{bmx160\+\_\+t}} \\*Common B\+M\+X160 struct }{\pageref{structbmx160__t}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structbno055__accel__double__t}{bno055\+\_\+accel\+\_\+double\+\_\+t}} \\*Struct for Accel-\/output data of precision double }{\pageref{structbno055__accel__double__t}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structbno055__accel__float__t}{bno055\+\_\+accel\+\_\+float\+\_\+t}} \\*Struct for Accel-\/output data of precision float }{\pageref{structbno055__accel__float__t}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structbno055__accel__offset__t}{bno055\+\_\+accel\+\_\+offset\+\_\+t}} \\*Struct for Accel offset }{\pageref{structbno055__accel__offset__t}}{}
@@ -67,9 +67,9 @@ Here are the data structures with brief descriptions\+:\begin{DoxyCompactList}
 \item\contentsline{section}{\mbox{\hyperlink{struct_calibration_parm_def}{Calibration\+Parm\+Def}} }{\pageref{struct_calibration_parm_def}}{}
 \item\contentsline{section}{\mbox{\hyperlink{classc_e_k_f}{c\+E\+KF}} }{\pageref{classc_e_k_f}}{}
 \item\contentsline{section}{\mbox{\hyperlink{classc_float}{c\+Float$<$ N\+N $>$}} }{\pageref{classc_float}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structcharger__cfg__t}{charger\+\_\+cfg\+\_\+t}} }{\pageref{structcharger__cfg__t}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structcharger__regs__t}{charger\+\_\+regs\+\_\+t}} }{\pageref{structcharger__regs__t}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structcharger__t}{charger\+\_\+t}} }{\pageref{structcharger__t}}{}
+\item\contentsline{section}{\mbox{\hyperlink{structcharger__cfg__t}{charger\+\_\+cfg\+\_\+t}} \\*Common struct to hold charger settings }{\pageref{structcharger__cfg__t}}{}
+\item\contentsline{section}{\mbox{\hyperlink{structcharger__regs__t}{charger\+\_\+regs\+\_\+t}} \\*Common struct to hold register data }{\pageref{structcharger__regs__t}}{}
+\item\contentsline{section}{\mbox{\hyperlink{structcharger__t}{charger\+\_\+t}} \\*Common struct to hold charger status }{\pageref{structcharger__t}}{}
 \item\contentsline{section}{\mbox{\hyperlink{classc_matrix}{c\+Matrix$<$ R\+O\+W, C\+O\+L $>$}} }{\pageref{classc_matrix}}{}
 \item\contentsline{section}{\mbox{\hyperlink{classc_matrix3x3}{c\+Matrix3x3}} }{\pageref{classc_matrix3x3}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structcoefs__t}{coefs\+\_\+t}} }{\pageref{structcoefs__t}}{}
@@ -87,8 +87,6 @@ Here are the data structures with brief descriptions\+:\begin{DoxyCompactList}
 \item\contentsline{section}{\mbox{\hyperlink{structeeprom__tenso__calib__memory__t}{eeprom\+\_\+tenso\+\_\+calib\+\_\+memory\+\_\+t}} }{\pageref{structeeprom__tenso__calib__memory__t}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structeeprom__xbee__addresses__t}{eeprom\+\_\+xbee\+\_\+addresses\+\_\+t}} }{\pageref{structeeprom__xbee__addresses__t}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structflip__t}{flip\+\_\+t}} \\*Struct \mbox{\hyperlink{structflip__t}{flip\+\_\+t}} Vector of face up and face down }{\pageref{structflip__t}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structfrozen}{frozen}} }{\pageref{structfrozen}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structfstate}{fstate}} }{\pageref{structfstate}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structfuel__t}{fuel\+\_\+t}} }{\pageref{structfuel__t}}{}
 \item\contentsline{section}{\mbox{\hyperlink{struct_fusion_ahrs}{Fusion\+Ahrs}} \\*A\+H\+RS algorithm structure. Structure members are used internally and should not be used by the user application }{\pageref{struct_fusion_ahrs}}{}
 \item\contentsline{section}{\mbox{\hyperlink{struct_fusion_bias}{Fusion\+Bias}} \\*Gyroscope bias correction algorithm structure. Structure members are used internally and should not be used by the user application }{\pageref{struct_fusion_bias}}{}
@@ -101,17 +99,9 @@ Here are the data structures with brief descriptions\+:\begin{DoxyCompactList}
 \item\contentsline{section}{\mbox{\hyperlink{structhmc6343__t}{hmc6343\+\_\+t}} }{\pageref{structhmc6343__t}}{}
 \item\contentsline{section}{\mbox{\hyperlink{struct_h_m_c6343_l__result}{H\+M\+C6343\+L\+\_\+result}} }{\pageref{struct_h_m_c6343_l__result}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structinit_param__t}{init\+Param\+\_\+t}} \\*Struct \mbox{\hyperlink{structinit_param__t}{init\+Param\+\_\+t}} Includes pointers to spec, usecase array and C\+RC check status for each spec and usecase config }{\pageref{structinit_param__t}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structjson__array__t}{json\+\_\+array\+\_\+t}} }{\pageref{structjson__array__t}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structjson__boat__data__t}{json\+\_\+boat\+\_\+data\+\_\+t}} }{\pageref{structjson__boat__data__t}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structjson__bouy__data__t}{json\+\_\+bouy\+\_\+data\+\_\+t}} }{\pageref{structjson__bouy__data__t}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structjson__object__t}{json\+\_\+object\+\_\+t}} }{\pageref{structjson__object__t}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structjson__out}{json\+\_\+out}} }{\pageref{structjson__out}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structjson__remote__devs__t}{json\+\_\+remote\+\_\+devs\+\_\+t}} }{\pageref{structjson__remote__devs__t}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structjson__scanf__info}{json\+\_\+scanf\+\_\+info}} }{\pageref{structjson__scanf__info}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structjson__setf__data}{json\+\_\+setf\+\_\+data}} }{\pageref{structjson__setf__data}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structjson__token}{json\+\_\+token}} }{\pageref{structjson__token}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structjson__value__t}{json\+\_\+value\+\_\+t}} }{\pageref{structjson__value__t}}{}
-\item\contentsline{section}{\mbox{\hyperlink{unionjson__value__value}{json\+\_\+value\+\_\+value}} }{\pageref{unionjson__value__value}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structlag__t}{lag\+\_\+t}} }{\pageref{structlag__t}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structlibraryinput__t}{libraryinput\+\_\+t}} \\*Library input }{\pageref{structlibraryinput__t}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structmcu__mcu__data__t}{mcu\+\_\+mcu\+\_\+data\+\_\+t}} }{\pageref{structmcu__mcu__data__t}}{}
@@ -133,12 +123,9 @@ Here are the data structures with brief descriptions\+:\begin{DoxyCompactList}
 \item\contentsline{section}{\mbox{\hyperlink{struct_motor_data}{Motor\+Data}} }{\pageref{struct_motor_data}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structmpu__struct__t}{mpu\+\_\+struct\+\_\+t}} }{\pageref{structmpu__struct__t}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structneo__struct__t}{neo\+\_\+struct\+\_\+t}} }{\pageref{structneo__struct__t}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structnext__data}{next\+\_\+data}} }{\pageref{structnext__data}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structoutput__t}{output\+\_\+t}} }{\pageref{structoutput__t}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structpower__data__t}{power\+\_\+data\+\_\+t}} }{\pageref{structpower__data__t}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structprettify__data}{prettify\+\_\+data}} }{\pageref{structprettify__data}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structrudder__t}{rudder\+\_\+t}} }{\pageref{structrudder__t}}{}
-\item\contentsline{section}{\mbox{\hyperlink{structscan__array__info}{scan\+\_\+array\+\_\+info}} }{\pageref{structscan__array__info}}{}
 \item\contentsline{section}{\mbox{\hyperlink{structsensordata__t}{sensordata\+\_\+t}} \\*Sensor Data }{\pageref{structsensordata__t}}{}
 \item\contentsline{section}{\mbox{\hyperlink{struct_serial_driver}{Serial\+Driver}} \\*Full duplex serial driver class }{\pageref{struct_serial_driver}}{}
 \item\contentsline{section}{\mbox{\hyperlink{struct_serial_driver_v_m_t}{Serial\+Driver\+V\+MT}} \\*{\ttfamily \mbox{\hyperlink{struct_serial_driver}{Serial\+Driver}}} virtual methods table }{\pageref{struct_serial_driver_v_m_t}}{}
