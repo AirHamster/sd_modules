@@ -5,6 +5,14 @@
  *      Author: a-h
  */
 
+/**
+ * @file    nina-b3.c
+ * @brief   UBLOX NINA-B3 Driver funcs.
+ *
+ * @addtogroup NINA-B3
+ * @{
+ */
+
 #include "nina-b3.h"
 #include "config.h"
 #include <stdlib.h>
@@ -153,7 +161,6 @@ EVENT_DEFINE(BLE_Go_idle, NoEventData)
 
 #ifdef USE_UBLOX_GPS_MODULE
 #include "neo-m8.h"
-#include "neo_ubx.h"
 extern ubx_nav_pvt_t *pvt_box;
 extern ubx_nav_odo_t *odo_box;
 #endif
@@ -215,7 +222,6 @@ lag_t *r_lag;
 rudder_t *r_rudder;
 ble_temp_charac_t *charac_temporary;
 ble_peer_t *peer;
-ble_t *ble;
 static const SerialConfig nina_config = { 115200, 0, USART_CR2_STOP1_BITS, 0 };
 
 static THD_WORKING_AREA(ble_parsing_thread_wa, 4096);
@@ -224,7 +230,7 @@ static THD_WORKING_AREA(ble_thread_wa, 4096);
 static THD_FUNCTION(ble_thread, arg);
 
 /**
- *
+ * Start BLE threads
  */
 void start_ble_module(void){
 	chThdCreateStatic(ble_parsing_thread_wa, sizeof(ble_parsing_thread_wa), NORMALPRIO + 1,
@@ -234,7 +240,7 @@ void start_ble_module(void){
 }
 
 /**
- *
+ * @brief BLE observe virtual timer callback
  * @param arg
  */
 static void ble_observe_tim_cb(void *arg){
@@ -245,8 +251,8 @@ static void ble_observe_tim_cb(void *arg){
 }
 
 /**
- *
- * @param peer_1
+ * @brief BLE data sending virtual timer callback
+ * @param peer_1 Peer to which data will be send
  */
 static void ble_data_tx_tim_cb(ble_peer_t *peer_1){
 	chSysLockFromISR();
@@ -257,8 +263,8 @@ static void ble_data_tx_tim_cb(ble_peer_t *peer_1){
 	chSysUnlockFromISR();
 }
 
-/*
- * Thread to process data collection and filtering from NEO-M8P
+/**
+ * @brief Thread with parsing data from nina and AT commands responses
  */
 static THD_FUNCTION(ble_parsing_thread, arg) {
 	(void) arg;
@@ -291,6 +297,9 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 	}
 }
 
+/**
+ * @brief Thread with nina and state machine initialisation
+ */
 static THD_FUNCTION(ble_thread, arg) {
 	(void) arg;
 	uint8_t token;
@@ -399,8 +408,9 @@ while(true){
 }
 
 #ifdef USE_BLE_MODULE
+
 /**
- *
+ * @brief Convert all sensors data to BLE format (3-bytes data)
  */
 void copy_to_ble(void){
 #ifdef SD_MODULE_TRAINER
@@ -495,8 +505,8 @@ STATE_DEFINE(Data_rx, NoEventData){
 }
 
 /**
- *
- * @param strp
+ * @brief Parsing strings from Nina's USART iface
+ * @param strp Null-ended string pointer
  * @return
  */
 uint8_t nina_parse_command(int8_t *strp) {
@@ -622,7 +632,7 @@ uint8_t nina_parse_command(int8_t *strp) {
 }
 
 /**
- *
+ * @brief Parsing notification
  * @param conn_handle
  * @param val_handle
  * @param value
@@ -659,19 +669,19 @@ void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t v
 }
 
 /**
- *
- * @param addr
- * @param type
+ * @brief Connecting request to remote device
+ * @param addr Device address string pointer
+ * @param type Connection type (0 - default)
  */
 void nina_connect(uint8_t *addr, uint8_t type){
 	chprintf(NINA_IFACE, "AT+UBTACLC=%s,%d\r", addr, type);
 }
 
 /**
- *
- * @param conn_handle
- * @param type
- * @param addr
+ * @brief Register new peer connection
+ * @param conn_handle Peer connection handle
+ * @param type Connection type
+ * @param addr Peer's address
  */
 void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr){
 	peer->conn_handle = conn_handle;
@@ -692,9 +702,9 @@ void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr){
 }
 
 /**
- *
- * @param devlist
- * @param conn_handle
+ * @brief Process peer disconnection event
+ * @param devlist Device list struct pointer
+ * @param conn_handle Connection handler
  */
 void nina_unregister_peer(ble_remote_dev_t* devlist, uint8_t conn_handle) {
 #ifdef SD_MODULE_TRAINER
@@ -736,11 +746,11 @@ void nina_unregister_peer(ble_remote_dev_t* devlist, uint8_t conn_handle) {
 }
 
 /**
- *
- * @param devlist
- * @param conn_handle
- * @param type
- * @param addr
+ * @brief Register new connection
+ * @param devlist Device list struct pointer
+ * @param conn_handle Connection handler
+ * @param type Connection type
+ * @param addr Device address
  */
 void nina_register_remote_dev(ble_remote_dev_t* devlist, uint8_t conn_handle, uint8_t type, int8_t *addr){
 #ifdef SD_MODULE_TRAINER
@@ -769,9 +779,9 @@ void nina_register_remote_dev(ble_remote_dev_t* devlist, uint8_t conn_handle, ui
 }
 
 /**
- *
- * @param handle
- * @param uuid
+ * @brief Request remote device characteristics
+ * @param handle Connection handler
+ * @param uuid -
  */
 void nina_get_remote_characs(uint16_t handle, uint16_t uuid){
 	chprintf(NINA_IFACE, "AT+UBTGDP=%d\r", handle);
@@ -784,7 +794,7 @@ void nina_get_remote_characs(uint16_t handle, uint16_t uuid){
 }
 
 /**
- *
+ * @brief Allocate memory for BLE structs
  */
 void nina_fill_memory(void){
 	charac_temporary = calloc(1, sizeof(ble_temp_charac_t));
@@ -856,15 +866,15 @@ return NINA_SUCCESS;
 }
 
 /**
- *
- * @param charac
- * @param uuid
- * @param properties
- * @param sec_read
- * @param sec_write
- * @param def_val
- * @param read_auth
- * @param max_len
+ * @brief Create characteristic for device in server mode
+ * @param charac Characteristic hex number
+ * @param uuid UUID
+ * @param properties Charac properties
+ * @param sec_read Secure read
+ * @param sec_write Secure write
+ * @param def_val Default value
+ * @param read_auth Reading autorization
+ * @param max_len Max lenth
  * @return
  */
 //AT+UBTGCHA=3A01,10,1,1,0F00FF,0,3
@@ -896,7 +906,7 @@ uint8_t nina_add_charac(ble_charac_t *charac, uint16_t uuid, uint8_t properties,
 }
 
 /**
- *
+ * @brief Send notification to client device
  * @param ble_rudder
  * @param val
  */
@@ -918,9 +928,9 @@ void nina_wait_charac_handlers(ble_charac_t *charac){
 
 #ifdef SD_MODULE_TRAINER
 /**
- *
- * @param strp
- * @param devlist
+ * @brief Looks for comparsion with device address in string
+ * @param strp BLE search result string
+ * @param devlist Device list pointer
  * @return
  */
 int8_t nina_compare_founded_dev(uint8_t *strp, ble_remote_dev_t *devlist){
@@ -937,8 +947,8 @@ int8_t nina_compare_founded_dev(uint8_t *strp, ble_remote_dev_t *devlist){
 }
 
 /**
- *
- * @param devlist
+ * @brief Load remote device properties to common devlist struct
+ * @param devlist Device list struct pointer
  * @return
  */
 int8_t nina_init_devices(ble_remote_dev_t *devlist) {
@@ -972,7 +982,8 @@ int8_t nina_init_devices(ble_remote_dev_t *devlist) {
 }
 
 /**
- *
+ * @brief Init characteristics and settings of NINA module
+ * Depends on device tyty define
  * @return
  */
 uint8_t nina_init_services(void){
@@ -1146,7 +1157,7 @@ uint8_t nina_init_services(void){
 #endif
 
 /**
- *
+ * @brief Sends all data to peer
  * @param peer
  */
 void nina_send_all(ble_peer_t *peer){

@@ -55,8 +55,6 @@ endif
 #UBLOX NEO-M8 GPS modules series
 ifeq ($(USE_UBLOX_GPS_MODULE), TRUE)
 SD_SRC += ./sd_modules/neo-m8/neo-m8.c
-SD_SRC += ./sd_modules/neo-m8/minmea.c
-SD_SRC += ./sd_modules/neo-m8/neo_ubx.c
 SD_INC += ./sd_modules/neo-m8
 endif
 

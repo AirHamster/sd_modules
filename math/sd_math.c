@@ -45,11 +45,18 @@ float velocityMadeGoodTarget = 0.0;
 static THD_WORKING_AREA(math_thread_wa, 4096*4);
 static THD_FUNCTION(math_thread, arg);
 
+/**
+ * @brief Start math threads
+ */
 void start_math_module(void){
 	chThdCreateStatic(math_thread_wa, sizeof(math_thread_wa), NORMALPRIO + 2,
 				math_thread, NULL);
 }
 
+/**
+ * Math thread
+ * @param THD_FUNCTION( math_thread, p)
+ */
 static THD_FUNCTION( math_thread, p) {
 	(void) p;
 	chRegSetThreadName("Math Thd");
@@ -74,6 +81,10 @@ static THD_FUNCTION( math_thread, p) {
 	}
 }
 
+/**
+ * Read saved in EEPROM calibration parameters
+ * @param param @p CalibrationParmDef struct
+ */
 void math_init_calibration_params(CalibrationParmDef *param) {
 	EEPROM_READ(MATH_MEMORY.MATH_COMPASS_CORRECTION, (uint8_t*)&paramSD.CompassCorrection);
 	//eeprom_read(EEPROM_MATH_COMPASS_CORRECTION, (uint8_t*)&paramSD.CompassCorrection, 4);
@@ -129,6 +140,10 @@ void math_init_calibration_params(CalibrationParmDef *param) {
 	chThdSleepMilliseconds(10);*/
 }
 
+/**
+ * @brief Update sensors values in math data array
+ * @param lastSensorValues Math data array pointer
+ */
 void math_copy_sensor_values(float *lastSensorValues) {
 	lastSensorValues[AWA] = (float) wind->direction;
 //	chprintf(SHELL_IFACE, "AWA: %f\r\n", lastSensorValues[AWA]);

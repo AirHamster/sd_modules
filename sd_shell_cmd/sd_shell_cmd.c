@@ -23,7 +23,6 @@ xbee_bouy_data_t xbee_bouy_data;
 #endif
 #ifdef USE_UBLOX_GPS_MODULE
 #include "neo-m8.h"
-#include "neo_ubx.h"
 extern ubx_nav_pvt_t *pvt_box;
 extern ubx_nav_odo_t *odo_box;
 #endif

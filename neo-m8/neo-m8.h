@@ -5,6 +5,14 @@
  *      Author: a-h
  */
 
+/**
+ * @file    neo-m8.h
+ * @brief   NEO enums and structs.
+ *
+ * @addtogroup NEO-M8
+ * @{
+ */
+
 #ifndef SD_MODULES_NEO_M8_NEO_M8_H_
 #define SD_MODULES_NEO_M8_NEO_M8_H_
 
@@ -16,7 +24,6 @@
 #include "hal.h"
 #include "shell.h"
 #include "chprintf.h"
-#include "minmea.h"
 
 #define RTCM3_EN			0
 
@@ -78,7 +85,7 @@ typedef struct{
 }neo_struct_t;
 
 /**
- * Position velocity time struct
+ * @struct Position velocity time struct
  */
 typedef struct{
 	U4 iTOW;
@@ -122,7 +129,7 @@ typedef struct{
 }ubx_nav_pvt_t;
 
 /**
- * Navigation configuration struct
+ * @struct Navigation configuration struct
  */
 typedef struct{
 	X2 mask;
@@ -152,7 +159,7 @@ typedef struct{
 }ubx_cfg_nav5_t;
 
 /**
- * Odometr configuration struct
+ * @struct Odometr configuration struct
  */
 typedef struct{
 	U1 version;
@@ -185,7 +192,7 @@ typedef struct{
 }ubx_cfg_dgnss_t;
 
 /**
- * output rate struct
+ * @struct Output rate struct
  */
 typedef struct{
 	U2 measRate;
@@ -211,7 +218,7 @@ typedef struct{
 }ubx_cfg_pm2;
 
 /**
- * Odometr output struct
+ * @struct Odometr output struct
  */
 typedef struct{
 	U1 version;
@@ -225,7 +232,7 @@ typedef struct{
 }ubx_nav_odo_t;
 
 /**
- * SBAS correction cfg. Not supported in NEO-M8P
+ * @struct SBAS correction cfg. Not supported in NEO-M8P
  */
 typedef struct{
 	X1 mode;
@@ -235,66 +242,23 @@ typedef struct{
 	X4 scanmode1;
 }ubx_cfg_sbas_t;
 
-/**
- *  Start navigation threads
- */
-void start_gps_module(void);
-/**
- * Low-level writing API
- * @param SPID
- * @param reg_addr
- * @param value
- */
-void neo_write_byte(SPIDriver *SPID, uint8_t reg_addr, uint8_t value);
 
-/**
- * Low-level writing API without releasing CS in the end of transition
- * @param SPID
- * @param txbuff
- * @param len
- */
+void start_gps_module(void);
+
 void neo_write_no_cs(SPIDriver *SPID, uint8_t *txbuff, uint8_t len);
 
-/**
- * Low-level reading API
- * @param SPID
- * @param reg_addr
- * @return
- */
-uint8_t neo_read_byte(SPIDriver *SPID, uint8_t reg_addr);
-
-/**
- * Low-level reading several bytes API
- * @param SPID
- * @param num
- * @param rxbuf
- */
 void neo_read_bytes(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf);
 
-/**
- * Low-level reading several bytes API with releasing CS in the end of transition
- * @param SPID
- * @param num
- * @param rxbuf
- */
+
 void neo_read_bytes_release_cs(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf);
 
-/**
- * Low-level reading several bytes API without releasing CS in the end of transition
- * @param SPID
- * @param num
- * @param rxbuf
- */
+
 void neo_read_bytes_no_cs(SPIDriver *SPID, uint16_t num, uint8_t *rxbuf);
 
-/**
- * Switching to UBX protocol procedure
- */
+
 void neo_switch_to_ubx(void);
 
-/**
- * Setting ooutput PVT rate to 1 HZ
- */
+
 void neo_set_pvt_1hz(void);
 void neo_poll_prt(void);
 
