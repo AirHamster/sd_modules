@@ -23,7 +23,7 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "SD_Modules", "index.html", [
-    [ "README", "md__r_e_a_d_m_e.html", null ],
+    [ "SD_Modules", "md__r_e_a_d_m_e.html", null ],
     [ "Modules", "modules.html", "modules" ],
     [ "Data Structures", "annotated.html", [
       [ "Data Structures", "annotated.html", "annotated_dup" ],
@@ -70,10 +70,10 @@ var NAVTREEINDEX =
 "group___f_u_e_l___g_a_u_g_e.html#ga8697b7f619365d6cedb1f6c0ef4b3012",
 "group___m_i_c_r_o_s_d.html#ga92b217498fb153fb9dca066be26d31cf",
 "group___n_e_o-_m8.html#gab646063644081078388592d6b57ad5bb",
-"structbmi160__acc__flat__detect__int__cfg.html#ad9450d48badb37db22d8b24be4ed18ee",
-"structbno055__euler__float__t.html#a85f2f1bd58b3b44ffdf3881823393959",
-"structoutput__t.html#a95128e7c36548e59e9b531f413439b46",
-"union_fusion_euler_angles.html"
+"structbmi160__acc__flat__detect__int__cfg.html#a5c4b9a0628f1dc69e239482cb60c1bd8",
+"structbno055__euler__float__t.html#a1922a551816a2725c69a086db7c12a03",
+"structoutput__t.html#a5856d73dde84d68d563f8a4f4858499f",
+"structxbee__struct__t.html#afd7af7b6e3fc56336bec51270c25b651"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
