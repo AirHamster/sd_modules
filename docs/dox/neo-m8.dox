@@ -41,7 +41,8 @@
     poll_pvt [label="POLL_PVT\n4Hz"]
     polling [label="POLLING"]
     process_nav [label="PROCESS_NAV"]
-    stop->init [label="start_gps_module()"]
+    
+    stop->init [label="start_gps_module()", constraint=false]
     init->ready [label="neo_init_module()"]
     ready->poll_pvt [label="neo_create_poll_request()"]
     poll_pvt->polling [label="neo_poll()"]
@@ -63,7 +64,8 @@
     poll_pvt [label="POLL_PVT\n4Hz"]
     polling [label="POLLING"]
     process_nav [label="PROCESS_NAV"]
-    stop->init [label="start_gps_module()"]
+    
+    stop->init [label="start_gps_module()", constraint=false]
     init->ready [label="neo_init_module()"]
     ready->poll_pvt [label="neo_create_poll_request()"]
     poll_pvt->polling [label="neo_poll()"]

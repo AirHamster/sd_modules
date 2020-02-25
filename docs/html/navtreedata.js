@@ -23,7 +23,6 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "SD_Modules", "index.html", [
-    [ "SD_Modules", "md__r_e_a_d_m_e.html", null ],
     [ "Modules", "modules.html", "modules" ],
     [ "Data Structures", "annotated.html", [
       [ "Data Structures", "annotated.html", "annotated_dup" ],
@@ -70,10 +69,10 @@ var NAVTREEINDEX =
 "group___f_u_e_l___g_a_u_g_e.html#ga8697b7f619365d6cedb1f6c0ef4b3012",
 "group___m_i_c_r_o_s_d.html#ga92b217498fb153fb9dca066be26d31cf",
 "group___n_e_o-_m8.html#gab646063644081078388592d6b57ad5bb",
-"structbmi160__acc__flat__detect__int__cfg.html#a5c4b9a0628f1dc69e239482cb60c1bd8",
-"structbno055__euler__float__t.html#a1922a551816a2725c69a086db7c12a03",
-"structoutput__t.html#a5856d73dde84d68d563f8a4f4858499f",
-"structxbee__struct__t.html#afd7af7b6e3fc56336bec51270c25b651"
+"structbmi160__acc__flat__detect__int__cfg.html#ac7015faff5676dac7bc91cb22c762dda",
+"structbno055__euler__float__t.html#a4788d82c901b9367dd5c0daff8a7616b",
+"structoutput__t.html#a670f8a1cac5e6907b5c7af827a245f46",
+"tenso_8h_source.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

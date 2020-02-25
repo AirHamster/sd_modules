@@ -54,7 +54,7 @@ void start_math_module(void){
 }
 
 /**
- * Math thread
+ * @brief Math thread
  * @param THD_FUNCTION( math_thread, p)
  */
 static THD_FUNCTION( math_thread, p) {
@@ -67,22 +67,14 @@ static THD_FUNCTION( math_thread, p) {
 		calculateValues(&paramSD);
 		dataFiltering(&paramSD);
 		calculateTargets();
-				//calculateTargets(&windAngleTarget, &hullSpeedTarget,
-				//&velocityMadeGoodTarget);
-/*		chprintf(SHELL_IFACE, "\r\nAfter targets\r\n");
-		chprintf(SHELL_IFACE, "AWA: %f\r\n", lastSensorValues[AWA]);
-		chprintf(SHELL_IFACE, "AWS: %f\r\n", lastSensorValues[AWS]);
-		chprintf(SHELL_IFACE, "CMG: %f\r\n", lastSensorValues[CMG]);
-		chprintf(SHELL_IFACE, "HDM: %f\r\n", lastSensorValues[HDM]);
-		chprintf(SHELL_IFACE, "HEEL: %f\r\n", lastSensorValues[HEEL]);
-		chprintf(SHELL_IFACE, "PITCH: %f\r\n", lastSensorValues[PITCH]);
-		chprintf(SHELL_IFACE, "SOG: %f\r\n", lastSensorValues[SOG]);*/
+		//calculateTargets(&windAngleTarget, &hullSpeedTarget,
+		//&velocityMadeGoodTarget);
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 	}
 }
 
 /**
- * Read saved in EEPROM calibration parameters
+ * @brief Read saved in EEPROM calibration parameters
  * @param param @p CalibrationParmDef struct
  */
 void math_init_calibration_params(CalibrationParmDef *param) {
