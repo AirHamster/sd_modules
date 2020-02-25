@@ -263,6 +263,10 @@ FRESULT scan_files(BaseSequentialStream *chp, char *path) {
 	return res;
 }
 
+/**
+ * @brief Print file tree
+ * @param chp Print output stream
+ */
 void microsd_show_tree(BaseSequentialStream *chp){
 	FRESULT err;
 		uint32_t fre_clust;
@@ -283,6 +287,12 @@ void microsd_show_tree(BaseSequentialStream *chp){
 		scan_files(chp, (char *) fbuff);
 }
 
+/**
+ * @brief Format SD card
+ * @param chp Print output stream
+ * @param argc Num of input arguments
+ * @param argv Arguments vector
+ */
 void cmd_mkfs(BaseSequentialStream *chp, int argc, char *argv[]) {
 	FRESULT err;
 	int partition;
@@ -340,6 +350,12 @@ FRESULT err;
 	chprintf((BaseSequentialStream*) &SD1, "FS: mounted successfully\r\n");
 	}
 
+/**
+ * @brief Print file tree
+ * @param chp Print output stream
+ * @param argc Num of input arguments
+ * @param argv Arguments vector
+ */
 void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]) {
 	(void)argv;
 	(void)argc;
@@ -353,8 +369,11 @@ void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]) {
 	//scan_files(chp, fbuff);
 }
 
-/*
- * Print a text file to screen
+/**
+ * @brief Same as tree
+ * @param chp Print output stream
+ * @param argc Num of input arguments
+ * @param argv Arguments vector
  */
 void cmd_cat(BaseSequentialStream *chp, int argc, char *argv[]) {
 	/*
@@ -371,6 +390,12 @@ void cmd_cat(BaseSequentialStream *chp, int argc, char *argv[]) {
 	fsm_new_state(MICROSD_CAT);
 }
 
+/**
+ * @brief Deleting file from SD card
+ * @param chp Print output stream
+ * @param argc Num of input arguments
+ * @param argv Arguments vector
+ */
 void cmd_remove(BaseSequentialStream *chp, int argc, char *argv[]){
 	/*
 		 * Remove usege
@@ -480,6 +505,12 @@ void cmd_open(BaseSequentialStream *chp, int argc, char *argv[]) {
 	chThdResume(&microsd_trp, (msg_t) MICROSD_OPEN_FILE); /* Resuming the thread with message.*/
 }
 
+/**
+ * @brief Write
+ * @param chp Print output stream
+ * @param argc Num of input arguments
+ * @param argv Arguments vector
+ */
 void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
 	(void) argv;
 	(void) argc;
@@ -523,6 +554,12 @@ static void get_free_space(BaseSequentialStream *chp) {
 	chprintf(chp, "%f GB free\r\n", gbytes);*/
 }
 
+/**
+ * @brief Print available space
+ * @param chp Print output stream
+ * @param argc Num of input arguments
+ * @param argv Arguments vector
+ */
 void cmd_free(BaseSequentialStream *chp, int argc, char *argv[]) {
 	(void)argv;
 	(void)argc;
@@ -531,8 +568,11 @@ void cmd_free(BaseSequentialStream *chp, int argc, char *argv[]) {
 
 }
 
-/*
- * Card insertion event.
+/**
+ * @brief Manual mount SD card
+ * @param chp Print output stream
+ * @param argc Num of input arguments
+ * @param argv Arguments vector
  */
 void cmd_mount(BaseSequentialStream *chp, int argc, char *argv[]) {
 	(void)argv;
@@ -588,6 +628,9 @@ static void microsd_write_logfile_header(BaseSequentialStream *chp) {
 	//}
 }
 
+/**
+ * @brief Start MicroSD threads
+ */
 void start_microsd_module(void) {
 	chThdCreateStatic(microsd_thread_wa, sizeof(microsd_thread_wa), NORMALPRIO + 4, microsd_thread, NULL);
 }

@@ -1,0 +1,19 @@
+\hypertarget{group___p_w_r}{}\doxysection{Power Management Driver}
+\label{group___p_w_r}\index{Power Management Driver@{Power Management Driver}}
+
+
+L4 power management with deep sleep mode driver.  
+
+
+L4 power management with deep sleep mode driver. 
+
+Detail will be writen soon \begin{DoxyPrecond}{Precondition}
+In order to use the A\+DC driver the {\ttfamily U\+S\+E\+\_\+\+P\+O\+W\+E\+R\+\_\+\+M\+A\+N\+A\+G\+E\+M\+E\+NT} option must be enabled in {\ttfamily config.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___p_w_r_pwr_1}{}\doxysubsection{Stateflow}\label{group___p_w_r_pwr_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_12}}
+\end{DoxyImageNoCaption}
+\hypertarget{group___p_w_r_pwr_2}{}\doxysubsection{P\+W\+R operations}\label{group___p_w_r_pwr_2}
+The A\+DC driver is quite complex, an explanation of the terminology and of the operational details follows. 

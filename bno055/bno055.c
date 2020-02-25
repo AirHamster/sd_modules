@@ -59,7 +59,8 @@
 #include "bno055.h"
 #include "bno055_i2c.h"
 /*! file <BNO055 >
-    brief <Sensor driver for BNO055> */
+    brief <Sensor driver for BNO055> 
+     */
 /*	STRUCTURE DEFINITIONS	*/
 static bno055_t *p_bno055;
 /*	 LOCAL FUNCTIONS	*/

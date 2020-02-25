@@ -47,7 +47,6 @@
  */
 
 /*!
- * @defgroup bmi160_defs
  * @brief
  * @{*/
 

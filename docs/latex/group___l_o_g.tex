@@ -1,0 +1,117 @@
+\hypertarget{group___l_o_g}{}\doxysection{Log Driver}
+\label{group___l_o_g}\index{Log Driver@{Log Driver}}
+
+
+Log sensor driver.  
+
+
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structlag__t}{lag\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Common log struct. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___l_o_g_gad3a2440341e4d048b8a7947f77a4586a}\label{group___l_o_g_gad3a2440341e4d048b8a7947f77a4586a}} 
+\#define {\bfseries L\+A\+G\+\_\+\+M\+A\+G\+I\+C\+\_\+\+C\+O\+N\+ST}~0.\+1f
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___l_o_g_gaff2bdde2aa0cf2691ff01fa9cf3b9cbc}\label{group___l_o_g_gaff2bdde2aa0cf2691ff01fa9cf3b9cbc}} 
+static void \mbox{\hyperlink{group___l_o_g_gaff2bdde2aa0cf2691ff01fa9cf3b9cbc}{lag\+\_\+init\+\_\+pins}} (void)
+\begin{DoxyCompactList}\small\item\em Measurement pins initialization. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___l_o_g_ga07e3f6512fc8ceda946c563d76f993ac}\label{group___l_o_g_ga07e3f6512fc8ceda946c563d76f993ac}} 
+static {\bfseries T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA} (lag\+\_\+thread\+\_\+wa, 512)
+\item 
+\mbox{\Hypertarget{group___l_o_g_ga8042555b4596d726be2bc1315ab10c1e}\label{group___l_o_g_ga8042555b4596d726be2bc1315ab10c1e}} 
+static \mbox{\hyperlink{group___l_o_g_ga8042555b4596d726be2bc1315ab10c1e}{T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON}} (lag\+\_\+thread, arg)
+\begin{DoxyCompactList}\small\item\em Thread to process data collection and filtering from M\+P\+U9250. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___l_o_g_gad29d2d4e604d1cacd8e8a0042cd849b3}\label{group___l_o_g_gad29d2d4e604d1cacd8e8a0042cd849b3}} 
+void \mbox{\hyperlink{group___l_o_g_gad29d2d4e604d1cacd8e8a0042cd849b3}{start\+\_\+lag\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Start log threads. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___l_o_g_gae1ac1accb4ded190df72a485d4c496af}\label{group___l_o_g_gae1ac1accb4ded190df72a485d4c496af}} 
+static void \mbox{\hyperlink{group___l_o_g_gae1ac1accb4ded190df72a485d4c496af}{lag\+\_\+callback}} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em Callback associated to the impulse . \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___l_o_g_ga967ea156994a35bf77b2c4ae7ccaf273}\label{group___l_o_g_ga967ea156994a35bf77b2c4ae7ccaf273}} 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+\mbox{\Hypertarget{group___l_o_g_gaa6494afa88d0af2bfdbb9b5f4e1a01b7}\label{group___l_o_g_gaa6494afa88d0af2bfdbb9b5f4e1a01b7}} 
+\mbox{\hyperlink{structlag__t}{lag\+\_\+t}} $\ast$ {\bfseries lag}
+\item 
+\mbox{\Hypertarget{group___l_o_g_ga6039251e60468ee385de3e30e1cda623}\label{group___l_o_g_ga6039251e60468ee385de3e30e1cda623}} 
+time\+\_\+measurement\+\_\+t {\bfseries time}
+\item 
+float \mbox{\hyperlink{group___l_o_g_ga7baa69eccfce4cc2551f02b093e56581}{calib\+\_\+num}}
+\item 
+float \mbox{\hyperlink{group___l_o_g_gad6db23495bdf397ae6cfadb27e7ffdcf}{hz}}
+\item 
+float \mbox{\hyperlink{group___l_o_g_ga460b69f044ec44b4608e77792ed2eed5}{meters}}
+\item 
+uint16\+\_\+t \mbox{\hyperlink{group___l_o_g_ga36b6f441cdc79adcd3f58231fbd3a74b}{millis}}
+\item 
+\mbox{\Hypertarget{group___l_o_g_gac5fe38e15f8a0d15aa439f1c8a313f1b}\label{group___l_o_g_gac5fe38e15f8a0d15aa439f1c8a313f1b}} 
+uint8\+\_\+t {\bfseries update\+\_\+flag}
+\item 
+\mbox{\Hypertarget{group___l_o_g_ga703a6f82e92d54a5afc77668cade0b5d}\label{group___l_o_g_ga703a6f82e92d54a5afc77668cade0b5d}} 
+uint8\+\_\+t {\bfseries rtc\+\_\+cnt}
+\item 
+\mbox{\Hypertarget{group___l_o_g_ga64d67c7a0daa7db501c94c8c3a47cef5}\label{group___l_o_g_ga64d67c7a0daa7db501c94c8c3a47cef5}} 
+int8\+\_\+t {\bfseries temperature}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Log sensor driver. 
+
+Detail will be writen soon \begin{DoxyPrecond}{Precondition}
+In order to use this driver the {\ttfamily U\+S\+E\+\_\+\+L\+A\+G\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___l_o_g_log_1}{}\doxysubsection{Stateflow}\label{group___l_o_g_log_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_6}}
+\end{DoxyImageNoCaption}
+\hypertarget{group___l_o_g_log_2}{}\doxysubsection{Log operations.}\label{group___l_o_g_log_2}
+This driver abstracts a generic timer composed of\+:
+\begin{DoxyItemize}
+\item A clock prescaler.
+\item A main up counter.
+\item A comparator register that resets the main counter to zero when the limit is reached. A callback is invoked when this happens.
+\end{DoxyItemize}The timer can operate in three different modes\+:
+\begin{DoxyItemize}
+\item {\bfseries{Continuous Mode}}, a periodic callback is invoked until the driver is explicitly stopped.
+\item {\bfseries{One Shot Mode}}, a callback is invoked after the programmed period and then the timer automatically stops.
+\item {\bfseries{Delay Mode}}, the timer is used for inserting a brief delay into the execution flow, no callback is invoked in this mode.
+\end{DoxyItemize}
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{group___l_o_g_ga7baa69eccfce4cc2551f02b093e56581}\label{group___l_o_g_ga7baa69eccfce4cc2551f02b093e56581}} 
+\index{Log Driver@{Log Driver}!calib\_num@{calib\_num}}
+\index{calib\_num@{calib\_num}!Log Driver@{Log Driver}}
+\doxysubsubsection{\texorpdfstring{calib\_num}{calib\_num}}
+{\footnotesize\ttfamily calib\+\_\+num}
+
+Calibration coefficient \mbox{\Hypertarget{group___l_o_g_gad6db23495bdf397ae6cfadb27e7ffdcf}\label{group___l_o_g_gad6db23495bdf397ae6cfadb27e7ffdcf}} 
+\index{Log Driver@{Log Driver}!hz@{hz}}
+\index{hz@{hz}!Log Driver@{Log Driver}}
+\doxysubsubsection{\texorpdfstring{hz}{hz}}
+{\footnotesize\ttfamily hz}
+
+Measurement in herts \mbox{\Hypertarget{group___l_o_g_ga460b69f044ec44b4608e77792ed2eed5}\label{group___l_o_g_ga460b69f044ec44b4608e77792ed2eed5}} 
+\index{Log Driver@{Log Driver}!meters@{meters}}
+\index{meters@{meters}!Log Driver@{Log Driver}}
+\doxysubsubsection{\texorpdfstring{meters}{meters}}
+{\footnotesize\ttfamily meters}
+
+Measurements in meters/sec \mbox{\Hypertarget{group___l_o_g_ga36b6f441cdc79adcd3f58231fbd3a74b}\label{group___l_o_g_ga36b6f441cdc79adcd3f58231fbd3a74b}} 
+\index{Log Driver@{Log Driver}!millis@{millis}}
+\index{millis@{millis}!Log Driver@{Log Driver}}
+\doxysubsubsection{\texorpdfstring{millis}{millis}}
+{\footnotesize\ttfamily millis}
+
+Measurements in millis period 

@@ -1,0 +1,379 @@
+\hypertarget{group___b_n_o055}{}\doxysection{B\+N\+O055 Driver}
+\label{group___b_n_o055}\index{BNO055 Driver@{BNO055 Driver}}
+
+
+Bosch 9-\/axis sensor with build-\/in fusion algorith driver.  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___b_n_o055_ga00536d3c3aae02c231f25ed6c8836b06}\label{group___b_n_o055_ga00536d3c3aae02c231f25ed6c8836b06}} 
+static {\bfseries T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA} (bno055\+\_\+thread\+\_\+wa, 4096 $\ast$2)
+\item 
+\mbox{\Hypertarget{group___b_n_o055_ga048b19386fc77c10e1807542c2db8a11}\label{group___b_n_o055_ga048b19386fc77c10e1807542c2db8a11}} 
+static {\bfseries T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON} (bno055\+\_\+thread, arg)
+\item 
+void \mbox{\hyperlink{group___b_n_o055_ga79f76b1f8471d2a31bbebbce0b45866f}{start\+\_\+bno055\+\_\+module}} (void)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_gaba0cea545392dbe2337e040fb80614e9}{bno055\+\_\+full\+\_\+init}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_gacaacde11665e160ff8df01f730786077}{bno055\+\_\+save\+\_\+calib\+\_\+to\+\_\+eeprom}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga3a5ae7cf696fc2b063d78fffc479c9ad}{bno055\+\_\+read\+\_\+calib\+\_\+from\+\_\+eeprom}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_gaa5fec38d6349f5d6baad80921a68ee09}{bno955\+\_\+read\+\_\+static\+\_\+flag\+\_\+from\+\_\+eeprom}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga162350b307cf43cec67352832daf75ab}{bno055\+\_\+set\+\_\+static\+\_\+calib}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga417127b9624947158b35cea61a325fbd}{bno055\+\_\+set\+\_\+dynamic\+\_\+calib}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga0e70be560d33aad003518cef1a178894}{bno055\+\_\+apply\+\_\+calib\+\_\+to\+\_\+chip}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga927cc0067bb748306b8ce4b846759f78}{bno055\+\_\+start\+\_\+calibration}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga36ed631a75005e3ba86b975b58eaf7e0}{bno055\+\_\+read\+\_\+euler}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga32faf589b04f1b70bb0e2dfd8faed3ab}{bno055\+\_\+read\+\_\+status}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga83b90388f34353563f12a53ed00517c7}{bno055\+\_\+check\+\_\+calib\+\_\+coefs}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_gac762bf4f77376dc35799b853d00a95c7}{bno055\+\_\+i2c\+\_\+routine}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+void \mbox{\hyperlink{group___b_n_o055_gabba4dd15173a18edbbafe674bb2aad58}{bno055\+\_\+delay\+\_\+ms}} (uint16\+\_\+t msec)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_gace7496b19e1ddbbe483df67155b21b46}{bno055\+\_\+read}} (uint8\+\_\+t dev\+\_\+addr, uint8\+\_\+t $\ast$reg\+\_\+data, uint8\+\_\+t r\+\_\+len)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga8580976177afa8089fd8262e5e59a257}{bno055\+\_\+write}} (uint8\+\_\+t dev\+\_\+addr, uint8\+\_\+t $\ast$reg\+\_\+data, uint8\+\_\+t wr\+\_\+len)
+\item 
+\mbox{\hyperlink{bno055_8h_a151f780fb455885061d3b77ec1c90c03}{s8}} \mbox{\hyperlink{group___b_n_o055_ga6a1eeefef56eda6f0c963e317706f617}{B\+N\+O055\+\_\+\+I2\+C\+\_\+bus\+\_\+write}} (\mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} dev\+\_\+addr, \mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} reg\+\_\+addr, \mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} $\ast$reg\+\_\+data, \mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} cnt)
+\item 
+\mbox{\hyperlink{bno055_8h_a151f780fb455885061d3b77ec1c90c03}{s8}} \mbox{\hyperlink{group___b_n_o055_ga0d3c7c3e0c8b54e34752989b5bdc36d1}{B\+N\+O055\+\_\+\+I2\+C\+\_\+bus\+\_\+read}} (\mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} dev\+\_\+addr, \mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} reg\+\_\+addr, \mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} $\ast$reg\+\_\+data, \mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} cnt)
+\item 
+void \mbox{\hyperlink{group___b_n_o055_ga2bcb21315e7745d07d64fb64d2c0cfd7}{i2c\+\_\+restart}} (I2\+C\+Driver $\ast$i2cp)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___b_n_o055_ga8c356f8172ed39d07578434d7e1389ed}\label{group___b_n_o055_ga8c356f8172ed39d07578434d7e1389ed}} 
+\mbox{\hyperlink{structbmx160__t}{bmx160\+\_\+t}} {\bfseries bmx160}
+\item 
+\mbox{\Hypertarget{group___b_n_o055_ga967ea156994a35bf77b2c4ae7ccaf273}\label{group___b_n_o055_ga967ea156994a35bf77b2c4ae7ccaf273}} 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+\mbox{\Hypertarget{group___b_n_o055_gaef04ae88e4c72a6597fb391a6d25a43a}\label{group___b_n_o055_gaef04ae88e4c72a6597fb391a6d25a43a}} 
+struct ch\+\_\+semaphore {\bfseries i2c1\+\_\+semaph}
+\item 
+\mbox{\Hypertarget{group___b_n_o055_ga5c32c2b250850870aaf326527f6f966f}\label{group___b_n_o055_ga5c32c2b250850870aaf326527f6f966f}} 
+\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$ {\bfseries bno055}
+\item 
+const I2\+C\+Config {\bfseries bno055\+\_\+i2c\+\_\+cfg}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Bosch 9-\/axis sensor with build-\/in fusion algorith driver. 
+
+Detail will be writen soon \begin{DoxyPrecond}{Precondition}
+In order to use the C\+AN driver the {\ttfamily U\+S\+E\+\_\+\+B\+N\+O055\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___b_n_o055_bno055_1}{}\doxysubsection{Driver State Machine}\label{group___b_n_o055_bno055_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_2}}
+\end{DoxyImageNoCaption}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group___b_n_o055_ga0e70be560d33aad003518cef1a178894}\label{group___b_n_o055_ga0e70be560d33aad003518cef1a178894}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno055\_apply\_calib\_to\_chip@{bno055\_apply\_calib\_to\_chip}}
+\index{bno055\_apply\_calib\_to\_chip@{bno055\_apply\_calib\_to\_chip}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno055\_apply\_calib\_to\_chip()}{bno055\_apply\_calib\_to\_chip()}}
+{\footnotesize\ttfamily int8\+\_\+t bno055\+\_\+apply\+\_\+calib\+\_\+to\+\_\+chip (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$}]{bno055 }\end{DoxyParamCaption})}
+
+Rewrite calibration parameters to chip 
+\begin{DoxyParams}{Parameters}
+{\em bno055} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_ga83b90388f34353563f12a53ed00517c7}\label{group___b_n_o055_ga83b90388f34353563f12a53ed00517c7}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno055\_check\_calib\_coefs@{bno055\_check\_calib\_coefs}}
+\index{bno055\_check\_calib\_coefs@{bno055\_check\_calib\_coefs}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno055\_check\_calib\_coefs()}{bno055\_check\_calib\_coefs()}}
+{\footnotesize\ttfamily int8\+\_\+t bno055\+\_\+check\+\_\+calib\+\_\+coefs (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$}]{bno055 }\end{DoxyParamCaption})}
+
+Getting calibration coeffs from B\+N\+O055 chip 
+\begin{DoxyParams}{Parameters}
+{\em bno055} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_gabba4dd15173a18edbbafe674bb2aad58}\label{group___b_n_o055_gabba4dd15173a18edbbafe674bb2aad58}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno055\_delay\_ms@{bno055\_delay\_ms}}
+\index{bno055\_delay\_ms@{bno055\_delay\_ms}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno055\_delay\_ms()}{bno055\_delay\_ms()}}
+{\footnotesize\ttfamily void bno055\+\_\+delay\+\_\+ms (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{msec }\end{DoxyParamCaption})}
+
+Delay A\+PI used in Bosch library 
+\begin{DoxyParams}{Parameters}
+{\em msec} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___b_n_o055_gaba0cea545392dbe2337e040fb80614e9}\label{group___b_n_o055_gaba0cea545392dbe2337e040fb80614e9}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno055\_full\_init@{bno055\_full\_init}}
+\index{bno055\_full\_init@{bno055\_full\_init}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno055\_full\_init()}{bno055\_full\_init()}}
+{\footnotesize\ttfamily int8\+\_\+t bno055\+\_\+full\+\_\+init (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$}]{bno055 }\end{DoxyParamCaption})}
+
+Initialize B\+N\+O055 
+\begin{DoxyParams}{Parameters}
+{\em bno055} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_ga0d3c7c3e0c8b54e34752989b5bdc36d1}\label{group___b_n_o055_ga0d3c7c3e0c8b54e34752989b5bdc36d1}} 
+\index{BNO055 Driver@{BNO055 Driver}!BNO055\_I2C\_bus\_read@{BNO055\_I2C\_bus\_read}}
+\index{BNO055\_I2C\_bus\_read@{BNO055\_I2C\_bus\_read}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{BNO055\_I2C\_bus\_read()}{BNO055\_I2C\_bus\_read()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{bno055_8h_a151f780fb455885061d3b77ec1c90c03}{s8}} B\+N\+O055\+\_\+\+I2\+C\+\_\+bus\+\_\+read (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}}}]{dev\+\_\+addr,  }\item[{\mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}}}]{reg\+\_\+addr,  }\item[{\mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} $\ast$}]{reg\+\_\+data,  }\item[{\mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}}}]{cnt }\end{DoxyParamCaption})}
+
+Low-\/level I2C register write A\+PI, used in Bosch library 
+\begin{DoxyParams}{Parameters}
+{\em dev\+\_\+addr} & \\
+\hline
+{\em reg\+\_\+addr} & \\
+\hline
+{\em reg\+\_\+data} & \\
+\hline
+{\em cnt} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_ga6a1eeefef56eda6f0c963e317706f617}\label{group___b_n_o055_ga6a1eeefef56eda6f0c963e317706f617}} 
+\index{BNO055 Driver@{BNO055 Driver}!BNO055\_I2C\_bus\_write@{BNO055\_I2C\_bus\_write}}
+\index{BNO055\_I2C\_bus\_write@{BNO055\_I2C\_bus\_write}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{BNO055\_I2C\_bus\_write()}{BNO055\_I2C\_bus\_write()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{bno055_8h_a151f780fb455885061d3b77ec1c90c03}{s8}} B\+N\+O055\+\_\+\+I2\+C\+\_\+bus\+\_\+write (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}}}]{dev\+\_\+addr,  }\item[{\mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}}}]{reg\+\_\+addr,  }\item[{\mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} $\ast$}]{reg\+\_\+data,  }\item[{\mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}}}]{cnt }\end{DoxyParamCaption})}
+
+Low-\/level I2C register write A\+PI, used in Bosch library 
+\begin{DoxyParams}{Parameters}
+{\em dev\+\_\+addr} & \\
+\hline
+{\em reg\+\_\+addr} & \\
+\hline
+{\em reg\+\_\+data} & \\
+\hline
+{\em cnt} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_gac762bf4f77376dc35799b853d00a95c7}\label{group___b_n_o055_gac762bf4f77376dc35799b853d00a95c7}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno055\_i2c\_routine@{bno055\_i2c\_routine}}
+\index{bno055\_i2c\_routine@{bno055\_i2c\_routine}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno055\_i2c\_routine()}{bno055\_i2c\_routine()}}
+{\footnotesize\ttfamily int8\+\_\+t bno055\+\_\+i2c\+\_\+routine (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$}]{bno055 }\end{DoxyParamCaption})}
+
+Initialize B\+N\+O055 A\+PI struct 
+\begin{DoxyParams}{Parameters}
+{\em bno055} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_gace7496b19e1ddbbe483df67155b21b46}\label{group___b_n_o055_gace7496b19e1ddbbe483df67155b21b46}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno055\_read@{bno055\_read}}
+\index{bno055\_read@{bno055\_read}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno055\_read()}{bno055\_read()}}
+{\footnotesize\ttfamily int8\+\_\+t bno055\+\_\+read (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{dev\+\_\+addr,  }\item[{uint8\+\_\+t $\ast$}]{reg\+\_\+data,  }\item[{uint8\+\_\+t}]{r\+\_\+len }\end{DoxyParamCaption})}
+
+B\+N\+O055 register read A\+PI 
+\begin{DoxyParams}{Parameters}
+{\em dev\+\_\+addr} & \\
+\hline
+{\em reg\+\_\+data} & \\
+\hline
+{\em r\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_ga3a5ae7cf696fc2b063d78fffc479c9ad}\label{group___b_n_o055_ga3a5ae7cf696fc2b063d78fffc479c9ad}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno055\_read\_calib\_from\_eeprom@{bno055\_read\_calib\_from\_eeprom}}
+\index{bno055\_read\_calib\_from\_eeprom@{bno055\_read\_calib\_from\_eeprom}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno055\_read\_calib\_from\_eeprom()}{bno055\_read\_calib\_from\_eeprom()}}
+{\footnotesize\ttfamily int8\+\_\+t bno055\+\_\+read\+\_\+calib\+\_\+from\+\_\+eeprom (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$}]{bno055 }\end{DoxyParamCaption})}
+
+Reads calibration parameters from E\+E\+P\+R\+OM 
+\begin{DoxyParams}{Parameters}
+{\em bno055} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_ga36ed631a75005e3ba86b975b58eaf7e0}\label{group___b_n_o055_ga36ed631a75005e3ba86b975b58eaf7e0}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno055\_read\_euler@{bno055\_read\_euler}}
+\index{bno055\_read\_euler@{bno055\_read\_euler}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno055\_read\_euler()}{bno055\_read\_euler()}}
+{\footnotesize\ttfamily int8\+\_\+t bno055\+\_\+read\+\_\+euler (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$}]{bno055 }\end{DoxyParamCaption})}
+
+Get euler angles for yaw, pitch, roll 
+\begin{DoxyParams}{Parameters}
+{\em bno055} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_ga32faf589b04f1b70bb0e2dfd8faed3ab}\label{group___b_n_o055_ga32faf589b04f1b70bb0e2dfd8faed3ab}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno055\_read\_status@{bno055\_read\_status}}
+\index{bno055\_read\_status@{bno055\_read\_status}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno055\_read\_status()}{bno055\_read\_status()}}
+{\footnotesize\ttfamily int8\+\_\+t bno055\+\_\+read\+\_\+status (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$}]{bno055 }\end{DoxyParamCaption})}
+
+Getting calibration statuses 
+\begin{DoxyParams}{Parameters}
+{\em bno055} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_gacaacde11665e160ff8df01f730786077}\label{group___b_n_o055_gacaacde11665e160ff8df01f730786077}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno055\_save\_calib\_to\_eeprom@{bno055\_save\_calib\_to\_eeprom}}
+\index{bno055\_save\_calib\_to\_eeprom@{bno055\_save\_calib\_to\_eeprom}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno055\_save\_calib\_to\_eeprom()}{bno055\_save\_calib\_to\_eeprom()}}
+{\footnotesize\ttfamily int8\+\_\+t bno055\+\_\+save\+\_\+calib\+\_\+to\+\_\+eeprom (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$}]{bno055 }\end{DoxyParamCaption})}
+
+Writes calibration parameters to E\+E\+P\+R\+OM 
+\begin{DoxyParams}{Parameters}
+{\em bno055} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_ga417127b9624947158b35cea61a325fbd}\label{group___b_n_o055_ga417127b9624947158b35cea61a325fbd}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno055\_set\_dynamic\_calib@{bno055\_set\_dynamic\_calib}}
+\index{bno055\_set\_dynamic\_calib@{bno055\_set\_dynamic\_calib}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno055\_set\_dynamic\_calib()}{bno055\_set\_dynamic\_calib()}}
+{\footnotesize\ttfamily int8\+\_\+t bno055\+\_\+set\+\_\+dynamic\+\_\+calib (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$}]{bno055 }\end{DoxyParamCaption})}
+
+Allow dynamic calibration 
+\begin{DoxyParams}{Parameters}
+{\em bno055} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_ga162350b307cf43cec67352832daf75ab}\label{group___b_n_o055_ga162350b307cf43cec67352832daf75ab}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno055\_set\_static\_calib@{bno055\_set\_static\_calib}}
+\index{bno055\_set\_static\_calib@{bno055\_set\_static\_calib}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno055\_set\_static\_calib()}{bno055\_set\_static\_calib()}}
+{\footnotesize\ttfamily int8\+\_\+t bno055\+\_\+set\+\_\+static\+\_\+calib (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$}]{bno055 }\end{DoxyParamCaption})}
+
+Forbid dynamic calibration 
+\begin{DoxyParams}{Parameters}
+{\em bno055} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_ga927cc0067bb748306b8ce4b846759f78}\label{group___b_n_o055_ga927cc0067bb748306b8ce4b846759f78}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno055\_start\_calibration@{bno055\_start\_calibration}}
+\index{bno055\_start\_calibration@{bno055\_start\_calibration}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno055\_start\_calibration()}{bno055\_start\_calibration()}}
+{\footnotesize\ttfamily int8\+\_\+t bno055\+\_\+start\+\_\+calibration (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$}]{bno055 }\end{DoxyParamCaption})}
+
+Reset chip and initializing calibration procedure 
+\begin{DoxyParams}{Parameters}
+{\em bno055} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_ga8580976177afa8089fd8262e5e59a257}\label{group___b_n_o055_ga8580976177afa8089fd8262e5e59a257}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno055\_write@{bno055\_write}}
+\index{bno055\_write@{bno055\_write}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno055\_write()}{bno055\_write()}}
+{\footnotesize\ttfamily int8\+\_\+t bno055\+\_\+write (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{dev\+\_\+addr,  }\item[{uint8\+\_\+t $\ast$}]{reg\+\_\+data,  }\item[{uint8\+\_\+t}]{wr\+\_\+len }\end{DoxyParamCaption})}
+
+B\+N\+O055 register write A\+PI 
+\begin{DoxyParams}{Parameters}
+{\em dev\+\_\+addr} & \\
+\hline
+{\em reg\+\_\+data} & \\
+\hline
+{\em wr\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_gaa5fec38d6349f5d6baad80921a68ee09}\label{group___b_n_o055_gaa5fec38d6349f5d6baad80921a68ee09}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno955\_read\_static\_flag\_from\_eeprom@{bno955\_read\_static\_flag\_from\_eeprom}}
+\index{bno955\_read\_static\_flag\_from\_eeprom@{bno955\_read\_static\_flag\_from\_eeprom}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno955\_read\_static\_flag\_from\_eeprom()}{bno955\_read\_static\_flag\_from\_eeprom()}}
+{\footnotesize\ttfamily int8\+\_\+t bno955\+\_\+read\+\_\+static\+\_\+flag\+\_\+from\+\_\+eeprom (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$}]{bno055 }\end{DoxyParamCaption})}
+
+Reads static calibration flag from E\+E\+P\+R\+OM 
+\begin{DoxyParams}{Parameters}
+{\em bno055} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___b_n_o055_ga2bcb21315e7745d07d64fb64d2c0cfd7}\label{group___b_n_o055_ga2bcb21315e7745d07d64fb64d2c0cfd7}} 
+\index{BNO055 Driver@{BNO055 Driver}!i2c\_restart@{i2c\_restart}}
+\index{i2c\_restart@{i2c\_restart}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{i2c\_restart()}{i2c\_restart()}}
+{\footnotesize\ttfamily void i2c\+\_\+restart (\begin{DoxyParamCaption}\item[{I2\+C\+Driver $\ast$}]{i2cp }\end{DoxyParamCaption})}
+
+Restart I2C in case of bus error 
+\begin{DoxyParams}{Parameters}
+{\em i2cp} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___b_n_o055_ga79f76b1f8471d2a31bbebbce0b45866f}\label{group___b_n_o055_ga79f76b1f8471d2a31bbebbce0b45866f}} 
+\index{BNO055 Driver@{BNO055 Driver}!start\_bno055\_module@{start\_bno055\_module}}
+\index{start\_bno055\_module@{start\_bno055\_module}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{start\_bno055\_module()}{start\_bno055\_module()}}
+{\footnotesize\ttfamily void start\+\_\+bno055\+\_\+module (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Starting B\+N\+O055 threads 
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{group___b_n_o055_ga6b6b148637052cef96363bb87a353df4}\label{group___b_n_o055_ga6b6b148637052cef96363bb87a353df4}} 
+\index{BNO055 Driver@{BNO055 Driver}!bno055\_i2c\_cfg@{bno055\_i2c\_cfg}}
+\index{bno055\_i2c\_cfg@{bno055\_i2c\_cfg}!BNO055 Driver@{BNO055 Driver}}
+\doxysubsubsection{\texorpdfstring{bno055\_i2c\_cfg}{bno055\_i2c\_cfg}}
+{\footnotesize\ttfamily const I2\+C\+Config bno055\+\_\+i2c\+\_\+cfg}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{= \{}
+\DoxyCodeLine{  0x30420F13,}
+\DoxyCodeLine{        }
+\DoxyCodeLine{ }
+\DoxyCodeLine{  0,}
+\DoxyCodeLine{  0}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}

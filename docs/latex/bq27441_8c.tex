@@ -1,0 +1,51 @@
+\hypertarget{bq27441_8c}{}\doxysection{bq27441/bq27441.c File Reference}
+\label{bq27441_8c}\index{bq27441/bq27441.c@{bq27441/bq27441.c}}
+
+
+Fuel gauge Driver funcs.  
+
+
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}ch.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}hal.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}shell.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}chprintf.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}bq27441.\+h\char`\"{}}\newline
+Include dependency graph for bq27441.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{bq27441_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static uint8\+\_\+t \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga5b86382dbdf8e6036a1cb9bd52987099}{fuel\+\_\+read\+\_\+register}} (uint8\+\_\+t command, int8\+\_\+t $\ast$buf, uint8\+\_\+t num)
+\begin{DoxyCompactList}\small\item\em Low-\/level I2C register read A\+PI. \end{DoxyCompactList}\item 
+static uint8\+\_\+t \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gaa668e52b7b7e59881fd8662b3fc4ddd9}{fuel\+\_\+get\+\_\+parameter}} (uint8\+\_\+t param, int16\+\_\+t $\ast$buffer)
+\begin{DoxyCompactList}\small\item\em Read parameter from fuel gauge IC. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga462641797f4e84a381cff10308190c7f}{fuel\+\_\+print\+\_\+info}} (\mbox{\hyperlink{structfuel__t}{fuel\+\_\+t}} $\ast$fuel)
+\begin{DoxyCompactList}\small\item\em Print battery info to shell. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga9c690f89df1e9563bc595b89344ec549}{T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA}} (fuel\+\_\+thread\+\_\+wa, 256)
+\begin{DoxyCompactList}\small\item\em Fuel thread working area definition. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga5965af7429c8c4fa69cb7d7f3a29538e}{T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON}} (fuel\+\_\+thread, p)
+\begin{DoxyCompactList}\small\item\em Main fuel thread. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gae01cc19653b278defef364afc6ac3b7c}{start\+\_\+fuel\+\_\+gauge\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Start fuel gauge threads. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structfuel__t}{fuel\+\_\+t}} $\ast$ {\bfseries fuel}
+\item 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Fuel gauge Driver funcs. 
+

@@ -1,0 +1,119 @@
+\hypertarget{_fusion_calibration_8h}{}\doxysection{bmx160/\+Fusion/\+Fusion\+Calibration.h File Reference}
+\label{_fusion_calibration_8h}\index{bmx160/Fusion/FusionCalibration.h@{bmx160/Fusion/FusionCalibration.h}}
+
+
+Gyroscope, accelerometer, and magnetometer calibration model.  
+
+
+{\ttfamily \#include \char`\"{}Fusion\+Types.\+h\char`\"{}}\newline
+Include dependency graph for Fusion\+Calibration.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=250pt]{_fusion_calibration_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=250pt]{_fusion_calibration_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{_fusion_calibration_8h_a21636e894a139b91c93075ded65ebb7a}{\+\_\+\+\_\+attribute\+\_\+\+\_\+}} ((always\+\_\+inline)) \mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}} Fusion\+Calibration\+Inertial(const \mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}} uncalibrated
+\begin{DoxyCompactList}\small\item\em Gyroscope and accelerometer calibration model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{_fusion_calibration_8h_aa36e97956842c17847070f9efb4b3f11}\label{_fusion_calibration_8h_aa36e97956842c17847070f9efb4b3f11}} 
+static const \mbox{\hyperlink{union_fusion_rotation_matrix}{Fusion\+Rotation\+Matrix}} {\bfseries misalignment}
+\item 
+\mbox{\Hypertarget{_fusion_calibration_8h_a0a420a1917db34545d3d123d8963221b}\label{_fusion_calibration_8h_a0a420a1917db34545d3d123d8963221b}} 
+static const \mbox{\hyperlink{union_fusion_rotation_matrix}{Fusion\+Rotation\+Matrix}} const \mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}} {\bfseries sensitivity}
+\item 
+static const \mbox{\hyperlink{union_fusion_rotation_matrix}{Fusion\+Rotation\+Matrix}} const \mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}} const \mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}} {\bfseries bias}
+\item 
+\mbox{\Hypertarget{_fusion_calibration_8h_a4a4a12233ea8ab04e397901a5febb2bb}\label{_fusion_calibration_8h_a4a4a12233ea8ab04e397901a5febb2bb}} 
+static const \mbox{\hyperlink{union_fusion_rotation_matrix}{Fusion\+Rotation\+Matrix}} {\bfseries soft\+Iron\+Matrix}
+\item 
+static const \mbox{\hyperlink{union_fusion_rotation_matrix}{Fusion\+Rotation\+Matrix}} const \mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}} {\bfseries hard\+Iron\+Bias}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Gyroscope, accelerometer, and magnetometer calibration model. 
+
+\begin{DoxyAuthor}{Author}
+Seb Madgwick Static inline implementations are used to optimise for increased execution speed. 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{_fusion_calibration_8h_a21636e894a139b91c93075ded65ebb7a}\label{_fusion_calibration_8h_a21636e894a139b91c93075ded65ebb7a}} 
+\index{FusionCalibration.h@{FusionCalibration.h}!\_\_attribute\_\_@{\_\_attribute\_\_}}
+\index{\_\_attribute\_\_@{\_\_attribute\_\_}!FusionCalibration.h@{FusionCalibration.h}}
+\doxysubsubsection{\texorpdfstring{\_\_attribute\_\_()}{\_\_attribute\_\_()}}
+{\footnotesize\ttfamily static \+\_\+\+\_\+attribute\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{(always\+\_\+inline)}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Gyroscope and accelerometer calibration model. 
+
+Magnetometer calibration model.
+
+
+\begin{DoxyParams}{Parameters}
+{\em uncalibrated} & Uncalibrated gyroscope or accelerometer measurement in lsb. \\
+\hline
+{\em misalignment} & Misalignment matrix (may not be a true rotation matrix). \\
+\hline
+{\em sensitivity} & Sensitivity in g per lsb for an accelerometer and degrees per second per lsb for a gyroscope. \\
+\hline
+{\em bias} & Bias in lsb. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Calibrated gyroscope or accelerometer measurement.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em magnetometer} & Uncalibrated magnetometer measurement in uT. \\
+\hline
+{\em soft\+Iron\+Matrix} & Soft-\/iron matrix (may not be a true rotation matrix). \\
+\hline
+{\em hard\+Iron\+Bias} & Hard-\/iron bias in uT. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Calibrated magnetometer measurement. 
+\end{DoxyReturn}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{_fusion_calibration_8h_afd94a8f301ffed10314b8890c7d38d32}\label{_fusion_calibration_8h_afd94a8f301ffed10314b8890c7d38d32}} 
+\index{FusionCalibration.h@{FusionCalibration.h}!bias@{bias}}
+\index{bias@{bias}!FusionCalibration.h@{FusionCalibration.h}}
+\doxysubsubsection{\texorpdfstring{bias}{bias}}
+{\footnotesize\ttfamily const \mbox{\hyperlink{union_fusion_rotation_matrix}{Fusion\+Rotation\+Matrix}} const \mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}} const \mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}} bias}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    \textcolor{keywordflow}{return} FusionRotationMatrixMultiplyVector(misalignment, FusionVectorHadamardProduct(FusionVectorSubtract(uncalibrated, bias), sensitivity))}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{_fusion_calibration_8h_a6621e434f1281d0aacd207f19d39dfcb}\label{_fusion_calibration_8h_a6621e434f1281d0aacd207f19d39dfcb}} 
+\index{FusionCalibration.h@{FusionCalibration.h}!hardIronBias@{hardIronBias}}
+\index{hardIronBias@{hardIronBias}!FusionCalibration.h@{FusionCalibration.h}}
+\doxysubsubsection{\texorpdfstring{hardIronBias}{hardIronBias}}
+{\footnotesize\ttfamily const \mbox{\hyperlink{union_fusion_rotation_matrix}{Fusion\+Rotation\+Matrix}} const \mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}} hard\+Iron\+Bias}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    \textcolor{keywordflow}{return} FusionVectorSubtract(FusionRotationMatrixMultiplyVector(softIronMatrix, uncalibrated), \mbox{\hyperlink{group___b_m_x160_ga9de72b998abc26885a84e1de0c03ee47}{hardIronBias}})}
+
+\end{DoxyCode}

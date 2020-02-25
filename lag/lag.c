@@ -4,6 +4,15 @@
  *  Created on: Sep 9, 2019
  *      Author: a-h
  */
+
+/**
+ * @file    lag.c
+ * @brief   Log Driver funcs.
+ *
+ * @addtogroup LOG
+ * @{
+ */
+
 #include "config.h"
 #include <stdlib.h>
 #include <string.h>
@@ -31,16 +40,18 @@ extern time_measurement_t time;
 static THD_WORKING_AREA(lag_thread_wa, 512);
 static THD_FUNCTION(lag_thread, arg);
 
+/**
+ * @brief Start log threads
+ */
 void start_lag_module(void){
 
 	chThdCreateStatic(lag_thread_wa, sizeof(lag_thread_wa), NORMALPRIO,  lag_thread, NULL);
 }
 
 
-/*
- * Thread to process data collection and filtering from MPU9250
+/**
+ * @brief Thread to process data collection and filtering from MPU9250
  */
-
 static THD_FUNCTION(lag_thread, arg) {
 	(void) arg;
 	chRegSetThreadName("LAG Thread");
@@ -54,7 +65,9 @@ static THD_FUNCTION(lag_thread, arg) {
 	}
 }
 
-/* Callback associated to the event. */
+/**
+ *  @brief Callback associated to the impulse .
+ */
 static void lag_callback(void *arg) {
   (void)arg;
   chTMStopMeasurementX(&time);
@@ -68,6 +81,9 @@ static void lag_callback(void *arg) {
   chTMStartMeasurementX(&time);
 }
 
+/**
+ * @brief Measurement pins initialization
+ */
 static void lag_init_pins(void){
 	/* Enabling event on falling edge of PA0 signal.*/
 #ifdef SD_SENSOR_BOX_LAG

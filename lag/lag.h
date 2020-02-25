@@ -5,11 +5,31 @@
  *      Author: a-h
  */
 
+/**
+ * @file    lag.h
+ * @brief   Log Driver structs.
+ *
+ * @addtogroup LOG
+ * @{
+ */
+
 #ifndef SD_MODULES_LAG_LAG_H_
 #define SD_MODULES_LAG_LAG_H_
 
 #define LAG_MAGIC_CONST		0.1f
 
+/**
+ * @struct lag_t
+ * @brief Common log struct
+ * @var lag_t::calib_num
+ * Calibration coefficient
+ * @var lag_t::hz
+ * Measurement in herts
+ * @var lag_t::meters
+ * Measurements in meters/sec
+ * @var lag_t::millis
+ * Measurements in millis period
+ */
 typedef struct{
 	float calib_num;
 	float hz;

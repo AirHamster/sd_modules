@@ -4,6 +4,15 @@
  *  Created on: Sep 12, 2019
  *      Author: a-h
  */
+
+/**
+ * @file    bq27441.c
+ * @brief   Fuel gauge Driver funcs.
+ *
+ * @addtogroup FUEL_GAUGE
+ * @{
+ */
+
 #include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -51,7 +60,14 @@ static uint8_t fuel_read_register(uint8_t command, int8_t *buf, uint8_t num);
 static uint8_t fuel_get_parameter(uint8_t param, int16_t *buffer);
 static int8_t fuel_print_info(fuel_t *fuel);
 
+/**
+ * @brief Fuel thread working area definition
+ */
 static THD_WORKING_AREA(fuel_thread_wa, 256);
+/**
+ * @brief Main fuel thread
+ * @param THD_FUNCTION(fuel_thread, p)
+ */
 static THD_FUNCTION(fuel_thread, p) {
 	(void) p;
 	chRegSetThreadName("Fuel gauge Thd");
@@ -74,6 +90,14 @@ static THD_FUNCTION(fuel_thread, p) {
 	}
 }
 
+/**
+ * @brief Read parameter from fuel gauge IC
+ * @param param Parameter
+ * @param buffer Reading buffer pointer
+ * @return Reading result
+ * @retval -1 in case of error
+ * @retval 0 in case of success
+ */
 static uint8_t fuel_get_parameter(uint8_t param, int16_t *buffer){
 	uint8_t rx_buff[2];
 		fuel_read_register(param, rx_buff, 2);
@@ -85,6 +109,11 @@ static uint8_t fuel_get_parameter(uint8_t param, int16_t *buffer){
 		return 0;
 }
 
+/**
+ * @brief Print battery info to shell
+ * @param fuel Fuel gauge struct pointer
+ * @return
+ */
 static int8_t fuel_print_info(fuel_t *fuel){
 
 	chprintf(SHELL_IFACE, "\r\nBatt voltage:\t%dV\r\n", fuel->voltage);
@@ -94,6 +123,15 @@ static int8_t fuel_print_info(fuel_t *fuel){
 	chprintf(SHELL_IFACE, "Batt rem_cap:\t%dmA\r\n", fuel->remaining_capacity);
 }
 
+/**
+ * @brief Low-level I2C register read API
+ * @param command
+ * @param buf Reading buffer pointer
+ * @param num Num of bytes to read
+ * @return Reading result
+ * @retval -1 in case of error
+ * @retval 0 in case of success
+ */
 static uint8_t fuel_read_register(uint8_t command, int8_t *buf, uint8_t num){
 	uint8_t txbuff[2];
 	uint8_t rxbuff[num];
@@ -120,6 +158,9 @@ static uint8_t fuel_read_register(uint8_t command, int8_t *buf, uint8_t num){
 
 }
 
+/**
+ * @brief Start fuel gauge threads
+ */
 void start_fuel_gauge_module(void){
 	chThdCreateStatic(fuel_thread_wa, sizeof(fuel_thread_wa), NORMALPRIO, fuel_thread, NULL);
 }

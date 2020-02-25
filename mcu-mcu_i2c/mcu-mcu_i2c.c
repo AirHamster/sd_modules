@@ -5,6 +5,14 @@
  *      Author: a-h
  */
 
+/**
+ * @file    mcu-mcu_i2c.c
+ * @brief   Multi MCU communication Driver funcs.
+ *
+ * @addtogroup MCU-MCU
+ * @{
+ */
+
 #include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,6 +49,9 @@ const I2CConfig mcu_mcu_if_cfg = {
 };
 #endif
 
+/**
+ * Main communication thread
+ */
 static THD_WORKING_AREA(mcu_mcu_thread_wa, 256);
 static THD_FUNCTION( mcu_mcu_thread, p) {
 	(void) p;
@@ -110,6 +121,9 @@ static THD_FUNCTION( mcu_mcu_thread, p) {
 	}
 }
 
+/**
+ * Start communication threads
+ */
 void start_mcu_mcu_module(void){
 	chThdCreateStatic(mcu_mcu_thread_wa, sizeof(mcu_mcu_thread_wa), NORMALPRIO, mcu_mcu_thread, NULL);
 }

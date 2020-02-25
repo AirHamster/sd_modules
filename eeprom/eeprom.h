@@ -1,3 +1,11 @@
+/**
+ * @file    eeprom.h
+ * @brief   EEPROM Driver structs.
+ *
+ * @addtogroup EEPROM
+ * @{
+ */
+
 #ifndef EEPROM_H
 #define EEPROM_H
 
@@ -31,16 +39,38 @@
 #define EEPROM_XBEE_ADDRESES_MEMORY_SIZE	128
 #define EEPROM_BLE_ADDRESES_MEMORY_SIZE		128
 
-
+ /** @struct eeprom_info_memory_t
+   * @brief FW and HW versions varables
+   *
+   *  @var eeprom_info_memory_t::HW_VER
+   *    Hardware version.
+   *  @var eeprom_info_memory_t::FW_VER
+   *    Firmware version.
+   */
 typedef struct{
+	/*@{*/
 	int8_t HW_VER;
 	int8_t FW_VER;
+	/*@}*/
 }eeprom_info_memory_t;
 
+
+/** @struct eeprom_flags_memory_t
+  *  @brief Flags
+  *
+  *  @var eeprom_flags_memory_t::STATIC_MAGN_CALIB_FLAG
+  *    Flag indicates that BNO055 use static calibration mode.
+  *  @var eeprom_flags_memory_t::RUDDER_CALIB_FLAG
+  *    Indicates that rudder calibration wasn't.
+  */
 typedef struct{
 	uint8_t STATIC_MAGN_CALIB_FLAG;
 	uint8_t RUDDER_CALIB_FLAG;
 }eeprom_flags_memory_t;
+
+/**
+ * @brief Magnetometer offset memory part
+ */
 
 typedef struct{
 	int16_t MAGN_X_OFFSET;
@@ -49,8 +79,10 @@ typedef struct{
 	int16_t MAGN_RADIUS;
 }eeprom_magn_calib_memory_t;
 
+/**
+ * @brief Math corrections memory part
+ */
 typedef struct{
-	//float values
 	float MATH_COMPASS_CORRECTION;
 	float MATH_HSP_CORRECTION;
 	float MATH_HEEL_CORRECTION;
@@ -58,17 +90,21 @@ typedef struct{
 	float MATH_PITCH_CORRECTION;
 	float MATH_RUDDER_CORRECTION;
 	float MATH_WIND_CORRECTION;
-
 	//uint8_t values
 	uint8_t MATH_WINSIZE1_CORRECTION;
 	uint8_t MATH_WINSIZE2_CORRECTION;
 	uint8_t MATH_WINSIZE3_CORRECTION;
 }eeprom_math_corrections_t;
-
+/**
+ * @brief Log calibration values
+ */
 typedef struct{
 	float LAG_CALIB;
 }eeprom_lag_calib_memory_t;
 
+/**
+ *
+ */
 typedef struct{
 	//float
 	float RUDDER_CALIB_NATIVE_LEFT;
