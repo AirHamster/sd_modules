@@ -4,7 +4,7 @@
 
 ##### SD_Modules is a repository with code base for all sensors and devices used in SailData project.
 
-##### Current modules
+##### Current modules:
 - Bosch 9-axis sensor driver
 - Bosch 9-axis sensor with build-in fusion algorith driver
 - TI BQ2560x battery charge IC driver

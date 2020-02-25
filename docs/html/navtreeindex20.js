@@ -1,5 +1,7 @@
 var NAVTREEINDEX20 =
 {
+"structbno055__euler__float__t.html#a1922a551816a2725c69a086db7c12a03":[2,0,44,1],
+"structbno055__euler__float__t.html#a4788d82c901b9367dd5c0daff8a7616b":[2,0,44,2],
 "structbno055__euler__float__t.html#a85f2f1bd58b3b44ffdf3881823393959":[2,0,44,0],
 "structbno055__euler__t.html":[2,0,45],
 "structbno055__euler__t.html#a096d8e241c497afeaf5af222cfc710d4":[2,0,45,1],
@@ -247,7 +249,5 @@ var NAVTREEINDEX20 =
 "structoutput__t.html":[2,0,111],
 "structoutput__t.html#a1d127017fb298b889f4ba24752d08b8e":[2,0,111,5],
 "structoutput__t.html#a2bbe28f96c78372cf401a04af7bc4dc6":[2,0,111,2],
-"structoutput__t.html#a3139cc32855b23dc04375cb0bc363918":[2,0,111,0],
-"structoutput__t.html#a5856d73dde84d68d563f8a4f4858499f":[2,0,111,3],
-"structoutput__t.html#a670f8a1cac5e6907b5c7af827a245f46":[2,0,111,6]
+"structoutput__t.html#a3139cc32855b23dc04375cb0bc363918":[2,0,111,0]
 };
