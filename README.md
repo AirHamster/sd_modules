@@ -1,6 +1,8 @@
 # SD_Modules
 
-###### SD_Modules is a repository with code base for all sensors and devices used in SailData project.
+[![Build Status](https://travis-ci.com/AirHamster/sd_modules.svg?token=KGT3nWDyeGNHSLPsrsXU&branch=master)](https://travis-ci.com/AirHamster/sd_modules)
+
+##### SD_Modules is a repository with code base for all sensors and devices used in SailData project.
 
 ##### Current modules
 - Bosch 9-axis sensor driver
