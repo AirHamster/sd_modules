@@ -60,7 +60,6 @@
 #include "bno055_i2c.h"
 /*! file <BNO055 >
     brief <Sensor driver for BNO055> 
-     * @defgroup BMM150 SENSOR API
      */
 /*	STRUCTURE DEFINITIONS	*/
 static bno055_t *p_bno055;

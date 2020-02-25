@@ -188,12 +188,6 @@ ts_dataxyzf32 rawGyroData;
 ts_dataxyzf32 rawAccData;
 ts_dataxyzf32 rawMagData;
 
-//static bmx160_t bmx160_struct;
-//bmx160_t *bmx160 = &bmx160_struct;
-//bmx160_t *bmx160;
-
-
-
 /* Macros for frames to be read */
 
 #define ACC_FRAMES	10 /* 10 Frames are available every 100ms @ 100Hz */
@@ -273,34 +267,6 @@ static THD_FUNCTION(bmx160_thread, arg) {
 	chThdSleepMilliseconds(500);
 	i2cStart(&GYRO_IF, &bmx160_i2c_cfg);
 	bmx160_full_init();
-	chThdSleepMilliseconds(2500);
-	s_input.accelspec = (BSX_U8 *) &bsxLibConfAcc;
-	s_input.magspec = (BSX_U8 *) &bsxLibConfMag;
-	s_input.gyrospec = (BSX_U8 *) &bsxLibConfGyro;
-	s_input.usecase = (BSX_U8 *) &bsxLibConf;
-
-	if (bsx_init(&s_input) == 0) {
-		chprintf(SHELL_IFACE, "\r\nBSX library initialized\r\n");
-		s_workingmodes.opMode = BSX_WORKINGMODE_NDOF_GEORV_FMC_OFF;
-		bsx_set_workingmode(&s_workingmodes);
-		//HWsensorSwitchList.acc
-		bsx_get_hwdependency(s_workingmodes, &HWsensorSwitchList);
-	} else {
-		chprintf(SHELL_IFACE, "\r\nBSX library NOT initialized\r\n");
-	}
-	bmx160_read_calib_from_eeprom(&bmx160);
-/*	hardIronBias.axis.x = bmx160.mag_offset.x;
-	hardIronBias.axis.y = bmx160.mag_offset.y;
-	hardIronBias.axis.z = bmx160.mag_offset.z;
-	*/
-	// Initialise gyroscope bias correction algorithm
-	FusionBiasInitialise(&fusionBias, 0.5f, samplePeriod); // stationary threshold = 0.5 degrees per second
-
-	// Initialise AHRS algorithm
-	FusionAhrsInitialise(&fusionAhrs, 1.5f); // gain = 0.5
-
-	// Set optional magnetic field limits
-	FusionAhrsSetMagneticField(&fusionAhrs, 20.0f, 70.0f); // valid magnetic field range = 20 uT to 70 uT
 
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 
@@ -341,25 +307,6 @@ static THD_FUNCTION(bmx160_thread, arg) {
 		bsx_dostep(&libraryInput_ts);
 		bsx_get_magrawdata(&rawMagData);
 
-		/*
-		 bmx160.gx = gyro.y / 131.2 * 3.1415 /180.0;		//due to 250 deg/sec
-		 bmx160.gy = -gyro.x / 131.2 * 3.1415 /180.0;
-		 bmx160.gz = gyro.z / 131.2 * 3.1415 /180.0;
-		 */
-		/*
-		 bmx160.ax = accel.y * 0.000061035;	//due to 2g
-		 bmx160.ay = -accel.x * 0.000061035;
-		 bmx160.az = accel.z * 0.000061035;
-		 */
-		/*
-		bmx160.gx = gyro.x / 131.2 * 3.1415 / 180.0;		//due to 250 deg/sec
-		bmx160.gy = gyro.y / 131.2 * 3.1415 / 180.0;
-		bmx160.gz = gyro.z / 131.2 * 3.1415 / 180.0;
-
-		bmx160.ax = accel.x * 0.000061035;	//due to 2g
-		bmx160.ay = accel.y * 0.000061035;
-		bmx160.az = accel.z * 0.000061035;
-*/
 		bmx160.gx = gyro.x;		//due to 250 deg/sec
 		bmx160.gy = gyro.y;
 		bmx160.gz = gyro.z;
@@ -368,32 +315,10 @@ static THD_FUNCTION(bmx160_thread, arg) {
 		bmx160.ay = accel.y;
 		bmx160.az = accel.z;
 
-		//patch for madgwick filter
-		/*
-		 bmx160.mx = rawMagData.y / 100.0;	//microTesla to Gauss
-		 bmx160.my = -rawMagData.x / 100.0;
-		 bmx160.mz = rawMagData.z / 100.0;
-		 */
-		/*
-		 bmx160.mx = rawMagData.x / 100.0;	//microTesla to Gauss
-		 bmx160.my = rawMagData.y / 100.0;
-		 bmx160.mz = rawMagData.z / 100.0;
-		 */
 		bmx160.mx = rawMagData.x;	//microTesla to Gauss
 		bmx160.my = rawMagData.y;
 		bmx160.mz = rawMagData.z;
-/*		chprintf(SHELL_IFACE, "X = %0.1f, Y = %0.1f, Z = %0.1f\r\n",
-				bmx160.mx, bmx160.my,
-				bmx160.mz);
 
-			chprintf(SHELL_IFACE, "X = %0.1f, Y = %0.1f, Z = %0.1f\r\n",
-					bmx160.ax, bmx160.ay,
-					bmx160.az);
-
-			chprintf(SHELL_IFACE, "X = %0.1f, Y = %0.1f, Z = %0.1f\r\n\r\n",
-					bmx160.gx, bmx160.gy,
-					bmx160.gz);
-*/
 		// Calibrate gyroscope
 		FusionVector3 uncalibratedGyroscope = {
 				.axis.x = bmx160.gx, /* replace this value with actual gyroscope x axis measurement in lsb */
@@ -439,11 +364,8 @@ static THD_FUNCTION(bmx160_thread, arg) {
 		FusionEulerAngles eulerAngles = FusionQuaternionToEulerAngles(
 				FusionAhrsGetQuaternion(&fusionAhrs));
 
-		//	eulerAngles.angle.yaw -= 90.0;
-
 		if (eulerAngles.angle.yaw < 0.0){
 			eulerAngles.angle.yaw *= -1.0;
-			//eulerAngles.angle.yaw -= 90.0;
 		}else{
 			eulerAngles.angle.yaw = 360.0 - eulerAngles.angle.yaw;
 		}
@@ -454,8 +376,6 @@ static THD_FUNCTION(bmx160_thread, arg) {
 		bmx160.yaw = eulerAngles.angle.yaw;
 		bmx160.pitch = eulerAngles.angle.pitch;
 		bmx160.roll = eulerAngles.angle.roll;
-		//eulerAngles.angle.yaw = 180.0 - eulerAngles.angle.yaw;
-
 	/*	chprintf(SHELL_IFACE, "Roll = %0.1f, Pitch = %0.1f, Yaw = %0.1f\r\n",
 				eulerAngles.angle.roll, eulerAngles.angle.pitch,
 				eulerAngles.angle.yaw);
@@ -479,26 +399,47 @@ static THD_FUNCTION(bmx160_calib_thread, arg) {
 
 
 	while (true) {
-/*
-		// Calling do calibration
-		bsx_get_calibrationcalltick(&calibtick);
-		//If calib tick is enabled, call do calibration
-		if(calibtick)
-		{
-			chprintf(SHELL_IFACE, "\r\n Calibraion  \r\n");
-		bsx_docalibration();
-		}else{*/
 			chThdSleepMilliseconds(2000);
 		}
 
 }
 
 /**
- *
+ * @brief BMX160 chip and fusion algorithm initialization
  * @return
  */
 int8_t bmx160_full_init(void) {
 	 /* Initialize your host interface to the BMI160 */
+
+	chThdSleepMilliseconds(2500);
+	s_input.accelspec = (BSX_U8 *) &bsxLibConfAcc;
+	s_input.magspec = (BSX_U8 *) &bsxLibConfMag;
+	s_input.gyrospec = (BSX_U8 *) &bsxLibConfGyro;
+	s_input.usecase = (BSX_U8 *) &bsxLibConf;
+
+	if (bsx_init(&s_input) == 0) {
+		chprintf(SHELL_IFACE, "\r\nBSX library initialized\r\n");
+		s_workingmodes.opMode = BSX_WORKINGMODE_NDOF_GEORV_FMC_OFF;
+		bsx_set_workingmode(&s_workingmodes);
+		//HWsensorSwitchList.acc
+		bsx_get_hwdependency(s_workingmodes, &HWsensorSwitchList);
+	} else {
+		chprintf(SHELL_IFACE, "\r\nBSX library NOT initialized\r\n");
+	}
+	bmx160_read_calib_from_eeprom(&bmx160);
+/*	hardIronBias.axis.x = bmx160.mag_offset.x;
+	hardIronBias.axis.y = bmx160.mag_offset.y;
+	hardIronBias.axis.z = bmx160.mag_offset.z;
+	*/
+	// Initialise gyroscope bias correction algorithm
+	FusionBiasInitialise(&fusionBias, 0.5f, samplePeriod); // stationary threshold = 0.5 degrees per second
+
+	// Initialise AHRS algorithm
+	FusionAhrsInitialise(&fusionAhrs, 1.5f); // gain = 0.5
+
+	// Set optional magnetic field limits
+	FusionAhrsSetMagneticField(&fusionAhrs, 20.0f, 70.0f); // valid magnetic field range = 20 uT to 70 uT
+
 
 	    /* This example uses I2C as the host interface */
 	    bmi.id = BMI160_I2C_ADDR;

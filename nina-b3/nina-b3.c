@@ -5,13 +5,7 @@
  *      Author: a-h
  */
 
-/**
- * @file    nina-b3.c
- * @brief   UBLOX NINA-B3 Driver funcs.
- *
- * @addtogroup NINA-B3
- * @{
- */
+
 
 #include "nina-b3.h"
 #include "config.h"

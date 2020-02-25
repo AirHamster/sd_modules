@@ -54,7 +54,6 @@
 **************************************************************************/
 /*! \file bno055.h
     \brief BNO055 Sensor Driver Support Header File 
-     * @defgroup BMM150 SENSOR API
      */
 
 #ifndef __BNO055_H__

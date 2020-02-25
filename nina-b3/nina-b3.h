@@ -6,13 +6,7 @@
  */
 
 
-/**
- * @file    nina-b3.h
- * @brief   Nina enums and structs.
- *
- * @addtogroup NINA-B3
- * @{
- */
+
 
 #ifndef SD_MODULES_NINA_B3_NINA_B3_H_
 #define SD_MODULES_NINA_B3_NINA_B3_H_
