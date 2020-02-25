@@ -1,6 +1,8 @@
 var group___b_m_x160 =
 [
     [ "bmx160_t", "structbmx160__t.html", [
+      [ "SD_Modules is a repository with code base for all sensors and devices used in SailData project.", "index.html#autotoc_md6", null ],
+      [ "Current modules:", "index.html#autotoc_md7", null ],
       [ "accel_data", "group___b_m_x160.html#ga8ae0d2298e924bdad2e70b353536ce6e", null ],
       [ "accelBias", "group___b_m_x160.html#gad9b8523cb349f7bbd3fa2ffa9c2c9d4b", null ],
       [ "accelCount", "group___b_m_x160.html#gaa4091ec1ee9493d157a37687bf5b0fef", null ],

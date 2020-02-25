@@ -41,7 +41,6 @@ digraph example {
     calib_req[label="BNO055_CALIB\nREQ"]
     calibration [label="BNO055_CALIB"]
     read [label="BNO055_READ\n10Hz"]
-    calculate[label="BNO055_CALC"]
     
     
     stop ->  init[label="\nstart_bmx160_module()", constraint=false];
@@ -52,7 +51,6 @@ digraph example {
     read->ready [label="\n"]
     calib_req -> calibration[label="bno055_start_calibration()"]
     calibration -> ready[label="bno055_save_calib_to_eeprom()"]
-       n7
 }
  * @enddot
  * @else
@@ -69,18 +67,16 @@ digraph example {
     calib_req[label="BNO055_CALIB\nREQ"]
     calibration [label="BNO055_CALIB"]
     read [label="BNO055_READ\n10Hz"]
-    calculate[label="BNO055_CALC"]
     
     
-    stop ->  init[label="\nstart_bmx160_module()", constraint=false];
+    stop ->  init[label="\nstart_bno055_module()", constraint=false];
     init-> ready [label="\nbno055_full_init()"];
    
     ready -> ready [label="if (bno055->static_calib == 1)\n bno055_apply_calib_to_chip()"]
     ready->read[label="bno055_read_euler()\nbno055_read_status\n"]
     read->ready [label="\n"]
-    calib_req -> calibration[label="bno055_start_calibration()"]
+    calib_req -> calibration[label="bno055_start_calibration()", constraint=false]
     calibration -> ready[label="bno055_save_calib_to_eeprom()"]
-       n7
 }
  * @enddot
  * @endif

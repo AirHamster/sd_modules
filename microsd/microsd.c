@@ -518,6 +518,10 @@ void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
 	chThdResume(&microsd_trp, (msg_t) MICROSD_WRITE_FILE); /* Resuming the thread with message.*/
 }
 
+/**
+ * @brief Print availible space
+ * @param chp Output stream
+ */
 static void get_free_space(BaseSequentialStream *chp) {
 	FRESULT err;
 
