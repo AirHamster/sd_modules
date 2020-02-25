@@ -1,0 +1,277 @@
+\hypertarget{bq27441_8h}{}\doxysection{bq27441/bq27441.h File Reference}
+\label{bq27441_8h}\index{bq27441/bq27441.h@{bq27441/bq27441.h}}
+
+
+Fuel gauge enums and structs.  
+
+
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}ch.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}hal.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}shell.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}chprintf.\+h\char`\"{}}\newline
+Include dependency graph for bq27441.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{bq27441_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=181pt]{bq27441_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structfuel__t}{fuel\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Common fuel gauge struct. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define {\bfseries F\+U\+E\+L\+\_\+\+A\+D\+D\+R\+E\+SS}~0x55
+\item 
+\#define {\bfseries B\+Q72441\+\_\+\+I2\+C\+\_\+\+T\+I\+M\+E\+O\+UT}~2000
+\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gac8178770c590a37967472b6f2212d5a4}{B\+Q27441\+\_\+\+U\+N\+S\+E\+A\+L\+\_\+\+K\+EY}}~0x8000
+\begin{DoxyCompactList}\small\item\em Secret code to unseal the B\+Q27441-\/\+G1A. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga98085c4798f8be86d6176b7cdb64fee8}{B\+Q27441\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+ID}}~0x0421
+\begin{DoxyCompactList}\small\item\em Default device ID. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga1820791fdba16289b23905c2b5da7188}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+C\+O\+N\+T\+R\+OL}}~0x00
+\begin{DoxyCompactList}\small\item\em Control() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gabfead4db8282c61a3509e551279f42d1}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+T\+E\+MP}}~0x02
+\begin{DoxyCompactList}\small\item\em Temperature() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga047588c1ba00770c221522e5570df706}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+V\+O\+L\+T\+A\+GE}}~0x04
+\begin{DoxyCompactList}\small\item\em Voltage() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga00b625a29e2cec9e9dcb674b8a766c92}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+F\+L\+A\+GS}}~0x06
+\begin{DoxyCompactList}\small\item\em Flags() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga2629dbdddef603bd9d35bffd219432fd}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+N\+O\+M\+\_\+\+C\+A\+P\+A\+C\+I\+TY}}~0x08
+\begin{DoxyCompactList}\small\item\em Nominal\+Available\+Capacity() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gab975def55dcf473206adabc8a38b3f55}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+A\+V\+A\+I\+L\+\_\+\+C\+A\+P\+A\+C\+I\+TY}}~0x0A
+\begin{DoxyCompactList}\small\item\em Full\+Available\+Capacity() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga8ee02243fa47924f09bfd81745b38438}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+R\+E\+M\+\_\+\+C\+A\+P\+A\+C\+I\+TY}}~0x0C
+\begin{DoxyCompactList}\small\item\em Remaining\+Capacity() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gab3d621e800f215118fa0ecd4e112b814}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+F\+U\+L\+L\+\_\+\+C\+A\+P\+A\+C\+I\+TY}}~0x0E
+\begin{DoxyCompactList}\small\item\em Full\+Charge\+Capacity() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga55abf20f23af6e036377b51d41c2d3d4}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+A\+V\+G\+\_\+\+C\+U\+R\+R\+E\+NT}}~0x10
+\begin{DoxyCompactList}\small\item\em Average\+Current() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga9275e3a57c26c8575c68a7bb2f088400}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+S\+T\+D\+B\+Y\+\_\+\+C\+U\+R\+R\+E\+NT}}~0x12
+\begin{DoxyCompactList}\small\item\em Standby\+Current() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gae809138b31dc9614f371945bf359fa92}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+M\+A\+X\+\_\+\+C\+U\+R\+R\+E\+NT}}~0x14
+\begin{DoxyCompactList}\small\item\em Max\+Load\+Current() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gab3d598de50317c92ba811b684e56690a}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+A\+V\+G\+\_\+\+P\+O\+W\+ER}}~0x18
+\begin{DoxyCompactList}\small\item\em Average\+Power() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga9ed5d2719d1c25c1d35cd6f7344f49fd}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+S\+OC}}~0x1C
+\begin{DoxyCompactList}\small\item\em State\+Of\+Charge() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga3fbc651c60e80e7e7728e52a964ad6ad}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+I\+N\+T\+\_\+\+T\+E\+MP}}~0x1E
+\begin{DoxyCompactList}\small\item\em Internal\+Temperature() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga70e8323d1cd9c62f6ce1d432de5cf887}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+S\+OH}}~0x20
+\begin{DoxyCompactList}\small\item\em State\+Of\+Health() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gaa03213cc1a11f1bd02ade9df79d94dab}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+R\+E\+M\+\_\+\+C\+A\+P\+\_\+\+U\+N\+FL}}~0x28
+\begin{DoxyCompactList}\small\item\em Remaining\+Capacity\+Unfiltered() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gaf0ee403ae2173493e168c03ff9430484}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+R\+E\+M\+\_\+\+C\+A\+P\+\_\+\+F\+IL}}~0x2A
+\begin{DoxyCompactList}\small\item\em Remaining\+Capacity\+Filtered() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gaf47cebc2996353d8ce951f07a678160e}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+F\+U\+L\+L\+\_\+\+C\+A\+P\+\_\+\+U\+N\+FL}}~0x2C
+\begin{DoxyCompactList}\small\item\em Full\+Charge\+Capacity\+Unfiltered() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga0eee4cb7405a10eaa3c03302f93f21c0}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+F\+U\+L\+L\+\_\+\+C\+A\+P\+\_\+\+F\+IL}}~0x2E
+\begin{DoxyCompactList}\small\item\em Full\+Charge\+Capacity\+Filtered() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gac64dd8585e570b152141ec0fc4045bde}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+S\+O\+C\+\_\+\+U\+N\+FL}}~0x30
+\begin{DoxyCompactList}\small\item\em State\+Of\+Charge\+Unfiltered() \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga459082183e34de5fc08c0d201814d130}{B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+T\+A\+T\+US}}~0x00
+\begin{DoxyCompactList}\small\item\em Issuing a Control() command requires a subsequent 2-\/byte subcommand. These additional bytes specify the particular control function desired. The Control() command allows the system to control specific features of the fuel gauge during normal operation and additional features when the device is in different access modes. \end{DoxyCompactList}\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+T\+Y\+PE}~0x01
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+F\+W\+\_\+\+V\+E\+R\+S\+I\+ON}~0x02
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+D\+M\+\_\+\+C\+O\+DE}~0x04
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+P\+R\+E\+V\+\_\+\+M\+A\+C\+W\+R\+I\+TE}~0x07
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+C\+H\+E\+M\+\_\+\+ID}~0x08
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+B\+A\+T\+\_\+\+I\+N\+S\+E\+RT}~0x0C
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+B\+A\+T\+\_\+\+R\+E\+M\+O\+VE}~0x0D
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+E\+T\+\_\+\+H\+I\+B\+E\+R\+N\+A\+TE}~0x11
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+C\+L\+E\+A\+R\+\_\+\+H\+I\+B\+E\+R\+N\+A\+TE}~0x12
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+E\+T\+\_\+\+C\+F\+G\+U\+P\+D\+A\+TE}~0x13
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+H\+U\+T\+D\+O\+W\+N\+\_\+\+E\+N\+A\+B\+LE}~0x1B
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+H\+U\+T\+D\+O\+WN}~0x1C
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+E\+A\+L\+ED}~0x20
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+P\+U\+L\+S\+E\+\_\+\+S\+O\+C\+\_\+\+I\+NT}~0x23
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+R\+E\+S\+ET}~0x41
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+O\+F\+T\+\_\+\+R\+E\+S\+ET}~0x42
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+E\+X\+I\+T\+\_\+\+C\+F\+G\+U\+P\+D\+A\+TE}~0x43
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+E\+X\+I\+T\+\_\+\+R\+E\+S\+IM}~0x44
+\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gacb63d9ccc7983b9446cf7672f90a9db6}{B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+S\+H\+U\+T\+D\+O\+W\+N\+EN}}~(1$<$$<$15)
+\begin{DoxyCompactList}\small\item\em Bit positions for the 16-\/bit data of C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+T\+A\+T\+US. C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+T\+A\+T\+US instructs the fuel gauge to return status information to Control() addresses 0x00 and 0x01. The read-\/only status word contains status bits that are set or cleared either automatically as conditions warrant or through using specified subcommands. \end{DoxyCompactList}\item 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+W\+D\+R\+E\+S\+ET}~(1$<$$<$14)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+SS}~(1$<$$<$13)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+C\+A\+L\+M\+O\+DE}~(1$<$$<$12)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+C\+CA}~(1$<$$<$11)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+B\+CA}~(1$<$$<$10)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+Q\+M\+A\+X\+\_\+\+UP}~(1$<$$<$9)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+R\+E\+S\+\_\+\+UP}~(1$<$$<$8)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+I\+N\+I\+T\+C\+O\+MP}~(1$<$$<$7)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+H\+I\+B\+E\+R\+N\+A\+TE}~(1$<$$<$6)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+S\+L\+E\+EP}~(1$<$$<$4)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+L\+D\+MD}~(1$<$$<$3)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+R\+U\+P\+\_\+\+D\+IS}~(1$<$$<$2)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+V\+OK}~(1$<$$<$1)
+\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga4d2d75c15c694a70adc6bf7351bdf442}{B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+OT}}~(1$<$$<$15)
+\begin{DoxyCompactList}\small\item\em Bit positions for the 16-\/bit data of Flags() This read-\/word function returns the contents of the fuel gauging status register, depicting the current operating status. \end{DoxyCompactList}\item 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+UT}~(1$<$$<$14)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+FC}~(1$<$$<$9)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+C\+HG}~(1$<$$<$8)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+O\+C\+V\+T\+A\+K\+EN}~(1$<$$<$7)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+I\+T\+P\+OR}~(1$<$$<$5)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+C\+F\+G\+U\+P\+M\+O\+DE}~(1$<$$<$4)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+B\+A\+T\+\_\+\+D\+ET}~(1$<$$<$3)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+S\+O\+C1}~(1$<$$<$2)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+S\+O\+CF}~(1$<$$<$1)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+D\+SG}~(1$<$$<$0)
+\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga5c726a8382e03766d2765a0a403d5ac6}{B\+Q27441\+\_\+\+E\+X\+T\+E\+N\+D\+E\+D\+\_\+\+O\+P\+C\+O\+N\+F\+IG}}~0x3A
+\begin{DoxyCompactList}\small\item\em Extended data commands offer additional functionality beyond the standard set of commands. They are used in the same manner; however, unlike standard commands, extended commands are not limited to 2-\/byte words. \end{DoxyCompactList}\item 
+\#define {\bfseries B\+Q27441\+\_\+\+E\+X\+T\+E\+N\+D\+E\+D\+\_\+\+C\+A\+P\+A\+C\+I\+TY}~0x3C
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+E\+X\+T\+E\+N\+D\+E\+D\+\_\+\+D\+A\+T\+A\+C\+L\+A\+SS}~0x3E
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+E\+X\+T\+E\+N\+D\+E\+D\+\_\+\+D\+A\+T\+A\+B\+L\+O\+CK}~0x3F
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+E\+X\+T\+E\+N\+D\+E\+D\+\_\+\+B\+L\+O\+C\+K\+D\+A\+TA}~0x40
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+E\+X\+T\+E\+N\+D\+E\+D\+\_\+\+C\+H\+E\+C\+K\+S\+UM}~0x60
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+E\+X\+T\+E\+N\+D\+E\+D\+\_\+\+C\+O\+N\+T\+R\+OL}~0x61
+\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gaf2181ae708bf14a8b820c780effecca8}{B\+Q27441\+\_\+\+I\+D\+\_\+\+S\+A\+F\+E\+TY}}~2
+\begin{DoxyCompactList}\small\item\em To access a subclass of the extended data, set the Data\+Class() function with one of these values. Configuration Classes. \end{DoxyCompactList}\item 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+C\+H\+G\+\_\+\+T\+E\+R\+M\+I\+N\+A\+T\+I\+ON}~36
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+C\+O\+N\+F\+I\+G\+\_\+\+D\+A\+TA}~48
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+D\+I\+S\+C\+H\+A\+R\+GE}~49
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+R\+E\+G\+I\+S\+T\+E\+RS}~64
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+P\+O\+W\+ER}~68
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+I\+T\+\_\+\+C\+FG}~80
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+C\+U\+R\+R\+E\+N\+T\+\_\+\+T\+H\+R\+E\+SH}~81
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+S\+T\+A\+TE}~82
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+R\+\_\+\+A\+\_\+\+R\+AM}~89
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+C\+A\+L\+I\+B\+\_\+\+D\+A\+TA}~104
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+C\+C\+\_\+\+C\+AL}~105
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+C\+U\+R\+R\+E\+NT}~107
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+C\+O\+D\+ES}~112
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+O\+P\+C\+O\+N\+F\+I\+G\+\_\+\+B\+IE}~(1$<$$<$13)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+O\+P\+C\+O\+N\+F\+I\+G\+\_\+\+B\+I\+\_\+\+P\+U\+\_\+\+EN}~(1$<$$<$12)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+O\+P\+C\+O\+N\+F\+I\+G\+\_\+\+G\+P\+I\+O\+P\+OL}~(1$<$$<$11)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+O\+P\+C\+O\+N\+F\+I\+G\+\_\+\+S\+L\+E\+EP}~(1$<$$<$5)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+O\+P\+C\+O\+N\+F\+I\+G\+\_\+\+R\+M\+F\+CC}~(1$<$$<$4)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+O\+P\+C\+O\+N\+F\+I\+G\+\_\+\+B\+A\+T\+L\+O\+W\+EN}~(1$<$$<$2)
+\item 
+\#define {\bfseries B\+Q27441\+\_\+\+O\+P\+C\+O\+N\+F\+I\+G\+\_\+\+T\+E\+M\+PS}~(1$<$$<$0)
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga4a3045c4f8fa36493b2bdd5515583c33}{current\+\_\+measure}} \{ \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gga4a3045c4f8fa36493b2bdd5515583c33ac5fc183b66f3ffdfb243c13f4aa5804d}{A\+VG}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gga4a3045c4f8fa36493b2bdd5515583c33afa030687230b171d0c8e5d2d01b53125}{S\+T\+BY}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gga4a3045c4f8fa36493b2bdd5515583c33ad7e097bda6d981de2520f49fe74c25b7}{M\+AX}}
+ \}
+\begin{DoxyCompactList}\small\item\em Parameters for the current() function, to specify which current to read. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gac13050dc6d06b0eb3ef60c25f0b97fb3}{capacity\+\_\+measure}} \{ \newline
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a9d0f77e212f09b235a4836963971acb8}{R\+E\+M\+A\+IN}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3ad08f8ac0aa8dfb59589824359772459e}{F\+U\+LL}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a5ae828a29265ba41a48a2f5af7c80267}{A\+V\+A\+IL}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a8f6e3d11fd3467605206259bcb3000c4}{A\+V\+A\+I\+L\+\_\+\+F\+U\+LL}}, 
+\newline
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a5c052d9121cd9b9873485763e4e19c14}{R\+E\+M\+A\+I\+N\+\_\+F}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a8e7fed8549d61c03d2f3cef60c156dea}{R\+E\+M\+A\+I\+N\+\_\+\+UF}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a2e4a702bf647b7d09a78d6a32fcce2c4}{F\+U\+L\+L\+\_\+F}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a8de4dd0793db7ed559bddfb05c8765a0}{F\+U\+L\+L\+\_\+\+UF}}, 
+\newline
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a058ddfdfb3dd989380a646a626964dff}{D\+E\+S\+I\+GN}}
+ \}
+\begin{DoxyCompactList}\small\item\em Parameters for the capacity() function, to specify which capacity to read. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga5f9d2345468cfba4790747a48dca56a4}{soc\+\_\+measure}} \{ \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gga5f9d2345468cfba4790747a48dca56a4ab0f4e80b9200bdfca611883a5bb2cecb}{F\+I\+L\+T\+E\+R\+ED}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gga5f9d2345468cfba4790747a48dca56a4add168049b0395007bbd12df482d2b324}{U\+N\+F\+I\+L\+T\+E\+R\+ED}}
+ \}
+\begin{DoxyCompactList}\small\item\em Parameters for the soc() function. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gaa25a8d7c0af5a99de0032a23951eb8ef}{soh\+\_\+measure}} \{ \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggaa25a8d7c0af5a99de0032a23951eb8efa322ad1169a1de4a422a8447783954022}{P\+E\+R\+C\+E\+NT}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggaa25a8d7c0af5a99de0032a23951eb8efa500cbd627d6c1197e4840aebc709786b}{S\+O\+H\+\_\+\+S\+T\+AT}}
+ \}
+\begin{DoxyCompactList}\small\item\em Parameters for the soh() function. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gabc57e50577a11022929a32a2d9061ecf}{temp\+\_\+measure}} \{ \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggabc57e50577a11022929a32a2d9061ecfabed030efadd25858cf02b8abd31905bb}{B\+A\+T\+T\+E\+RY}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggabc57e50577a11022929a32a2d9061ecfaa3f160deafaa5d57c0a81071a97e5cb7}{I\+N\+T\+E\+R\+N\+A\+L\+\_\+\+T\+E\+MP}}
+ \}
+\begin{DoxyCompactList}\small\item\em Parameters for the temperature() function. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga44912811ea7b78f6bfd3162117b47e79}{gpout\+\_\+function}} \{ \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gga44912811ea7b78f6bfd3162117b47e79aacdc1b5bfbc6301a4528f0b5df3213ff}{S\+O\+C\+\_\+\+I\+NT}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gga44912811ea7b78f6bfd3162117b47e79a9ccc5db26756ac5efd9d9cee4fdef074}{B\+A\+T\+\_\+\+L\+OW}}
+ \}
+\begin{DoxyCompactList}\small\item\em Parameters for the set\+G\+P\+O\+U\+T\+Function() funciton. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gae01cc19653b278defef364afc6ac3b7c}{start\+\_\+fuel\+\_\+gauge\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Start fuel gauge threads. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Fuel gauge enums and structs. 
+

@@ -1,0 +1,27 @@
+\hypertarget{group___s_p_i}{}\doxysection{S\+PI Driver}
+\label{group___s_p_i}\index{SPI Driver@{SPI Driver}}
+
+
+Generic S\+PI Driver.  
+
+
+Collaboration diagram for S\+PI Driver\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=261pt]{group___s_p_i}
+\end{center}
+\end{figure}
+Generic S\+PI Driver. 
+
+This module implements a generic S\+PI (Serial Peripheral Interface) driver allowing bidirectional and monodirectional transfers, complex atomic transactions are supported as well. \begin{DoxyPrecond}{Precondition}
+In order to use the S\+PI driver the {\ttfamily H\+A\+L\+\_\+\+U\+S\+E\+\_\+\+S\+PI} option must be enabled in {\ttfamily halconf.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___s_p_i_spi_1}{}\doxysubsection{Driver State Machine}\label{group___s_p_i_spi_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_12}}
+\end{DoxyImageNoCaption}
+
+
+The driver is not thread safe for performance reasons, if you need to access the S\+PI bus from multiple threads then use the {\ttfamily spi\+Acquire\+Bus()} and {\ttfamily spi\+Release\+Bus()} A\+P\+Is in order to gain exclusive access. 

@@ -1,0 +1,19 @@
+\hypertarget{group___t_e_n_s_o}{}\doxysection{Tenso sensor Driver}
+\label{group___t_e_n_s_o}\index{Tenso sensor Driver@{Tenso sensor Driver}}
+
+
+Tenso sensor driver.  
+
+
+Tenso sensor driver. 
+
+Detail will be writen soon \begin{DoxyPrecond}{Precondition}
+In order to use the A\+DC driver the {\ttfamily U\+S\+E\+\_\+\+T\+E\+N\+S\+O\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___t_e_n_s_o_shell_1}{}\doxysubsection{Stateflow}\label{group___t_e_n_s_o_shell_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_14}}
+\end{DoxyImageNoCaption}
+\hypertarget{group___t_e_n_s_o_shell_2}{}\doxysubsection{Shell operations}\label{group___t_e_n_s_o_shell_2}
+The A\+DC driver is quite complex, an explanation of the terminology and of the operational details follows. 

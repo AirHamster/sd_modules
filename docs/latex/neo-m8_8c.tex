@@ -1,0 +1,143 @@
+\hypertarget{neo-m8_8c}{}\doxysection{neo-\/m8/neo-\/m8.c File Reference}
+\label{neo-m8_8c}\index{neo-\/m8/neo-\/m8.c@{neo-\/m8/neo-\/m8.c}}
+
+
+U\+B\+L\+OX N\+E\+O-\/\+M8 Driver funcs.  
+
+
+{\ttfamily \#include \char`\"{}neo-\/m8.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+Include dependency graph for neo-\/m8.c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{neo-m8_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static {\bfseries neo\+\_\+init\+\_\+module} (void)
+\item 
+static {\bfseries T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA} (coords\+\_\+thread\+\_\+wa, 4096)
+\item 
+static \mbox{\hyperlink{group___n_e_o-_m8_ga1efb0d69e1fb5804e6542f41834d7811}{T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON}} (coords\+\_\+thread, arg)
+\begin{DoxyCompactList}\small\item\em Thread to process data collection and filtering from N\+E\+O-\/\+M8P. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga1675d0680954d3cc838fcb664b5f0ec6}{start\+\_\+gps\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Start navigation threads. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gac8a5523a1cd9ad31d85fbf284221f3eb}{neo\+\_\+write}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint8\+\_\+t $\ast$txbuff, uint8\+\_\+t len)
+\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gac7adc4ceacd3c4a00a1f7e2d8ff1f0b2}{neo\+\_\+write\+\_\+no\+\_\+cs}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint8\+\_\+t $\ast$txbuff, uint8\+\_\+t len)
+\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gaf17842b28d0e4080e3487ccee88b6ad8}{neo\+\_\+read\+\_\+bytes}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint16\+\_\+t num, uint8\+\_\+t $\ast$rxbuf)
+\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gaf6cd233aff28de06b91710b4f3bd27b5}{neo\+\_\+read\+\_\+bytes\+\_\+no\+\_\+cs}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint16\+\_\+t num, uint8\+\_\+t $\ast$rxbuf)
+\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga52c2c574c486dc22192a81fa0511c0f6}{neo\+\_\+read\+\_\+bytes\+\_\+release\+\_\+cs}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint16\+\_\+t num, uint8\+\_\+t $\ast$rxbuf)
+\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga8438c02d0fe82316aa196dde63141b73}{neo\+\_\+create\+\_\+poll\+\_\+request}} (uint8\+\_\+t class, uint8\+\_\+t id)
+\begin{DoxyCompactList}\small\item\em Send polling request to neo-\/m8. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga42ad92d8106392d1ad324957137f086d}{neo\+\_\+switch\+\_\+to\+\_\+ubx}} (void)
+\begin{DoxyCompactList}\small\item\em Switching to U\+BX protocol procedure. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga6925d8844a50b2f5fb050678d8221bd9}{neo\+\_\+apply\+\_\+header}} (uint8\+\_\+t $\ast$buffer, uint16\+\_\+t header)
+\begin{DoxyCompactList}\small\item\em Low-\/level packet forming A\+PI, header loading. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga8fd7a663cae8ffac9d94e62ec4c1f086}{neo\+\_\+apply\+\_\+class}} (uint8\+\_\+t $\ast$buffer, uint8\+\_\+t class)
+\begin{DoxyCompactList}\small\item\em Low-\/level packet forming A\+PI, class loading. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gaee8e26c15d0d16b08c337fb24a8a315b}{neo\+\_\+apply\+\_\+id}} (uint8\+\_\+t $\ast$buffer, uint8\+\_\+t id)
+\begin{DoxyCompactList}\small\item\em Low-\/level packet forming A\+PI, ID loading. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga298ba864057ae52e5ce479738f4f8da7}{neo\+\_\+apply\+\_\+length}} (uint8\+\_\+t $\ast$buffer, uint8\+\_\+t len)
+\begin{DoxyCompactList}\small\item\em Low-\/level packet forming A\+PI, length loading, little-\/endian. \end{DoxyCompactList}\item 
+uint16\+\_\+t \mbox{\hyperlink{group___n_e_o-_m8_ga07fa3d6c5e9ff5a076ae6a582d5094ca}{neo\+\_\+calc\+\_\+crc}} (uint8\+\_\+t $\ast$buffer, uint16\+\_\+t len)
+\item 
+void {\bfseries neo\+\_\+write\+\_\+struct} (uint8\+\_\+t $\ast$strc, uint8\+\_\+t class, uint8\+\_\+t id, uint8\+\_\+t payload\+\_\+len)
+\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga13afd9ff96ecc8c0541037ada46da4d7}{neo\+\_\+set\+\_\+pvt\+\_\+1hz}} ()
+\begin{DoxyCompactList}\small\item\em Setting ooutput P\+VT rate to 1 HZ. \end{DoxyCompactList}\item 
+void {\bfseries neo\+\_\+poll\+\_\+prt} (void)
+\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gab69520ba8c40a6a423b51c4bf3961998}{neo\+\_\+process\+\_\+nav}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing N\+AV class message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga5e77b1ffc8b424881298912f9ffae94a}{neo\+\_\+process\+\_\+odo}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing odometer message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga67811202470049b8b04eb11bb79eb62c}{neo\+\_\+process\+\_\+cfg\+\_\+odo}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing C\+FG odometer message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gaedd148f5fc5f0b66de9e263fb647d0fb}{neo\+\_\+process\+\_\+nav5}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing N\+A\+V5 message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga1ad5b612401dbdcbe43c34bc4bb5867e}{neo\+\_\+process\+\_\+rate}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing rate message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga34f707f1b981d30b364fd9bf8d25d95f}{neo\+\_\+process\+\_\+sbas}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing \mbox{\hyperlink{struct_s_b_a_s}{S\+B\+AS}} message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga206cfab5c4456a4e03aa1fb0c1002410}{neo\+\_\+process\+\_\+pvt}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing P\+VT message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga0cf12bd1b0d078269904073bac00267d}{neo\+\_\+process\+\_\+ack}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing A\+CK message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga075ec88b7467bf5a714b8f80d3fbce7c}{neo\+\_\+process\+\_\+cfg}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing C\+FG class message. \end{DoxyCompactList}\item 
+void {\bfseries neo\+\_\+process\+\_\+inf} (uint8\+\_\+t $\ast$message)
+\item 
+void {\bfseries neo\+\_\+process\+\_\+rxm} (uint8\+\_\+t $\ast$message)
+\item 
+void {\bfseries neo\+\_\+process\+\_\+sec} (uint8\+\_\+t $\ast$message)
+\item 
+void {\bfseries neo\+\_\+process\+\_\+tim} (uint8\+\_\+t $\ast$message)
+\item 
+void {\bfseries neo\+\_\+process\+\_\+upd} (uint8\+\_\+t $\ast$message)
+\item 
+void {\bfseries neo\+\_\+process\+\_\+esf} (uint8\+\_\+t $\ast$message)
+\item 
+void {\bfseries neo\+\_\+process\+\_\+aid} (uint8\+\_\+t $\ast$message)
+\item 
+void {\bfseries neo\+\_\+process\+\_\+mon} (uint8\+\_\+t $\ast$message)
+\item 
+void {\bfseries neo\+\_\+process\+\_\+hnr} (uint8\+\_\+t $\ast$message)
+\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga8cc90f552e6d393f9e254875ef12a387}{neo\+\_\+poll}} (void)
+\begin{DoxyCompactList}\small\item\em Polling procedure. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gafbf792d5e99d6c48c805bb68c2a860df}{neo\+\_\+cp\+\_\+to\+\_\+struct}} (uint8\+\_\+t $\ast$msg, uint8\+\_\+t $\ast$strc, uint8\+\_\+t len)
+\begin{DoxyCompactList}\small\item\em Copy data from recieved message to struct. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+struct ch\+\_\+semaphore {\bfseries spi2\+\_\+semaph}
+\item 
+static \mbox{\hyperlink{structubx__cfg__sbas__t}{ubx\+\_\+cfg\+\_\+sbas\+\_\+t}} {\bfseries sbas}
+\item 
+\mbox{\hyperlink{structubx__cfg__sbas__t}{ubx\+\_\+cfg\+\_\+sbas\+\_\+t}} $\ast$ {\bfseries sbas\+\_\+box} = \&sbas
+\item 
+\mbox{\hyperlink{structubx__nav__pvt__t}{ubx\+\_\+nav\+\_\+pvt\+\_\+t}} $\ast$ {\bfseries pvt\+\_\+box}
+\item 
+static \mbox{\hyperlink{structubx__cfg__nav5__t}{ubx\+\_\+cfg\+\_\+nav5\+\_\+t}} {\bfseries nav5}
+\item 
+\mbox{\hyperlink{structubx__cfg__nav5__t}{ubx\+\_\+cfg\+\_\+nav5\+\_\+t}} $\ast$ {\bfseries nav5\+\_\+box} = \&nav5
+\item 
+static \mbox{\hyperlink{structubx__cfg__pm2}{ubx\+\_\+cfg\+\_\+pm2}} {\bfseries pm2}
+\item 
+\mbox{\hyperlink{structubx__cfg__pm2}{ubx\+\_\+cfg\+\_\+pm2}} $\ast$ {\bfseries pm2\+\_\+box} = \&pm2
+\item 
+static \mbox{\hyperlink{structneo__struct__t}{neo\+\_\+struct\+\_\+t}} {\bfseries neo\+\_\+struct}
+\item 
+\mbox{\hyperlink{structneo__struct__t}{neo\+\_\+struct\+\_\+t}} $\ast$ {\bfseries neo} = \&neo\+\_\+struct
+\item 
+static \mbox{\hyperlink{structubx__cfg__odo__t}{ubx\+\_\+cfg\+\_\+odo\+\_\+t}} {\bfseries cfg\+\_\+odo\+\_\+struct}
+\item 
+\mbox{\hyperlink{structubx__cfg__odo__t}{ubx\+\_\+cfg\+\_\+odo\+\_\+t}} $\ast$ {\bfseries cfg\+\_\+odo\+\_\+box} = \&cfg\+\_\+odo\+\_\+struct
+\item 
+static \mbox{\hyperlink{structubx__nav__odo__t}{ubx\+\_\+nav\+\_\+odo\+\_\+t}} {\bfseries nav\+\_\+odo\+\_\+struct}
+\item 
+\mbox{\hyperlink{structubx__nav__odo__t}{ubx\+\_\+nav\+\_\+odo\+\_\+t}} $\ast$ {\bfseries odo\+\_\+box} = \&nav\+\_\+odo\+\_\+struct
+\item 
+static \mbox{\hyperlink{structubx__cfg__rate__t}{ubx\+\_\+cfg\+\_\+rate\+\_\+t}} {\bfseries rate\+\_\+struct}
+\item 
+\mbox{\hyperlink{structubx__cfg__rate__t}{ubx\+\_\+cfg\+\_\+rate\+\_\+t}} $\ast$ {\bfseries rate\+\_\+box} = \&rate\+\_\+struct
+\item 
+static const S\+P\+I\+Config {\bfseries neo\+\_\+spi\+\_\+cfg}
+\item 
+thread\+\_\+reference\+\_\+t {\bfseries coords\+\_\+trp} = N\+U\+LL
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+U\+B\+L\+OX N\+E\+O-\/\+M8 Driver funcs. 
+

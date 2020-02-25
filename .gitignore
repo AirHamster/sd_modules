@@ -2,7 +2,6 @@
 .settings/
 build/
 debug/
-doc/
 # Prerequisites
 *.d
 

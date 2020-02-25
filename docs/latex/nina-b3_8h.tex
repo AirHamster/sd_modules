@@ -1,0 +1,139 @@
+\hypertarget{nina-b3_8h}{}\doxysection{nina-\/b3/nina-\/b3.h File Reference}
+\label{nina-b3_8h}\index{nina-\/b3/nina-\/b3.h@{nina-\/b3/nina-\/b3.h}}
+
+
+Nina enums and structs.  
+
+
+{\ttfamily \#include \char`\"{}stdint.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}ch.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}hal.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+Include dependency graph for nina-\/b3.h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=308pt]{nina-b3_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=171pt]{nina-b3_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structble__peer__t}{ble\+\_\+peer\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Peer properties. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structble__charac__t}{ble\+\_\+charac\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Internal characteristic properties. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structble__remote__charac__t}{ble\+\_\+remote\+\_\+charac\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Remote device characteristic properties. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structble__remote__t}{ble\+\_\+remote\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Remote device connection properties. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structble__remote__peer__t}{ble\+\_\+remote\+\_\+peer\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Remote peer connection properties. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structble__temp__charac__t}{ble\+\_\+temp\+\_\+charac\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define {\bfseries N\+I\+N\+A\+\_\+\+S\+U\+C\+C\+E\+SS}~1
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+O\+B\+S\+E\+R\+V\+E\+\_\+\+EV}~0
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+D\+A\+T\+A\+\_\+\+T\+X\+\_\+\+EV}~1
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+R\+E\+M\+O\+T\+E\+\_\+\+C\+F\+G\+\_\+\+EV}~2
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+D\+E\+V\+\_\+\+T\+Y\+P\+E\+\_\+\+L\+OG}~1
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+D\+E\+V\+\_\+\+T\+Y\+P\+E\+\_\+\+R\+DR}~2
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+D\+E\+V\+\_\+\+T\+Y\+P\+E\+\_\+\+T\+E\+N\+SO}~3
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+P\+O\+W\+E\+R\+\_\+\+S\+W\+I\+T\+C\+H\+E\+D\+\_\+\+O\+N\+\_\+\+EV}~4
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+P\+O\+W\+E\+R\+\_\+\+S\+W\+I\+T\+C\+H\+E\+D\+\_\+\+O\+F\+F\+\_\+\+EV}~5
+\item 
+\#define {\bfseries N\+U\+M\+\_\+\+O\+F\+\_\+\+R\+E\+M\+O\+T\+E\+\_\+\+D\+EV}~6
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+R\+D\+R\+\_\+\+A\+D\+DR}~\char`\"{}D4\+C\+A6\+E\+B\+A\+F\+D\+A0\char`\"{}
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+L\+O\+G\+\_\+\+A\+D\+DR}~\char`\"{}D4\+C\+A6\+E\+B91\+D\+D3\char`\"{}
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O1\+\_\+\+A\+D\+DR}~\char`\"{}D4\+C\+A6\+E\+B91\+D01\char`\"{}
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O2\+\_\+\+A\+D\+DR}~\char`\"{}D4\+C\+A6\+E\+B91\+D02\char`\"{}
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O3\+\_\+\+A\+D\+DR}~\char`\"{}D4\+C\+A6\+E\+B91\+D03\char`\"{}
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O4\+\_\+\+A\+D\+DR}~\char`\"{}D4\+C\+A6\+E\+B91\+D04\char`\"{}
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+R\+D\+R\+\_\+\+A\+S\+C\+I\+I\+\_\+\+N\+A\+ME}~\char`\"{}R\+E\+M\+O\+T\+E\+\_\+\+R\+U\+D\+D\+ER\char`\"{}
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+L\+O\+G\+\_\+\+A\+S\+C\+I\+I\+\_\+\+N\+A\+ME}~\char`\"{}R\+E\+M\+O\+T\+E\+\_\+\+L\+OG\char`\"{}
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O1\+\_\+\+A\+S\+C\+I\+I\+\_\+\+N\+A\+ME}~\char`\"{}R\+E\+M\+O\+T\+E\+\_\+\+T\+E\+N\+S\+O\+\_\+1\char`\"{}
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O2\+\_\+\+A\+S\+C\+I\+I\+\_\+\+N\+A\+ME}~\char`\"{}R\+E\+M\+O\+T\+E\+\_\+\+T\+E\+N\+S\+O\+\_\+2\char`\"{}
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O3\+\_\+\+A\+S\+C\+I\+I\+\_\+\+N\+A\+ME}~\char`\"{}R\+E\+M\+O\+T\+E\+\_\+\+T\+E\+N\+S\+O\+\_\+3\char`\"{}
+\item 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O4\+\_\+\+A\+S\+C\+I\+I\+\_\+\+N\+A\+ME}~\char`\"{}R\+E\+M\+O\+T\+E\+\_\+\+T\+E\+N\+S\+O\+\_\+4\char`\"{}
+\item 
+\#define {\bfseries N\+U\+M\+\_\+\+O\+F\+\_\+\+C\+H\+A\+R\+A\+C\+TS}~10
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga192383caa2b3b61fa0d348083a6d655a}{start\+\_\+ble\+\_\+module}} (void)
+\item 
+void {\bfseries nina\+\_\+send\+\_\+at} (void)
+\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga1f16f27f701f5594ec60ea9569512fea}{nina\+\_\+init\+\_\+module}} (void)
+\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga5a2ebc11db1ec63e9001baa15a9b9a74}{nina\+\_\+fill\+\_\+memory}} (void)
+\begin{DoxyCompactList}\small\item\em Allocate memory for B\+LE structs. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga029f182f3676638abcccbc9b8a126082}{nina\+\_\+send\+\_\+all}} (\mbox{\hyperlink{structble__peer__t}{ble\+\_\+peer\+\_\+t}} $\ast$peer)
+\begin{DoxyCompactList}\small\item\em Sends all data to peer. \end{DoxyCompactList}\item 
+void {\bfseries nina\+\_\+send\+\_\+two} (void)
+\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga2bdddcb86a068bf37dbb17563f551fac}{nina\+\_\+register\+\_\+peer}} (uint8\+\_\+t conn\+\_\+handle, uint8\+\_\+t type, int8\+\_\+t $\ast$addr)
+\begin{DoxyCompactList}\small\item\em Register new peer connection. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_gacf5434f105b931b30ceb0895abccf5a4}{nina\+\_\+unregister\+\_\+peer}} (\mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} $\ast$devlist, uint8\+\_\+t conn\+\_\+handle)
+\begin{DoxyCompactList}\small\item\em Process peer disconnection event. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga9977a7c0f6e1804f237f5e7a182a2055}{nina\+\_\+notify}} (\mbox{\hyperlink{structble__charac__t}{ble\+\_\+charac\+\_\+t}} $\ast$ble\+\_\+rudder, int32\+\_\+t val)
+\begin{DoxyCompactList}\small\item\em Send notification to client device. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga5cbdc2b1d4bc417426ad9cf2c34516f6}{nina\+\_\+connect}} (uint8\+\_\+t $\ast$addr, uint8\+\_\+t type)
+\begin{DoxyCompactList}\small\item\em Connecting request to remote device. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_gad06cb57ca45f03352a21883de42fa2a3}{nina\+\_\+register\+\_\+remote\+\_\+dev}} (\mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} $\ast$devlist, uint8\+\_\+t conn\+\_\+handle, uint8\+\_\+t type, int8\+\_\+t $\ast$addr)
+\begin{DoxyCompactList}\small\item\em Register new connection. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga800caba0d2760d163adacdfad82a8ab5}{nina\+\_\+unregister\+\_\+remote\+\_\+dev}} (uint8\+\_\+t conn\+\_\+handle)
+\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_gacb0ec93387bb4c605d7fb0bce3f4e894}{nina\+\_\+get\+\_\+remote\+\_\+characs}} (uint16\+\_\+t handle, uint16\+\_\+t uuid)
+\begin{DoxyCompactList}\small\item\em Request remote device characteristics. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga7277e1cf415320f033a8a5bed82f0a2f}{nina\+\_\+parse\+\_\+notification}} (uint8\+\_\+t conn\+\_\+handle, uint8\+\_\+t val\+\_\+handle, uint32\+\_\+t value)
+\begin{DoxyCompactList}\small\item\em Parsing notification. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{group___n_i_n_a-_b3_ga0bda1f1b07299b3a12d87329519f3bc2}{nina\+\_\+parse\+\_\+command}} (int8\+\_\+t $\ast$strp)
+\begin{DoxyCompactList}\small\item\em Parsing strings from Nina\textquotesingle{}s U\+S\+A\+RT iface. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{group___n_i_n_a-_b3_ga2185f3750c2428c9362a7754e31fdc52}{nina\+\_\+init\+\_\+services}} (void)
+\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_gafb5584863bc39e9e49ada4c14cc457e6}{copy\+\_\+to\+\_\+ble}} (void)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___n_i_n_a-_b3_gad7a5cfeff7bbe72aba0e7b4a21c0d574}{nina\+\_\+wait\+\_\+response}} (int8\+\_\+t $\ast$at\+\_\+command)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___n_i_n_a-_b3_ga6823bc17be2aa9d10cdb13c9bc89f811}{nina\+\_\+init\+\_\+devices}} (\mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} $\ast$devlist)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___n_i_n_a-_b3_ga6a2104cf103f6dcc564b7c2a0eb7b71e}{nina\+\_\+compare\+\_\+founded\+\_\+dev}} (uint8\+\_\+t $\ast$strp, \mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} $\ast$devlist)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Nina enums and structs. 
+

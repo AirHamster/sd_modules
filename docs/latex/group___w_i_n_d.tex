@@ -1,0 +1,19 @@
+\hypertarget{group___w_i_n_d}{}\doxysection{Windsensor Driver}
+\label{group___w_i_n_d}\index{Windsensor Driver@{Windsensor Driver}}
+
+
+Windsensor with S\+D-\/12 interface driver.  
+
+
+Windsensor with S\+D-\/12 interface driver. 
+
+Detail will be writen soon \begin{DoxyPrecond}{Precondition}
+In order to use the A\+DC driver the {\ttfamily U\+S\+E\+\_\+\+W\+I\+N\+D\+S\+E\+N\+S\+O\+R\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___w_i_n_d_wind_1}{}\doxysubsection{Stateflow}\label{group___w_i_n_d_wind_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_15}}
+\end{DoxyImageNoCaption}
+\hypertarget{group___w_i_n_d_wind_2}{}\doxysubsection{A\+D\+C Operations}\label{group___w_i_n_d_wind_2}
+The A\+DC driver is quite complex, an explanation of the terminology and of the operational details follows. 
