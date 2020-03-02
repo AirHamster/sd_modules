@@ -5,6 +5,13 @@
  *      Author: a-h
  */
 
+/**
+ * @file    pwr_mgmt_l4.c
+ * @brief   Power management driver funcs.
+ *
+ * @addtogroup PWR
+ * @{
+ */
 
 #include "config.h"
 #include <hal.h>

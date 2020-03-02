@@ -1,0 +1,110 @@
+\hypertarget{group___p_w_r}{}\doxysection{Power Management Driver}
+\label{group___p_w_r}\index{Power Management Driver@{Power Management Driver}}
+
+
+L4 power management with deep sleep mode driver.  
+
+
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___p_w_r_gac22467ff31bd139749f433b57ec2e92d}\label{group___p_w_r_gac22467ff31bd139749f433b57ec2e92d}} 
+enum {\bfseries dcdc\+\_\+enum} \{ \newline
+{\bfseries D\+C\+D\+C\+\_\+\+O\+FF} = 0, 
+{\bfseries D\+C\+D\+C\+\_\+\+ON}, 
+{\bfseries D\+C\+D\+C\+\_\+3\+\_\+3}, 
+{\bfseries D\+C\+D\+C\+\_\+5}, 
+\newline
+{\bfseries D\+C\+D\+C\+\_\+12}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___p_w_r_ga48569edb2c247c3f512b143ee98f021c}\label{group___p_w_r_ga48569edb2c247c3f512b143ee98f021c}} 
+void {\bfseries enter\+\_\+stop\+\_\+mode} (void)
+\item 
+\mbox{\Hypertarget{group___p_w_r_ga5c8463df7ae3ba1f888c76fb5eb6b285}\label{group___p_w_r_ga5c8463df7ae3ba1f888c76fb5eb6b285}} 
+void {\bfseries leave\+\_\+stop\+\_\+mode} (void)
+\item 
+\mbox{\Hypertarget{group___p_w_r_gadb12831cc912ec24a9f97abc6279aa35}\label{group___p_w_r_gadb12831cc912ec24a9f97abc6279aa35}} 
+void {\bfseries deactivate\+\_\+clocks} (void)
+\item 
+\mbox{\Hypertarget{group___p_w_r_gab4dea8df5ecbc778264a53ce68b79826}\label{group___p_w_r_gab4dea8df5ecbc778264a53ce68b79826}} 
+void {\bfseries activate\+\_\+clocks} (void)
+\item 
+\mbox{\Hypertarget{group___p_w_r_ga9941f9b0a37a6a1e6a4525b69ee82b1e}\label{group___p_w_r_ga9941f9b0a37a6a1e6a4525b69ee82b1e}} 
+static void {\bfseries pwr\+\_\+pins\+\_\+to\+\_\+save\+\_\+state} (void)
+\item 
+\mbox{\Hypertarget{group___p_w_r_ga7be74f08fa581be6b118b5a5607cf9d2}\label{group___p_w_r_ga7be74f08fa581be6b118b5a5607cf9d2}} 
+static void {\bfseries pwr\+\_\+pins\+\_\+to\+\_\+work\+\_\+state} (void)
+\item 
+\mbox{\Hypertarget{group___p_w_r_ga834ab8e72cbb7547199d8cbcc99259ee}\label{group___p_w_r_ga834ab8e72cbb7547199d8cbcc99259ee}} 
+static void {\bfseries button\+\_\+cb} (void $\ast$arg)
+\item 
+\mbox{\Hypertarget{group___p_w_r_ga0b8c9b7dd514e48ef95dbeae2d5064b6}\label{group___p_w_r_ga0b8c9b7dd514e48ef95dbeae2d5064b6}} 
+static void {\bfseries charger\+\_\+int\+\_\+cb} (void $\ast$arg)
+\item 
+\mbox{\Hypertarget{group___p_w_r_gaaf327990b963467334cce83450b4f0b0}\label{group___p_w_r_gaaf327990b963467334cce83450b4f0b0}} 
+static {\bfseries T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA} (pwr\+\_\+mgmt\+\_\+thread\+\_\+wa, 512)
+\item 
+\mbox{\Hypertarget{group___p_w_r_ga76a44d545643997d9efd4ef4fe15bc8c}\label{group___p_w_r_ga76a44d545643997d9efd4ef4fe15bc8c}} 
+static {\bfseries T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON} (pwr\+\_\+mgmt\+\_\+thread, p)
+\item 
+\mbox{\Hypertarget{group___p_w_r_ga587e65bbcd357c2b95c27c3a3d91b240}\label{group___p_w_r_ga587e65bbcd357c2b95c27c3a3d91b240}} 
+void {\bfseries start\+\_\+power\+\_\+management\+\_\+module} (void)
+\item 
+\mbox{\Hypertarget{group___p_w_r_gaaaae4200210eee7549095abc6fd858e3}\label{group___p_w_r_gaaaae4200210eee7549095abc6fd858e3}} 
+static void {\bfseries pwr\+\_\+terminate\+\_\+threads} ()
+\item 
+\mbox{\Hypertarget{group___p_w_r_gacb7b207f6fdd2c71cff0e44606872e36}\label{group___p_w_r_gacb7b207f6fdd2c71cff0e44606872e36}} 
+static void {\bfseries pwr\+\_\+restart\+\_\+threads} ()
+\item 
+\mbox{\Hypertarget{group___p_w_r_gadf3c2b2e920f1e16c1a352d6cc28873c}\label{group___p_w_r_gadf3c2b2e920f1e16c1a352d6cc28873c}} 
+void {\bfseries pwr\+\_\+switch\+\_\+dc\+\_\+dc} (dcdc\+\_\+enum dcdc, dcdc\+\_\+enum state)
+\item 
+\mbox{\Hypertarget{group___p_w_r_ga57f4a8ad38b0d84c07868a208d1a9814}\label{group___p_w_r_ga57f4a8ad38b0d84c07868a208d1a9814}} 
+void {\bfseries pwr\+\_\+start\+\_\+threads} (void)
+\item 
+\mbox{\Hypertarget{group___p_w_r_ga4843d41405f3cbc3ddbf727d491c9afe}\label{group___p_w_r_ga4843d41405f3cbc3ddbf727d491c9afe}} 
+void {\bfseries pwr\+\_\+stop\+\_\+threads} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___p_w_r_ga92d6c488c0ae560f05dce93275d5cc73}\label{group___p_w_r_ga92d6c488c0ae560f05dce93275d5cc73}} 
+static volatile uint8\+\_\+t {\bfseries device\+\_\+power\+\_\+state} = 0
+\item 
+\mbox{\Hypertarget{group___p_w_r_gad7528b377b2ff3ddbdad21413a7f6849}\label{group___p_w_r_gad7528b377b2ff3ddbdad21413a7f6849}} 
+static volatile uint8\+\_\+t {\bfseries deepsleep} = 1
+\item 
+\mbox{\Hypertarget{group___p_w_r_ga3470698d3906860ddf39a88d51fef8a6}\label{group___p_w_r_ga3470698d3906860ddf39a88d51fef8a6}} 
+static event\+\_\+source\+\_\+t {\bfseries button\+\_\+pressed\+\_\+event}
+\item 
+\mbox{\Hypertarget{group___p_w_r_ga59f41509779de2fbc4a5aa13cd63cde9}\label{group___p_w_r_ga59f41509779de2fbc4a5aa13cd63cde9}} 
+static event\+\_\+source\+\_\+t {\bfseries button\+\_\+released\+\_\+event}
+\item 
+\mbox{\Hypertarget{group___p_w_r_gabfbd07b7d9f484aae6d0126331f282ec}\label{group___p_w_r_gabfbd07b7d9f484aae6d0126331f282ec}} 
+static event\+\_\+source\+\_\+t {\bfseries charger\+\_\+int\+\_\+low\+\_\+event}
+\item 
+\mbox{\Hypertarget{group___p_w_r_gaaecc2f4c164045e15c9d3308a7278257}\label{group___p_w_r_gaaecc2f4c164045e15c9d3308a7278257}} 
+static event\+\_\+source\+\_\+t {\bfseries charger\+\_\+int\+\_\+high\+\_\+event}
+\item 
+\mbox{\Hypertarget{group___p_w_r_gad966c229042c506b9f00c5fd7013a94c}\label{group___p_w_r_gad966c229042c506b9f00c5fd7013a94c}} 
+event\+\_\+source\+\_\+t {\bfseries power\+\_\+state\+\_\+change\+\_\+event}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+L4 power management with deep sleep mode driver. 
+
+Detail will be writen soon \begin{DoxyPrecond}{Precondition}
+In order to use the A\+DC driver the {\ttfamily U\+S\+E\+\_\+\+P\+O\+W\+E\+R\+\_\+\+M\+A\+N\+A\+G\+E\+M\+E\+NT} option must be enabled in {\ttfamily config.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___p_w_r_pwr_1}{}\doxysubsection{Stateflow}\label{group___p_w_r_pwr_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_12}}
+\end{DoxyImageNoCaption}
+\hypertarget{group___p_w_r_pwr_2}{}\doxysubsection{P\+W\+R operations}\label{group___p_w_r_pwr_2}
+The A\+DC driver is quite complex, an explanation of the terminology and of the operational details follows. 

@@ -1,0 +1,1191 @@
+\hypertarget{group___n_e_o-_m8}{}\doxysection{Ublox N\+E\+O-\/\+M8 Driver}
+\label{group___n_e_o-_m8}\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+
+
+Ublox G\+N\+SS module driver.  
+
+
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structneo__struct__t}{neo\+\_\+struct\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structubx__nav__pvt__t}{ubx\+\_\+nav\+\_\+pvt\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structubx__cfg__nav5__t}{ubx\+\_\+cfg\+\_\+nav5\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structubx__cfg__odo__t}{ubx\+\_\+cfg\+\_\+odo\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structubx__cfg__dgnss__t}{ubx\+\_\+cfg\+\_\+dgnss\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structubx__cfg__rate__t}{ubx\+\_\+cfg\+\_\+rate\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structubx__cfg__pm2}{ubx\+\_\+cfg\+\_\+pm2}}
+\item 
+struct \mbox{\hyperlink{structubx__nav__odo__t}{ubx\+\_\+nav\+\_\+odo\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structubx__cfg__sbas__t}{ubx\+\_\+cfg\+\_\+sbas\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{struct_position}{Position}}
+\item 
+struct \mbox{\hyperlink{struct_navigation}{Navigation}}
+\item 
+struct \mbox{\hyperlink{struct_odometr}{Odometr}}
+\item 
+struct \mbox{\hyperlink{struct_output}{Output}}
+\item 
+struct \mbox{\hyperlink{struct_s_b_a_s}{S\+B\+AS}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga466c71efdf66c64699ce02e20e1ad7c4}\label{group___n_e_o-_m8_ga466c71efdf66c64699ce02e20e1ad7c4}} 
+\#define {\bfseries R\+T\+C\+M3\+\_\+\+EN}~0
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gad5b0d233bfe03a3e24900d12990f3cfe}\label{group___n_e_o-_m8_gad5b0d233bfe03a3e24900d12990f3cfe}} 
+\#define {\bfseries U\+B\+X\+\_\+\+H\+E\+A\+D\+ER}~0x\+B562
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaa00635b52ed290908b5bc4ce8805545e}\label{group___n_e_o-_m8_gaa00635b52ed290908b5bc4ce8805545e}} 
+\#define {\bfseries U\+B\+X\+\_\+\+C\+F\+G\+\_\+\+C\+L\+A\+SS}~0x06
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga6ba13244c87368a2cccd96835477343d}\label{group___n_e_o-_m8_ga6ba13244c87368a2cccd96835477343d}} 
+\#define {\bfseries U\+B\+X\+\_\+\+A\+C\+K\+\_\+\+C\+L\+A\+SS}~0x05
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga1b4489036ea93a7e4536517309d8527f}\label{group___n_e_o-_m8_ga1b4489036ea93a7e4536517309d8527f}} 
+\#define {\bfseries U\+B\+X\+\_\+\+I\+N\+F\+\_\+\+C\+L\+A\+SS}~0x04
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gae0df3e9b548c32005871693ac804654d}\label{group___n_e_o-_m8_gae0df3e9b548c32005871693ac804654d}} 
+\#define {\bfseries U\+B\+X\+\_\+\+R\+X\+M\+\_\+\+C\+L\+A\+SS}~0x02
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gabead690b19c0dee716eedee51ea6db13}\label{group___n_e_o-_m8_gabead690b19c0dee716eedee51ea6db13}} 
+\#define {\bfseries U\+B\+X\+\_\+\+S\+E\+C\+\_\+\+C\+L\+A\+SS}~0x27
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaeaf3fd0343e84e08383d77cb6b608439}\label{group___n_e_o-_m8_gaeaf3fd0343e84e08383d77cb6b608439}} 
+\#define {\bfseries U\+B\+X\+\_\+\+T\+I\+M\+\_\+\+C\+L\+A\+SS}~0x0D
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gac47c93772de2cc364931bdec75d872b8}\label{group___n_e_o-_m8_gac47c93772de2cc364931bdec75d872b8}} 
+\#define {\bfseries U\+B\+X\+\_\+\+U\+P\+D\+\_\+\+C\+L\+A\+SS}~0x09
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gabda0ee7b327aa9937f3e1910026fafa5}\label{group___n_e_o-_m8_gabda0ee7b327aa9937f3e1910026fafa5}} 
+\#define {\bfseries U\+B\+X\+\_\+\+A\+I\+D\+\_\+\+C\+L\+A\+SS}~0x0B
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaa078c88dba41051e04cb1ce009a1bf3a}\label{group___n_e_o-_m8_gaa078c88dba41051e04cb1ce009a1bf3a}} 
+\#define {\bfseries U\+B\+X\+\_\+\+E\+S\+F\+\_\+\+C\+L\+A\+SS}~0x10
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gab646063644081078388592d6b57ad5bb}\label{group___n_e_o-_m8_gab646063644081078388592d6b57ad5bb}} 
+\#define {\bfseries U\+B\+X\+\_\+\+H\+N\+R\+\_\+\+C\+L\+A\+SS}~0x28
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaa70d2812af727bacae64bb42272b63d5}\label{group___n_e_o-_m8_gaa70d2812af727bacae64bb42272b63d5}} 
+\#define {\bfseries U\+B\+X\+\_\+\+M\+O\+N\+\_\+\+C\+L\+A\+SS}~0x0A
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga605cff385e82e485f58efe149c6564f7}\label{group___n_e_o-_m8_ga605cff385e82e485f58efe149c6564f7}} 
+\#define {\bfseries U\+B\+X\+\_\+\+N\+A\+V\+\_\+\+C\+L\+A\+SS}~0x01
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gacb5db7e5859965d9a2c5f156736156d1}\label{group___n_e_o-_m8_gacb5db7e5859965d9a2c5f156736156d1}} 
+\#define {\bfseries U\+B\+X\+\_\+\+C\+F\+G\+\_\+\+P\+R\+T\+\_\+\+ID}~0x00
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gabe32483a181cc69619496d597a8c8ebe}\label{group___n_e_o-_m8_gabe32483a181cc69619496d597a8c8ebe}} 
+\#define {\bfseries U\+B\+X\+\_\+\+C\+F\+G\+\_\+\+M\+S\+G\+\_\+\+ID}~0x01
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaee5b8d99a8ef6727d162f3d0b1c47e85}\label{group___n_e_o-_m8_gaee5b8d99a8ef6727d162f3d0b1c47e85}} 
+\#define {\bfseries U\+B\+X\+\_\+\+C\+F\+G\+\_\+\+R\+A\+T\+E\+\_\+\+ID}~0x08
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga5f3ffff0c07e1db773df007a17f22928}\label{group___n_e_o-_m8_ga5f3ffff0c07e1db773df007a17f22928}} 
+\#define {\bfseries U\+B\+X\+\_\+\+C\+F\+G\+\_\+\+O\+D\+O\+\_\+\+ID}~0x1E
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga13c3ed51846b28fbdabf9e981a1ec9b5}\label{group___n_e_o-_m8_ga13c3ed51846b28fbdabf9e981a1ec9b5}} 
+\#define {\bfseries U\+B\+X\+\_\+\+C\+F\+G\+\_\+\+S\+B\+A\+S\+\_\+\+ID}~0x16
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga020509ab2c9a647a8c274d703ab928ee}\label{group___n_e_o-_m8_ga020509ab2c9a647a8c274d703ab928ee}} 
+\#define {\bfseries U\+B\+X\+\_\+\+N\+A\+V\+\_\+\+P\+V\+T\+\_\+\+ID}~0x07
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga935f453ec9624768c800fef6cfee9cc3}\label{group___n_e_o-_m8_ga935f453ec9624768c800fef6cfee9cc3}} 
+\#define {\bfseries U\+B\+X\+\_\+\+C\+F\+G\+\_\+\+N\+A\+V5\+\_\+\+ID}~0x24
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga0e3ab87cf1df7d420fc6833b17a7f402}\label{group___n_e_o-_m8_ga0e3ab87cf1df7d420fc6833b17a7f402}} 
+\#define {\bfseries U\+B\+X\+\_\+\+N\+A\+V\+\_\+\+O\+D\+O\+\_\+\+ID}~0x09
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gab6e1df78fe4246393f5ce2ab7c286d67}\label{group___n_e_o-_m8_gab6e1df78fe4246393f5ce2ab7c286d67}} 
+\#define {\bfseries U\+B\+X\+\_\+\+H\+E\+A\+D\+E\+R\+\_\+\+L\+EN}~6
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gabdd3907fd23a4d3d6f52262c47359ddc}\label{group___n_e_o-_m8_gabdd3907fd23a4d3d6f52262c47359ddc}} 
+\#define {\bfseries C\+R\+C\+\_\+\+L\+EN}~2
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga5c2431db7a055267f2f617d9206558b1}\label{group___n_e_o-_m8_ga5c2431db7a055267f2f617d9206558b1}} 
+\#define {\bfseries U\+B\+X\+\_\+\+C\+F\+G\+\_\+\+M\+S\+G\+\_\+\+L\+E\+N\+\_\+\+S\+I\+N\+G\+LE}~3
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga037a2d7129bc7ad9a926e79d41c7cd06}\label{group___n_e_o-_m8_ga037a2d7129bc7ad9a926e79d41c7cd06}} 
+\#define {\bfseries U\+B\+X\+\_\+\+C\+F\+G\+\_\+\+P\+R\+T\+\_\+\+L\+EN}~20
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gab8b77cb369bf6224e77026c89d6fa6a1}\label{group___n_e_o-_m8_gab8b77cb369bf6224e77026c89d6fa6a1}} 
+\#define {\bfseries U\+B\+X\+\_\+\+N\+A\+V\+\_\+\+P\+V\+T\+\_\+\+L\+EN}~92
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaaec80fecae7303c5a62298869f691485}\label{group___n_e_o-_m8_gaaec80fecae7303c5a62298869f691485}} 
+\#define {\bfseries U\+B\+X\+\_\+\+C\+F\+G\+\_\+\+N\+A\+V5\+\_\+\+L\+EN}~36
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga5e120b83239247dd72f075aa2b351378}\label{group___n_e_o-_m8_ga5e120b83239247dd72f075aa2b351378}} 
+\#define {\bfseries U\+B\+X\+\_\+\+N\+A\+V\+\_\+\+O\+D\+O\+\_\+\+L\+EN}~20
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaeb37ce9962de2e7bee338f54500a2b72}\label{group___n_e_o-_m8_gaeb37ce9962de2e7bee338f54500a2b72}} 
+\#define {\bfseries U\+B\+X\+\_\+\+C\+F\+G\+\_\+\+O\+D\+O\+\_\+\+L\+EN}~20
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaab205f7852070c667de139bfd6d063f3}\label{group___n_e_o-_m8_gaab205f7852070c667de139bfd6d063f3}} 
+\#define {\bfseries U\+B\+X\+\_\+\+C\+F\+G\+\_\+\+R\+A\+T\+E\+\_\+\+L\+EN}~6
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaccb21b3b00b7dd0c6749a2b8e9a4eb03}\label{group___n_e_o-_m8_gaccb21b3b00b7dd0c6749a2b8e9a4eb03}} 
+\#define {\bfseries U\+B\+X\+\_\+\+C\+F\+G\+\_\+\+S\+B\+A\+S\+\_\+\+L\+EN}~8
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga9bffe5bb2564f91cd90fb7d06848f9a8}\label{group___n_e_o-_m8_ga9bffe5bb2564f91cd90fb7d06848f9a8}} 
+typedef uint8\+\_\+t {\bfseries U1}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga8537566689c8426375289fcfd848890b}\label{group___n_e_o-_m8_ga8537566689c8426375289fcfd848890b}} 
+typedef uint8\+\_\+t {\bfseries R\+U1\+\_\+3}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga8dca1c3a9863a5560c5314bc488ca15a}\label{group___n_e_o-_m8_ga8dca1c3a9863a5560c5314bc488ca15a}} 
+typedef int8\+\_\+t {\bfseries I1}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga94dbb17bff9309a9e20ce12b77b5f669}\label{group___n_e_o-_m8_ga94dbb17bff9309a9e20ce12b77b5f669}} 
+typedef uint8\+\_\+t {\bfseries X1}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga90240657108b1b457eef9d3f76e0202e}\label{group___n_e_o-_m8_ga90240657108b1b457eef9d3f76e0202e}} 
+typedef uint16\+\_\+t {\bfseries U2}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga6642b811404ab9457715c7f1adf8efb9}\label{group___n_e_o-_m8_ga6642b811404ab9457715c7f1adf8efb9}} 
+typedef int16\+\_\+t {\bfseries I2}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gab4ecb8bb9037915da4fefb93ec02a5e6}\label{group___n_e_o-_m8_gab4ecb8bb9037915da4fefb93ec02a5e6}} 
+typedef uint16\+\_\+t {\bfseries X2}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gac6d2ba2e53dd424684ead2f40e74a8b6}\label{group___n_e_o-_m8_gac6d2ba2e53dd424684ead2f40e74a8b6}} 
+typedef uint32\+\_\+t {\bfseries U4}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga6e85c976e3bd1fd958f8af1e3908d912}\label{group___n_e_o-_m8_ga6e85c976e3bd1fd958f8af1e3908d912}} 
+typedef int32\+\_\+t {\bfseries I4}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gae5a0efa82e6655aefd87acd4369982de}\label{group___n_e_o-_m8_gae5a0efa82e6655aefd87acd4369982de}} 
+typedef uint32\+\_\+t {\bfseries X4}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga001fb4a68dbf72cd1568aca93715ce39}\label{group___n_e_o-_m8_ga001fb4a68dbf72cd1568aca93715ce39}} 
+typedef float {\bfseries R4}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga094ca67aa914d5cc1537d1851b341681}\label{group___n_e_o-_m8_ga094ca67aa914d5cc1537d1851b341681}} 
+typedef double {\bfseries R8}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga2d18590ee6cb00e8ea0a631cf9696f53}\label{group___n_e_o-_m8_ga2d18590ee6cb00e8ea0a631cf9696f53}} 
+typedef char {\bfseries CH}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gab1ef46074fe2db651e0c1ffed4c64bae}\label{group___n_e_o-_m8_gab1ef46074fe2db651e0c1ffed4c64bae}} 
+static {\bfseries neo\+\_\+init\+\_\+module} (void)
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga91dbc7f01d12e9eb3116867970c61134}\label{group___n_e_o-_m8_ga91dbc7f01d12e9eb3116867970c61134}} 
+static {\bfseries T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA} (coords\+\_\+thread\+\_\+wa, 4096)
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga1efb0d69e1fb5804e6542f41834d7811}\label{group___n_e_o-_m8_ga1efb0d69e1fb5804e6542f41834d7811}} 
+static \mbox{\hyperlink{group___n_e_o-_m8_ga1efb0d69e1fb5804e6542f41834d7811}{T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON}} (coords\+\_\+thread, arg)
+\begin{DoxyCompactList}\small\item\em Thread to process data collection and filtering from N\+E\+O-\/\+M8P. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga1675d0680954d3cc838fcb664b5f0ec6}\label{group___n_e_o-_m8_ga1675d0680954d3cc838fcb664b5f0ec6}} 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga1675d0680954d3cc838fcb664b5f0ec6}{start\+\_\+gps\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Start navigation threads. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gac8a5523a1cd9ad31d85fbf284221f3eb}{neo\+\_\+write}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint8\+\_\+t $\ast$txbuff, uint8\+\_\+t len)
+\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gac7adc4ceacd3c4a00a1f7e2d8ff1f0b2}{neo\+\_\+write\+\_\+no\+\_\+cs}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint8\+\_\+t $\ast$txbuff, uint8\+\_\+t len)
+\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gaf17842b28d0e4080e3487ccee88b6ad8}{neo\+\_\+read\+\_\+bytes}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint16\+\_\+t num, uint8\+\_\+t $\ast$rxbuf)
+\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gaf6cd233aff28de06b91710b4f3bd27b5}{neo\+\_\+read\+\_\+bytes\+\_\+no\+\_\+cs}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint16\+\_\+t num, uint8\+\_\+t $\ast$rxbuf)
+\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga52c2c574c486dc22192a81fa0511c0f6}{neo\+\_\+read\+\_\+bytes\+\_\+release\+\_\+cs}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint16\+\_\+t num, uint8\+\_\+t $\ast$rxbuf)
+\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga8438c02d0fe82316aa196dde63141b73}{neo\+\_\+create\+\_\+poll\+\_\+request}} (uint8\+\_\+t class, uint8\+\_\+t id)
+\begin{DoxyCompactList}\small\item\em Send polling request to neo-\/m8. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga42ad92d8106392d1ad324957137f086d}\label{group___n_e_o-_m8_ga42ad92d8106392d1ad324957137f086d}} 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga42ad92d8106392d1ad324957137f086d}{neo\+\_\+switch\+\_\+to\+\_\+ubx}} (void)
+\begin{DoxyCompactList}\small\item\em Switching to U\+BX protocol procedure. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga6925d8844a50b2f5fb050678d8221bd9}{neo\+\_\+apply\+\_\+header}} (uint8\+\_\+t $\ast$buffer, uint16\+\_\+t header)
+\begin{DoxyCompactList}\small\item\em Low-\/level packet forming A\+PI, header loading. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga8fd7a663cae8ffac9d94e62ec4c1f086}{neo\+\_\+apply\+\_\+class}} (uint8\+\_\+t $\ast$buffer, uint8\+\_\+t class)
+\begin{DoxyCompactList}\small\item\em Low-\/level packet forming A\+PI, class loading. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gaee8e26c15d0d16b08c337fb24a8a315b}{neo\+\_\+apply\+\_\+id}} (uint8\+\_\+t $\ast$buffer, uint8\+\_\+t id)
+\begin{DoxyCompactList}\small\item\em Low-\/level packet forming A\+PI, ID loading. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga298ba864057ae52e5ce479738f4f8da7}{neo\+\_\+apply\+\_\+length}} (uint8\+\_\+t $\ast$buffer, uint8\+\_\+t len)
+\begin{DoxyCompactList}\small\item\em Low-\/level packet forming A\+PI, length loading, little-\/endian. \end{DoxyCompactList}\item 
+uint16\+\_\+t \mbox{\hyperlink{group___n_e_o-_m8_ga07fa3d6c5e9ff5a076ae6a582d5094ca}{neo\+\_\+calc\+\_\+crc}} (uint8\+\_\+t $\ast$buffer, uint16\+\_\+t len)
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga1706449ed2639334257a748dfa07ebf4}\label{group___n_e_o-_m8_ga1706449ed2639334257a748dfa07ebf4}} 
+void {\bfseries neo\+\_\+write\+\_\+struct} (uint8\+\_\+t $\ast$strc, uint8\+\_\+t class, uint8\+\_\+t id, uint8\+\_\+t payload\+\_\+len)
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga13afd9ff96ecc8c0541037ada46da4d7}\label{group___n_e_o-_m8_ga13afd9ff96ecc8c0541037ada46da4d7}} 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga13afd9ff96ecc8c0541037ada46da4d7}{neo\+\_\+set\+\_\+pvt\+\_\+1hz}} ()
+\begin{DoxyCompactList}\small\item\em Setting ooutput P\+VT rate to 1 HZ. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga2524570c388bcc0bba50a34abb11b8ec}\label{group___n_e_o-_m8_ga2524570c388bcc0bba50a34abb11b8ec}} 
+void {\bfseries neo\+\_\+poll\+\_\+prt} (void)
+\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gab69520ba8c40a6a423b51c4bf3961998}{neo\+\_\+process\+\_\+nav}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing N\+AV class message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga5e77b1ffc8b424881298912f9ffae94a}{neo\+\_\+process\+\_\+odo}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing odometer message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga67811202470049b8b04eb11bb79eb62c}{neo\+\_\+process\+\_\+cfg\+\_\+odo}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing C\+FG odometer message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gaedd148f5fc5f0b66de9e263fb647d0fb}{neo\+\_\+process\+\_\+nav5}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing N\+A\+V5 message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga1ad5b612401dbdcbe43c34bc4bb5867e}{neo\+\_\+process\+\_\+rate}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing rate message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga34f707f1b981d30b364fd9bf8d25d95f}{neo\+\_\+process\+\_\+sbas}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing \mbox{\hyperlink{struct_s_b_a_s}{S\+B\+AS}} message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga206cfab5c4456a4e03aa1fb0c1002410}{neo\+\_\+process\+\_\+pvt}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing P\+VT message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga0cf12bd1b0d078269904073bac00267d}{neo\+\_\+process\+\_\+ack}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing A\+CK message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga075ec88b7467bf5a714b8f80d3fbce7c}{neo\+\_\+process\+\_\+cfg}} (uint8\+\_\+t $\ast$message)
+\begin{DoxyCompactList}\small\item\em Parsing C\+FG class message. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga5108f84a7c9affe8444f85edbb2d104d}\label{group___n_e_o-_m8_ga5108f84a7c9affe8444f85edbb2d104d}} 
+void {\bfseries neo\+\_\+process\+\_\+inf} (uint8\+\_\+t $\ast$message)
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga0c12e4384782d28455d670507005c74d}\label{group___n_e_o-_m8_ga0c12e4384782d28455d670507005c74d}} 
+void {\bfseries neo\+\_\+process\+\_\+rxm} (uint8\+\_\+t $\ast$message)
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga2370eb0b08ca228cb617814d2f695bf8}\label{group___n_e_o-_m8_ga2370eb0b08ca228cb617814d2f695bf8}} 
+void {\bfseries neo\+\_\+process\+\_\+sec} (uint8\+\_\+t $\ast$message)
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gae6b4fe59d974d8adcde579301409e927}\label{group___n_e_o-_m8_gae6b4fe59d974d8adcde579301409e927}} 
+void {\bfseries neo\+\_\+process\+\_\+tim} (uint8\+\_\+t $\ast$message)
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gacd7cba59ecc8fb353cc31156332b450d}\label{group___n_e_o-_m8_gacd7cba59ecc8fb353cc31156332b450d}} 
+void {\bfseries neo\+\_\+process\+\_\+upd} (uint8\+\_\+t $\ast$message)
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga864383accf0bc240af1c97d3023cae81}\label{group___n_e_o-_m8_ga864383accf0bc240af1c97d3023cae81}} 
+void {\bfseries neo\+\_\+process\+\_\+esf} (uint8\+\_\+t $\ast$message)
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga1fd94a2dc4fa5537d5b6d962bfc3ca2a}\label{group___n_e_o-_m8_ga1fd94a2dc4fa5537d5b6d962bfc3ca2a}} 
+void {\bfseries neo\+\_\+process\+\_\+aid} (uint8\+\_\+t $\ast$message)
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gabf2f9968c64e73984309367909cfeb06}\label{group___n_e_o-_m8_gabf2f9968c64e73984309367909cfeb06}} 
+void {\bfseries neo\+\_\+process\+\_\+mon} (uint8\+\_\+t $\ast$message)
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga6992fcbd5548bd579fa448365a83a6c3}\label{group___n_e_o-_m8_ga6992fcbd5548bd579fa448365a83a6c3}} 
+void {\bfseries neo\+\_\+process\+\_\+hnr} (uint8\+\_\+t $\ast$message)
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga8cc90f552e6d393f9e254875ef12a387}\label{group___n_e_o-_m8_ga8cc90f552e6d393f9e254875ef12a387}} 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga8cc90f552e6d393f9e254875ef12a387}{neo\+\_\+poll}} (void)
+\begin{DoxyCompactList}\small\item\em Polling procedure. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gafbf792d5e99d6c48c805bb68c2a860df}{neo\+\_\+cp\+\_\+to\+\_\+struct}} (uint8\+\_\+t $\ast$msg, uint8\+\_\+t $\ast$strc, uint8\+\_\+t len)
+\begin{DoxyCompactList}\small\item\em Copy data from recieved message to struct. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_ga25689164096c8cf80f7b18dd88a929c1}{neo\+\_\+poll\+\_\+nav\+\_\+pvt}} (void)
+\item 
+void \mbox{\hyperlink{group___n_e_o-_m8_gab5ca717a489880dc89ae1e20ce799ead}{neo\+\_\+polling}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint8\+\_\+t class, uint8\+\_\+t id)
+\item 
+int32\+\_\+t \mbox{\hyperlink{group___n_e_o-_m8_gaf75f730cedf81be7fb157df6b87e1938}{neo\+\_\+get\+\_\+lat}} (\mbox{\hyperlink{structubx__nav__pvt__t}{ubx\+\_\+nav\+\_\+pvt\+\_\+t}} $\ast$pvt)
+\item 
+int32\+\_\+t \mbox{\hyperlink{group___n_e_o-_m8_ga49008ece0ca8671e4d06cff1a936343d}{neo\+\_\+get\+\_\+lon}} (\mbox{\hyperlink{structubx__nav__pvt__t}{ubx\+\_\+nav\+\_\+pvt\+\_\+t}} $\ast$pvt)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___n_e_o-_m8_ga1d96b30bbcc248bd6e647f5a6f3fd38d}{neo\+\_\+get\+\_\+numsv}} (\mbox{\hyperlink{structubx__nav__pvt__t}{ubx\+\_\+nav\+\_\+pvt\+\_\+t}} $\ast$pvt)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___n_e_o-_m8_gad7d33e798b32bc45169f63fff6605d22}{neo\+\_\+get\+\_\+valid}} (\mbox{\hyperlink{structubx__nav__pvt__t}{ubx\+\_\+nav\+\_\+pvt\+\_\+t}} $\ast$pvt)
+\item 
+int32\+\_\+t \mbox{\hyperlink{group___n_e_o-_m8_gacbd2dae5edacfc8e4a87ea694eda2ac1}{neo\+\_\+get\+\_\+ground\+\_\+speed}} (\mbox{\hyperlink{structubx__nav__pvt__t}{ubx\+\_\+nav\+\_\+pvt\+\_\+t}} $\ast$pvt)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga967ea156994a35bf77b2c4ae7ccaf273}\label{group___n_e_o-_m8_ga967ea156994a35bf77b2c4ae7ccaf273}} 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga45f348d08d20fa20cbd72c7897d4048b}\label{group___n_e_o-_m8_ga45f348d08d20fa20cbd72c7897d4048b}} 
+struct ch\+\_\+semaphore {\bfseries spi2\+\_\+semaph}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga42460fc0edeaa2c9da1db7a65f8d9b9f}\label{group___n_e_o-_m8_ga42460fc0edeaa2c9da1db7a65f8d9b9f}} 
+static \mbox{\hyperlink{structubx__cfg__sbas__t}{ubx\+\_\+cfg\+\_\+sbas\+\_\+t}} {\bfseries sbas}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gab31867f6f26992cd4999e64db67f29a3}\label{group___n_e_o-_m8_gab31867f6f26992cd4999e64db67f29a3}} 
+\mbox{\hyperlink{structubx__cfg__sbas__t}{ubx\+\_\+cfg\+\_\+sbas\+\_\+t}} $\ast$ {\bfseries sbas\+\_\+box} = \&sbas
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga511d0f7ecd505d3b0223610015497ed3}\label{group___n_e_o-_m8_ga511d0f7ecd505d3b0223610015497ed3}} 
+\mbox{\hyperlink{structubx__nav__pvt__t}{ubx\+\_\+nav\+\_\+pvt\+\_\+t}} $\ast$ {\bfseries pvt\+\_\+box}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gac43401421d59b4e6a76a559b6b63b1aa}\label{group___n_e_o-_m8_gac43401421d59b4e6a76a559b6b63b1aa}} 
+static \mbox{\hyperlink{structubx__cfg__nav5__t}{ubx\+\_\+cfg\+\_\+nav5\+\_\+t}} {\bfseries nav5}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga7ecf1f7764ef79b596065b6081a7f441}\label{group___n_e_o-_m8_ga7ecf1f7764ef79b596065b6081a7f441}} 
+\mbox{\hyperlink{structubx__cfg__nav5__t}{ubx\+\_\+cfg\+\_\+nav5\+\_\+t}} $\ast$ {\bfseries nav5\+\_\+box} = \&nav5
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaa6b7e5980e3086edd708e48cef271c44}\label{group___n_e_o-_m8_gaa6b7e5980e3086edd708e48cef271c44}} 
+static \mbox{\hyperlink{structubx__cfg__pm2}{ubx\+\_\+cfg\+\_\+pm2}} {\bfseries pm2}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga10372c3581dee2acf261611e52fc41c6}\label{group___n_e_o-_m8_ga10372c3581dee2acf261611e52fc41c6}} 
+\mbox{\hyperlink{structubx__cfg__pm2}{ubx\+\_\+cfg\+\_\+pm2}} $\ast$ {\bfseries pm2\+\_\+box} = \&pm2
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga41209a9e46731d9dbad00d758e0de646}\label{group___n_e_o-_m8_ga41209a9e46731d9dbad00d758e0de646}} 
+static \mbox{\hyperlink{structneo__struct__t}{neo\+\_\+struct\+\_\+t}} {\bfseries neo\+\_\+struct}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gafb591dded646b3061d9215c743a775d7}\label{group___n_e_o-_m8_gafb591dded646b3061d9215c743a775d7}} 
+\mbox{\hyperlink{structneo__struct__t}{neo\+\_\+struct\+\_\+t}} $\ast$ {\bfseries neo} = \&neo\+\_\+struct
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gad65af572657aae1640b8c52d155cf428}\label{group___n_e_o-_m8_gad65af572657aae1640b8c52d155cf428}} 
+static \mbox{\hyperlink{structubx__cfg__odo__t}{ubx\+\_\+cfg\+\_\+odo\+\_\+t}} {\bfseries cfg\+\_\+odo\+\_\+struct}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaf488f36c87756ab32e05b77368ef7523}\label{group___n_e_o-_m8_gaf488f36c87756ab32e05b77368ef7523}} 
+\mbox{\hyperlink{structubx__cfg__odo__t}{ubx\+\_\+cfg\+\_\+odo\+\_\+t}} $\ast$ {\bfseries cfg\+\_\+odo\+\_\+box} = \&cfg\+\_\+odo\+\_\+struct
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga0abb91cc334cbbfd04cb610fceade433}\label{group___n_e_o-_m8_ga0abb91cc334cbbfd04cb610fceade433}} 
+static \mbox{\hyperlink{structubx__nav__odo__t}{ubx\+\_\+nav\+\_\+odo\+\_\+t}} {\bfseries nav\+\_\+odo\+\_\+struct}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga37d95b9f814026c2ab9c37a9b1ed4a73}\label{group___n_e_o-_m8_ga37d95b9f814026c2ab9c37a9b1ed4a73}} 
+\mbox{\hyperlink{structubx__nav__odo__t}{ubx\+\_\+nav\+\_\+odo\+\_\+t}} $\ast$ {\bfseries odo\+\_\+box} = \&nav\+\_\+odo\+\_\+struct
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga1029585c1a8a4aa4599c2a7ebe6e2e9e}\label{group___n_e_o-_m8_ga1029585c1a8a4aa4599c2a7ebe6e2e9e}} 
+static \mbox{\hyperlink{structubx__cfg__rate__t}{ubx\+\_\+cfg\+\_\+rate\+\_\+t}} {\bfseries rate\+\_\+struct}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga8a798c3766c0f060de99b4e31edfa470}\label{group___n_e_o-_m8_ga8a798c3766c0f060de99b4e31edfa470}} 
+\mbox{\hyperlink{structubx__cfg__rate__t}{ubx\+\_\+cfg\+\_\+rate\+\_\+t}} $\ast$ {\bfseries rate\+\_\+box} = \&rate\+\_\+struct
+\item 
+static const S\+P\+I\+Config {\bfseries neo\+\_\+spi\+\_\+cfg}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gae465ab1c43a439d3f6027723e2033943}\label{group___n_e_o-_m8_gae465ab1c43a439d3f6027723e2033943}} 
+thread\+\_\+reference\+\_\+t {\bfseries coords\+\_\+trp} = N\+U\+LL
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga2f372bff53c49a2fbd49263eab218093}\label{group___n_e_o-_m8_ga2f372bff53c49a2fbd49263eab218093}} 
+uint8\+\_\+t {\bfseries suspend\+\_\+state}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gac2a640eb3c984b7e12da958d29f04a08}\label{group___n_e_o-_m8_gac2a640eb3c984b7e12da958d29f04a08}} 
+uint8\+\_\+t {\bfseries cfg\+\_\+rate\+\_\+req}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gac6b6be25ddcf5e284cc5fd0c6eab3bfa}\label{group___n_e_o-_m8_gac6b6be25ddcf5e284cc5fd0c6eab3bfa}} 
+uint8\+\_\+t {\bfseries cfg\+\_\+nav5\+\_\+req}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gacb70d67e94b0ccfc78069da8a371a1ac}\label{group___n_e_o-_m8_gacb70d67e94b0ccfc78069da8a371a1ac}} 
+uint8\+\_\+t {\bfseries cfg\+\_\+odo\+\_\+req}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga973f5a9c3faa9fd60dd6788967ad58d3}\label{group___n_e_o-_m8_ga973f5a9c3faa9fd60dd6788967ad58d3}} 
+uint8\+\_\+t {\bfseries cfg\+\_\+pm2\+\_\+req}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga7b719418ff754d61ba9bb6f6796ab795}\label{group___n_e_o-_m8_ga7b719418ff754d61ba9bb6f6796ab795}} 
+uint8\+\_\+t {\bfseries cfg\+\_\+dgnss\+\_\+req}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gada358fe0c740074cbc5797e5b39b5dbc}\label{group___n_e_o-_m8_gada358fe0c740074cbc5797e5b39b5dbc}} 
+U4 {\bfseries i\+T\+OW}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga8dca61def1c0b3b31220ffe8c3281edb}\label{group___n_e_o-_m8_ga8dca61def1c0b3b31220ffe8c3281edb}} 
+U2 {\bfseries year}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga3734f1896418db45b206b628b73779a5}\label{group___n_e_o-_m8_ga3734f1896418db45b206b628b73779a5}} 
+U1 {\bfseries month}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga5ede4a23c1aaa6050eed370da7cdf79f}\label{group___n_e_o-_m8_ga5ede4a23c1aaa6050eed370da7cdf79f}} 
+U1 {\bfseries day}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga3c9961de32775869e12133fc3ecf1168}\label{group___n_e_o-_m8_ga3c9961de32775869e12133fc3ecf1168}} 
+U1 {\bfseries hour}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga4ba05b7064a604b5b849ee2025c0032b}\label{group___n_e_o-_m8_ga4ba05b7064a604b5b849ee2025c0032b}} 
+U1 {\bfseries min}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gad01f5fcc14a8851107c9cc8a6f579258}\label{group___n_e_o-_m8_gad01f5fcc14a8851107c9cc8a6f579258}} 
+U1 {\bfseries sec}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaf25052f60e0554f976a8b534d4652be1}\label{group___n_e_o-_m8_gaf25052f60e0554f976a8b534d4652be1}} 
+X1 {\bfseries valid}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga19b10fe7fff6d97e5bdd7c6854a719fe}\label{group___n_e_o-_m8_ga19b10fe7fff6d97e5bdd7c6854a719fe}} 
+U4 {\bfseries t\+Acc}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga981fc60839e68b7350ed89ab19ea37e2}\label{group___n_e_o-_m8_ga981fc60839e68b7350ed89ab19ea37e2}} 
+I4 {\bfseries nano}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga653d3b86c8f06848e477f7afd18ad470}\label{group___n_e_o-_m8_ga653d3b86c8f06848e477f7afd18ad470}} 
+U1 {\bfseries fix\+Type}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gafc88c3ead70d3e5460a5f6617a1d6395}\label{group___n_e_o-_m8_gafc88c3ead70d3e5460a5f6617a1d6395}} 
+X1 {\bfseries flags}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gad1d73e2d4bd97ab5bb482020caa12fdd}\label{group___n_e_o-_m8_gad1d73e2d4bd97ab5bb482020caa12fdd}} 
+X1 {\bfseries flags2}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga8a7362509da861eb66e12cfa76b04406}\label{group___n_e_o-_m8_ga8a7362509da861eb66e12cfa76b04406}} 
+U1 {\bfseries num\+SV}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gafdf32ed9030b67c2155d5b742c5b08d4}\label{group___n_e_o-_m8_gafdf32ed9030b67c2155d5b742c5b08d4}} 
+I4 {\bfseries lon}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gada5fcd17479bbb9cb66b51adeb7c3d93}\label{group___n_e_o-_m8_gada5fcd17479bbb9cb66b51adeb7c3d93}} 
+I4 {\bfseries lat}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gac80964e16d0f2b79969a555cafc9f96e}\label{group___n_e_o-_m8_gac80964e16d0f2b79969a555cafc9f96e}} 
+I4 {\bfseries height}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga7556dc793d75d99f1edb40ab8ed35dbf}\label{group___n_e_o-_m8_ga7556dc793d75d99f1edb40ab8ed35dbf}} 
+I4 {\bfseries h\+M\+SK}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga4c590d15e8a6a4e565e911da8ab14824}\label{group___n_e_o-_m8_ga4c590d15e8a6a4e565e911da8ab14824}} 
+U4 {\bfseries h\+Acc}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaa854fb65a77de22730c4a25bdad2983c}\label{group___n_e_o-_m8_gaa854fb65a77de22730c4a25bdad2983c}} 
+U4 {\bfseries v\+Acc}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gafb60c70059e4d1b156bae862bbb569e1}\label{group___n_e_o-_m8_gafb60c70059e4d1b156bae862bbb569e1}} 
+I4 {\bfseries velN}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga2e3911c8a479f8edec5c33b89dd3e40f}\label{group___n_e_o-_m8_ga2e3911c8a479f8edec5c33b89dd3e40f}} 
+I4 {\bfseries velE}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gae02ac61d9c9e70d40d54bc59ffc82e02}\label{group___n_e_o-_m8_gae02ac61d9c9e70d40d54bc59ffc82e02}} 
+I4 {\bfseries velD}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga5c12addd6a47a60c0ed291d7d4ad54ad}\label{group___n_e_o-_m8_ga5c12addd6a47a60c0ed291d7d4ad54ad}} 
+I4 {\bfseries g\+Speed}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gab1ed9dcc6b3d0ecf6cf62b27bd455b72}\label{group___n_e_o-_m8_gab1ed9dcc6b3d0ecf6cf62b27bd455b72}} 
+I4 {\bfseries head\+Mot}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga8393b17ed7a58d1a4935d4f06c433642}\label{group___n_e_o-_m8_ga8393b17ed7a58d1a4935d4f06c433642}} 
+U4 {\bfseries s\+Acc}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga845a1ebbcb3457bd18ac0f02faa1f47a}\label{group___n_e_o-_m8_ga845a1ebbcb3457bd18ac0f02faa1f47a}} 
+U4 {\bfseries head\+Acc}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gad2645f2771dda087bc18ffe6e478cc27}\label{group___n_e_o-_m8_gad2645f2771dda087bc18ffe6e478cc27}} 
+U2 {\bfseries p\+D\+OP}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gabc7507082e169ca66a38c6bb81871994}\label{group___n_e_o-_m8_gabc7507082e169ca66a38c6bb81871994}} 
+U1 {\bfseries res1}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga9ddf6e450f1f9f92c36edcc6a2764e4d}\label{group___n_e_o-_m8_ga9ddf6e450f1f9f92c36edcc6a2764e4d}} 
+U1 {\bfseries res2}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gac824a1019af2abd3b3ad8b9f7680fc3f}\label{group___n_e_o-_m8_gac824a1019af2abd3b3ad8b9f7680fc3f}} 
+U1 {\bfseries res3}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga515dfd8a92e0090183abfcb26c0cb91d}\label{group___n_e_o-_m8_ga515dfd8a92e0090183abfcb26c0cb91d}} 
+U1 {\bfseries res4}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga61d6e3b01cc4eb8f5d8ff12a0d27e7e6}\label{group___n_e_o-_m8_ga61d6e3b01cc4eb8f5d8ff12a0d27e7e6}} 
+U1 {\bfseries res5}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga30a504cbb5cfb0a01b598a0ef7ebd8e0}\label{group___n_e_o-_m8_ga30a504cbb5cfb0a01b598a0ef7ebd8e0}} 
+U1 {\bfseries res6}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga7f3a4618ea41b72491e210fe1fdffcc3}\label{group___n_e_o-_m8_ga7f3a4618ea41b72491e210fe1fdffcc3}} 
+I4 {\bfseries head\+Veh}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga4b46a5bb4e6ea7c6cac913e09e32b424}\label{group___n_e_o-_m8_ga4b46a5bb4e6ea7c6cac913e09e32b424}} 
+I2 {\bfseries mag\+Dec}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga2e2d7846b5f242f4380bf5ec960766c4}\label{group___n_e_o-_m8_ga2e2d7846b5f242f4380bf5ec960766c4}} 
+U2 {\bfseries mag\+Acc}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gac79a27d6b9435aced347e42883112d06}\label{group___n_e_o-_m8_gac79a27d6b9435aced347e42883112d06}} 
+X2 {\bfseries mask}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga0ee9b39a60454bd0e44160bc2f9f044d}\label{group___n_e_o-_m8_ga0ee9b39a60454bd0e44160bc2f9f044d}} 
+U1 {\bfseries dyn\+Model}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gae0da13be4c8cde6064f9cd08dec2b1be}\label{group___n_e_o-_m8_gae0da13be4c8cde6064f9cd08dec2b1be}} 
+U1 {\bfseries fix\+Mode}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga1f200797ca4bb8eedb050dc6d83a038d}\label{group___n_e_o-_m8_ga1f200797ca4bb8eedb050dc6d83a038d}} 
+I4 {\bfseries fixed\+Alt}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga4f08dda4b6edcea73a88d46aa13af79e}\label{group___n_e_o-_m8_ga4f08dda4b6edcea73a88d46aa13af79e}} 
+U4 {\bfseries fixed\+Alt\+Var}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaa8d653745c72ffaec5d69be6ce2fe43a}\label{group___n_e_o-_m8_gaa8d653745c72ffaec5d69be6ce2fe43a}} 
+I1 {\bfseries min\+Elev}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gac94b9f4d01859518b603bdcfe135ca4a}\label{group___n_e_o-_m8_gac94b9f4d01859518b603bdcfe135ca4a}} 
+U1 {\bfseries dr\+Limit}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gad550eb5bbb63455c404ff31b2013fe8d}\label{group___n_e_o-_m8_gad550eb5bbb63455c404ff31b2013fe8d}} 
+U2 {\bfseries p\+Dop}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga0546d0676692d5f6da468f67188b721d}\label{group___n_e_o-_m8_ga0546d0676692d5f6da468f67188b721d}} 
+U2 {\bfseries t\+Dop}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga4557883d21a52396398e40da203edfe9}\label{group___n_e_o-_m8_ga4557883d21a52396398e40da203edfe9}} 
+U2 {\bfseries p\+Acc}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga4fc74e9c92af617b787b71899b198dc2}\label{group___n_e_o-_m8_ga4fc74e9c92af617b787b71899b198dc2}} 
+U2 {\bfseries t\+Acc}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga95a5891b967e0f81ed748aba09e98075}\label{group___n_e_o-_m8_ga95a5891b967e0f81ed748aba09e98075}} 
+U1 {\bfseries static\+Hold\+Thresh}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga688d6571be945ed600a426b13669128c}\label{group___n_e_o-_m8_ga688d6571be945ed600a426b13669128c}} 
+U1 {\bfseries dgnss\+Timeout}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaedcfc0e9238f4e8358414de169c6f77c}\label{group___n_e_o-_m8_gaedcfc0e9238f4e8358414de169c6f77c}} 
+U1 {\bfseries cno\+Thresh\+Num\+S\+Vs}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga55fe7ac0a19d31ddc355f54444bf7638}\label{group___n_e_o-_m8_ga55fe7ac0a19d31ddc355f54444bf7638}} 
+U1 {\bfseries cno\+Thresh}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gabc7507082e169ca66a38c6bb81871994}\label{group___n_e_o-_m8_gabc7507082e169ca66a38c6bb81871994}} 
+U1 {\bfseries res1}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga9ddf6e450f1f9f92c36edcc6a2764e4d}\label{group___n_e_o-_m8_ga9ddf6e450f1f9f92c36edcc6a2764e4d}} 
+U1 {\bfseries res2}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga8bf0c51fb9bf82fe1ba09c831e2debe0}\label{group___n_e_o-_m8_ga8bf0c51fb9bf82fe1ba09c831e2debe0}} 
+U2 {\bfseries static\+Hold\+Max\+Dist}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga921cbc541d66e802074a8c0a71aa6f1c}\label{group___n_e_o-_m8_ga921cbc541d66e802074a8c0a71aa6f1c}} 
+U1 {\bfseries utc\+Standard}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gac824a1019af2abd3b3ad8b9f7680fc3f}\label{group___n_e_o-_m8_gac824a1019af2abd3b3ad8b9f7680fc3f}} 
+U1 {\bfseries res3}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga515dfd8a92e0090183abfcb26c0cb91d}\label{group___n_e_o-_m8_ga515dfd8a92e0090183abfcb26c0cb91d}} 
+U1 {\bfseries res4}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga61d6e3b01cc4eb8f5d8ff12a0d27e7e6}\label{group___n_e_o-_m8_ga61d6e3b01cc4eb8f5d8ff12a0d27e7e6}} 
+U1 {\bfseries res5}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga30a504cbb5cfb0a01b598a0ef7ebd8e0}\label{group___n_e_o-_m8_ga30a504cbb5cfb0a01b598a0ef7ebd8e0}} 
+U1 {\bfseries res6}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga735dbfd4ff77c076398522e5f7fc213b}\label{group___n_e_o-_m8_ga735dbfd4ff77c076398522e5f7fc213b}} 
+U1 {\bfseries res7}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaf703068f82f86a3194d39e08e44440c9}\label{group___n_e_o-_m8_gaf703068f82f86a3194d39e08e44440c9}} 
+U1 {\bfseries version}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gabc7507082e169ca66a38c6bb81871994}\label{group___n_e_o-_m8_gabc7507082e169ca66a38c6bb81871994}} 
+U1 {\bfseries res1}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga9ddf6e450f1f9f92c36edcc6a2764e4d}\label{group___n_e_o-_m8_ga9ddf6e450f1f9f92c36edcc6a2764e4d}} 
+U1 {\bfseries res2}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gac824a1019af2abd3b3ad8b9f7680fc3f}\label{group___n_e_o-_m8_gac824a1019af2abd3b3ad8b9f7680fc3f}} 
+U1 {\bfseries res3}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga5150c7e549ec67c7f8c9cb9c1c2cb113}\label{group___n_e_o-_m8_ga5150c7e549ec67c7f8c9cb9c1c2cb113}} 
+U1 {\bfseries flags}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga4f130fd6876f342042228c793b8876d0}\label{group___n_e_o-_m8_ga4f130fd6876f342042228c793b8876d0}} 
+X1 {\bfseries odo\+Cfg}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga515dfd8a92e0090183abfcb26c0cb91d}\label{group___n_e_o-_m8_ga515dfd8a92e0090183abfcb26c0cb91d}} 
+U1 {\bfseries res4}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga61d6e3b01cc4eb8f5d8ff12a0d27e7e6}\label{group___n_e_o-_m8_ga61d6e3b01cc4eb8f5d8ff12a0d27e7e6}} 
+U1 {\bfseries res5}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga30a504cbb5cfb0a01b598a0ef7ebd8e0}\label{group___n_e_o-_m8_ga30a504cbb5cfb0a01b598a0ef7ebd8e0}} 
+U1 {\bfseries res6}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga735dbfd4ff77c076398522e5f7fc213b}\label{group___n_e_o-_m8_ga735dbfd4ff77c076398522e5f7fc213b}} 
+U1 {\bfseries res7}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga6dc301dd67741139c041e912184dc970}\label{group___n_e_o-_m8_ga6dc301dd67741139c041e912184dc970}} 
+U1 {\bfseries res8}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga4cfc89b60b999b62b5f44ba15a6210ac}\label{group___n_e_o-_m8_ga4cfc89b60b999b62b5f44ba15a6210ac}} 
+U1 {\bfseries res9}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga3d0627b7d1a8b997d5f5cbc183d09d4a}\label{group___n_e_o-_m8_ga3d0627b7d1a8b997d5f5cbc183d09d4a}} 
+U1 {\bfseries cog\+Max\+Speed}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga1fd35036d77ffd4217f31d868b23c2b5}\label{group___n_e_o-_m8_ga1fd35036d77ffd4217f31d868b23c2b5}} 
+U1 {\bfseries cog\+Max\+Pos\+Acc}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaa88cb204ce0876c39c3a4120394067bc}\label{group___n_e_o-_m8_gaa88cb204ce0876c39c3a4120394067bc}} 
+U1 {\bfseries res10}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga52d27e554a51143322a390d16875bd5b}\label{group___n_e_o-_m8_ga52d27e554a51143322a390d16875bd5b}} 
+U1 {\bfseries res11}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gace662eb24fbe2dbc5a9c3f01207300bb}\label{group___n_e_o-_m8_gace662eb24fbe2dbc5a9c3f01207300bb}} 
+U1 {\bfseries vel\+Lp\+Gain}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaf705c5e16ba575d1f29e549a7f25e6ca}\label{group___n_e_o-_m8_gaf705c5e16ba575d1f29e549a7f25e6ca}} 
+U1 {\bfseries cog\+Lp\+Gain}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gae3c350a3908957ce54c6d1b4b3593007}\label{group___n_e_o-_m8_gae3c350a3908957ce54c6d1b4b3593007}} 
+U1 {\bfseries res12}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga6ef99962200af76549ce903099958397}\label{group___n_e_o-_m8_ga6ef99962200af76549ce903099958397}} 
+U1 {\bfseries res13}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga6a2e2ec4d30c834c73bd8b72827d5ce2}\label{group___n_e_o-_m8_ga6a2e2ec4d30c834c73bd8b72827d5ce2}} 
+U1 {\bfseries dgnss\+Mode}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gabc7507082e169ca66a38c6bb81871994}\label{group___n_e_o-_m8_gabc7507082e169ca66a38c6bb81871994}} 
+U1 {\bfseries res1}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga9ddf6e450f1f9f92c36edcc6a2764e4d}\label{group___n_e_o-_m8_ga9ddf6e450f1f9f92c36edcc6a2764e4d}} 
+U1 {\bfseries res2}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gac824a1019af2abd3b3ad8b9f7680fc3f}\label{group___n_e_o-_m8_gac824a1019af2abd3b3ad8b9f7680fc3f}} 
+U1 {\bfseries res3}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gab0a516dfff75fa974b62f0385f560b2a}\label{group___n_e_o-_m8_gab0a516dfff75fa974b62f0385f560b2a}} 
+U2 {\bfseries meas\+Rate}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga6dde2c6cd46d0dd27a3284c56198136e}\label{group___n_e_o-_m8_ga6dde2c6cd46d0dd27a3284c56198136e}} 
+U2 {\bfseries nav\+Rate}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga41ab3be5f0358627caf27ea11546a554}\label{group___n_e_o-_m8_ga41ab3be5f0358627caf27ea11546a554}} 
+U2 {\bfseries time\+Ref}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaf703068f82f86a3194d39e08e44440c9}\label{group___n_e_o-_m8_gaf703068f82f86a3194d39e08e44440c9}} 
+U1 {\bfseries version}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gabc7507082e169ca66a38c6bb81871994}\label{group___n_e_o-_m8_gabc7507082e169ca66a38c6bb81871994}} 
+U1 {\bfseries res1}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga697aab937ab4d65646691d660c9b0837}\label{group___n_e_o-_m8_ga697aab937ab4d65646691d660c9b0837}} 
+U1 {\bfseries max\+Startup\+State\+Dur}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga9ddf6e450f1f9f92c36edcc6a2764e4d}\label{group___n_e_o-_m8_ga9ddf6e450f1f9f92c36edcc6a2764e4d}} 
+U1 {\bfseries res2}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga789cdc095fb733d445515a99b4364260}\label{group___n_e_o-_m8_ga789cdc095fb733d445515a99b4364260}} 
+X4 {\bfseries flags}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaf0bad20e56be9fa1915cd8fcd8d70270}\label{group___n_e_o-_m8_gaf0bad20e56be9fa1915cd8fcd8d70270}} 
+U4 {\bfseries update\+Period}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga66f0619f866c5761c9d0edf867dd6a3f}\label{group___n_e_o-_m8_ga66f0619f866c5761c9d0edf867dd6a3f}} 
+U4 {\bfseries search\+Period}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaf5c209a3615eed6535fda3c8582649d2}\label{group___n_e_o-_m8_gaf5c209a3615eed6535fda3c8582649d2}} 
+U4 {\bfseries grid\+Offset}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gad7ec3efc422a4cb76ba3ad9c693a7031}\label{group___n_e_o-_m8_gad7ec3efc422a4cb76ba3ad9c693a7031}} 
+U2 {\bfseries on\+Time}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga5f1c74c8d558cadc1d5c570ff07fe1b1}\label{group___n_e_o-_m8_ga5f1c74c8d558cadc1d5c570ff07fe1b1}} 
+U2 {\bfseries min\+Acq\+Time}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga9280962c28c219b2fce65833822c6388}\label{group___n_e_o-_m8_ga9280962c28c219b2fce65833822c6388}} 
+U1 {\bfseries res} \mbox{[}20\mbox{]}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gaf703068f82f86a3194d39e08e44440c9}\label{group___n_e_o-_m8_gaf703068f82f86a3194d39e08e44440c9}} 
+U1 {\bfseries version}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gabc7507082e169ca66a38c6bb81871994}\label{group___n_e_o-_m8_gabc7507082e169ca66a38c6bb81871994}} 
+U1 {\bfseries res1}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga9ddf6e450f1f9f92c36edcc6a2764e4d}\label{group___n_e_o-_m8_ga9ddf6e450f1f9f92c36edcc6a2764e4d}} 
+U1 {\bfseries res2}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gac824a1019af2abd3b3ad8b9f7680fc3f}\label{group___n_e_o-_m8_gac824a1019af2abd3b3ad8b9f7680fc3f}} 
+U1 {\bfseries res3}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gada358fe0c740074cbc5797e5b39b5dbc}\label{group___n_e_o-_m8_gada358fe0c740074cbc5797e5b39b5dbc}} 
+U4 {\bfseries i\+T\+OW}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga912736d17318872ddb5c317f27c2d26a}\label{group___n_e_o-_m8_ga912736d17318872ddb5c317f27c2d26a}} 
+U4 {\bfseries distance}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga120e2c930184c9990c87de8aff8d84f4}\label{group___n_e_o-_m8_ga120e2c930184c9990c87de8aff8d84f4}} 
+U4 {\bfseries total\+Distance}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gafba6e8f5c0663961b34f4ef21efb2b9e}\label{group___n_e_o-_m8_gafba6e8f5c0663961b34f4ef21efb2b9e}} 
+U4 {\bfseries distance\+Std}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga7ecc266b231da16e5ee04a86200f4f1d}\label{group___n_e_o-_m8_ga7ecc266b231da16e5ee04a86200f4f1d}} 
+X1 {\bfseries mode}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga2d4068f0323b257c6f45a0fab02086c1}\label{group___n_e_o-_m8_ga2d4068f0323b257c6f45a0fab02086c1}} 
+X1 {\bfseries usage}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga45e4fe82f9886b72f8fe75e435f0451d}\label{group___n_e_o-_m8_ga45e4fe82f9886b72f8fe75e435f0451d}} 
+U1 {\bfseries max\+S\+B\+AS}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_ga4760af70af3f5146f486bfac12b7d442}\label{group___n_e_o-_m8_ga4760af70af3f5146f486bfac12b7d442}} 
+X1 {\bfseries scanmode2}
+\item 
+\mbox{\Hypertarget{group___n_e_o-_m8_gadedea02c9af63d8565997f50fb4cf828}\label{group___n_e_o-_m8_gadedea02c9af63d8565997f50fb4cf828}} 
+X4 {\bfseries scanmode1}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Ublox G\+N\+SS module driver. 
+
+Detail will be writen soon \begin{DoxyPrecond}{Precondition}
+In order to use the A\+DC driver the {\ttfamily U\+S\+E\+\_\+\+U\+B\+L\+O\+X\+\_\+\+G\+P\+S\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___n_e_o-_m8_neo_1}{}\doxysubsection{Stateflow}\label{group___n_e_o-_m8_neo_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_10}}
+\end{DoxyImageNoCaption}
+\hypertarget{group___n_e_o-_m8_neo_2}{}\doxysubsection{N\+E\+O-\/\+M8 Operations}\label{group___n_e_o-_m8_neo_2}
+The A\+DC driver is quite complex, an explanation of the terminology and of the operational details follows. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga8fd7a663cae8ffac9d94e62ec4c1f086}\label{group___n_e_o-_m8_ga8fd7a663cae8ffac9d94e62ec4c1f086}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_apply\_class@{neo\_apply\_class}}
+\index{neo\_apply\_class@{neo\_apply\_class}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_apply\_class()}{neo\_apply\_class()}}
+{\footnotesize\ttfamily void neo\+\_\+apply\+\_\+class (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{buffer,  }\item[{uint8\+\_\+t}]{class }\end{DoxyParamCaption})}
+
+
+
+Low-\/level packet forming A\+PI, class loading. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em buffer} & Buffer \\
+\hline
+{\em header} & Header \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga6925d8844a50b2f5fb050678d8221bd9}\label{group___n_e_o-_m8_ga6925d8844a50b2f5fb050678d8221bd9}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_apply\_header@{neo\_apply\_header}}
+\index{neo\_apply\_header@{neo\_apply\_header}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_apply\_header()}{neo\_apply\_header()}}
+{\footnotesize\ttfamily void neo\+\_\+apply\+\_\+header (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{buffer,  }\item[{uint16\+\_\+t}]{header }\end{DoxyParamCaption})}
+
+
+
+Low-\/level packet forming A\+PI, header loading. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em buffer} & Buffer \\
+\hline
+{\em header} & Header \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_gaee8e26c15d0d16b08c337fb24a8a315b}\label{group___n_e_o-_m8_gaee8e26c15d0d16b08c337fb24a8a315b}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_apply\_id@{neo\_apply\_id}}
+\index{neo\_apply\_id@{neo\_apply\_id}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_apply\_id()}{neo\_apply\_id()}}
+{\footnotesize\ttfamily void neo\+\_\+apply\+\_\+id (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{buffer,  }\item[{uint8\+\_\+t}]{id }\end{DoxyParamCaption})}
+
+
+
+Low-\/level packet forming A\+PI, ID loading. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em buffer} & Buffer \\
+\hline
+{\em header} & Header \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga298ba864057ae52e5ce479738f4f8da7}\label{group___n_e_o-_m8_ga298ba864057ae52e5ce479738f4f8da7}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_apply\_length@{neo\_apply\_length}}
+\index{neo\_apply\_length@{neo\_apply\_length}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_apply\_length()}{neo\_apply\_length()}}
+{\footnotesize\ttfamily void neo\+\_\+apply\+\_\+length (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{buffer,  }\item[{uint8\+\_\+t}]{len }\end{DoxyParamCaption})}
+
+
+
+Low-\/level packet forming A\+PI, length loading, little-\/endian. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em buffer} & Buffer \\
+\hline
+{\em header} & Header \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga07fa3d6c5e9ff5a076ae6a582d5094ca}\label{group___n_e_o-_m8_ga07fa3d6c5e9ff5a076ae6a582d5094ca}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_calc\_crc@{neo\_calc\_crc}}
+\index{neo\_calc\_crc@{neo\_calc\_crc}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_calc\_crc()}{neo\_calc\_crc()}}
+{\footnotesize\ttfamily uint16\+\_\+t neo\+\_\+calc\+\_\+crc (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{buffer,  }\item[{uint16\+\_\+t}]{len }\end{DoxyParamCaption})}
+
+@ C\+RC calculation 
+\begin{DoxyParams}{Parameters}
+{\em buffer} & Buffer \\
+\hline
+{\em len} & Number of bytes \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+C\+RC 
+\end{DoxyReturn}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=283pt]{group___n_e_o-_m8_ga07fa3d6c5e9ff5a076ae6a582d5094ca_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{group___n_e_o-_m8_gafbf792d5e99d6c48c805bb68c2a860df}\label{group___n_e_o-_m8_gafbf792d5e99d6c48c805bb68c2a860df}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_cp\_to\_struct@{neo\_cp\_to\_struct}}
+\index{neo\_cp\_to\_struct@{neo\_cp\_to\_struct}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_cp\_to\_struct()}{neo\_cp\_to\_struct()}}
+{\footnotesize\ttfamily void neo\+\_\+cp\+\_\+to\+\_\+struct (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{msg,  }\item[{uint8\+\_\+t $\ast$}]{strc,  }\item[{uint8\+\_\+t}]{len }\end{DoxyParamCaption})}
+
+
+
+Copy data from recieved message to struct. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & Message buffer pointer \\
+\hline
+{\em strc} & Struct pointer \\
+\hline
+{\em len} & Bytes to copy\\
+\hline
+{\em msg} & \\
+\hline
+{\em strc} & \\
+\hline
+{\em len} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga8438c02d0fe82316aa196dde63141b73}\label{group___n_e_o-_m8_ga8438c02d0fe82316aa196dde63141b73}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_create\_poll\_request@{neo\_create\_poll\_request}}
+\index{neo\_create\_poll\_request@{neo\_create\_poll\_request}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_create\_poll\_request()}{neo\_create\_poll\_request()}}
+{\footnotesize\ttfamily void neo\+\_\+create\+\_\+poll\+\_\+request (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{class,  }\item[{uint8\+\_\+t}]{id }\end{DoxyParamCaption})}
+
+
+
+Send polling request to neo-\/m8. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em class} & Message class \\
+\hline
+{\em id} & Message ID \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_gacbd2dae5edacfc8e4a87ea694eda2ac1}\label{group___n_e_o-_m8_gacbd2dae5edacfc8e4a87ea694eda2ac1}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_get\_ground\_speed@{neo\_get\_ground\_speed}}
+\index{neo\_get\_ground\_speed@{neo\_get\_ground\_speed}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_get\_ground\_speed()}{neo\_get\_ground\_speed()}}
+{\footnotesize\ttfamily int32\+\_\+t neo\+\_\+get\+\_\+ground\+\_\+speed (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structubx__nav__pvt__t}{ubx\+\_\+nav\+\_\+pvt\+\_\+t}} $\ast$}]{pvt }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em pvt} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___n_e_o-_m8_gaf75f730cedf81be7fb157df6b87e1938}\label{group___n_e_o-_m8_gaf75f730cedf81be7fb157df6b87e1938}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_get\_lat@{neo\_get\_lat}}
+\index{neo\_get\_lat@{neo\_get\_lat}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_get\_lat()}{neo\_get\_lat()}}
+{\footnotesize\ttfamily int32\+\_\+t neo\+\_\+get\+\_\+lat (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structubx__nav__pvt__t}{ubx\+\_\+nav\+\_\+pvt\+\_\+t}} $\ast$}]{pvt }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em pvt} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga49008ece0ca8671e4d06cff1a936343d}\label{group___n_e_o-_m8_ga49008ece0ca8671e4d06cff1a936343d}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_get\_lon@{neo\_get\_lon}}
+\index{neo\_get\_lon@{neo\_get\_lon}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_get\_lon()}{neo\_get\_lon()}}
+{\footnotesize\ttfamily int32\+\_\+t neo\+\_\+get\+\_\+lon (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structubx__nav__pvt__t}{ubx\+\_\+nav\+\_\+pvt\+\_\+t}} $\ast$}]{pvt }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em pvt} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga1d96b30bbcc248bd6e647f5a6f3fd38d}\label{group___n_e_o-_m8_ga1d96b30bbcc248bd6e647f5a6f3fd38d}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_get\_numsv@{neo\_get\_numsv}}
+\index{neo\_get\_numsv@{neo\_get\_numsv}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_get\_numsv()}{neo\_get\_numsv()}}
+{\footnotesize\ttfamily uint8\+\_\+t neo\+\_\+get\+\_\+numsv (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structubx__nav__pvt__t}{ubx\+\_\+nav\+\_\+pvt\+\_\+t}} $\ast$}]{pvt }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em pvt} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___n_e_o-_m8_gad7d33e798b32bc45169f63fff6605d22}\label{group___n_e_o-_m8_gad7d33e798b32bc45169f63fff6605d22}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_get\_valid@{neo\_get\_valid}}
+\index{neo\_get\_valid@{neo\_get\_valid}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_get\_valid()}{neo\_get\_valid()}}
+{\footnotesize\ttfamily uint8\+\_\+t neo\+\_\+get\+\_\+valid (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structubx__nav__pvt__t}{ubx\+\_\+nav\+\_\+pvt\+\_\+t}} $\ast$}]{pvt }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em pvt} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga25689164096c8cf80f7b18dd88a929c1}\label{group___n_e_o-_m8_ga25689164096c8cf80f7b18dd88a929c1}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_poll\_nav\_pvt@{neo\_poll\_nav\_pvt}}
+\index{neo\_poll\_nav\_pvt@{neo\_poll\_nav\_pvt}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_poll\_nav\_pvt()}{neo\_poll\_nav\_pvt()}}
+{\footnotesize\ttfamily void neo\+\_\+poll\+\_\+nav\+\_\+pvt (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Polling nav pvt data \mbox{\Hypertarget{group___n_e_o-_m8_gab5ca717a489880dc89ae1e20ce799ead}\label{group___n_e_o-_m8_gab5ca717a489880dc89ae1e20ce799ead}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_polling@{neo\_polling}}
+\index{neo\_polling@{neo\_polling}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_polling()}{neo\_polling()}}
+{\footnotesize\ttfamily void neo\+\_\+polling (\begin{DoxyParamCaption}\item[{S\+P\+I\+Driver $\ast$}]{S\+P\+ID,  }\item[{uint8\+\_\+t}]{class,  }\item[{uint8\+\_\+t}]{id }\end{DoxyParamCaption})}
+
+Polling A\+PI 
+\begin{DoxyParams}{Parameters}
+{\em $\ast$\+S\+P\+ID} & S\+PI driver \\
+\hline
+{\em class} & U\+BX class \\
+\hline
+{\em id} & U\+BX class ID \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga0cf12bd1b0d078269904073bac00267d}\label{group___n_e_o-_m8_ga0cf12bd1b0d078269904073bac00267d}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_process\_ack@{neo\_process\_ack}}
+\index{neo\_process\_ack@{neo\_process\_ack}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_process\_ack()}{neo\_process\_ack()}}
+{\footnotesize\ttfamily void neo\+\_\+process\+\_\+ack (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{message }\end{DoxyParamCaption})}
+
+
+
+Parsing A\+CK message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Message buffer pointer \\
+\hline
+\end{DoxyParams}
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=347pt]{group___n_e_o-_m8_ga0cf12bd1b0d078269904073bac00267d_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga075ec88b7467bf5a714b8f80d3fbce7c}\label{group___n_e_o-_m8_ga075ec88b7467bf5a714b8f80d3fbce7c}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_process\_cfg@{neo\_process\_cfg}}
+\index{neo\_process\_cfg@{neo\_process\_cfg}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_process\_cfg()}{neo\_process\_cfg()}}
+{\footnotesize\ttfamily void neo\+\_\+process\+\_\+cfg (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{message }\end{DoxyParamCaption})}
+
+
+
+Parsing C\+FG class message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Message buffer pointer \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga67811202470049b8b04eb11bb79eb62c}\label{group___n_e_o-_m8_ga67811202470049b8b04eb11bb79eb62c}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_process\_cfg\_odo@{neo\_process\_cfg\_odo}}
+\index{neo\_process\_cfg\_odo@{neo\_process\_cfg\_odo}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_process\_cfg\_odo()}{neo\_process\_cfg\_odo()}}
+{\footnotesize\ttfamily void neo\+\_\+process\+\_\+cfg\+\_\+odo (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{message }\end{DoxyParamCaption})}
+
+
+
+Parsing C\+FG odometer message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Message buffer pointer \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_gab69520ba8c40a6a423b51c4bf3961998}\label{group___n_e_o-_m8_gab69520ba8c40a6a423b51c4bf3961998}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_process\_nav@{neo\_process\_nav}}
+\index{neo\_process\_nav@{neo\_process\_nav}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_process\_nav()}{neo\_process\_nav()}}
+{\footnotesize\ttfamily void neo\+\_\+process\+\_\+nav (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{message }\end{DoxyParamCaption})}
+
+
+
+Parsing N\+AV class message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Message buffer pointer \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_gaedd148f5fc5f0b66de9e263fb647d0fb}\label{group___n_e_o-_m8_gaedd148f5fc5f0b66de9e263fb647d0fb}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_process\_nav5@{neo\_process\_nav5}}
+\index{neo\_process\_nav5@{neo\_process\_nav5}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_process\_nav5()}{neo\_process\_nav5()}}
+{\footnotesize\ttfamily void neo\+\_\+process\+\_\+nav5 (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{message }\end{DoxyParamCaption})}
+
+
+
+Parsing N\+A\+V5 message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Message buffer pointer \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga5e77b1ffc8b424881298912f9ffae94a}\label{group___n_e_o-_m8_ga5e77b1ffc8b424881298912f9ffae94a}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_process\_odo@{neo\_process\_odo}}
+\index{neo\_process\_odo@{neo\_process\_odo}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_process\_odo()}{neo\_process\_odo()}}
+{\footnotesize\ttfamily void neo\+\_\+process\+\_\+odo (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{message }\end{DoxyParamCaption})}
+
+
+
+Parsing odometer message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Message buffer pointer \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga206cfab5c4456a4e03aa1fb0c1002410}\label{group___n_e_o-_m8_ga206cfab5c4456a4e03aa1fb0c1002410}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_process\_pvt@{neo\_process\_pvt}}
+\index{neo\_process\_pvt@{neo\_process\_pvt}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_process\_pvt()}{neo\_process\_pvt()}}
+{\footnotesize\ttfamily void neo\+\_\+process\+\_\+pvt (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{message }\end{DoxyParamCaption})}
+
+
+
+Parsing P\+VT message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Message buffer pointer \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga1ad5b612401dbdcbe43c34bc4bb5867e}\label{group___n_e_o-_m8_ga1ad5b612401dbdcbe43c34bc4bb5867e}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_process\_rate@{neo\_process\_rate}}
+\index{neo\_process\_rate@{neo\_process\_rate}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_process\_rate()}{neo\_process\_rate()}}
+{\footnotesize\ttfamily void neo\+\_\+process\+\_\+rate (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{message }\end{DoxyParamCaption})}
+
+
+
+Parsing rate message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Message buffer pointer \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga34f707f1b981d30b364fd9bf8d25d95f}\label{group___n_e_o-_m8_ga34f707f1b981d30b364fd9bf8d25d95f}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_process\_sbas@{neo\_process\_sbas}}
+\index{neo\_process\_sbas@{neo\_process\_sbas}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_process\_sbas()}{neo\_process\_sbas()}}
+{\footnotesize\ttfamily void neo\+\_\+process\+\_\+sbas (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{message }\end{DoxyParamCaption})}
+
+
+
+Parsing \mbox{\hyperlink{struct_s_b_a_s}{S\+B\+AS}} message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Message buffer pointer \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_gaf17842b28d0e4080e3487ccee88b6ad8}\label{group___n_e_o-_m8_gaf17842b28d0e4080e3487ccee88b6ad8}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_read\_bytes@{neo\_read\_bytes}}
+\index{neo\_read\_bytes@{neo\_read\_bytes}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_read\_bytes()}{neo\_read\_bytes()}}
+{\footnotesize\ttfamily void neo\+\_\+read\+\_\+bytes (\begin{DoxyParamCaption}\item[{S\+P\+I\+Driver $\ast$}]{S\+P\+ID,  }\item[{uint16\+\_\+t}]{num,  }\item[{uint8\+\_\+t $\ast$}]{rxbuf }\end{DoxyParamCaption})}
+
+Low-\/level reading several bytes A\+PI 
+\begin{DoxyParams}{Parameters}
+{\em S\+P\+ID} & \\
+\hline
+{\em num} & \\
+\hline
+{\em rxbuf} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_gaf6cd233aff28de06b91710b4f3bd27b5}\label{group___n_e_o-_m8_gaf6cd233aff28de06b91710b4f3bd27b5}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_read\_bytes\_no\_cs@{neo\_read\_bytes\_no\_cs}}
+\index{neo\_read\_bytes\_no\_cs@{neo\_read\_bytes\_no\_cs}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_read\_bytes\_no\_cs()}{neo\_read\_bytes\_no\_cs()}}
+{\footnotesize\ttfamily void neo\+\_\+read\+\_\+bytes\+\_\+no\+\_\+cs (\begin{DoxyParamCaption}\item[{S\+P\+I\+Driver $\ast$}]{S\+P\+ID,  }\item[{uint16\+\_\+t}]{num,  }\item[{uint8\+\_\+t $\ast$}]{rxbuf }\end{DoxyParamCaption})}
+
+Low-\/level reading several bytes A\+PI without releasing CS in the end of transition 
+\begin{DoxyParams}{Parameters}
+{\em S\+P\+ID} & \\
+\hline
+{\em num} & \\
+\hline
+{\em rxbuf} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga52c2c574c486dc22192a81fa0511c0f6}\label{group___n_e_o-_m8_ga52c2c574c486dc22192a81fa0511c0f6}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_read\_bytes\_release\_cs@{neo\_read\_bytes\_release\_cs}}
+\index{neo\_read\_bytes\_release\_cs@{neo\_read\_bytes\_release\_cs}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_read\_bytes\_release\_cs()}{neo\_read\_bytes\_release\_cs()}}
+{\footnotesize\ttfamily void neo\+\_\+read\+\_\+bytes\+\_\+release\+\_\+cs (\begin{DoxyParamCaption}\item[{S\+P\+I\+Driver $\ast$}]{S\+P\+ID,  }\item[{uint16\+\_\+t}]{num,  }\item[{uint8\+\_\+t $\ast$}]{rxbuf }\end{DoxyParamCaption})}
+
+Low-\/level reading several bytes A\+PI with releasing CS in the end of transition 
+\begin{DoxyParams}{Parameters}
+{\em S\+P\+ID} & \\
+\hline
+{\em num} & \\
+\hline
+{\em rxbuf} & \\
+\hline
+\end{DoxyParams}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=347pt]{group___n_e_o-_m8_ga52c2c574c486dc22192a81fa0511c0f6_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{group___n_e_o-_m8_gac8a5523a1cd9ad31d85fbf284221f3eb}\label{group___n_e_o-_m8_gac8a5523a1cd9ad31d85fbf284221f3eb}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_write@{neo\_write}}
+\index{neo\_write@{neo\_write}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_write()}{neo\_write()}}
+{\footnotesize\ttfamily void neo\+\_\+write (\begin{DoxyParamCaption}\item[{S\+P\+I\+Driver $\ast$}]{S\+P\+ID,  }\item[{uint8\+\_\+t $\ast$}]{txbuff,  }\item[{uint8\+\_\+t}]{len }\end{DoxyParamCaption})}
+
+Low-\/level writing A\+PI 
+\begin{DoxyParams}{Parameters}
+{\em S\+P\+ID} & \\
+\hline
+{\em txbuff} & \\
+\hline
+{\em len} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_e_o-_m8_gac7adc4ceacd3c4a00a1f7e2d8ff1f0b2}\label{group___n_e_o-_m8_gac7adc4ceacd3c4a00a1f7e2d8ff1f0b2}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_write\_no\_cs@{neo\_write\_no\_cs}}
+\index{neo\_write\_no\_cs@{neo\_write\_no\_cs}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_write\_no\_cs()}{neo\_write\_no\_cs()}}
+{\footnotesize\ttfamily void neo\+\_\+write\+\_\+no\+\_\+cs (\begin{DoxyParamCaption}\item[{S\+P\+I\+Driver $\ast$}]{S\+P\+ID,  }\item[{uint8\+\_\+t $\ast$}]{txbuff,  }\item[{uint8\+\_\+t}]{len }\end{DoxyParamCaption})}
+
+Low-\/level writing A\+PI without releasing CS in the end of transition 
+\begin{DoxyParams}{Parameters}
+{\em S\+P\+ID} & \\
+\hline
+{\em txbuff} & \\
+\hline
+{\em len} & \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{group___n_e_o-_m8_ga978238cf33e14f94903e161dc96e12ea}\label{group___n_e_o-_m8_ga978238cf33e14f94903e161dc96e12ea}} 
+\index{Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}!neo\_spi\_cfg@{neo\_spi\_cfg}}
+\index{neo\_spi\_cfg@{neo\_spi\_cfg}!Ublox NEO-\/M8 Driver@{Ublox NEO-\/M8 Driver}}
+\doxysubsubsection{\texorpdfstring{neo\_spi\_cfg}{neo\_spi\_cfg}}
+{\footnotesize\ttfamily const S\+P\+I\+Config neo\+\_\+spi\+\_\+cfg\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{= \{}
+\DoxyCodeLine{        \textcolor{keyword}{false},}
+\DoxyCodeLine{        NULL,}
+\DoxyCodeLine{        GPIOC,}
+\DoxyCodeLine{        GPIOC\_MCU\_CS,}
+\DoxyCodeLine{        SPI\_CR1\_BR\_1 | SPI\_CR1\_BR\_0,}
+\DoxyCodeLine{        0}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}

@@ -5,6 +5,14 @@
  *      Author: a-h
  */
 
+/**
+ * @file    pwr.h
+ * @brief   Power management Driver macros and structures.
+ *
+ * @addtogroup PWR
+ * @{
+ */
+
 #ifndef SD_MODULES_POWER_MANAGEMENT_PWR_MGMT_L4_H_
 #define SD_MODULES_POWER_MANAGEMENT_PWR_MGMT_L4_H_
 

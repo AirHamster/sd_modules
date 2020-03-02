@@ -1,0 +1,58 @@
+\hypertarget{group___s_e_r_v_i_c_e___m_o_d_e}{}\doxysection{Service mode Driver}
+\label{group___s_e_r_v_i_c_e___m_o_d_e}\index{Service mode Driver@{Service mode Driver}}
+
+
+Shell commands and output driver.  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___s_e_r_v_i_c_e___m_o_d_e_gabd466b9ceac54642a3db18033fa07691}\label{group___s_e_r_v_i_c_e___m_o_d_e_gabd466b9ceac54642a3db18033fa07691}} 
+void {\bfseries cmd\+\_\+service} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+\mbox{\Hypertarget{group___s_e_r_v_i_c_e___m_o_d_e_ga530b3c4180ced92dc7b5860450521bb9}\label{group___s_e_r_v_i_c_e___m_o_d_e_ga530b3c4180ced92dc7b5860450521bb9}} 
+void {\bfseries cmd\+\_\+microsd} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+\mbox{\Hypertarget{group___s_e_r_v_i_c_e___m_o_d_e_ga913241cf60483c97e4378e75b4cbae88}\label{group___s_e_r_v_i_c_e___m_o_d_e_ga913241cf60483c97e4378e75b4cbae88}} 
+void {\bfseries cmd\+\_\+compass} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+\mbox{\Hypertarget{group___s_e_r_v_i_c_e___m_o_d_e_ga7c40d0799995cf1845f7c7d151c51468}\label{group___s_e_r_v_i_c_e___m_o_d_e_ga7c40d0799995cf1845f7c7d151c51468}} 
+void {\bfseries cmd\+\_\+bno055} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+\mbox{\Hypertarget{group___s_e_r_v_i_c_e___m_o_d_e_ga8c0a0b863107910329561002c6952089}\label{group___s_e_r_v_i_c_e___m_o_d_e_ga8c0a0b863107910329561002c6952089}} 
+void {\bfseries cmd\+\_\+ble} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+\mbox{\Hypertarget{group___s_e_r_v_i_c_e___m_o_d_e_gad122ef9cd9da5f0d74880430e42e6e6a}\label{group___s_e_r_v_i_c_e___m_o_d_e_gad122ef9cd9da5f0d74880430e42e6e6a}} 
+void {\bfseries cmd\+\_\+rudder} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+\mbox{\Hypertarget{group___s_e_r_v_i_c_e___m_o_d_e_ga0b042585e89c116d9966399451935f02}\label{group___s_e_r_v_i_c_e___m_o_d_e_ga0b042585e89c116d9966399451935f02}} 
+void {\bfseries cmd\+\_\+lag} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___s_e_r_v_i_c_e___m_o_d_e_gaf657246b9efd5a90642a08407249f39f}\label{group___s_e_r_v_i_c_e___m_o_d_e_gaf657246b9efd5a90642a08407249f39f}} 
+\mbox{\hyperlink{structdots__t}{dots\+\_\+t}} $\ast$ {\bfseries r\+\_\+rudder\+\_\+dots}
+\item 
+\mbox{\Hypertarget{group___s_e_r_v_i_c_e___m_o_d_e_ga09e98359014635734b08de49a228b5c2}\label{group___s_e_r_v_i_c_e___m_o_d_e_ga09e98359014635734b08de49a228b5c2}} 
+\mbox{\hyperlink{structcoefs__t}{coefs\+\_\+t}} $\ast$ {\bfseries r\+\_\+rudder\+\_\+coefs}
+\item 
+\mbox{\Hypertarget{group___s_e_r_v_i_c_e___m_o_d_e_ga967ea156994a35bf77b2c4ae7ccaf273}\label{group___s_e_r_v_i_c_e___m_o_d_e_ga967ea156994a35bf77b2c4ae7ccaf273}} 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Shell commands and output driver. 
+
+Detail will be writen soon \begin{DoxyPrecond}{Precondition}
+In order to use the A\+DC driver the {\ttfamily U\+S\+E\+\_\+\+S\+E\+R\+V\+I\+C\+E\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___s_e_r_v_i_c_e___m_o_d_e_service_1}{}\doxysubsection{Stateflow}\label{group___s_e_r_v_i_c_e___m_o_d_e_service_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_13}}
+\end{DoxyImageNoCaption}
+\hypertarget{group___s_e_r_v_i_c_e___m_o_d_e_service_2}{}\doxysubsection{Shell operations}\label{group___s_e_r_v_i_c_e___m_o_d_e_service_2}
+The A\+DC driver is quite complex, an explanation of the terminology and of the operational details follows. 

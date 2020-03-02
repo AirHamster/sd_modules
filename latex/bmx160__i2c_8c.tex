@@ -1,0 +1,171 @@
+\hypertarget{bmx160__i2c_8c}{}\doxysection{bmx160/bmx160\+\_\+i2c.c File Reference}
+\label{bmx160__i2c_8c}\index{bmx160/bmx160\_i2c.c@{bmx160/bmx160\_i2c.c}}
+
+
+B\+M\+X160 Driver funcs.  
+
+
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}stdint.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}math.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}ch.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}hal.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}shell.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}chprintf.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}bmi160.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}bmm150.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}bmx160\+\_\+i2c.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}sd\+\_\+shell\+\_\+cmds.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}eeprom.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Madgwick\+A\+H\+R\+S.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}bno055\+\_\+i2c.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}hmc6343\+\_\+i2c.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Bsx\+Fusion\+Library.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Bsx\+Library\+Calib\+Constants.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Bsx\+Library\+Constants.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Bsx\+Library\+Data\+Types.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Bsx\+Library\+Error\+Constants.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Fusion.\+h\char`\"{}}\newline
+Include dependency graph for bmx160\+\_\+i2c.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{bmx160__i2c_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define {\bfseries A\+C\+C\+\_\+\+F\+R\+A\+M\+ES}~10 /$\ast$ 10 Frames are available every 100ms @ 100\+Hz $\ast$/
+\item 
+\#define {\bfseries G\+Y\+R\+\_\+\+F\+R\+A\+M\+ES}~10
+\item 
+\#define {\bfseries M\+A\+G\+\_\+\+F\+R\+A\+M\+ES}~10
+\item 
+\#define {\bfseries F\+I\+F\+O\+\_\+\+S\+I\+ZE}~250
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_m_x160_ga49973b7d3a711bf0b288827eea6147d8}{bmm150\+\_\+aux\+\_\+read}} (uint8\+\_\+t id, uint8\+\_\+t reg\+\_\+addr, uint8\+\_\+t $\ast$aux\+\_\+data, uint16\+\_\+t len)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_m_x160_gabdcbb50b9992b83fc2a9978e5a85b3f7}{bmm150\+\_\+aux\+\_\+write}} (uint8\+\_\+t id, uint8\+\_\+t reg\+\_\+addr, uint8\+\_\+t $\ast$aux\+\_\+data, uint16\+\_\+t len)
+\item 
+static {\bfseries T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA} (bmx160\+\_\+thread\+\_\+wa, 4096 $\ast$2)
+\item 
+static {\bfseries T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON} (bmx160\+\_\+thread, arg)
+\item 
+static {\bfseries T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA} (bmx160\+\_\+calib\+\_\+thread\+\_\+wa, 4096 $\ast$2)
+\item 
+static {\bfseries T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON} (bmx160\+\_\+calib\+\_\+thread, arg)
+\item 
+void \mbox{\hyperlink{group___b_m_x160_ga3c92c87bd9ca59bc115bc38377fd51e8}{start\+\_\+bmx160\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Start B\+M\+X160 threads. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_m_x160_ga24f66e1149af3eaad9ce37483510bd52}{bmx160\+\_\+full\+\_\+init}} (void)
+\begin{DoxyCompactList}\small\item\em B\+M\+X160 chip and fusion algorithm initialization. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_m_x160_gaef63369936367c6e6134a115ba2ff0e4}{bmx160\+\_\+save\+\_\+calib\+\_\+to\+\_\+eeprom}} (\mbox{\hyperlink{structbmx160__t}{bmx160\+\_\+t}} $\ast$bmx160)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_m_x160_gaa63455ae5399148828ded823bdbf22ba}{bmx160\+\_\+read\+\_\+calib\+\_\+from\+\_\+eeprom}} (\mbox{\hyperlink{structbmx160__t}{bmx160\+\_\+t}} $\ast$bmx160)
+\item 
+void \mbox{\hyperlink{group___b_m_x160_ga3a4faab4353dc9146acac90c0c1c1d7b}{bmx160\+\_\+delay\+\_\+ms}} (uint16\+\_\+t msec)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_m_x160_ga7bf955a507181f89471d728bd2762956}{bmx160\+\_\+read}} (uint8\+\_\+t dev\+\_\+addr, uint8\+\_\+t $\ast$reg\+\_\+data, uint8\+\_\+t r\+\_\+len)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_m_x160_gae7be93f63edc7f69dd40264fa013d61b}{bmx160\+\_\+write}} (uint8\+\_\+t dev\+\_\+addr, uint8\+\_\+t $\ast$reg\+\_\+data, uint8\+\_\+t wr\+\_\+len)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_m_x160_gad8db7cde72be48b6d268b6deac45002a}{bmx160\+\_\+\+I2\+C\+\_\+bus\+\_\+write}} (uint8\+\_\+t dev\+\_\+addr, uint8\+\_\+t reg\+\_\+addr, uint8\+\_\+t $\ast$reg\+\_\+data, uint8\+\_\+t cnt)
+\item 
+int8\+\_\+t {\bfseries bmx160\+\_\+\+I2\+C\+\_\+bus\+\_\+read} (uint8\+\_\+t dev\+\_\+addr, uint8\+\_\+t reg\+\_\+addr, uint8\+\_\+t $\ast$reg\+\_\+data, uint8\+\_\+t cnt)
+\item 
+void \mbox{\hyperlink{group___b_m_x160_gadfae2f890ccf344affabc18eccb13004}{bmx160\+\_\+mag\+\_\+calibration}} (float $\ast$dest1, float $\ast$dest2)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$ {\bfseries bno055}
+\item 
+\mbox{\hyperlink{structhmc6343__t}{hmc6343\+\_\+t}} $\ast$ {\bfseries hmc6343}
+\item 
+\mbox{\hyperlink{struct_fusion_bias}{Fusion\+Bias}} {\bfseries fusion\+Bias}
+\item 
+\mbox{\hyperlink{struct_fusion_ahrs}{Fusion\+Ahrs}} {\bfseries fusion\+Ahrs}
+\item 
+float {\bfseries sample\+Period} = 0.\+01f
+\item 
+\mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}} \mbox{\hyperlink{group___b_m_x160_ga4757aa7cfb35f2c81dcc78bcb7670a30}{gyroscope\+Sensitivity}}
+\begin{DoxyCompactList}\small\item\em Sensitivity in degrees per second per lsb as specified in gyroscope datasheet. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}} \mbox{\hyperlink{group___b_m_x160_ga7276acf7fba43050e5b28f8f635dd140}{accelerometer\+Sensitivity}}
+\begin{DoxyCompactList}\small\item\em Sensitivity in g per lsb as specified in accelerometer datasheet. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{union_fusion_vector3}{Fusion\+Vector3}} \mbox{\hyperlink{group___b_m_x160_ga9de72b998abc26885a84e1de0c03ee47}{hard\+Iron\+Bias}}
+\begin{DoxyCompactList}\small\item\em Hard-\/iron bias in uT. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{_bsx_library_data_types_8h_a579d0b6ef3326502e47ff7d3223e76e4}{B\+S\+X\+\_\+\+U8}} {\bfseries bsx\+Lib\+Conf\+Acc} \mbox{[}$\,$\mbox{]}
+\item 
+\mbox{\hyperlink{_bsx_library_data_types_8h_a579d0b6ef3326502e47ff7d3223e76e4}{B\+S\+X\+\_\+\+U8}} {\bfseries bsx\+Lib\+Conf\+Mag} \mbox{[}$\,$\mbox{]}
+\item 
+\mbox{\hyperlink{_bsx_library_data_types_8h_a579d0b6ef3326502e47ff7d3223e76e4}{B\+S\+X\+\_\+\+U8}} {\bfseries bsx\+Lib\+Conf\+Gyro} \mbox{[}$\,$\mbox{]} = \{ 14, 0, 1, 1, 3, 9, 12, 136, 19, 16, 1, 1, 129, 46 \}
+\item 
+\mbox{\hyperlink{_bsx_library_data_types_8h_a579d0b6ef3326502e47ff7d3223e76e4}{B\+S\+X\+\_\+\+U8}} {\bfseries bsx\+Lib\+Conf} \mbox{[}$\,$\mbox{]}
+\item 
+\mbox{\hyperlink{structinit_param__t}{init\+Param\+\_\+t}} {\bfseries s\+\_\+input}
+\item 
+\mbox{\hyperlink{structts__working_modes}{ts\+\_\+working\+Modes}} {\bfseries s\+\_\+workingmodes}
+\item 
+\mbox{\hyperlink{structts___h_wsensor_switch_list}{ts\+\_\+\+H\+Wsensor\+Switch\+List}} {\bfseries H\+Wsensor\+Switch\+List}
+\item 
+\mbox{\hyperlink{structlibraryinput__t}{libraryinput\+\_\+t}} {\bfseries library\+Input\+\_\+ts}
+\item 
+volatile float {\bfseries q} \mbox{[}4\mbox{]} = \{1.\+0f, 0.\+0f, 0.\+0f, 0.\+0f\}
+\item 
+volatile float {\bfseries q0}
+\item 
+volatile float {\bfseries q1}
+\item 
+volatile float {\bfseries q2}
+\item 
+volatile float {\bfseries q3}
+\item 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+struct ch\+\_\+semaphore {\bfseries i2c1\+\_\+semaph}
+\item 
+int8\+\_\+t {\bfseries rslt} = \mbox{\hyperlink{bmi160__defs_8h_af4d2a350d6b0ff213f6a1e12ea19287c}{B\+M\+I160\+\_\+\+OK}}
+\item 
+struct \mbox{\hyperlink{structbmi160__sensor__data}{bmi160\+\_\+sensor\+\_\+data}} {\bfseries accel}
+\item 
+struct \mbox{\hyperlink{structbmi160__sensor__data}{bmi160\+\_\+sensor\+\_\+data}} {\bfseries gyro}
+\item 
+uint32\+\_\+t {\bfseries sensortime\+\_\+1} = 0
+\item 
+\mbox{\hyperlink{structts__dataeulerf32}{ts\+\_\+dataeulerf32}} {\bfseries orient\+Euler\+\_\+rad}
+\item 
+\mbox{\hyperlink{structts__dataxyzf32}{ts\+\_\+dataxyzf32}} {\bfseries raw\+Gyro\+Data}
+\item 
+\mbox{\hyperlink{structts__dataxyzf32}{ts\+\_\+dataxyzf32}} {\bfseries raw\+Acc\+Data}
+\item 
+\mbox{\hyperlink{structts__dataxyzf32}{ts\+\_\+dataxyzf32}} {\bfseries raw\+Mag\+Data}
+\item 
+struct \mbox{\hyperlink{structbmi160__dev}{bmi160\+\_\+dev}} {\bfseries bmi}
+\item 
+struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} {\bfseries bmm}
+\item 
+\mbox{\hyperlink{structbmx160__t}{bmx160\+\_\+t}} {\bfseries bmx160}
+\item 
+struct \mbox{\hyperlink{structbmi160__fifo__frame}{bmi160\+\_\+fifo\+\_\+frame}} {\bfseries fifo\+\_\+frame}
+\item 
+struct \mbox{\hyperlink{structbmi160__aux__data}{bmi160\+\_\+aux\+\_\+data}} {\bfseries aux\+\_\+data} \mbox{[}M\+A\+G\+\_\+\+F\+R\+A\+M\+ES\mbox{]}
+\item 
+struct \mbox{\hyperlink{structbmm150__mag__data}{bmm150\+\_\+mag\+\_\+data}} {\bfseries mag\+\_\+data} \mbox{[}M\+A\+G\+\_\+\+F\+R\+A\+M\+ES\mbox{]}
+\item 
+struct \mbox{\hyperlink{structbmi160__sensor__data}{bmi160\+\_\+sensor\+\_\+data}} {\bfseries gyro\+\_\+data} \mbox{[}G\+Y\+R\+\_\+\+F\+R\+A\+M\+ES\mbox{]}
+\item 
+struct \mbox{\hyperlink{structbmi160__sensor__data}{bmi160\+\_\+sensor\+\_\+data}} {\bfseries accel\+\_\+data} \mbox{[}A\+C\+C\+\_\+\+F\+R\+A\+M\+ES\mbox{]}
+\item 
+const I2\+C\+Config {\bfseries bmx160\+\_\+i2c\+\_\+cfg}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+B\+M\+X160 Driver funcs. 
+

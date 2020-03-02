@@ -1,0 +1,1384 @@
+\hypertarget{bmm150_8c}{}\doxysection{bmx160/bmm150.c File Reference}
+\label{bmm150_8c}\index{bmx160/bmm150.c@{bmx160/bmm150.c}}
+
+
+Sensor driver for B\+M\+M150 sensor.  
+
+
+{\ttfamily \#include \char`\"{}bmm150.\+h\char`\"{}}\newline
+Include dependency graph for bmm150.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=200pt]{bmm150_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{bmm150_8c_a79ffa87bd4e6b1693f3ec124fb2791c9}\label{bmm150_8c_a79ffa87bd4e6b1693f3ec124fb2791c9}} 
+\#define {\bfseries M\+O\+D\+E\+\_\+\+S\+E\+T\+T\+I\+N\+G\+\_\+\+S\+EL}~U\+I\+N\+T16\+\_\+C(0x000F)
+\item 
+\mbox{\Hypertarget{bmm150_8c_aa322031928f6392d4cac23ffdf43b0d9}\label{bmm150_8c_aa322031928f6392d4cac23ffdf43b0d9}} 
+\#define {\bfseries I\+N\+T\+E\+R\+R\+U\+P\+T\+\_\+\+P\+I\+N\+\_\+\+S\+E\+T\+T\+I\+N\+G\+\_\+\+S\+EL}~U\+I\+N\+T16\+\_\+C(0x01\+F0)
+\item 
+\mbox{\Hypertarget{bmm150_8c_a2493e9db5f3c609e1c66f603508ebcb3}\label{bmm150_8c_a2493e9db5f3c609e1c66f603508ebcb3}} 
+\#define {\bfseries I\+N\+T\+E\+R\+R\+U\+P\+T\+\_\+\+C\+O\+N\+F\+I\+G\+\_\+\+S\+EL}~U\+I\+N\+T16\+\_\+C(0x1\+E00)
+\item 
+\mbox{\Hypertarget{bmm150_8c_aa9fb20f3e7c7dccac3ae86511fe8bd21}\label{bmm150_8c_aa9fb20f3e7c7dccac3ae86511fe8bd21}} 
+\#define {\bfseries I\+N\+T\+E\+R\+R\+U\+P\+T\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+C\+O\+N\+F\+I\+G\+\_\+\+S\+EL}~U\+I\+N\+T16\+\_\+C(0x6000)
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int8\+\_\+t \mbox{\hyperlink{bmm150_8c_ab4897d93fb8406c61d6bfab44de8c054}{bmm150\+\_\+init}} (struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI is the entry point, Call this A\+PI before using other A\+P\+Is. This A\+PI reads the chip-\/id of the sensor which is the first step to verify the sensor and updates the trim parameters of the sensor. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{bmm150_8c_a88285b4abe005f21a5cc9392dddb9de9}{bmm150\+\_\+set\+\_\+regs}} (uint8\+\_\+t reg\+\_\+addr, uint8\+\_\+t $\ast$reg\+\_\+data, uint8\+\_\+t len, const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI writes the given data to the register address of the sensor. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{bmm150_8c_ac3b65c846fa1d826b2addbbef4292a9c}{bmm150\+\_\+get\+\_\+regs}} (uint8\+\_\+t reg\+\_\+addr, uint8\+\_\+t $\ast$reg\+\_\+data, uint8\+\_\+t len, const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI reads the data from the given register address of the sensor. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{bmm150_8c_ad53c0f1cab22067aaff73d0f172a9dbe}{bmm150\+\_\+soft\+\_\+reset}} (const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI is used to perform soft-\/reset of the sensor where all the registers are reset to their default values except 0x4B. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{bmm150_8c_a6b8ebfb4d731d5880ef87ecffc72a43b}{bmm150\+\_\+set\+\_\+op\+\_\+mode}} (struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI is used to set the power mode of the sensor. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{bmm150_8c_a6e4a56abf879bb4ad9a263d79974d120}{bmm150\+\_\+get\+\_\+op\+\_\+mode}} (uint8\+\_\+t $\ast$op\+\_\+mode, const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI is used to get the power mode of the sensor. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{bmm150_8c_afbd9773c2f5c5645d60231f0ba7e8626}{bmm150\+\_\+set\+\_\+presetmode}} (struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI is used to set the preset mode of the sensor. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{bmm150_8c_a96ceb625f7af0bf71a8a7ad8aa67fe2b}{bmm150\+\_\+set\+\_\+sensor\+\_\+settings}} (uint16\+\_\+t desired\+\_\+settings, const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI sets the sensor settings based on the desired\+\_\+settings and the dev structure configuration. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{bmm150_8c_a12db4420b434ac786c10494dd3f80e7f}{bmm150\+\_\+get\+\_\+sensor\+\_\+settings}} (struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI gets the sensor settings and updates the dev structure. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{bmm150_8c_abdb1f4947a1e2639326420a9fc7a2b12}{bmm150\+\_\+read\+\_\+mag\+\_\+data}} (struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI is used to read the magnetometer data from registers 0x42 to 0x49 and update the dev structure with the compensated mag data in micro-\/tesla. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{bmm150_8c_aabaad6846eae116f278af4c87d432b2f}{bmm150\+\_\+perform\+\_\+self\+\_\+test}} (uint8\+\_\+t self\+\_\+test\+\_\+mode, struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI is used to perform the complete self test (both normal and advanced) for the B\+M\+M150 sensor. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{bmm150_8c_adee930eb8e5ef947b87ee8c217780143}{bmm150\+\_\+get\+\_\+interrupt\+\_\+status}} (struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI is used to get the status flags of all interrupt which is used to check for the assertion of interrupts. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{Indent}\textbf{ I\+N\+T\+E\+R\+N\+AL A\+P\+Is}\par
+{\em ~\newline
+ }\begin{DoxyCompactItemize}
+\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_ab0bcb8de99dc3747e6249b8406c766dc}{null\+\_\+ptr\+\_\+check}} (const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to validate the device pointer for null conditions. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_a6993dd74a330b7d027bacaac7c171d60}{set\+\_\+power\+\_\+control\+\_\+bit}} (uint8\+\_\+t pwrcntrl\+\_\+bit, struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI sets/resets the power control bit of 0x4B register. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_afae0aa165a547a065cd10b34b16a238a}{read\+\_\+trim\+\_\+registers}} (struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI reads the trim registers of the sensor and stores the trim values in the \char`\"{}trim\+\_\+data\char`\"{} of device structure. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_aace6cf6fa7ba10416b302d77a4e955c4}{write\+\_\+op\+\_\+mode}} (uint8\+\_\+t op\+\_\+mode, const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI writes the op\+\_\+mode value in the Opmode bits (bits 1 and 2) of 0x4C register. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_ae51227155af8be9eabcfe2dfb2095e8e}{suspend\+\_\+to\+\_\+sleep\+\_\+mode}} (struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI sets the device from suspend to sleep mode by setting the power control bit to \textquotesingle{}1\textquotesingle{} of 0x4B register. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_a3c1a0e8617bf8131b75ba87c61e5163b}{set\+\_\+xy\+\_\+rep}} (const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI sets the xy repetition value in the 0x51 register. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_a9c8c78368d451831e923427b8cb04d7e}{set\+\_\+z\+\_\+rep}} (const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI sets the z repetition value in the 0x52 register. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_ad3d81d796a201824254430b916f9a9f2}{set\+\_\+odr}} (const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to set the output data rate of the sensor. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_ac1a4774d6bb9b0fcfda59158a98ef465}{set\+\_\+odr\+\_\+xyz\+\_\+rep}} (const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI sets the preset mode O\+DR and repetition settings. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_aa9a12a2f23839d4bcaf1ba7415c4b163}{set\+\_\+control\+\_\+measurement\+\_\+xyz}} (const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to enable or disable the magnetic measurement of x,y,z axes based on the value of xyz\+\_\+axes\+\_\+control. \end{DoxyCompactList}\item 
+static uint8\+\_\+t \mbox{\hyperlink{bmm150_8c_a6b22bcbc4feb6e000017147c8bd6ee34}{are\+\_\+settings\+\_\+changed}} (uint16\+\_\+t sub\+\_\+settings, uint16\+\_\+t settings)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to identify the settings which the user wants to modify in the sensor. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_ad9eee434f6a2aebd2c96c6402740e638}{mode\+\_\+settings}} (uint16\+\_\+t desired\+\_\+settings, const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI sets the O\+DR , measurement axes control , repetition values of xy,z. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{bmm150_8c_a215c223a40167b6bd31c67a29593f2b7}{parse\+\_\+setting}} (const uint8\+\_\+t $\ast$reg\+\_\+data, struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to parse and store the sensor settings in the device structure. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_ad53f31262cad93df7940622a18f059bf}{interrupt\+\_\+pin\+\_\+settings}} (uint16\+\_\+t desired\+\_\+settings, const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI is used to enable the interrupts and map them to the corresponding interrupt pins and specify the pin characteristics like the polarity , latch settings for the interrupt pins. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_a9797e064597a5aede3b715e9264d3584}{interrupt\+\_\+config}} (uint16\+\_\+t desired\+\_\+settings, const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI is used to enable data overrun , overflow interrupts and enable/disable high/low threshold interrupts for x,y,z axis based on the threshold values set by the user in the High threshold (0x50) and Low threshold (0x4F) registers. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_a5495206e08115e8e84e3b16a64febe32}{interrupt\+\_\+threshold\+\_\+settings}} (uint16\+\_\+t desired\+\_\+settings, const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI is used to write the user specified High/\+Low threshold value as a reference to generate the high/low threshold interrupt. \end{DoxyCompactList}\item 
+static float \mbox{\hyperlink{bmm150_8c_a97392f7098a598cd4149dcf08091db0a}{compensate\+\_\+x}} (int16\+\_\+t mag\+\_\+data\+\_\+x, uint16\+\_\+t data\+\_\+rhall, const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to obtain the compensated magnetometer X axis data in float. \end{DoxyCompactList}\item 
+static float \mbox{\hyperlink{bmm150_8c_ae7266bbdfb938c6a1e3013556a529b86}{compensate\+\_\+y}} (int16\+\_\+t mag\+\_\+data\+\_\+y, uint16\+\_\+t data\+\_\+rhall, const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to obtain the compensated magnetometer Y axis data in float. \end{DoxyCompactList}\item 
+static float \mbox{\hyperlink{bmm150_8c_a9930bc4c2289f8199da765398d0ca303}{compensate\+\_\+z}} (int16\+\_\+t mag\+\_\+data\+\_\+z, uint16\+\_\+t data\+\_\+rhall, const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to obtain the compensated magnetometer Z axis data in float. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_a3ab7959442af47223fd6addb4ef4facc}{perform\+\_\+normal\+\_\+self\+\_\+test}} (const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to perform the normal self test of the sensor and return the self test result as return value. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_a77b2651d53ae263d15f7e886916bc762}{enable\+\_\+normal\+\_\+self\+\_\+test}} (uint8\+\_\+t $\ast$self\+\_\+test\+\_\+enable, const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to enable the normal self test by setting the Self Test bit (bit0) of the 0x4C register, which triggers the start of self test. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_a34ad7a037011719674d3f24354066ad4}{validate\+\_\+normal\+\_\+self\+\_\+test}} (const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to validate the results of normal self test by using the self test status available in the bit0 of registers 0x42,0x44 and 0x46. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_abdf010fd02ffb5abbbc88390ff59c40a}{perform\+\_\+adv\+\_\+self\+\_\+test}} (struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to perform advanced self test for Z axis. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_aac0c3cff60479891237856fa3bfcda02}{adv\+\_\+self\+\_\+test\+\_\+settings}} (struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to set the desired power mode , axes control and repetition settings for advanced self test. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_ab1fae57cefc4b440fde4c7a26f7fa49a}{adv\+\_\+self\+\_\+test\+\_\+measurement}} (uint8\+\_\+t self\+\_\+test\+\_\+current, int16\+\_\+t $\ast$data\+\_\+z, struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to set the positive or negative value of self-\/test current and obtain the corresponding magnetometer z axis data. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_acc98624ce56cdf5671dfb525b2a35d50}{validate\+\_\+adv\+\_\+self\+\_\+test}} (int16\+\_\+t positive\+\_\+data\+\_\+z, int16\+\_\+t negative\+\_\+data\+\_\+z)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to get the difference between the Z axis mag data obtained by positive and negative self-\/test current and validate whether the advanced self test is done successfully or not. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{bmm150_8c_a9bf1ded39dbcc297e710f04f3cc0c39a}{set\+\_\+adv\+\_\+self\+\_\+test\+\_\+current}} (uint8\+\_\+t self\+\_\+test\+\_\+current, const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This internal A\+PI is used to set the self test current value in the Adv. ST bits (bit6 and bit7) of 0x4C register. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}\textbf{ B\+M\+M150 as Auxiliary Mag}\par
+{\em ~\newline
+ }\begin{DoxyCompactItemize}
+\item 
+int8\+\_\+t \mbox{\hyperlink{bmm150_8c_abc0895a5c1c847e18e33daf5cd69c1b6}{bmm150\+\_\+aux\+\_\+mag\+\_\+data}} (uint8\+\_\+t $\ast$aux\+\_\+data, struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em This A\+PI is used to compensate the raw mag data. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\end{Indent}
+
+
+\doxysubsection{Detailed Description}
+Sensor driver for B\+M\+M150 sensor. 
+
+Copyright (C) 2015 -\/ 2016 Bosch Sensortec GmbH
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met\+:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+Neither the name of the copyright holder nor the names of the contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+T\+H\+IS S\+O\+F\+T\+W\+A\+RE IS P\+R\+O\+V\+I\+D\+ED BY T\+HE C\+O\+P\+Y\+R\+I\+G\+HT H\+O\+L\+D\+E\+RS A\+ND C\+O\+N\+T\+R\+I\+B\+U\+T\+O\+RS \char`\"{}\+A\+S I\+S\char`\"{} A\+ND A\+NY E\+X\+P\+R\+E\+SS OR I\+M\+P\+L\+I\+ED W\+A\+R\+R\+A\+N\+T\+I\+ES, I\+N\+C\+L\+U\+D\+I\+NG, B\+UT N\+OT L\+I\+M\+I\+T\+ED TO, T\+HE I\+M\+P\+L\+I\+ED W\+A\+R\+R\+A\+N\+T\+I\+ES OF M\+E\+R\+C\+H\+A\+N\+T\+A\+B\+I\+L\+I\+TY A\+ND F\+I\+T\+N\+E\+SS F\+OR A P\+A\+R\+T\+I\+C\+U\+L\+AR P\+U\+R\+P\+O\+SE A\+RE D\+I\+S\+C\+L\+A\+I\+M\+ED. IN NO E\+V\+E\+NT S\+H\+A\+LL C\+O\+P\+Y\+R\+I\+G\+HT H\+O\+L\+D\+ER OR C\+O\+N\+T\+R\+I\+B\+U\+T\+O\+RS BE L\+I\+A\+B\+LE F\+OR A\+NY D\+I\+R\+E\+CT, I\+N\+D\+I\+R\+E\+CT, I\+N\+C\+I\+D\+E\+N\+T\+AL, S\+P\+E\+C\+I\+AL, E\+X\+E\+M\+P\+L\+A\+RY, OR C\+O\+N\+S\+E\+Q\+U\+E\+N\+T\+I\+AL D\+A\+M\+A\+G\+ES(I\+N\+C\+L\+U\+D\+I\+NG, B\+UT N\+OT L\+I\+M\+I\+T\+ED TO, P\+R\+O\+C\+U\+R\+E\+M\+E\+NT OF S\+U\+B\+S\+T\+I\+T\+U\+TE G\+O\+O\+DS OR S\+E\+R\+V\+I\+C\+ES; L\+O\+SS OF U\+SE, D\+A\+TA, OR P\+R\+O\+F\+I\+TS; OR B\+U\+S\+I\+N\+E\+SS I\+N\+T\+E\+R\+R\+U\+P\+T\+I\+ON) H\+O\+W\+E\+V\+ER C\+A\+U\+S\+ED A\+ND ON A\+NY T\+H\+E\+O\+RY OF L\+I\+A\+B\+I\+L\+I\+TY, W\+H\+E\+T\+H\+ER IN C\+O\+N\+T\+R\+A\+CT, S\+T\+R\+I\+CT L\+I\+A\+B\+I\+L\+I\+TY, OR T\+O\+RT (I\+N\+C\+L\+U\+D\+I\+NG N\+E\+G\+L\+I\+G\+E\+N\+CE OR O\+T\+H\+E\+R\+W\+I\+SE) A\+R\+I\+S\+I\+NG IN A\+NY W\+AY O\+UT OF T\+HE U\+SE OF T\+H\+IS S\+O\+F\+T\+W\+A\+RE, E\+V\+EN IF A\+D\+V\+I\+S\+ED OF T\+HE P\+O\+S\+S\+I\+B\+I\+L\+I\+TY OF S\+U\+CH D\+A\+M\+A\+GE
+
+The information provided is believed to be accurate and reliable. The copyright holder assumes no responsibility for the consequences of use of such information nor for any infringement of patents or other rights of third parties which may result from its use. No license is granted by implication or otherwise under any patent or patent rights of the copyright holder.
+
+File \mbox{\hyperlink{bmm150_8c}{bmm150.\+c}} Date 12 Sep 2017 Version 1.\+0.\+0 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{bmm150_8c_ab1fae57cefc4b440fde4c7a26f7fa49a}\label{bmm150_8c_ab1fae57cefc4b440fde4c7a26f7fa49a}} 
+\index{bmm150.c@{bmm150.c}!adv\_self\_test\_measurement@{adv\_self\_test\_measurement}}
+\index{adv\_self\_test\_measurement@{adv\_self\_test\_measurement}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{adv\_self\_test\_measurement()}{adv\_self\_test\_measurement()}}
+{\footnotesize\ttfamily static int8\+\_\+t adv\+\_\+self\+\_\+test\+\_\+measurement (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{self\+\_\+test\+\_\+current,  }\item[{int16\+\_\+t $\ast$}]{data\+\_\+z,  }\item[{struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to set the positive or negative value of self-\/test current and obtain the corresponding magnetometer z axis data. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em self\+\_\+test\+\_\+current} & \+: Self test current either positive/negative \\
+\hline
+\mbox{\texttt{ out}}  & {\em data\+\_\+z} & \+: Z-\/axis Magnetometer data \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}\\
+\hline
+\end{DoxyParams}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ self\+\_\+test\+\_\+current }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Self-\/test current Direction  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ self\+\_\+test\+\_\+current }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Self-\/test current Direction  }\\\cline{1-2}
+\endhead
+0x03 &B\+M\+M150\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+P\+O\+S\+I\+T\+I\+V\+E\+\_\+\+C\+U\+R\+R\+E\+NT  \\\cline{1-2}
+0x02 &B\+M\+M150\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+N\+E\+G\+A\+T\+I\+V\+E\+\_\+\+C\+U\+R\+R\+E\+NT  \\\cline{1-2}
+\end{longtabu}
+
+
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_aac0c3cff60479891237856fa3bfcda02}\label{bmm150_8c_aac0c3cff60479891237856fa3bfcda02}} 
+\index{bmm150.c@{bmm150.c}!adv\_self\_test\_settings@{adv\_self\_test\_settings}}
+\index{adv\_self\_test\_settings@{adv\_self\_test\_settings}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{adv\_self\_test\_settings()}{adv\_self\_test\_settings()}}
+{\footnotesize\ttfamily static int8\+\_\+t adv\+\_\+self\+\_\+test\+\_\+settings (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to set the desired power mode , axes control and repetition settings for advanced self test. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_a6b22bcbc4feb6e000017147c8bd6ee34}\label{bmm150_8c_a6b22bcbc4feb6e000017147c8bd6ee34}} 
+\index{bmm150.c@{bmm150.c}!are\_settings\_changed@{are\_settings\_changed}}
+\index{are\_settings\_changed@{are\_settings\_changed}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{are\_settings\_changed()}{are\_settings\_changed()}}
+{\footnotesize\ttfamily static uint8\+\_\+t are\+\_\+settings\+\_\+changed (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{sub\+\_\+settings,  }\item[{uint16\+\_\+t}]{settings }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to identify the settings which the user wants to modify in the sensor. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em sub\+\_\+settings} & \+: Contains the settings subset to identify particular group of settings which the user is interested to change. \\
+\hline
+\mbox{\texttt{ in}}  & {\em settings} & \+: Contains the user specified settings.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates whether user is interested to modify the settings which are related to sub\+\_\+settings. 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em True} & -\/$>$ User wants to modify this group of settings \\
+\hline
+{\em False} & -\/$>$ User does not want to modify this group of settings \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_abc0895a5c1c847e18e33daf5cd69c1b6}\label{bmm150_8c_abc0895a5c1c847e18e33daf5cd69c1b6}} 
+\index{bmm150.c@{bmm150.c}!bmm150\_aux\_mag\_data@{bmm150\_aux\_mag\_data}}
+\index{bmm150\_aux\_mag\_data@{bmm150\_aux\_mag\_data}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{bmm150\_aux\_mag\_data()}{bmm150\_aux\_mag\_data()}}
+{\footnotesize\ttfamily int8\+\_\+t bmm150\+\_\+aux\+\_\+mag\+\_\+data (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{aux\+\_\+data,  }\item[{struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})}
+
+
+
+This A\+PI is used to compensate the raw mag data. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em aux\+\_\+data} & \+: Raw mag data obtained from B\+M\+I160 registers \\
+\hline
+\mbox{\texttt{ in,out}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status and self test result. 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_adee930eb8e5ef947b87ee8c217780143}\label{bmm150_8c_adee930eb8e5ef947b87ee8c217780143}} 
+\index{bmm150.c@{bmm150.c}!bmm150\_get\_interrupt\_status@{bmm150\_get\_interrupt\_status}}
+\index{bmm150\_get\_interrupt\_status@{bmm150\_get\_interrupt\_status}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{bmm150\_get\_interrupt\_status()}{bmm150\_get\_interrupt\_status()}}
+{\footnotesize\ttfamily int8\+\_\+t bmm150\+\_\+get\+\_\+interrupt\+\_\+status (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})}
+
+
+
+This A\+PI is used to get the status flags of all interrupt which is used to check for the assertion of interrupts. 
+
+This A\+PI obtains the status flags of all interrupt which is used to check for the assertion of interrupts. \mbox{\Hypertarget{bmm150_8c_a6e4a56abf879bb4ad9a263d79974d120}\label{bmm150_8c_a6e4a56abf879bb4ad9a263d79974d120}} 
+\index{bmm150.c@{bmm150.c}!bmm150\_get\_op\_mode@{bmm150\_get\_op\_mode}}
+\index{bmm150\_get\_op\_mode@{bmm150\_get\_op\_mode}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{bmm150\_get\_op\_mode()}{bmm150\_get\_op\_mode()}}
+{\footnotesize\ttfamily int8\+\_\+t bmm150\+\_\+get\+\_\+op\+\_\+mode (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{op\+\_\+mode,  }\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})}
+
+
+
+This A\+PI is used to get the power mode of the sensor. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em op\+\_\+mode} & \+: power mode of the sensor. \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ op\+\_\+mode }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Power mode  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ op\+\_\+mode }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Power mode  }\\\cline{1-2}
+\endhead
+0x00 &B\+M\+M150\+\_\+\+N\+O\+R\+M\+A\+L\+\_\+\+M\+O\+DE  \\\cline{1-2}
+0x01 &B\+M\+M150\+\_\+\+F\+O\+R\+C\+E\+D\+\_\+\+M\+O\+DE  \\\cline{1-2}
+0x03 &B\+M\+M150\+\_\+\+S\+L\+E\+E\+P\+\_\+\+M\+O\+DE  \\\cline{1-2}
+0x04 &B\+M\+M150\+\_\+\+S\+U\+S\+P\+E\+N\+D\+\_\+\+M\+O\+DE  \\\cline{1-2}
+\end{longtabu}
+
+
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_ac3b65c846fa1d826b2addbbef4292a9c}\label{bmm150_8c_ac3b65c846fa1d826b2addbbef4292a9c}} 
+\index{bmm150.c@{bmm150.c}!bmm150\_get\_regs@{bmm150\_get\_regs}}
+\index{bmm150\_get\_regs@{bmm150\_get\_regs}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{bmm150\_get\_regs()}{bmm150\_get\_regs()}}
+{\footnotesize\ttfamily int8\+\_\+t bmm150\+\_\+get\+\_\+regs (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{reg\+\_\+addr,  }\item[{uint8\+\_\+t $\ast$}]{reg\+\_\+data,  }\item[{uint8\+\_\+t}]{len,  }\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})}
+
+
+
+This A\+PI reads the data from the given register address of the sensor. 
+
+This A\+PI reads the data from the given register address of sensor. \mbox{\Hypertarget{bmm150_8c_a12db4420b434ac786c10494dd3f80e7f}\label{bmm150_8c_a12db4420b434ac786c10494dd3f80e7f}} 
+\index{bmm150.c@{bmm150.c}!bmm150\_get\_sensor\_settings@{bmm150\_get\_sensor\_settings}}
+\index{bmm150\_get\_sensor\_settings@{bmm150\_get\_sensor\_settings}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{bmm150\_get\_sensor\_settings()}{bmm150\_get\_sensor\_settings()}}
+{\footnotesize\ttfamily int8\+\_\+t bmm150\+\_\+get\+\_\+sensor\+\_\+settings (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})}
+
+
+
+This A\+PI gets the sensor settings and updates the dev structure. 
+
+This A\+PI gets all the sensor settings and updates the dev structure. \mbox{\Hypertarget{bmm150_8c_ab4897d93fb8406c61d6bfab44de8c054}\label{bmm150_8c_ab4897d93fb8406c61d6bfab44de8c054}} 
+\index{bmm150.c@{bmm150.c}!bmm150\_init@{bmm150\_init}}
+\index{bmm150\_init@{bmm150\_init}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{bmm150\_init()}{bmm150\_init()}}
+{\footnotesize\ttfamily int8\+\_\+t bmm150\+\_\+init (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})}
+
+
+
+This A\+PI is the entry point, Call this A\+PI before using other A\+P\+Is. This A\+PI reads the chip-\/id of the sensor which is the first step to verify the sensor and updates the trim parameters of the sensor. 
+
+This A\+PI is the entry point, Call this A\+PI before using other A\+P\+Is. This A\+PI reads the chip-\/id of the sensor which is the first step to verify the sensor and also it configures the read mechanism of S\+PI and I2C interface. \mbox{\Hypertarget{bmm150_8c_aabaad6846eae116f278af4c87d432b2f}\label{bmm150_8c_aabaad6846eae116f278af4c87d432b2f}} 
+\index{bmm150.c@{bmm150.c}!bmm150\_perform\_self\_test@{bmm150\_perform\_self\_test}}
+\index{bmm150\_perform\_self\_test@{bmm150\_perform\_self\_test}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{bmm150\_perform\_self\_test()}{bmm150\_perform\_self\_test()}}
+{\footnotesize\ttfamily int8\+\_\+t bmm150\+\_\+perform\+\_\+self\+\_\+test (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{self\+\_\+test\+\_\+mode,  }\item[{struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})}
+
+
+
+This A\+PI is used to perform the complete self test (both normal and advanced) for the B\+M\+M150 sensor. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em self\+\_\+test\+\_\+mode} & \+: The type of self test to be performed \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ self\+\_\+test\+\_\+mode }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Self test enabled  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ self\+\_\+test\+\_\+mode }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Self test enabled  }\\\cline{1-2}
+\endhead
+0 &B\+M\+M150\+\_\+\+N\+O\+R\+M\+A\+L\+\_\+\+S\+E\+L\+F\+\_\+\+T\+E\+ST  \\\cline{1-2}
+1 &B\+M\+M150\+\_\+\+A\+D\+V\+A\+N\+C\+E\+D\+\_\+\+S\+E\+L\+F\+\_\+\+T\+E\+ST  \\\cline{1-2}
+\end{longtabu}
+
+
+\begin{DoxyNote}{Note}
+The return value of this A\+PI gives us the result of self test.
+
+Performing advanced self test does soft reset of the sensor, User can set the desired settings after performing the advanced self test.
+\end{DoxyNote}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status and self test result. 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error\\
+\hline
+\end{DoxyRetVals}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Return value }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Result of self test  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Return value }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Result of self test  }\\\cline{1-2}
+\endhead
+0 &B\+M\+M150\+\_\+\+OK  \\\cline{1-2}
+1 &B\+M\+M150\+\_\+\+W\+\_\+\+N\+O\+R\+M\+A\+L\+\_\+\+S\+E\+L\+F\+\_\+\+T\+E\+S\+T\+\_\+\+Y\+Z\+\_\+\+F\+A\+IL  \\\cline{1-2}
+2 &B\+M\+M150\+\_\+\+W\+\_\+\+N\+O\+R\+M\+A\+L\+\_\+\+S\+E\+L\+F\+\_\+\+T\+E\+S\+T\+\_\+\+X\+Z\+\_\+\+F\+A\+IL  \\\cline{1-2}
+3 &B\+M\+M150\+\_\+\+W\+\_\+\+N\+O\+R\+M\+A\+L\+\_\+\+S\+E\+L\+F\+\_\+\+T\+E\+S\+T\+\_\+\+Z\+\_\+\+F\+A\+IL  \\\cline{1-2}
+4 &B\+M\+M150\+\_\+\+W\+\_\+\+N\+O\+R\+M\+A\+L\+\_\+\+S\+E\+L\+F\+\_\+\+T\+E\+S\+T\+\_\+\+X\+Y\+\_\+\+F\+A\+IL  \\\cline{1-2}
+5 &B\+M\+M150\+\_\+\+W\+\_\+\+N\+O\+R\+M\+A\+L\+\_\+\+S\+E\+L\+F\+\_\+\+T\+E\+S\+T\+\_\+\+Y\+\_\+\+F\+A\+IL  \\\cline{1-2}
+6 &B\+M\+M150\+\_\+\+W\+\_\+\+N\+O\+R\+M\+A\+L\+\_\+\+S\+E\+L\+F\+\_\+\+T\+E\+S\+T\+\_\+\+X\+\_\+\+F\+A\+IL  \\\cline{1-2}
+7 &B\+M\+M150\+\_\+\+W\+\_\+\+N\+O\+R\+M\+A\+L\+\_\+\+S\+E\+L\+F\+\_\+\+T\+E\+S\+T\+\_\+\+X\+Y\+Z\+\_\+\+F\+A\+IL  \\\cline{1-2}
+8 &B\+M\+M150\+\_\+\+W\+\_\+\+A\+D\+V\+\_\+\+S\+E\+L\+F\+\_\+\+T\+E\+S\+T\+\_\+\+F\+A\+IL  \\\cline{1-2}
+\end{longtabu}
+\mbox{\Hypertarget{bmm150_8c_abdb1f4947a1e2639326420a9fc7a2b12}\label{bmm150_8c_abdb1f4947a1e2639326420a9fc7a2b12}} 
+\index{bmm150.c@{bmm150.c}!bmm150\_read\_mag\_data@{bmm150\_read\_mag\_data}}
+\index{bmm150\_read\_mag\_data@{bmm150\_read\_mag\_data}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{bmm150\_read\_mag\_data()}{bmm150\_read\_mag\_data()}}
+{\footnotesize\ttfamily int8\+\_\+t bmm150\+\_\+read\+\_\+mag\+\_\+data (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})}
+
+
+
+This A\+PI is used to read the magnetometer data from registers 0x42 to 0x49 and update the dev structure with the compensated mag data in micro-\/tesla. 
+
+This A\+PI reads the magnetometer data from registers 0x42 to 0x49 and updates the dev structure with compensated mag data in micro-\/tesla if using floating point, and 16 $\ast$ micro-\/teslas if using int16\+\_\+t for the data. \mbox{\Hypertarget{bmm150_8c_a6b8ebfb4d731d5880ef87ecffc72a43b}\label{bmm150_8c_a6b8ebfb4d731d5880ef87ecffc72a43b}} 
+\index{bmm150.c@{bmm150.c}!bmm150\_set\_op\_mode@{bmm150\_set\_op\_mode}}
+\index{bmm150\_set\_op\_mode@{bmm150\_set\_op\_mode}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{bmm150\_set\_op\_mode()}{bmm150\_set\_op\_mode()}}
+{\footnotesize\ttfamily int8\+\_\+t bmm150\+\_\+set\+\_\+op\+\_\+mode (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})}
+
+
+
+This A\+PI is used to set the power mode of the sensor. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ dev-\/$>$settings.\+pwr\+\_\+mode }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Power mode  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ dev-\/$>$settings.\+pwr\+\_\+mode }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Power mode  }\\\cline{1-2}
+\endhead
+0x00 &B\+M\+M150\+\_\+\+N\+O\+R\+M\+A\+L\+\_\+\+M\+O\+DE  \\\cline{1-2}
+0x01 &B\+M\+M150\+\_\+\+F\+O\+R\+C\+E\+D\+\_\+\+M\+O\+DE  \\\cline{1-2}
+0x03 &B\+M\+M150\+\_\+\+S\+L\+E\+E\+P\+\_\+\+M\+O\+DE  \\\cline{1-2}
+0x04 &B\+M\+M150\+\_\+\+S\+U\+S\+P\+E\+N\+D\+\_\+\+M\+O\+DE  \\\cline{1-2}
+\end{longtabu}
+
+
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_afbd9773c2f5c5645d60231f0ba7e8626}\label{bmm150_8c_afbd9773c2f5c5645d60231f0ba7e8626}} 
+\index{bmm150.c@{bmm150.c}!bmm150\_set\_presetmode@{bmm150\_set\_presetmode}}
+\index{bmm150\_set\_presetmode@{bmm150\_set\_presetmode}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{bmm150\_set\_presetmode()}{bmm150\_set\_presetmode()}}
+{\footnotesize\ttfamily int8\+\_\+t bmm150\+\_\+set\+\_\+presetmode (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})}
+
+
+
+This A\+PI is used to set the preset mode of the sensor. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ dev-\/$>$settings.\+preset\+\_\+mode }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Preset mode  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ dev-\/$>$settings.\+preset\+\_\+mode }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Preset mode  }\\\cline{1-2}
+\endhead
+0x01 &B\+M\+M150\+\_\+\+P\+R\+E\+S\+E\+T\+M\+O\+D\+E\+\_\+\+L\+O\+W\+P\+O\+W\+ER  \\\cline{1-2}
+0x02 &B\+M\+M150\+\_\+\+P\+R\+E\+S\+E\+T\+M\+O\+D\+E\+\_\+\+R\+E\+G\+U\+L\+AR  \\\cline{1-2}
+0x03 &B\+M\+M150\+\_\+\+P\+R\+E\+S\+E\+T\+M\+O\+D\+E\+\_\+\+H\+I\+G\+H\+A\+C\+C\+U\+R\+A\+CY  \\\cline{1-2}
+0x04 &B\+M\+M150\+\_\+\+P\+R\+E\+S\+E\+T\+M\+O\+D\+E\+\_\+\+E\+N\+H\+A\+N\+C\+ED  \\\cline{1-2}
+\end{longtabu}
+
+
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_a88285b4abe005f21a5cc9392dddb9de9}\label{bmm150_8c_a88285b4abe005f21a5cc9392dddb9de9}} 
+\index{bmm150.c@{bmm150.c}!bmm150\_set\_regs@{bmm150\_set\_regs}}
+\index{bmm150\_set\_regs@{bmm150\_set\_regs}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{bmm150\_set\_regs()}{bmm150\_set\_regs()}}
+{\footnotesize\ttfamily int8\+\_\+t bmm150\+\_\+set\+\_\+regs (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{reg\+\_\+addr,  }\item[{uint8\+\_\+t $\ast$}]{reg\+\_\+data,  }\item[{uint8\+\_\+t}]{len,  }\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})}
+
+
+
+This A\+PI writes the given data to the register address of the sensor. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em reg\+\_\+addr} & \+: Register address from where the data to be written. \\
+\hline
+\mbox{\texttt{ in}}  & {\em reg\+\_\+data} & \+: Pointer to data buffer which is to be written in the reg\+\_\+addr of sensor. \\
+\hline
+\mbox{\texttt{ in}}  & {\em len} & \+: No of bytes of data to write.. \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_a96ceb625f7af0bf71a8a7ad8aa67fe2b}\label{bmm150_8c_a96ceb625f7af0bf71a8a7ad8aa67fe2b}} 
+\index{bmm150.c@{bmm150.c}!bmm150\_set\_sensor\_settings@{bmm150\_set\_sensor\_settings}}
+\index{bmm150\_set\_sensor\_settings@{bmm150\_set\_sensor\_settings}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{bmm150\_set\_sensor\_settings()}{bmm150\_set\_sensor\_settings()}}
+{\footnotesize\ttfamily int8\+\_\+t bmm150\+\_\+set\+\_\+sensor\+\_\+settings (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{desired\+\_\+settings,  }\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})}
+
+
+
+This A\+PI sets the sensor settings based on the desired\+\_\+settings and the dev structure configuration. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em desired\+\_\+settings} & \+: Selection macro for selecting the setting. \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+Assign the sensor setting macros (multiple macros can be set by doing a bitwise-\/\+OR operation) to the desired\+\_\+settings parameter of this A\+PI to perform the corresponding setting.
+
+threshold interrupt for each axes are set by using bitwise A\+ND operation of the following macros
+\begin{DoxyItemize}
+\item B\+M\+M150\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+X
+\item B\+M\+M150\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+Y
+\item B\+M\+M150\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+Z
+\end{DoxyItemize}
+\end{DoxyNote}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ desired\+\_\+settings }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Selected sensor setting macros  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ desired\+\_\+settings }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Selected sensor setting macros  }\\\cline{1-2}
+\endhead
+0x0001 &B\+M\+M150\+\_\+\+D\+A\+T\+A\+\_\+\+R\+A\+T\+E\+\_\+\+S\+EL  \\\cline{1-2}
+0x0002 &B\+M\+M150\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+M\+E\+A\+S\+U\+R\+E\+\_\+\+S\+EL  \\\cline{1-2}
+0x0004 &B\+M\+M150\+\_\+\+X\+Y\+\_\+\+R\+E\+P\+\_\+\+S\+EL  \\\cline{1-2}
+0x0008 &B\+M\+M150\+\_\+\+Z\+\_\+\+R\+E\+P\+\_\+\+S\+EL  \\\cline{1-2}
+0x0010 &B\+M\+M150\+\_\+\+D\+R\+D\+Y\+\_\+\+P\+I\+N\+\_\+\+E\+N\+\_\+\+S\+EL  \\\cline{1-2}
+0x0020 &B\+M\+M150\+\_\+\+I\+N\+T\+\_\+\+P\+I\+N\+\_\+\+E\+N\+\_\+\+S\+EL  \\\cline{1-2}
+0x0040 &B\+M\+M150\+\_\+\+D\+R\+D\+Y\+\_\+\+P\+O\+L\+A\+R\+I\+T\+Y\+\_\+\+S\+EL  \\\cline{1-2}
+0x0080 &B\+M\+M150\+\_\+\+I\+N\+T\+\_\+\+L\+A\+T\+C\+H\+\_\+\+S\+EL  \\\cline{1-2}
+0x0100 &B\+M\+M150\+\_\+\+I\+N\+T\+\_\+\+P\+O\+L\+A\+R\+I\+T\+Y\+\_\+\+S\+EL  \\\cline{1-2}
+0x0200 &B\+M\+M150\+\_\+\+D\+A\+T\+A\+\_\+\+O\+V\+E\+R\+R\+U\+N\+\_\+\+I\+N\+T\+\_\+\+S\+EL  \\\cline{1-2}
+0x0400 &B\+M\+M150\+\_\+\+O\+V\+E\+R\+F\+L\+O\+W\+\_\+\+I\+N\+T\+\_\+\+S\+EL  \\\cline{1-2}
+0x0800 &B\+M\+M150\+\_\+\+H\+I\+G\+H\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+I\+N\+T\+\_\+\+S\+EL  \\\cline{1-2}
+0x1000 &B\+M\+M150\+\_\+\+L\+O\+W\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+I\+N\+T\+\_\+\+S\+EL  \\\cline{1-2}
+0x2000 &B\+M\+M150\+\_\+\+L\+O\+W\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+S\+E\+T\+T\+I\+N\+G\+\_\+\+S\+EL  \\\cline{1-2}
+0x4000 &B\+M\+M150\+\_\+\+H\+I\+G\+H\+\_\+\+T\+H\+R\+E\+S\+H\+O\+L\+D\+\_\+\+S\+E\+T\+T\+I\+N\+G\+\_\+\+S\+EL  \\\cline{1-2}
+\end{longtabu}
+
+
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_ad53c0f1cab22067aaff73d0f172a9dbe}\label{bmm150_8c_ad53c0f1cab22067aaff73d0f172a9dbe}} 
+\index{bmm150.c@{bmm150.c}!bmm150\_soft\_reset@{bmm150\_soft\_reset}}
+\index{bmm150\_soft\_reset@{bmm150\_soft\_reset}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{bmm150\_soft\_reset()}{bmm150\_soft\_reset()}}
+{\footnotesize\ttfamily int8\+\_\+t bmm150\+\_\+soft\+\_\+reset (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})}
+
+
+
+This A\+PI is used to perform soft-\/reset of the sensor where all the registers are reset to their default values except 0x4B. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_a97392f7098a598cd4149dcf08091db0a}\label{bmm150_8c_a97392f7098a598cd4149dcf08091db0a}} 
+\index{bmm150.c@{bmm150.c}!compensate\_x@{compensate\_x}}
+\index{compensate\_x@{compensate\_x}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{compensate\_x()}{compensate\_x()}}
+{\footnotesize\ttfamily static float compensate\+\_\+x (\begin{DoxyParamCaption}\item[{int16\+\_\+t}]{mag\+\_\+data\+\_\+x,  }\item[{uint16\+\_\+t}]{data\+\_\+rhall,  }\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to obtain the compensated magnetometer X axis data in float. 
+
+This internal A\+PI is used to obtain the compensated magnetometer x axis data(micro-\/tesla) in float.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em mag\+\_\+data\+\_\+x} & \+: The value of raw X data \\
+\hline
+\mbox{\texttt{ in}}  & {\em data\+\_\+rhall} & \+: The value of raw R\+H\+A\+LL data \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of compensated X data value in float 
+\end{DoxyReturn}
+\mbox{\Hypertarget{bmm150_8c_ae7266bbdfb938c6a1e3013556a529b86}\label{bmm150_8c_ae7266bbdfb938c6a1e3013556a529b86}} 
+\index{bmm150.c@{bmm150.c}!compensate\_y@{compensate\_y}}
+\index{compensate\_y@{compensate\_y}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{compensate\_y()}{compensate\_y()}}
+{\footnotesize\ttfamily static float compensate\+\_\+y (\begin{DoxyParamCaption}\item[{int16\+\_\+t}]{mag\+\_\+data\+\_\+y,  }\item[{uint16\+\_\+t}]{data\+\_\+rhall,  }\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to obtain the compensated magnetometer Y axis data in float. 
+
+This internal A\+PI is used to obtain the compensated magnetometer y axis data(micro-\/tesla) in float.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em mag\+\_\+data\+\_\+y} & \+: The value of raw Y data \\
+\hline
+\mbox{\texttt{ in}}  & {\em data\+\_\+rhall} & \+: The value of raw R\+H\+A\+LL data \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of compensated Y data value in float 
+\end{DoxyReturn}
+\mbox{\Hypertarget{bmm150_8c_a9930bc4c2289f8199da765398d0ca303}\label{bmm150_8c_a9930bc4c2289f8199da765398d0ca303}} 
+\index{bmm150.c@{bmm150.c}!compensate\_z@{compensate\_z}}
+\index{compensate\_z@{compensate\_z}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{compensate\_z()}{compensate\_z()}}
+{\footnotesize\ttfamily static float compensate\+\_\+z (\begin{DoxyParamCaption}\item[{int16\+\_\+t}]{mag\+\_\+data\+\_\+z,  }\item[{uint16\+\_\+t}]{data\+\_\+rhall,  }\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to obtain the compensated magnetometer Z axis data in float. 
+
+This internal A\+PI is used to obtain the compensated magnetometer z axis data(micro-\/tesla) in float.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em mag\+\_\+data\+\_\+z} & \+: The value of raw Z data \\
+\hline
+\mbox{\texttt{ in}}  & {\em data\+\_\+rhall} & \+: The value of raw R\+H\+A\+LL data \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of compensated Z data value in float 
+\end{DoxyReturn}
+\mbox{\Hypertarget{bmm150_8c_a77b2651d53ae263d15f7e886916bc762}\label{bmm150_8c_a77b2651d53ae263d15f7e886916bc762}} 
+\index{bmm150.c@{bmm150.c}!enable\_normal\_self\_test@{enable\_normal\_self\_test}}
+\index{enable\_normal\_self\_test@{enable\_normal\_self\_test}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{enable\_normal\_self\_test()}{enable\_normal\_self\_test()}}
+{\footnotesize\ttfamily static int8\+\_\+t enable\+\_\+normal\+\_\+self\+\_\+test (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{self\+\_\+test\+\_\+enable,  }\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to enable the normal self test by setting the Self Test bit (bit0) of the 0x4C register, which triggers the start of self test. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em self\+\_\+test\+\_\+enable} & \+: The value of self test bit0 in 0x4C register \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_a9797e064597a5aede3b715e9264d3584}\label{bmm150_8c_a9797e064597a5aede3b715e9264d3584}} 
+\index{bmm150.c@{bmm150.c}!interrupt\_config@{interrupt\_config}}
+\index{interrupt\_config@{interrupt\_config}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{interrupt\_config()}{interrupt\_config()}}
+{\footnotesize\ttfamily static int8\+\_\+t interrupt\+\_\+config (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{desired\+\_\+settings,  }\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This A\+PI is used to enable data overrun , overflow interrupts and enable/disable high/low threshold interrupts for x,y,z axis based on the threshold values set by the user in the High threshold (0x50) and Low threshold (0x4F) registers. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em desired\+\_\+settings} & \+: Contains the settings which user wants to change. \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_ad53f31262cad93df7940622a18f059bf}\label{bmm150_8c_ad53f31262cad93df7940622a18f059bf}} 
+\index{bmm150.c@{bmm150.c}!interrupt\_pin\_settings@{interrupt\_pin\_settings}}
+\index{interrupt\_pin\_settings@{interrupt\_pin\_settings}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{interrupt\_pin\_settings()}{interrupt\_pin\_settings()}}
+{\footnotesize\ttfamily static int8\+\_\+t interrupt\+\_\+pin\+\_\+settings (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{desired\+\_\+settings,  }\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This A\+PI is used to enable the interrupts and map them to the corresponding interrupt pins and specify the pin characteristics like the polarity , latch settings for the interrupt pins. 
+
+\begin{DoxyNote}{Note}
+The other interrupts can be latched or non-\/latched but, Data ready interrupt is always cleared after reading out the data
+\end{DoxyNote}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em desired\+\_\+settings} & \+: Contains the settings which user wants to change. \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_a5495206e08115e8e84e3b16a64febe32}\label{bmm150_8c_a5495206e08115e8e84e3b16a64febe32}} 
+\index{bmm150.c@{bmm150.c}!interrupt\_threshold\_settings@{interrupt\_threshold\_settings}}
+\index{interrupt\_threshold\_settings@{interrupt\_threshold\_settings}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{interrupt\_threshold\_settings()}{interrupt\_threshold\_settings()}}
+{\footnotesize\ttfamily static int8\+\_\+t interrupt\+\_\+threshold\+\_\+settings (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{desired\+\_\+settings,  }\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This A\+PI is used to write the user specified High/\+Low threshold value as a reference to generate the high/low threshold interrupt. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em desired\+\_\+settings} & \+: Contains the settings which user wants to change. \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_ad9eee434f6a2aebd2c96c6402740e638}\label{bmm150_8c_ad9eee434f6a2aebd2c96c6402740e638}} 
+\index{bmm150.c@{bmm150.c}!mode\_settings@{mode\_settings}}
+\index{mode\_settings@{mode\_settings}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{mode\_settings()}{mode\_settings()}}
+{\footnotesize\ttfamily static int8\+\_\+t mode\+\_\+settings (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{desired\+\_\+settings,  }\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This A\+PI sets the O\+DR , measurement axes control , repetition values of xy,z. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em desired\+\_\+settings} & \+: Contains the settings which user wants to change. \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_ab0bcb8de99dc3747e6249b8406c766dc}\label{bmm150_8c_ab0bcb8de99dc3747e6249b8406c766dc}} 
+\index{bmm150.c@{bmm150.c}!null\_ptr\_check@{null\_ptr\_check}}
+\index{null\_ptr\_check@{null\_ptr\_check}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{null\_ptr\_check()}{null\_ptr\_check()}}
+{\footnotesize\ttfamily static int8\+\_\+t null\+\_\+ptr\+\_\+check (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to validate the device pointer for null conditions. 
+
+This internal A\+PI is used to validate the device structure pointer for null conditions.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_a215c223a40167b6bd31c67a29593f2b7}\label{bmm150_8c_a215c223a40167b6bd31c67a29593f2b7}} 
+\index{bmm150.c@{bmm150.c}!parse\_setting@{parse\_setting}}
+\index{parse\_setting@{parse\_setting}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{parse\_setting()}{parse\_setting()}}
+{\footnotesize\ttfamily static void parse\+\_\+setting (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t $\ast$}]{reg\+\_\+data,  }\item[{struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to parse and store the sensor settings in the device structure. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em reg\+\_\+data} & \+: Pointer of an array consisting all sensor setting data from 0x4B to 0x52 registers. \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_abdf010fd02ffb5abbbc88390ff59c40a}\label{bmm150_8c_abdf010fd02ffb5abbbc88390ff59c40a}} 
+\index{bmm150.c@{bmm150.c}!perform\_adv\_self\_test@{perform\_adv\_self\_test}}
+\index{perform\_adv\_self\_test@{perform\_adv\_self\_test}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{perform\_adv\_self\_test()}{perform\_adv\_self\_test()}}
+{\footnotesize\ttfamily static int8\+\_\+t perform\+\_\+adv\+\_\+self\+\_\+test (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to perform advanced self test for Z axis. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error\\
+\hline
+\end{DoxyRetVals}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Return value }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Status of self-\/test  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Return value }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Status of self-\/test  }\\\cline{1-2}
+\endhead
+0 &B\+M\+M150\+\_\+\+OK  \\\cline{1-2}
+8 &B\+M\+M150\+\_\+\+W\+\_\+\+A\+D\+V\+\_\+\+S\+E\+L\+F\+\_\+\+T\+E\+S\+T\+\_\+\+F\+A\+IL  \\\cline{1-2}
+\end{longtabu}
+\mbox{\Hypertarget{bmm150_8c_a3ab7959442af47223fd6addb4ef4facc}\label{bmm150_8c_a3ab7959442af47223fd6addb4ef4facc}} 
+\index{bmm150.c@{bmm150.c}!perform\_normal\_self\_test@{perform\_normal\_self\_test}}
+\index{perform\_normal\_self\_test@{perform\_normal\_self\_test}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{perform\_normal\_self\_test()}{perform\_normal\_self\_test()}}
+{\footnotesize\ttfamily static int8\+\_\+t perform\+\_\+normal\+\_\+self\+\_\+test (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to perform the normal self test of the sensor and return the self test result as return value. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_afae0aa165a547a065cd10b34b16a238a}\label{bmm150_8c_afae0aa165a547a065cd10b34b16a238a}} 
+\index{bmm150.c@{bmm150.c}!read\_trim\_registers@{read\_trim\_registers}}
+\index{read\_trim\_registers@{read\_trim\_registers}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{read\_trim\_registers()}{read\_trim\_registers()}}
+{\footnotesize\ttfamily static int8\+\_\+t read\+\_\+trim\+\_\+registers (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI reads the trim registers of the sensor and stores the trim values in the \char`\"{}trim\+\_\+data\char`\"{} of device structure. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in,out}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error. \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_a9bf1ded39dbcc297e710f04f3cc0c39a}\label{bmm150_8c_a9bf1ded39dbcc297e710f04f3cc0c39a}} 
+\index{bmm150.c@{bmm150.c}!set\_adv\_self\_test\_current@{set\_adv\_self\_test\_current}}
+\index{set\_adv\_self\_test\_current@{set\_adv\_self\_test\_current}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{set\_adv\_self\_test\_current()}{set\_adv\_self\_test\_current()}}
+{\footnotesize\ttfamily static int8\+\_\+t set\+\_\+adv\+\_\+self\+\_\+test\+\_\+current (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{self\+\_\+test\+\_\+current,  }\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to set the self test current value in the Adv. ST bits (bit6 and bit7) of 0x4C register. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em self\+\_\+test\+\_\+current} & \+: Self test current value (+ve/-\/ve) \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}\\
+\hline
+\end{DoxyParams}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ self\+\_\+test\+\_\+current }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Self-\/test current Direction  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ self\+\_\+test\+\_\+current }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Self-\/test current Direction  }\\\cline{1-2}
+\endhead
+0x00 &B\+M\+M150\+\_\+\+D\+I\+S\+A\+B\+L\+E\+\_\+\+S\+E\+L\+F\+\_\+\+T\+E\+S\+T\+\_\+\+C\+U\+R\+R\+E\+NT  \\\cline{1-2}
+0x02 &B\+M\+M150\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+N\+E\+G\+A\+T\+I\+V\+E\+\_\+\+C\+U\+R\+R\+E\+NT  \\\cline{1-2}
+0x03 &B\+M\+M150\+\_\+\+E\+N\+A\+B\+L\+E\+\_\+\+P\+O\+S\+I\+T\+I\+V\+E\+\_\+\+C\+U\+R\+R\+E\+NT  \\\cline{1-2}
+\end{longtabu}
+
+
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_aa9a12a2f23839d4bcaf1ba7415c4b163}\label{bmm150_8c_aa9a12a2f23839d4bcaf1ba7415c4b163}} 
+\index{bmm150.c@{bmm150.c}!set\_control\_measurement\_xyz@{set\_control\_measurement\_xyz}}
+\index{set\_control\_measurement\_xyz@{set\_control\_measurement\_xyz}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{set\_control\_measurement\_xyz()}{set\_control\_measurement\_xyz()}}
+{\footnotesize\ttfamily static int8\+\_\+t set\+\_\+control\+\_\+measurement\+\_\+xyz (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to enable or disable the magnetic measurement of x,y,z axes based on the value of xyz\+\_\+axes\+\_\+control. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ dev-\/$>$settings.\+xyz\+\_\+axes\+\_\+control }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Measurement axes/channel  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ dev-\/$>$settings.\+xyz\+\_\+axes\+\_\+control }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Measurement axes/channel  }\\\cline{1-2}
+\endhead
+Bit 0 &X -\/ Channel  \\\cline{1-2}
+Bit 1 &Y -\/ Channel  \\\cline{1-2}
+Bit 2 &Z -\/ Channel  \\\cline{1-2}
+\end{longtabu}
+
+
+\begin{DoxyNote}{Note}
+Setting 1 -\/ Disables Channel measurement 
+
+Setting 0 -\/ Enables Channel measurement
+\end{DoxyNote}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ dev-\/$>$settings.\+xyz\+\_\+axes\+\_\+control }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Measurement axes Enabled/disabled  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ dev-\/$>$settings.\+xyz\+\_\+axes\+\_\+control }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Measurement axes Enabled/disabled  }\\\cline{1-2}
+\endhead
+0x01 &Disables X axis (Y,Z axes enabled)  \\\cline{1-2}
+0x02 &Disables Y axis (X,Z axes enabled)  \\\cline{1-2}
+0x04 &Disables Z axis (X,Y axes enabled)  \\\cline{1-2}
+0x07 &Disables all X,Y,Z axes measurement  \\\cline{1-2}
+\end{longtabu}
+
+
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_ad3d81d796a201824254430b916f9a9f2}\label{bmm150_8c_ad3d81d796a201824254430b916f9a9f2}} 
+\index{bmm150.c@{bmm150.c}!set\_odr@{set\_odr}}
+\index{set\_odr@{set\_odr}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{set\_odr()}{set\_odr()}}
+{\footnotesize\ttfamily static int8\+\_\+t set\+\_\+odr (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to set the output data rate of the sensor. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}.\\
+\hline
+\end{DoxyParams}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ dev-\/$>$settings.\+data\+\_\+rate }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Data rate (O\+DR)  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ dev-\/$>$settings.\+data\+\_\+rate }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Data rate (O\+DR)  }\\\cline{1-2}
+\endhead
+0x00 &B\+M\+M150\+\_\+\+D\+A\+T\+A\+\_\+\+R\+A\+T\+E\+\_\+10\+HZ  \\\cline{1-2}
+0x01 &B\+M\+M150\+\_\+\+D\+A\+T\+A\+\_\+\+R\+A\+T\+E\+\_\+02\+HZ  \\\cline{1-2}
+0x02 &B\+M\+M150\+\_\+\+D\+A\+T\+A\+\_\+\+R\+A\+T\+E\+\_\+06\+HZ  \\\cline{1-2}
+0x03 &B\+M\+M150\+\_\+\+D\+A\+T\+A\+\_\+\+R\+A\+T\+E\+\_\+08\+HZ  \\\cline{1-2}
+0x04 &B\+M\+M150\+\_\+\+D\+A\+T\+A\+\_\+\+R\+A\+T\+E\+\_\+15\+HZ  \\\cline{1-2}
+0x05 &B\+M\+M150\+\_\+\+D\+A\+T\+A\+\_\+\+R\+A\+T\+E\+\_\+20\+HZ  \\\cline{1-2}
+0x06 &B\+M\+M150\+\_\+\+D\+A\+T\+A\+\_\+\+R\+A\+T\+E\+\_\+25\+HZ  \\\cline{1-2}
+0x07 &B\+M\+M150\+\_\+\+D\+A\+T\+A\+\_\+\+R\+A\+T\+E\+\_\+30\+HZ  \\\cline{1-2}
+\end{longtabu}
+
+
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_ac1a4774d6bb9b0fcfda59158a98ef465}\label{bmm150_8c_ac1a4774d6bb9b0fcfda59158a98ef465}} 
+\index{bmm150.c@{bmm150.c}!set\_odr\_xyz\_rep@{set\_odr\_xyz\_rep}}
+\index{set\_odr\_xyz\_rep@{set\_odr\_xyz\_rep}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{set\_odr\_xyz\_rep()}{set\_odr\_xyz\_rep()}}
+{\footnotesize\ttfamily static int8\+\_\+t set\+\_\+odr\+\_\+xyz\+\_\+rep (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI sets the preset mode O\+DR and repetition settings. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}\\
+\hline
+\end{DoxyParams}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ A\+PI settings }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Representation  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ A\+PI settings }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Representation  }\\\cline{1-2}
+\endhead
+dev-\/$>$settings.\+data\+\_\+rate &\mbox{\hyperlink{struct_output}{Output}} Data Rate (O\+DR)  \\\cline{1-2}
+dev-\/$>$settings.\+xy\+\_\+rep &XY repetition value  \\\cline{1-2}
+dev-\/$>$settings.\+z\+\_\+rep &Z-\/repetition value  \\\cline{1-2}
+\end{longtabu}
+
+
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error. \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_a6993dd74a330b7d027bacaac7c171d60}\label{bmm150_8c_a6993dd74a330b7d027bacaac7c171d60}} 
+\index{bmm150.c@{bmm150.c}!set\_power\_control\_bit@{set\_power\_control\_bit}}
+\index{set\_power\_control\_bit@{set\_power\_control\_bit}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{set\_power\_control\_bit()}{set\_power\_control\_bit()}}
+{\footnotesize\ttfamily static int8\+\_\+t set\+\_\+power\+\_\+control\+\_\+bit (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{pwrcntrl\+\_\+bit,  }\item[{struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI sets/resets the power control bit of 0x4B register. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em pwrcntrl\+\_\+bit} & \+: Variable used to select/deselect the suspend mode. \\
+\hline
+\mbox{\texttt{ in,out}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}\\
+\hline
+\end{DoxyParams}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ pwrcntrl\+\_\+bit }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ power mode  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ pwrcntrl\+\_\+bit }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ power mode  }\\\cline{1-2}
+\endhead
+0x00 &Suspend mode  \\\cline{1-2}
+0x01 &Sleep/\+Active modes  \\\cline{1-2}
+\end{longtabu}
+
+
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error. \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_a3c1a0e8617bf8131b75ba87c61e5163b}\label{bmm150_8c_a3c1a0e8617bf8131b75ba87c61e5163b}} 
+\index{bmm150.c@{bmm150.c}!set\_xy\_rep@{set\_xy\_rep}}
+\index{set\_xy\_rep@{set\_xy\_rep}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{set\_xy\_rep()}{set\_xy\_rep()}}
+{\footnotesize\ttfamily static int8\+\_\+t set\+\_\+xy\+\_\+rep (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI sets the xy repetition value in the 0x51 register. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in,out}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}\\
+\hline
+\end{DoxyParams}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ dev-\/$>$settings.\+xy\+\_\+rep }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ n\+X\+Y(\+X\+Y Repetitions)  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ dev-\/$>$settings.\+xy\+\_\+rep }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ n\+X\+Y(\+X\+Y Repetitions)  }\\\cline{1-2}
+\endhead
+0x00 &1  \\\cline{1-2}
+0x01 &3  \\\cline{1-2}
+0x02 &5  \\\cline{1-2}
+. &.  \\\cline{1-2}
+. &.  \\\cline{1-2}
+0x\+FF &511  \\\cline{1-2}
+\end{longtabu}
+
+
+\begin{DoxyNote}{Note}
+number of XY Repetitions n\+XY = 1+2(dev-\/$>$settings.\+xy\+\_\+rep)
+\end{DoxyNote}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error. \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_a9c8c78368d451831e923427b8cb04d7e}\label{bmm150_8c_a9c8c78368d451831e923427b8cb04d7e}} 
+\index{bmm150.c@{bmm150.c}!set\_z\_rep@{set\_z\_rep}}
+\index{set\_z\_rep@{set\_z\_rep}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{set\_z\_rep()}{set\_z\_rep()}}
+{\footnotesize\ttfamily static int8\+\_\+t set\+\_\+z\+\_\+rep (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI sets the z repetition value in the 0x52 register. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in,out}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}\\
+\hline
+\end{DoxyParams}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ dev-\/$>$settings.\+z\+\_\+rep }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ n\+Z(\+Z Repetitions)  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ dev-\/$>$settings.\+z\+\_\+rep }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ n\+Z(\+Z Repetitions)  }\\\cline{1-2}
+\endhead
+0x00 &1  \\\cline{1-2}
+0x01 &2  \\\cline{1-2}
+0x02 &3  \\\cline{1-2}
+. &.  \\\cline{1-2}
+. &.  \\\cline{1-2}
+0x\+FF &256  \\\cline{1-2}
+\end{longtabu}
+
+
+\begin{DoxyNote}{Note}
+number of Z Repetitions nZ = 1+(dev-\/$>$settings.\+z\+\_\+rep)
+\end{DoxyNote}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error. \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_ae51227155af8be9eabcfe2dfb2095e8e}\label{bmm150_8c_ae51227155af8be9eabcfe2dfb2095e8e}} 
+\index{bmm150.c@{bmm150.c}!suspend\_to\_sleep\_mode@{suspend\_to\_sleep\_mode}}
+\index{suspend\_to\_sleep\_mode@{suspend\_to\_sleep\_mode}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{suspend\_to\_sleep\_mode()}{suspend\_to\_sleep\_mode()}}
+{\footnotesize\ttfamily static int8\+\_\+t suspend\+\_\+to\+\_\+sleep\+\_\+mode (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI sets the device from suspend to sleep mode by setting the power control bit to \textquotesingle{}1\textquotesingle{} of 0x4B register. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in,out}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error. \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_acc98624ce56cdf5671dfb525b2a35d50}\label{bmm150_8c_acc98624ce56cdf5671dfb525b2a35d50}} 
+\index{bmm150.c@{bmm150.c}!validate\_adv\_self\_test@{validate\_adv\_self\_test}}
+\index{validate\_adv\_self\_test@{validate\_adv\_self\_test}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{validate\_adv\_self\_test()}{validate\_adv\_self\_test()}}
+{\footnotesize\ttfamily static int8\+\_\+t validate\+\_\+adv\+\_\+self\+\_\+test (\begin{DoxyParamCaption}\item[{int16\+\_\+t}]{positive\+\_\+data\+\_\+z,  }\item[{int16\+\_\+t}]{negative\+\_\+data\+\_\+z }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to get the difference between the Z axis mag data obtained by positive and negative self-\/test current and validate whether the advanced self test is done successfully or not. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em positive\+\_\+data\+\_\+z} & \+: Z-\/axis Mag data by positive self-\/test current \\
+\hline
+\mbox{\texttt{ in}}  & {\em negative\+\_\+data\+\_\+z} & \+: Z-\/axis Mag data by negative self-\/test current\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error\\
+\hline
+\end{DoxyRetVals}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Return value }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Status of self-\/test  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Return value }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Status of self-\/test  }\\\cline{1-2}
+\endhead
+0 &B\+M\+M150\+\_\+\+OK  \\\cline{1-2}
+8 &B\+M\+M150\+\_\+\+W\+\_\+\+A\+D\+V\+\_\+\+S\+E\+L\+F\+\_\+\+T\+E\+S\+T\+\_\+\+F\+A\+IL  \\\cline{1-2}
+\end{longtabu}
+\mbox{\Hypertarget{bmm150_8c_a34ad7a037011719674d3f24354066ad4}\label{bmm150_8c_a34ad7a037011719674d3f24354066ad4}} 
+\index{bmm150.c@{bmm150.c}!validate\_normal\_self\_test@{validate\_normal\_self\_test}}
+\index{validate\_normal\_self\_test@{validate\_normal\_self\_test}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{validate\_normal\_self\_test()}{validate\_normal\_self\_test()}}
+{\footnotesize\ttfamily static int8\+\_\+t validate\+\_\+normal\+\_\+self\+\_\+test (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI is used to validate the results of normal self test by using the self test status available in the bit0 of registers 0x42,0x44 and 0x46. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{bmm150_8c_aace6cf6fa7ba10416b302d77a4e955c4}\label{bmm150_8c_aace6cf6fa7ba10416b302d77a4e955c4}} 
+\index{bmm150.c@{bmm150.c}!write\_op\_mode@{write\_op\_mode}}
+\index{write\_op\_mode@{write\_op\_mode}!bmm150.c@{bmm150.c}}
+\doxysubsubsection{\texorpdfstring{write\_op\_mode()}{write\_op\_mode()}}
+{\footnotesize\ttfamily static int8\+\_\+t write\+\_\+op\+\_\+mode (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{op\+\_\+mode,  }\item[{const struct \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}} $\ast$}]{dev }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+This internal A\+PI writes the op\+\_\+mode value in the Opmode bits (bits 1 and 2) of 0x4C register. 
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ op\+\_\+mode }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Power mode  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ op\+\_\+mode }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Power mode  }\\\cline{1-2}
+\endhead
+0x00 &B\+M\+M150\+\_\+\+N\+O\+R\+M\+A\+L\+\_\+\+M\+O\+DE  \\\cline{1-2}
+0x01 &B\+M\+M150\+\_\+\+F\+O\+R\+C\+E\+D\+\_\+\+M\+O\+DE  \\\cline{1-2}
+0x03 &B\+M\+M150\+\_\+\+S\+L\+E\+E\+P\+\_\+\+M\+O\+DE  \\\cline{1-2}
+\end{longtabu}
+
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in,out}}  & {\em dev} & \+: Structure instance of \mbox{\hyperlink{structbmm150__dev}{bmm150\+\_\+dev}}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of A\+PI execution status 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em zero} & -\/$>$ Success / +ve value -\/$>$ Warning / -\/ve value -\/$>$ Error. \\
+\hline
+\end{DoxyRetVals}
