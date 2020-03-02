@@ -6,7 +6,13 @@
  */
 
 
-
+/**
+ * @file    nina-b3.h
+ * @brief   NINA-B3 Driver macros and structures.
+ *
+ * @addtogroup NINA-B3
+ * @{
+ */
 
 #ifndef SD_MODULES_NINA_B3_NINA_B3_H_
 #define SD_MODULES_NINA_B3_NINA_B3_H_

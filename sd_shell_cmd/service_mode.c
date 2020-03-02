@@ -4,6 +4,15 @@
  *  Created on: Aug 31, 2019
  *      Author: a-h
  */
+
+/**
+ * @file    service_mode.c
+ * @brief   Service mode funcs.
+ *
+ * @addtogroup SERVICE_MODE
+ * @{
+ */
+
 #include "config.h"
 #include <stdlib.h>
 #include <stdio.h>

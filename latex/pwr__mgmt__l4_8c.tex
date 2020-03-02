@@ -1,0 +1,78 @@
+\hypertarget{pwr__mgmt__l4_8c}{}\doxysection{power\+\_\+management/pwr\+\_\+mgmt\+\_\+l4.c File Reference}
+\label{pwr__mgmt__l4_8c}\index{power\_management/pwr\_mgmt\_l4.c@{power\_management/pwr\_mgmt\_l4.c}}
+
+
+Power management driver funcs.  
+
+
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$hal.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}math.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$shell.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}pwr\+\_\+mgmt\+\_\+l4.\+h\char`\"{}}\newline
+Include dependency graph for pwr\+\_\+mgmt\+\_\+l4.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{pwr__mgmt__l4_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries enter\+\_\+stop\+\_\+mode} (void)
+\item 
+void {\bfseries leave\+\_\+stop\+\_\+mode} (void)
+\item 
+void {\bfseries deactivate\+\_\+clocks} (void)
+\item 
+void {\bfseries activate\+\_\+clocks} (void)
+\item 
+static void {\bfseries pwr\+\_\+pins\+\_\+to\+\_\+save\+\_\+state} (void)
+\item 
+static void {\bfseries pwr\+\_\+pins\+\_\+to\+\_\+work\+\_\+state} (void)
+\item 
+static void {\bfseries button\+\_\+cb} (void $\ast$arg)
+\item 
+static void {\bfseries charger\+\_\+int\+\_\+cb} (void $\ast$arg)
+\item 
+static {\bfseries T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA} (pwr\+\_\+mgmt\+\_\+thread\+\_\+wa, 512)
+\item 
+static {\bfseries T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON} (pwr\+\_\+mgmt\+\_\+thread, p)
+\item 
+void {\bfseries start\+\_\+power\+\_\+management\+\_\+module} (void)
+\item 
+static void {\bfseries pwr\+\_\+terminate\+\_\+threads} ()
+\item 
+static void {\bfseries pwr\+\_\+restart\+\_\+threads} ()
+\item 
+void {\bfseries pwr\+\_\+switch\+\_\+dc\+\_\+dc} (dcdc\+\_\+enum dcdc, dcdc\+\_\+enum state)
+\item 
+void {\bfseries pwr\+\_\+start\+\_\+threads} (void)
+\item 
+void {\bfseries pwr\+\_\+stop\+\_\+threads} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+static volatile uint8\+\_\+t {\bfseries device\+\_\+power\+\_\+state} = 0
+\item 
+static volatile uint8\+\_\+t {\bfseries deepsleep} = 1
+\item 
+static event\+\_\+source\+\_\+t {\bfseries button\+\_\+pressed\+\_\+event}
+\item 
+static event\+\_\+source\+\_\+t {\bfseries button\+\_\+released\+\_\+event}
+\item 
+static event\+\_\+source\+\_\+t {\bfseries charger\+\_\+int\+\_\+low\+\_\+event}
+\item 
+static event\+\_\+source\+\_\+t {\bfseries charger\+\_\+int\+\_\+high\+\_\+event}
+\item 
+event\+\_\+source\+\_\+t {\bfseries power\+\_\+state\+\_\+change\+\_\+event}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Power management driver funcs. 
+

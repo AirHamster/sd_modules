@@ -4,6 +4,15 @@
  *  Created on: Mar 23, 2019
  *      Author: a-h
  */
+
+/**
+ * @file    xbee.c
+ * @brief   Xbee driver funcs.
+ *
+ * @addtogroup XBEE
+ * @{
+ */
+
 #include "xbee.h"
 #include "config.h"
 #include <string.h>
@@ -43,6 +52,11 @@ static const SPIConfig xbee_spi_cfg = {
 		0
 };
 
+/**
+ *
+ * @param arg
+ */
+
 static void xbee_attn_cb(void *arg){
 	(void) arg;
 	//palToggleLine(LINE_ORANGE_LED);
@@ -57,6 +71,12 @@ static void xbee_attn_cb(void *arg){
 	}
 
 }
+
+/**
+ *
+ * @param dev
+ * @return
+ */
 
 int8_t xbee_init_data_structs(xbee_remote_dev_t *dev) {
 
@@ -204,11 +224,22 @@ static THD_FUNCTION(xbee_thread, p) {
 }
 }
 
+/**
+ *
+ */
+
 void start_xbee_module(void){
 	chThdCreateStatic(xbee_thread_wa, sizeof(xbee_thread_wa), NORMALPRIO + 1,
 				xbee_thread, NULL);
 }
 
+/**
+ *
+ * @param SPID
+ * @param rxlen
+ * @param at_msg
+ * @param rxbuff
+ */
 void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff){
 		uint8_t len;
 		uint8_t txbuff[20];
@@ -228,7 +259,12 @@ void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff)
 		spiReleaseBus(SPID); // Ownership release.
 }
 
-
+/**
+ *
+ * @param chp
+ * @param argc
+ * @param argv
+ */
 void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]){
 	if (argc == 3){
 		uint8_t len;
@@ -244,6 +280,12 @@ void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]){
 	}
 }
 
+/**
+ *
+ * @param chp
+ * @param argc
+ * @param argv
+ */
 void xbee_attn(BaseSequentialStream* chp, int argc, char* argv[]){
 	(void)argv;
 	if (argc == 1){
@@ -254,6 +296,12 @@ void xbee_attn(BaseSequentialStream* chp, int argc, char* argv[]){
 	}
 }
 
+/**
+ *
+ * @param at
+ * @param buffer
+ * @return
+ */
 uint8_t xbee_create_at_read_message(uint8_t *at, uint8_t *buffer){
 	buffer[0] = 0x7E;	// Start delimiter
 	buffer[1] = 0x00;	// Length MSB
@@ -266,6 +314,14 @@ uint8_t xbee_create_at_read_message(uint8_t *at, uint8_t *buffer){
 	return 8;	// Return length of packet
 }
 
+/**
+ *
+ * @param at
+ * @param buffer
+ * @param data
+ * @param num
+ * @return
+ */
 uint8_t xbee_create_at_write_message(char *at, uint8_t *buffer, uint8_t *data, uint8_t num){
 	uint8_t i = 0;
 	buffer[0] = 0x7E;	// Start delimiter
@@ -282,6 +338,12 @@ uint8_t xbee_create_at_write_message(char *at, uint8_t *buffer, uint8_t *data, u
 	return 8 + num;		// Return length of packet
 }
 
+/**
+ *
+ * @param at
+ * @param buffer
+ * @return
+ */
 uint8_t xbee_create_data_read_message(uint8_t *at, uint8_t *buffer){
 	buffer[0] = 0x7E;	// Start delimiter
 	buffer[1] = 0x00;	// Length MSB
@@ -294,6 +356,13 @@ uint8_t xbee_create_data_read_message(uint8_t *at, uint8_t *buffer){
 	return 8;	// Return length of packet
 }
 
+/**
+ *
+ * @param buffer
+ * @param data
+ * @param packet_type
+ * @return
+ */
 uint8_t xbee_create_data_write_message(uint8_t *buffer, void *data, uint8_t packet_type){
 	uint8_t i = 0;
 	uint8_t num;
@@ -364,6 +433,13 @@ uint8_t xbee_create_data_write_message(uint8_t *buffer, uint8_t *data, uint8_t n
 	return 17 + num + 1;		// Return length of packet
 }
 */
+
+/**
+ *
+ * @param SPID
+ * @param len
+ * @param rxbuf
+ */
 void xbee_receive(SPIDriver *SPID, uint8_t len, uint8_t *rxbuf){
 	uint8_t txbuf[len];
 	memset(txbuf, 0xff, len);
@@ -376,6 +452,12 @@ void xbee_receive(SPIDriver *SPID, uint8_t len, uint8_t *rxbuf){
 	//chThdSleepMilliseconds(1);
 }
 
+/**
+ *
+ * @param SPID
+ * @param txbuf
+ * @param len
+ */
 void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len){
 	//palSetLine(LINE_RED_LED);
 	spiAcquireBus(SPID);              	/* Acquire ownership of the bus.    */
@@ -389,6 +471,12 @@ void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len){
 	//palClearLine(LINE_RED_LED);
 }
 
+/**
+ *
+ * @param SPID
+ * @param len
+ * @param rxbuff
+ */
 void xbee_read_no_cs(SPIDriver *SPID, uint8_t len, uint8_t *rxbuff){
 	uint8_t txbuff[len];
 	memset(txbuff, 0xFF, len);
@@ -415,6 +503,12 @@ void xbee_read_no_cs(SPIDriver *SPID, uint8_t len, uint8_t *rxbuff){
 	//chThdSleepMilliseconds(1);
 }
 
+/**
+ *
+ * @param SPID
+ * @param len
+ * @param rxbuff
+ */
 void xbee_read_release_cs(SPIDriver *SPID, uint8_t len, uint8_t *rxbuff){
 	uint8_t txbuff[len];
 	memset(txbuff, 0xFF, len);
@@ -428,6 +522,10 @@ void xbee_read_release_cs(SPIDriver *SPID, uint8_t len, uint8_t *rxbuff){
 	chThdSleepMilliseconds(1);
 }
 
+/**
+ *
+ * @return
+ */
 uint8_t xbee_check_attn(void){
 	uint8_t i = 0;
 	uint8_t rxbuff[50];
@@ -453,6 +551,12 @@ uint8_t xbee_check_attn(void){
 			}
 }
 
+/**
+ *
+ * @param buffer
+ * @param num
+ * @return
+ */
 uint8_t xbee_calc_CRC(uint8_t *buffer, uint8_t num){
 	uint8_t i;
 	uint16_t sum = 0;
@@ -747,6 +851,11 @@ void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len
 }
 */
 
+/**
+ *
+ * @param packet
+ * @param packet_type
+ */
 void xbee_send_rf_message(void *packet, uint8_t packet_type){
 	uint8_t txbuff[128];
 	uint8_t pack_len;
@@ -772,6 +881,12 @@ void xbee_send_rf_message(void *packet, uint8_t packet_type){
 
 }
 
+/**
+ *
+ * @param xbee_strc
+ * @param buffer
+ * @param len
+ */
 void xbee_send_rf_message_back(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len){
 	uint8_t txbuff[128];
 	uint8_t pack_len;
@@ -801,6 +916,9 @@ void xbee_send_rf_message_back(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_
 
 }
 
+/**
+ *
+ */
 void xbee_attn_event(void){
 	chSysLockFromISR();
 	chEvtBroadcastI(&xbee_attn_pin);
@@ -809,6 +927,9 @@ void xbee_attn_event(void){
 }
 
 
+/**
+ *
+ */
 void xbee_polling(void){
 	//const uint16_t pack_len = 4;
 	uint8_t message[4];
@@ -891,6 +1012,10 @@ void xbee_polling(void){
 	//chSemSignal(&spi2_semaph);
 }
 
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_at_frame(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[payload_len + 1];
@@ -904,6 +1029,10 @@ void xbee_process_at_frame(uint8_t* buffer){
 							    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
 			chSemSignal(&usart1_semaph);
 }
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_at_queue_frame(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[payload_len + 1];
@@ -918,6 +1047,10 @@ void xbee_process_at_queue_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_tx_req_frame(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[payload_len + 1];
@@ -932,6 +1065,10 @@ void xbee_process_tx_req_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_explicit_frame(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[payload_len + 1];
@@ -946,6 +1083,10 @@ void xbee_process_explicit_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_remote_at_frame(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[payload_len + 1];
@@ -960,6 +1101,10 @@ void xbee_process_remote_at_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_at_response(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[payload_len + 1];
@@ -978,6 +1123,10 @@ void xbee_process_at_response(uint8_t* buffer){
 			}
 }
 
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_modem_stat_frame(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[payload_len + 1];
@@ -992,6 +1141,10 @@ void xbee_process_modem_stat_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_tx_stat(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[payload_len + 1];
@@ -1036,6 +1189,8 @@ void xbee_process_aggregade_addr_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
+/**
+ *  */
 void xbee_process_receive_packet_frame(uint8_t* buffer){
 
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
@@ -1059,6 +1214,10 @@ void xbee_process_receive_packet_frame(uint8_t* buffer){
 	//chSemSignal(&usart1_semaph);
 }
 
+/**
+ *
+ * @param rxbuff
+ */
 void xbee_parse_rf_packet(uint8_t *rxbuff){
 	uint8_t packet_type;
 	packet_type = rxbuff[11];
@@ -1202,6 +1361,10 @@ void xbee_parse_gps_packet(uint8_t *rxbuff){
 	chSemSignal(&usart1_semaph);
 }
 
+/**
+ *
+ * @param rxbuff
+ */
 void xbee_parse_bouy_packet(uint8_t *rxbuff){
 	int8_t i;
 	int32_t lat, lon;
@@ -1291,6 +1454,10 @@ void xbee_parse_bouy_packet(uint8_t *rxbuff){
 
 }
 
+/**
+ *
+ * @param rxbuff
+ */
 void xbee_parse_sportsman_packet(uint8_t *rxbuff) {
 
 	int8_t i;
@@ -1417,7 +1584,10 @@ void xbee_process_data_sample_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
-
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_node_id_frame(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 		uint8_t rxbuff[payload_len + 1];
@@ -1449,28 +1619,26 @@ void xbee_process_remote_response_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
-
+/**
+ *
+ */
 void xbee_set_10kbs_rate(void){
 	uint8_t len;
 	uint8_t txbuffer[20];
 	uint8_t i;
 	uint8_t zero_byte = 0;
-		len = xbee_create_at_write_message("BR", &txbuffer[0], &zero_byte, 1);
-		/*chSemWait(&usart1_semaph);
-						chprintf((BaseSequentialStream*)&SD1, "Write BD %d command \n\r", zero_byte);
-									    for (i = 0; i < len; i++){
-									    	chprintf((BaseSequentialStream*)&SD1, "%x ", txbuffer[i]);
-									    }
-									    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
-					chSemSignal(&usart1_semaph);*/
+	len = xbee_create_at_write_message("BR", &txbuffer[0], &zero_byte, 1);
 	xbee_send(&SPID1, &txbuffer[0], len);
 }
 
+/**
+ *
+ */
 void xbee_set_80kbs_rate(void){
 	uint8_t len;
 	uint8_t txbuffer[20];
 	uint8_t true_byte = 1;
 	chprintf((BaseSequentialStream*)&SD1, "Write BD %d command \n\r", true_byte);
-		len = xbee_create_at_write_message("BR", &txbuffer[0], &true_byte, 1);
+	len = xbee_create_at_write_message("BR", &txbuffer[0], &true_byte, 1);
 	xbee_send(&SPID1, &txbuffer[0], len);
 }

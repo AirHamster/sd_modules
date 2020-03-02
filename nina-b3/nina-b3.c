@@ -5,7 +5,13 @@
  *      Author: a-h
  */
 
-
+/**
+ * @file    nina-b3.c
+ * @brief   BLE Driver funcs.
+ *
+ * @addtogroup NINA-B3
+ * @{
+ */
 
 #include "nina-b3.h"
 #include "config.h"

@@ -1,0 +1,44 @@
+\hypertarget{service__mode_8c}{}\doxysection{sd\+\_\+shell\+\_\+cmd/service\+\_\+mode.c File Reference}
+\label{service__mode_8c}\index{sd\_shell\_cmd/service\_mode.c@{sd\_shell\_cmd/service\_mode.c}}
+
+
+Service mode funcs.  
+
+
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}ch.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}hal.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}shell.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}shellconf.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}chprintf.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}service\+\_\+mode.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}adc.\+h\char`\"{}}\newline
+Include dependency graph for service\+\_\+mode.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{service__mode_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries cmd\+\_\+service} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structdots__t}{dots\+\_\+t}} $\ast$ {\bfseries r\+\_\+rudder\+\_\+dots}
+\item 
+\mbox{\hyperlink{structcoefs__t}{coefs\+\_\+t}} $\ast$ {\bfseries r\+\_\+rudder\+\_\+coefs}
+\item 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Service mode funcs. 
+

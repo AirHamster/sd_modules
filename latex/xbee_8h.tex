@@ -1,0 +1,348 @@
+\hypertarget{xbee_8h}{}\doxysection{xbee/xbee.h File Reference}
+\label{xbee_8h}\index{xbee/xbee.h@{xbee/xbee.h}}
+
+
+Xbee driver macros and structures.  
+
+
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}ch.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}hal.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}shell.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}chprintf.\+h\char`\"{}}\newline
+Include dependency graph for xbee.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{xbee_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=150pt]{xbee_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structtx__box__t}{tx\+\_\+box\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structxbee__sportsman__data__t}{xbee\+\_\+sportsman\+\_\+data\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structxbee__bouy__data__t}{xbee\+\_\+bouy\+\_\+data\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structxbee__remote__dev__t}{xbee\+\_\+remote\+\_\+dev\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+A\+T\+T\+N\+\_\+\+M\+A\+SK}~1
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+G\+E\+T\+\_\+\+O\+W\+N\+\_\+\+A\+D\+DR}~1
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+G\+E\+T\+\_\+\+R\+S\+SI}~2
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+G\+E\+T\+\_\+\+P\+A\+C\+K\+E\+T\+\_\+\+P\+A\+Y\+L\+O\+AD}~3
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+G\+E\+T\+\_\+\+S\+T\+AT}~4
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+G\+E\+T\+\_\+\+P\+I\+NG}~5
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+G\+E\+T\+\_\+\+C\+H\+A\+N\+N\+E\+LS}~6
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+A\+T\+\_\+\+F\+R\+A\+ME}~0x08
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+A\+T\+\_\+\+Q\+U\+E\+U\+E\+\_\+\+F\+R\+A\+ME}~0x09
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+T\+R\+A\+N\+S\+M\+I\+T\+\_\+\+R\+E\+Q\+\_\+\+F\+R\+A\+ME}~0x10
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+E\+X\+P\+L\+I\+C\+I\+T\+\_\+\+A\+D\+D\+R\+\_\+\+F\+R\+A\+ME}~0x11
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+R\+E\+M\+O\+T\+E\+\_\+\+A\+T\+\_\+\+F\+R\+A\+ME}~0x17
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+A\+T\+\_\+\+R\+E\+S\+P\+O\+N\+S\+E\+\_\+\+F\+R\+A\+ME}~0x88
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+M\+O\+D\+E\+M\+\_\+\+S\+T\+A\+T\+\_\+\+F\+R\+A\+ME}~0x8A
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+T\+R\+A\+N\+S\+M\+I\+T\+\_\+\+S\+T\+A\+T\+\_\+\+F\+R\+A\+ME}~0x8B
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+R\+O\+U\+T\+E\+\_\+\+I\+N\+F\+\_\+\+F\+R\+A\+ME}~0x8D
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+A\+G\+G\+R\+E\+G\+A\+T\+E\+\_\+\+A\+D\+D\+R\+\_\+\+F\+R\+A\+ME}~0x8E
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+R\+E\+C\+E\+I\+V\+E\+\_\+\+P\+A\+C\+K\+E\+T\+\_\+\+F\+R\+A\+ME}~0x90
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+E\+X\+P\+L\+I\+C\+I\+T\+\_\+\+R\+X\+\_\+\+F\+R\+A\+ME}~0x91
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+D\+A\+T\+A\+\_\+\+S\+A\+M\+P\+L\+E\+\_\+\+F\+R\+A\+ME}~0x92
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+N\+O\+D\+E\+\_\+\+I\+D\+\_\+\+F\+R\+A\+ME}~0x95
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+R\+E\+M\+O\+T\+E\+\_\+\+R\+E\+S\+P\+O\+N\+S\+E\+\_\+\+F\+R\+A\+ME}~0x97
+\item 
+\#define {\bfseries X\+B\+E\+E\+\_\+\+H\+E\+A\+D\+E\+R\+\_\+\+L\+EN}~3
+\item 
+\#define {\bfseries O\+U\+T\+P\+U\+T\+\_\+\+U\+S\+A\+RT}~1
+\item 
+\#define {\bfseries O\+U\+T\+P\+U\+T\+\_\+\+X\+B\+EE}~2
+\item 
+\#define {\bfseries S\+I\+Z\+E\+\_\+\+O\+F\+\_\+\+X\+B\+E\+E\+\_\+\+A\+D\+DR}~8
+\item 
+\#define {\bfseries R\+F\+\_\+\+P\+A\+C\+K\+\_\+\+L\+EN}~128
+\item 
+\#define {\bfseries R\+F\+\_\+\+G\+P\+S\+\_\+\+P\+A\+C\+K\+ET}~1
+\item 
+\#define {\bfseries R\+F\+\_\+\+B\+O\+U\+Y\+\_\+\+P\+A\+C\+K\+ET}~2
+\item 
+\#define {\bfseries R\+F\+\_\+\+S\+P\+O\+R\+T\+S\+M\+A\+N\+\_\+\+P\+A\+C\+K\+ET}~3
+\item 
+\#define {\bfseries N\+U\+M\+\_\+\+O\+F\+\_\+\+S\+P\+O\+R\+T\+S\+M\+A\+N\+\_\+\+D\+E\+V\+I\+C\+ES}~10
+\item 
+\#define {\bfseries N\+U\+M\+\_\+\+O\+F\+\_\+\+B\+O\+U\+Y\+\_\+\+D\+E\+V\+I\+C\+ES}~4
+\item 
+\#define {\bfseries D\+E\+V\+\_\+\+T\+Y\+P\+E\+\_\+\+S\+P\+O\+R\+T\+S\+M\+AN}~1
+\item 
+\#define {\bfseries D\+E\+V\+\_\+\+T\+Y\+P\+E\+\_\+\+B\+O\+UY}~2
+\item 
+\#define {\bfseries A\+T\+\_\+\+BC}~\char`\"{}BC\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+DB}~\char`\"{}DB\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+ER}~\char`\"{}ER\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+GD}~\char`\"{}GD\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+EA}~\char`\"{}EA\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+TR}~\char`\"{}TR\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+UA}~\char`\"{}UA\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+H}~\char`\"{}\%H\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+8}~\char`\"{}\%8\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+CE}~\char`\"{}CE\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+BH}~\char`\"{}BH\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+NH}~\char`\"{}NH\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+NN}~\char`\"{}NN\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+MR}~\char`\"{}MR\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+SH}~\char`\"{}SH\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+SL}~\char`\"{}SL\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+DH}~\char`\"{}DH\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+DL}~\char`\"{}TL\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+TO}~\char`\"{}TO\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+NI}~\char`\"{}NI\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+NT}~\char`\"{}NT\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+NO}~\char`\"{}NO\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+CI}~\char`\"{}CI\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+DE}~\char`\"{}DE\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+SE}~\char`\"{}SE\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+AG}~\char`\"{}AG\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+DN}~\char`\"{}DN\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+ND}~\char`\"{}ND\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+FN}~\char`\"{}FN\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+N}~\char`\"{}N?\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+EE}~\char`\"{}EE\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+KY}~\char`\"{}KY\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+BD}~\char`\"{}BD\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+NB}~\char`\"{}NB\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+SB}~\char`\"{}SB\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+RO}~\char`\"{}RO\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+FT}~\char`\"{}FT\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+AP}~\char`\"{}AP\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+AO}~\char`\"{}AO\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+SM}~\char`\"{}SM\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+SO}~\char`\"{}SO\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+SN}~\char`\"{}SN\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+SP}~\char`\"{}SP\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+ST}~\char`\"{}ST\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+WH}~\char`\"{}WH\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+SS}~\char`\"{}SS\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+OS}~\char`\"{}OS\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+OW}~\char`\"{}OW\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+MS}~\char`\"{}MS\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+SQ}~\char`\"{}SQ\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+CC}~\char`\"{}CC\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+CT}~\char`\"{}CT\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+CN}~\char`\"{}CN\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+GT}~\char`\"{}GT\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+VL}~\char`\"{}VL\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+VR}~\char`\"{}VR\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+HV}~\char`\"{}HV\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+HS}~\char`\"{}HS\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+DD}~\char`\"{}DD\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+NP}~\char`\"{}NP\char`\"{}
+\item 
+\#define {\bfseries A\+T\+\_\+\+CK}~\char`\"{}CK\char`\"{}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga5254e1be6790abc2bcee85d67da7f63d}{xbee\+\_\+read}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint8\+\_\+t rxlen, uint8\+\_\+t $\ast$at\+\_\+msg, uint8\+\_\+t $\ast$rxbuff)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga4567a9cfb7d92d8e867fc67ca91ca89d}{xbee\+\_\+write}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga7021d2a9da606e65cda41ecbff0c0648}{xbee\+\_\+send}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint8\+\_\+t $\ast$txbuf, uint8\+\_\+t len)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga8a8e2507ce3548a284bc2bb67b027d0b}{xbee\+\_\+read\+\_\+no\+\_\+cs}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint8\+\_\+t len, uint8\+\_\+t $\ast$rxbuff)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga795c0c12ac17bc19a63fd2868174fa46}{xbee\+\_\+receive}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint8\+\_\+t len, uint8\+\_\+t $\ast$rxbuf)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_gab3795d7dc7f3bcd92fbfa1e0f16bdc11}{xbee\+\_\+attn}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+void {\bfseries xbee\+\_\+attn\+\_\+event} (void)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___x_b_e_e_gad5fc55d4988dc4eba587b44d17a1fe20}{xbee\+\_\+create\+\_\+at\+\_\+read\+\_\+message}} (uint8\+\_\+t $\ast$at, uint8\+\_\+t $\ast$buffer)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___x_b_e_e_gaec25bb3748a6a8ed0ed3a95df30bb885}{xbee\+\_\+create\+\_\+data\+\_\+write\+\_\+message}} (uint8\+\_\+t $\ast$buffer, void $\ast$data, uint8\+\_\+t packet\+\_\+type)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___x_b_e_e_ga350cf9addd8a53d61a827112ce70e1cf}{xbee\+\_\+calc\+\_\+\+C\+RC}} (uint8\+\_\+t $\ast$buffer, uint8\+\_\+t num)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___x_b_e_e_gad11ba8a7713cd36d2090bd6563580480}{xbee\+\_\+check\+\_\+attn}} (void)
+\item 
+void {\bfseries xbee\+\_\+get\+\_\+rssi} (void)
+\item 
+void {\bfseries xbee\+\_\+get\+\_\+stat} (void)
+\item 
+void {\bfseries xbee\+\_\+get\+\_\+addr} (void)
+\item 
+void {\bfseries xbee\+\_\+get\+\_\+ping} (void)
+\item 
+void {\bfseries xbee\+\_\+read\+\_\+own\+\_\+addr} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+void {\bfseries xbee\+\_\+set\+\_\+loopback} (char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+void {\bfseries xbee\+\_\+get\+\_\+lb\+\_\+status} (void)
+\item 
+void {\bfseries xbee\+\_\+thread\+\_\+execute} (uint8\+\_\+t command)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga4d1f88b1a58dde336a188386f035370e}{xbee\+\_\+process\+\_\+at\+\_\+frame}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_gae2d50e9734ede27f7b54bce93b0bb5db}{xbee\+\_\+process\+\_\+at\+\_\+queue\+\_\+frame}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga7a875bfa2bfe583a92d42906f72aef9a}{xbee\+\_\+process\+\_\+tx\+\_\+req\+\_\+frame}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga919ab0aafbef27087257c6e4c8046dec}{xbee\+\_\+process\+\_\+explicit\+\_\+frame}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga9207781d66b2ca5ab730e1957800e8bc}{xbee\+\_\+process\+\_\+remote\+\_\+at\+\_\+frame}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga1791b581c0cef2506ebb76b100ff0ac0}{xbee\+\_\+process\+\_\+at\+\_\+response}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_gae4d681ec824990ffec24ca915be4d8a7}{xbee\+\_\+process\+\_\+modem\+\_\+stat\+\_\+frame}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga7493166f703a3b1b956e7d9e48383410}{xbee\+\_\+process\+\_\+tx\+\_\+stat}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void {\bfseries xbee\+\_\+process\+\_\+route\+\_\+inf\+\_\+frame} (uint8\+\_\+t $\ast$buffer)
+\item 
+void {\bfseries xbee\+\_\+process\+\_\+aggregade\+\_\+addr\+\_\+frame} (uint8\+\_\+t $\ast$buffer)
+\item 
+void {\bfseries xbee\+\_\+process\+\_\+receive\+\_\+packet\+\_\+frame} (uint8\+\_\+t $\ast$buffer)
+\item 
+void {\bfseries xbee\+\_\+process\+\_\+explicit\+\_\+rx\+\_\+frame} (uint8\+\_\+t $\ast$buffer)
+\item 
+void {\bfseries xbee\+\_\+process\+\_\+data\+\_\+sample\+\_\+frame} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga603d370aa284c0d00ff866b7ae45b889}{xbee\+\_\+process\+\_\+node\+\_\+id\+\_\+frame}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void {\bfseries xbee\+\_\+process\+\_\+remote\+\_\+response\+\_\+frame} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_gaac3cb4fdf683977f60e38c3657d21a07}{xbee\+\_\+send\+\_\+rf\+\_\+message}} (void $\ast$packet, uint8\+\_\+t packet\+\_\+type)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga917c69ae653e731d1e05402c6eed63f4}{xbee\+\_\+send\+\_\+rf\+\_\+message\+\_\+back}} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+strc, uint8\+\_\+t $\ast$buffer, uint8\+\_\+t len)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga0b878255a5cf56364a31fb8999724a17}{xbee\+\_\+parse\+\_\+rf\+\_\+packet}} (uint8\+\_\+t $\ast$rxbuff)
+\item 
+void {\bfseries xbee\+\_\+parse\+\_\+gps\+\_\+packet\+\_\+back} (uint8\+\_\+t $\ast$rxbuff)
+\item 
+void {\bfseries xbee\+\_\+parse\+\_\+gps\+\_\+packet} (uint8\+\_\+t $\ast$rxbuff)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+read\+\_\+last\+\_\+rssi} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint32\+\_\+t {\bfseries xbee\+\_\+read\+\_\+channels} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+read\+\_\+baudrate} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+get\+\_\+attn\+\_\+pin\+\_\+cfg} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+get\+\_\+packet\+\_\+payload} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+get\+\_\+bytes\+\_\+transmitted} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+get\+\_\+good\+\_\+packets\+\_\+res} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+get\+\_\+received\+\_\+err\+\_\+count} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+get\+\_\+transceived\+\_\+err\+\_\+count} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+get\+\_\+unicast\+\_\+trans\+\_\+count} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+void {\bfseries xbee\+\_\+send\+\_\+ping\+\_\+message} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+strc)
+\item 
+void {\bfseries start\+\_\+xbee\+\_\+module} (void)
+\item 
+void {\bfseries xbee\+\_\+polling} (void)
+\item 
+void {\bfseries xbee\+\_\+set\+\_\+10kbs\+\_\+rate} (void)
+\item 
+void {\bfseries xbee\+\_\+set\+\_\+80kbs\+\_\+rate} (void)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Xbee driver macros and structures. 
+

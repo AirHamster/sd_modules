@@ -21,7 +21,7 @@
  * @pre     In order to use the CAN driver the @p USE_BNO055_MODULE option
  *          must be enabled in @p config.h.
  *
- * @section bno055_1 Driver State Machine
+ * @section bno055_1 Stateflow
  * The driver implements a state machine internally, not all the driver
  * functionalities can be used in any moment, any transition not explicitly
  * shown in the following diagram has to be considered an error and shall
