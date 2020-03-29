@@ -1,0 +1,13 @@
+digraph "bmi160_soft_reset"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bmi160_soft_reset",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bmi160_set_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a5bea435582a9fdb2c331f64b61e0d6c5",tooltip="This API writes the given data to the register address of sensor. "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bmi160_get_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a9bebc4a575526f49e625a87de9478e04",tooltip="This API reads the data from the given register address of sensor. "];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="default_param_settg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#aa27f4ba5c1d4f54a2a6223627ef4ea55",tooltip="This API sets the default configuration parameters of accel & gyro. Also maintain the previous state ..."];
+}

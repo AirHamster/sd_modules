@@ -1,0 +1,28 @@
+digraph "bmm150_set_presetmode"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bmm150_set_presetmode",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="null_ptr_check",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ab0bcb8de99dc3747e6249b8406c766dc",tooltip="This internal API is used to validate the device pointer for null conditions. "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="set_odr_xyz_rep",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ac1a4774d6bb9b0fcfda59158a98ef465",tooltip="This internal API sets the preset mode ODR and repetition settings. "];
+  Node3 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="set_odr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ad3d81d796a201824254430b916f9a9f2",tooltip="This internal API is used to set the output data rate of the sensor. "];
+  Node4 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="bmm150_get_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ac3b65c846fa1d826b2addbbef4292a9c",tooltip="This API reads the data from the given register address of the sensor. "];
+  Node5 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="bmm150_set_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a88285b4abe005f21a5cc9392dddb9de9",tooltip="This API writes the given data to the register address of the sensor. "];
+  Node6 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="set_xy_rep",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a3c1a0e8617bf8131b75ba87c61e5163b",tooltip="This internal API sets the xy repetition value in the 0x51 register. "];
+  Node7 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="set_z_rep",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a9c8c78368d451831e923427b8cb04d7e",tooltip="This internal API sets the z repetition value in the 0x52 register. "];
+  Node8 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

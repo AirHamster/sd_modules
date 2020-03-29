@@ -1,0 +1,45 @@
+digraph "adv_self_test_measurement"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="adv_self_test_measurement",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="set_adv_self_test_current",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a9bf1ded39dbcc297e710f04f3cc0c39a",tooltip="This internal API is used to set the self test current value in the Adv. ST bits (bit6 and bit7) of 0..."];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bmm150_get_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ac3b65c846fa1d826b2addbbef4292a9c",tooltip="This API reads the data from the given register address of the sensor. "];
+  Node3 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="null_ptr_check",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ab0bcb8de99dc3747e6249b8406c766dc",tooltip="This internal API is used to validate the device pointer for null conditions. "];
+  Node2 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="bmm150_set_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a88285b4abe005f21a5cc9392dddb9de9",tooltip="This API writes the given data to the register address of the sensor. "];
+  Node5 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="bmm150_set_op_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a6b8ebfb4d731d5880ef87ecffc72a43b",tooltip="This API is used to set the power mode of the sensor. "];
+  Node6 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="suspend_to_sleep_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ae51227155af8be9eabcfe2dfb2095e8e",tooltip="This internal API sets the device from suspend to sleep mode by setting the power control bit to &#39;1&#39; ..."];
+  Node7 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="set_power_control_bit",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a6993dd74a330b7d027bacaac7c171d60",tooltip="This internal API sets/resets the power control bit of 0x4B register. "];
+  Node8 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="write_op_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#aace6cf6fa7ba10416b302d77a4e955c4",tooltip="This internal API writes the op_mode value in the Opmode bits (bits 1 and 2) of 0x4C register..."];
+  Node9 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="bmm150_read_mag_data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#abdb1f4947a1e2639326420a9fc7a2b12",tooltip="This API is used to read the magnetometer data from registers 0x42 to 0x49 and update the dev structu..."];
+  Node10 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 -> Node11 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="compensate_x",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a97392f7098a598cd4149dcf08091db0a",tooltip="This internal API is used to obtain the compensated magnetometer X axis data in float. "];
+  Node10 -> Node12 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="compensate_y",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ae7266bbdfb938c6a1e3013556a529b86",tooltip="This internal API is used to obtain the compensated magnetometer Y axis data in float. "];
+  Node10 -> Node13 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="compensate_z",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a9930bc4c2289f8199da765398d0ca303",tooltip="This internal API is used to obtain the compensated magnetometer Z axis data in float. "];
+  Node13 -> Node11 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 -> Node12 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

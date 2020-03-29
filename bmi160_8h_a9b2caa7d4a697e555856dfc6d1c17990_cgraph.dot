@@ -1,0 +1,24 @@
+digraph "bmi160_extract_gyro"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bmi160_extract_gyro",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="get_gyro_len_to_parse",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#afa13a0b7694d1b2aac4e8e82d61c4b14",tooltip="This API computes the number of bytes of gyro FIFO data which is to be parsed in header-less mode..."];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="check_frame_validity",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a7c67cdc64c320e0c479b57f27c30b142",tooltip="This API checks the presence of non-valid frames in the read fifo data. "];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="unpack_gyro_frame",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a769cfdf6e084ec2255afcc858eec133f",tooltip="This API is used to parse the gyroscope&#39;s data from the FIFO data in both header mode and header-less..."];
+  Node4 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="unpack_gyro_data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#af90d80dd2eb0dcb86f2c96d449a12d94",tooltip="This API is used to parse the gyro data from the FIFO data and store it in the instance of the struct..."];
+  Node1 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="extract_gyro_header_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a463cdfcb15a457485c6d4a74fc30535b",tooltip="This API is used to parse the gyro data from the FIFO data in header mode. "];
+  Node6 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="move_next_frame",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a58866dc5d7ac1b024599e2878f4e8d43",tooltip="This API is used to move the data index ahead of the current_frame_length parameter when unnecessary ..."];
+  Node6 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="unpack_sensortime_frame",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a1a38fe80a2f0daffa294f4e70b3eac90",tooltip="This API is used to parse and store the sensor time from the FIFO data in the structure instance dev..."];
+  Node6 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="unpack_skipped_frame",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a62ccdc39fad37aedd60ebafb9147b816",tooltip="This API is used to parse and store the skipped_frame_count from the FIFO data in the structure insta..."];
+}

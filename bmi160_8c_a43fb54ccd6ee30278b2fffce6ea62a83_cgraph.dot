@@ -1,0 +1,21 @@
+digraph "accel_self_test_negative_excitation"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="accel_self_test_negative\l_excitation",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bmi160_set_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a5bea435582a9fdb2c331f64b61e0d6c5",tooltip="This API writes the given data to the register address of sensor. "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bmi160_get_sensor_data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a86fb957a2384daa2ac17345d76b7e976",tooltip="This API reads sensor data, stores it in the bmi160_sensor_data structure pointer passed by the user..."];
+  Node3 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="get_accel_data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a9a45bdba352749b974886c547f8853bd",tooltip="This API reads accel data along with sensor time if time is requested by user. Kindly refer the user ..."];
+  Node4 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="bmi160_get_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a9bebc4a575526f49e625a87de9478e04",tooltip="This API reads the data from the given register address of sensor. "];
+  Node3 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="get_gyro_data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a4eb539e3355431e191500f01ef618c6f",tooltip="This API reads accel data along with sensor time if time is requested by user. Kindly refer the user ..."];
+  Node6 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="get_accel_gyro_data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a64af5bda307bd78b2be8b48c58dee5bc",tooltip="This API reads accel and gyro data along with sensor time if time is requested by user..."];
+  Node7 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

@@ -1,0 +1,48 @@
+digraph "bmi160_set_sens_conf"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bmi160_set_sens_conf",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="set_accel_conf",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#ab26d07d82b0d2cf6514e2c8399b512cf",tooltip="This API set the accel configuration. "];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="check_accel_config",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#ad5d8ba2079f821934b6314e535e32391",tooltip="This API check the accel configuration. "];
+  Node3 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="bmi160_get_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a9bebc4a575526f49e625a87de9478e04",tooltip="This API reads the data from the given register address of sensor. "];
+  Node3 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="process_accel_odr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#ac0846783ecfe54d66486f700b2899dde",tooltip="This API process the accel odr. "];
+  Node3 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="process_accel_bw",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a01eeff4e5c29ad0fe40e17c59896b7c1",tooltip="This API process the accel bandwidth. "];
+  Node3 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="process_accel_range",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a8c2bbb0f609cf4bba4ea21874b27250f",tooltip="This API process the accel range. "];
+  Node2 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="bmi160_set_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a5bea435582a9fdb2c331f64b61e0d6c5",tooltip="This API writes the given data to the register address of sensor. "];
+  Node1 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="set_gyro_conf",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a569ccaf7f9e93552375bd931532b3fa0",tooltip="This API set the gyro configuration. "];
+  Node9 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="check_gyro_config",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#ae220f75be9ef4118d6a10f2fbc7d5f39",tooltip="This API check the gyro configuration. "];
+  Node10 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 -> Node11 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="process_gyro_odr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#af25ade4d7b191077afad62e3a403a5f1",tooltip="This API process the gyro odr. "];
+  Node10 -> Node12 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="process_gyro_bw",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a8f21b3836c94eb95ce344037abd1a05d",tooltip="This API process the gyro bandwidth. "];
+  Node10 -> Node13 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="process_gyro_range",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a9f25472035277ec820771123f01fc481",tooltip="This API process the gyro range. "];
+  Node9 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node14 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node14 [label="bmi160_set_power_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a897ca5f1bfbcd1385ace2c05f9f4aef6",tooltip="This API sets the power mode of the sensor. "];
+  Node14 -> Node15 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node15 [label="set_accel_pwr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a5008db1759072b81bb4e971bba1d892d",tooltip="This API sets the accel power mode. "];
+  Node15 -> Node16 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node16 [label="process_under_sampling",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#ab226b75d0953cfbcc84ea9be85f5f285",tooltip="This API process the undersampling setting of Accel. "];
+  Node16 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node16 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node15 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node14 -> Node17 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node17 [label="set_gyro_pwr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#af8658ccaf254acd34799e0f2b70da40a",tooltip="This API sets the gyro power mode. "];
+  Node17 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node18 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node18 [label="check_invalid_settg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a5b556e4ad9ecd78bffbecf001be144a7",tooltip="This API checks the invalid settings for ODR & Bw for Accel and Gyro. "];
+  Node18 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

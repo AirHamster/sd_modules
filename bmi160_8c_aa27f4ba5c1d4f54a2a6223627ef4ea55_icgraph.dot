@@ -1,0 +1,17 @@
+digraph "default_param_settg"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="default_param_settg",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bmi160_soft_reset",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8h.html#aa047f8bacbc2a9c14ff70841304c04d0",tooltip="This API resets and restarts the device. All register values are overwritten with default parameters..."];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bmi160_init",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8h.html#a7a2e8b832a4cb12b441cba7371d73f6a",tooltip="This API is the entry point for sensor.It performs the selection of I2C/SPI read mechanism according ..."];
+  Node3 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="bmx160_full_init",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_m_x160.html#ga24f66e1149af3eaad9ce37483510bd52",tooltip="BMX160 chip and fusion algorithm initialization. "];
+  Node4 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="start_bmx160_module",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_m_x160.html#ga3c92c87bd9ca59bc115bc38377fd51e8",tooltip="Start BMX160 threads. "];
+  Node2 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="bmi160_perform_self_test",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8h.html#a6f83dc85a8173886ffe58e381fd9e0b8",tooltip="This is used to perform self test of accel/gyro of the BMI160 sensor. "];
+}

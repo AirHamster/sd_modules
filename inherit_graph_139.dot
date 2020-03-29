@@ -1,0 +1,7 @@
+digraph "Graphical Class Hierarchy"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="ts_HWsensorSwitchList",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structts___h_wsensor_switch_list.html",tooltip="HW sensor Switch List. "];
+}

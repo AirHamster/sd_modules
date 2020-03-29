@@ -1,0 +1,13 @@
+digraph "FusionAhrsUpdateWithoutMagnetometer"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="FusionAhrsUpdateWithoutMagnetometer",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="FusionAhrsUpdate",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_fusion_ahrs_8c.html#a00bfb227b100a623ffca78b03ccafaf8",tooltip="Updates the AHRS algorithm. This function should be called for each new gyroscope measurement..."];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="FusionAhrsIsInitialising",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_fusion_ahrs_8c.html#ac19677a4e53acbb4c16d7ce5d00ed5f0",tooltip="Returns true while the AHRS algorithm is initialising. "];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="FusionAhrsSetYaw",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_fusion_ahrs_8c.html#a3eec005410f05a2dd53956bec727bdd9",tooltip="Sets the yaw component of the orientation measurement provided by the AHRS algorithm. This function can be used to reset drift in yaw when the AHRS algorithm is being used without a magnetometer. "];
+}

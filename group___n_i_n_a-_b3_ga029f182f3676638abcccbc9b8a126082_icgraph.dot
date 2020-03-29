@@ -1,0 +1,11 @@
+digraph "nina_send_all"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="nina_send_all",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="THD_FUNCTION",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___n_i_n_a-_b3.html#gad52af452b149d6bb8287bf400931af28",tooltip="Thread with nina and state machine initialisation. "];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="start_json_module",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___s_h_e_l_l.html#ga94adf30e56c9e48af192da843e45100c",tooltip="Starting shell thread. "];
+}

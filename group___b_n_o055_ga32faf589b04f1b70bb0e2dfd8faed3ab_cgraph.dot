@@ -1,0 +1,20 @@
+digraph "bno055_read_status"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bno055_read_status",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bno055_get_mag_calib_stat",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a11cc7afba5d9f406d9bd0575a6daeb54",tooltip="This API used to read mag calibration status from register from 0x35 bit 0 and 1. ..."];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bno055_write_page_id",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#aba65b8682ba0645b5b9ab0ea64eb4c7e",tooltip="This API used to write the page id register 0x07. "];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="bno055_get_accel_calib_stat",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a0fec4cbba6642e732b01b0764cf089ef",tooltip="This API used to read accel calibration status from register from 0x35 bit 2 and 3. "];
+  Node4 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="bno055_get_gyro_calib_stat",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a72beb4f923f856f94a5f5d8f453adfcb",tooltip="This API used to read gyro calibration status from register from 0x35 bit 4 and 5. "];
+  Node5 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="bno055_get_sys_calib_stat",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#aefd7733d04e37f0c6fe13c1d03334f02",tooltip="This API used to read system calibration status from register from 0x35 bit 6 and 7..."];
+  Node6 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

@@ -1,0 +1,14 @@
+digraph "unpack_aux_data"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="unpack_aux_data",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="unpack_aux_frame",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a89fd412ed63d023d3612b026894ba465",tooltip="This API is used to parse the aux&#39;s data from the FIFO data in both header mode and header-less mode..."];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bmi160_extract_aux",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8h.html#ab21ca26b7df608549e5d1bd583e4d52a",tooltip="This API parses and extracts the aux frames from FIFO data read by the \"bmi160_get_fifo_data\" API and..."];
+  Node2 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="extract_aux_header_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a6a255669d0bfff7bd48ab205d6bd2070",tooltip="This API is used to parse the aux data from the FIFO data in header mode. "];
+  Node4 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

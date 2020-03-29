@@ -1,0 +1,13 @@
+digraph "bmi160_get_fifo_data"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bmi160_get_fifo_data",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="reset_fifo_data_structure",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#ad2fd32d60a5e430e9dedf6d5c1682d03",tooltip="This API is used to reset the FIFO related configurations in the fifo_frame structure. "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="get_fifo_byte_counter",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#afeeefaea1ce62a0a339249c53dcdbe0f",tooltip="This API is used to read number of bytes filled currently in FIFO buffer. "];
+  Node3 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="bmi160_get_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a9bebc4a575526f49e625a87de9478e04",tooltip="This API reads the data from the given register address of sensor. "];
+}

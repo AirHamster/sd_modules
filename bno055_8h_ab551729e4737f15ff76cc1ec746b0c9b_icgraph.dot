@@ -1,0 +1,15 @@
+digraph "bno055_read_accel_z"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bno055_read_accel_z",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bno055_convert_float\l_accel_z_msq",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a7303e3071d18ca01a8911d4b4ba24de3",tooltip="This API is used to convert the accel z raw data to meterpersecseq output as float. "];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bno055_convert_float\l_accel_z_mg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a3e07565be88bc29a80110dd16666fcb6",tooltip="This API is used to convert the accel z raw data to millig output as float. "];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="bno055_convert_double\l_accel_z_msq",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a2af1fe6eefe2e1af056c2b33e6460515",tooltip="This API is used to convert the accel z raw data to meterpersecseq output as double. "];
+  Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="bno055_convert_double\l_accel_z_mg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a3a3a75254860a14ec962b2bfea8facf1",tooltip="This API is used to convert the accel z raw data to millig output as double. "];
+}

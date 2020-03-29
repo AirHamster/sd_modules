@@ -1,0 +1,19 @@
+digraph "bmx160" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  subgraph clusterdir_304be2c0a07404c0d62199ec42907081 {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_304be2c0a07404c0d62199ec42907081.html"];
+    dir_304be2c0a07404c0d62199ec42907081 [shape=plaintext label="bmx160"];
+    dir_6abe29cc407faf7f2cac1d9e2e34a257 [shape=box label="bsx_lite" color="red" fillcolor="white" style="filled" URL="dir_6abe29cc407faf7f2cac1d9e2e34a257.html"];
+    dir_22c364b2c6e493edbab3e846431f2f0d [shape=box label="ekf" color="black" fillcolor="white" style="filled" URL="dir_22c364b2c6e493edbab3e846431f2f0d.html"];
+    dir_14bb47b71cfee9e339d3ce9c0ff28945 [shape=box label="Fusion" color="red" fillcolor="white" style="filled" URL="dir_14bb47b71cfee9e339d3ce9c0ff28945.html"];
+    dir_b8028ff02235d345f72acd9ca9759384 [shape=box label="MadgwickAHRS" color="black" fillcolor="white" style="filled" URL="dir_b8028ff02235d345f72acd9ca9759384.html"];
+    dir_c9f598e91f77f4ef69457456a66542e7 [shape=box label="MahonyAHRS" color="black" fillcolor="white" style="filled" URL="dir_c9f598e91f77f4ef69457456a66542e7.html"];
+  }
+  dir_fa753a09c1860d819d579f23f194701b [shape=box label="eeprom" URL="dir_fa753a09c1860d819d579f23f194701b.html"];
+  dir_d91d62955b7477f35b9ee8b17e4ea395 [shape=box label="sd_shell_cmd" URL="dir_d91d62955b7477f35b9ee8b17e4ea395.html"];
+  dir_304be2c0a07404c0d62199ec42907081->dir_fa753a09c1860d819d579f23f194701b [headlabel="1", labeldistance=1.5 headhref="dir_000001_000014.html"];
+  dir_304be2c0a07404c0d62199ec42907081->dir_d91d62955b7477f35b9ee8b17e4ea395 [headlabel="1", labeldistance=1.5 headhref="dir_000001_000025.html"];
+  dir_304be2c0a07404c0d62199ec42907081->dir_14bb47b71cfee9e339d3ce9c0ff28945 [headlabel="1", labeldistance=1.5 headhref="dir_000001_000005.html"];
+}

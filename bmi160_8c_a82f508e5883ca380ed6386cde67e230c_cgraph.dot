@@ -1,0 +1,31 @@
+digraph "config_tap_int_settg"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="config_tap_int_settg",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="set_intr_pin_config",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#ac8c8fb9cab8826a3dd5da5f1caff0be6",tooltip="This API configures the pins to fire the interrupt signal when it occurs. "];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="config_int_out_ctrl",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#adfdf621d43c30d1725e3b0d90121897b",tooltip="This API configure the behavioural setting of interrupt pin. "];
+  Node3 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="bmi160_get_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a9bebc4a575526f49e625a87de9478e04",tooltip="This API reads the data from the given register address of sensor. "];
+  Node3 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="bmi160_set_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a5bea435582a9fdb2c331f64b61e0d6c5",tooltip="This API writes the given data to the register address of sensor. "];
+  Node2 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="config_int_latch",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#aa35edab511d1366601fa47a0b9632a6b",tooltip="This API configure the mode(input enable, latch or non-latch) of interrupt pin. "];
+  Node6 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="map_feature_interrupt",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a84e4d42010bbcb038937a2a56110fb8a",tooltip="This API is used to map/unmap the Any/Sig motion, Step det/Low-g, Double tap, Single tap..."];
+  Node7 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="config_tap_data_src",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#ae03653fc4569ae1431b24050ed141ac9",tooltip="This API configure the source of data(filter & pre-filter) for tap interrupt. "];
+  Node8 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="config_tap_param",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#ae8fa58fc386e7242248eaff94a0bb9ad",tooltip="This API configure the parameters of tap interrupt. Threshold, quite, shock, and duration. "];
+  Node9 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

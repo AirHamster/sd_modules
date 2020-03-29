@@ -1,0 +1,11 @@
+digraph "enable_normal_self_test"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="enable_normal_self_test",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="perform_normal_self_test",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a3ab7959442af47223fd6addb4ef4facc",tooltip="This internal API is used to perform the normal self test of the sensor and return the self test resu..."];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bmm150_perform_self_test",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8h.html#aabaad6846eae116f278af4c87d432b2f",tooltip="This API is used to perform the complete self test (both normal and advanced) for the BMM150 sensor..."];
+}

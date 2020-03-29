@@ -1,0 +1,13 @@
+digraph "BNO055_I2C_bus_read"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="BNO055_I2C_bus_read",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bno055_i2c_routine",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_n_o055.html#gac762bf4f77376dc35799b853d00a95c7"];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bno055_full_init",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_n_o055.html#gaba0cea545392dbe2337e040fb80614e9"];
+  Node3 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="start_bno055_module",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_n_o055.html#ga79f76b1f8471d2a31bbebbce0b45866f"];
+}

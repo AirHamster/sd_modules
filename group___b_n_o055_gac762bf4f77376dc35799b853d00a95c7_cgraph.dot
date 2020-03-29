@@ -1,0 +1,20 @@
+digraph "bno055_i2c_routine"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bno055_i2c_routine",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="BNO055_I2C_bus_write",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_n_o055.html#ga6a1eeefef56eda6f0c963e317706f617"];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bno055_write",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_n_o055.html#ga8580976177afa8089fd8262e5e59a257"];
+  Node3 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="i2c_restart",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_n_o055.html#ga2bcb21315e7745d07d64fb64d2c0cfd7"];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="BNO055_I2C_bus_read",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_n_o055.html#ga0d3c7c3e0c8b54e34752989b5bdc36d1"];
+  Node5 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="bno055_read",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_n_o055.html#gace7496b19e1ddbbe483df67155b21b46"];
+  Node6 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="bno055_delay_ms",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_n_o055.html#gabba4dd15173a18edbbafe674bb2aad58"];
+}

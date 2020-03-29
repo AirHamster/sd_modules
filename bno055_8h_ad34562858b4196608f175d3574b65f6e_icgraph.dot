@@ -1,0 +1,11 @@
+digraph "bno055_get_gyro_auto_sleep_durn"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bno055_get_gyro_auto\l_sleep_durn",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bno055_set_gyro_bw",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a0976a24d1ab05bb6e42155cc0132a2fc",tooltip="This API used to write the gyro bandwidth from page one register from 0x0A bit 3 to 5..."];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bno055_set_gyro_power_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a41e30a0ca3e9bd92a124b6f41c5c4bae",tooltip="This API used to write the gyro power mode from page one register from 0x0B bit 0 to 2..."];
+}

@@ -1,0 +1,9 @@
+digraph "get_aux_len_to_parse"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="get_aux_len_to_parse",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bmi160_extract_aux",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8h.html#ab21ca26b7df608549e5d1bd583e4d52a",tooltip="This API parses and extracts the aux frames from FIFO data read by the \"bmi160_get_fifo_data\" API and..."];
+}

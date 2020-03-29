@@ -1,0 +1,11 @@
+digraph "FusionAhrsInitialise"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="FusionAhrsInitialise",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bmx160_full_init",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_m_x160.html#ga24f66e1149af3eaad9ce37483510bd52",tooltip="BMX160 chip and fusion algorithm initialization. "];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="start_bmx160_module",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_m_x160.html#ga3c92c87bd9ca59bc115bc38377fd51e8",tooltip="Start BMX160 threads. "];
+}

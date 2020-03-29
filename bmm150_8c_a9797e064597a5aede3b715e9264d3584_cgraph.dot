@@ -1,0 +1,14 @@
+digraph "interrupt_config"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="interrupt_config",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bmm150_get_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ac3b65c846fa1d826b2addbbef4292a9c",tooltip="This API reads the data from the given register address of the sensor. "];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="null_ptr_check",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ab0bcb8de99dc3747e6249b8406c766dc",tooltip="This internal API is used to validate the device pointer for null conditions. "];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="bmm150_set_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a88285b4abe005f21a5cc9392dddb9de9",tooltip="This API writes the given data to the register address of the sensor. "];
+  Node4 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

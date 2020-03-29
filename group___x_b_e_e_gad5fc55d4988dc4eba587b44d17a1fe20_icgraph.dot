@@ -1,0 +1,41 @@
+digraph "xbee_create_at_read_message"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="xbee_create_at_read\l_message",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="xbee_read",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#ga5254e1be6790abc2bcee85d67da7f63d"];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="xbee_calc_CRC",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#ga350cf9addd8a53d61a827112ce70e1cf",tooltip="Calculate Xbee CRC. "];
+  Node3 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="xbee_create_at_write\l_message",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#gafe3d94a0acf14ace77c958664c3a03b6"];
+  Node4 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="xbee_set_10kbs_rate",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#gad1ae028c940713a1cf14dc8cd285c56e",tooltip="Setup low speed - higher distance. "];
+  Node4 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="xbee_set_80kbs_rate",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#gacebc7bb503fd1559f54937bc77af1bde",tooltip="Setup high speed - less distance. "];
+  Node3 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="xbee_create_data_read\l_message",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#gae97cbacefe61b49ff3e1b775d06369ca",tooltip="Reads incoming data. "];
+  Node3 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="xbee_create_data_write\l_message",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#gaec25bb3748a6a8ed0ed3a95df30bb885",tooltip="Sending telemetry data over air. "];
+  Node8 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="xbee_send_rf_message",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#gaac3cb4fdf683977f60e38c3657d21a07"];
+  Node9 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="start_json_module",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___s_h_e_l_l.html#ga94adf30e56c9e48af192da843e45100c",tooltip="Starting shell thread. "];
+  Node8 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="xbee_send_rf_message_back",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#ga917c69ae653e731d1e05402c6eed63f4",tooltip="Debug - return data back. "];
+  Node11 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="xbee_parse_rf_packet",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#ga0b878255a5cf56364a31fb8999724a17",tooltip="Parse incoming message. "];
+  Node12 -> Node13 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="xbee_process_receive\l_packet_frame",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#gaf5bbf8926649923f15e540bc9117c5e0",tooltip="Reads all data from Xbee via SPI. "];
+  Node13 -> Node14 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node14 [label="xbee_polling",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#ga341983a0050640556d238b8e13481cf1",tooltip="Poll and parse data from spi. "];
+  Node14 -> Node15 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node15 [label="xbee_init_data_structs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#ga6866cb3a7a3705647d65bf4395ebf99e",tooltip="Initialization of remote devices structs. "];
+  Node14 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node16 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node16 [label="xbee_write",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#ga4567a9cfb7d92d8e867fc67ca91ca89d",tooltip="Manual writting AT command from shell (debug) "];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

@@ -1,0 +1,12 @@
+digraph "unpack_accel_frame"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="unpack_accel_frame",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bmi160_extract_accel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8h.html#ae548739f4185fa7fef8cb718ec6bd91d",tooltip="This API parses and extracts the accelerometer frames from FIFO data read by the \"bmi160_get_fifo_dat..."];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="extract_accel_header_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#aa00c5b028357d4ef13151f2deaec4e36",tooltip="This API is used to parse the accelerometer data from the FIFO data in header mode. "];
+  Node3 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

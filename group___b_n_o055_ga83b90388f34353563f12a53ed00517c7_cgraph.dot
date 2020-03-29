@@ -1,0 +1,20 @@
+digraph "bno055_check_calib_coefs"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bno055_check_calib\l_coefs",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bno055_read_sic_matrix",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#aedd6344dbb30b0afe2c013c9ffe48565",tooltip="This API is used to read soft iron calibration matrix from the register 0x43 to 0x53 it is a 18 bytes..."];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bno055_write_page_id",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#aba65b8682ba0645b5b9ab0ea64eb4c7e",tooltip="This API used to write the page id register 0x07. "];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="bno055_read_accel_offset",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#ade3c4b53689405a9bfdc3cb3c4bf17f3",tooltip="This API is used to read accel offset and accel radius offset form register 0x55 to 0x5A and radius f..."];
+  Node4 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="bno055_read_mag_offset",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a1d6a22def9f8e21d243e5708f3c9ae2e",tooltip="This API is used to read mag offset offset form register 0x69 to 0x6A. "];
+  Node5 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="bno055_read_gyro_offset",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a4ecff0dfd56435247a88d461d06e47b4",tooltip="This API is used to read gyro offset offset form register 0x61 to 0x66. "];
+  Node6 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

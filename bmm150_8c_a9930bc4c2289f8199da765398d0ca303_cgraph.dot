@@ -1,0 +1,11 @@
+digraph "compensate_z"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="compensate_z",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="compensate_x",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a97392f7098a598cd4149dcf08091db0a",tooltip="This internal API is used to obtain the compensated magnetometer X axis data in float. "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="compensate_y",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ae7266bbdfb938c6a1e3013556a529b86",tooltip="This internal API is used to obtain the compensated magnetometer Y axis data in float. "];
+}

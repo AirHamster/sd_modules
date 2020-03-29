@@ -1,0 +1,29 @@
+digraph "set_power_control_bit"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="set_power_control_bit",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bmm150_init",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8h.html#ab4897d93fb8406c61d6bfab44de8c054",tooltip="This API is the entry point, Call this API before using other APIs. This API reads the chip-id of the..."];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bmx160_full_init",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_m_x160.html#ga24f66e1149af3eaad9ce37483510bd52",tooltip="BMX160 chip and fusion algorithm initialization. "];
+  Node3 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="start_bmx160_module",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_m_x160.html#ga3c92c87bd9ca59bc115bc38377fd51e8",tooltip="Start BMX160 threads. "];
+  Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="bmm150_set_op_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8h.html#a6b8ebfb4d731d5880ef87ecffc72a43b",tooltip="This API is used to set the power mode of the sensor. "];
+  Node5 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="bmm150_perform_self_test",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8h.html#aabaad6846eae116f278af4c87d432b2f",tooltip="This API is used to perform the complete self test (both normal and advanced) for the BMM150 sensor..."];
+  Node5 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="adv_self_test_settings",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#aac0c3cff60479891237856fa3bfcda02",tooltip="This internal API is used to set the desired power mode , axes control and repetition settings for ad..."];
+  Node7 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="perform_adv_self_test",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#abdf010fd02ffb5abbbc88390ff59c40a",tooltip="This internal API is used to perform advanced self test for Z axis. "];
+  Node8 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="adv_self_test_measurement",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ab1fae57cefc4b440fde4c7a26f7fa49a",tooltip="This internal API is used to set the positive or negative value of self-test current and obtain the c..."];
+  Node9 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="suspend_to_sleep_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ae51227155af8be9eabcfe2dfb2095e8e",tooltip="This internal API sets the device from suspend to sleep mode by setting the power control bit to &#39;1&#39; ..."];
+  Node10 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

@@ -1,0 +1,7 @@
+digraph "Graphical Class Hierarchy"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="FusionQuaternion",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$union_fusion_quaternion.html",tooltip="Quaternion. This library uses the conversion of placing the &#39;w&#39; element as the first element..."];
+}

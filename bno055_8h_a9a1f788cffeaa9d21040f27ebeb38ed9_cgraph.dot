@@ -1,0 +1,24 @@
+digraph "bno055_convert_float_gyro_z_rps"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bno055_convert_float\l_gyro_z_rps",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bno055_get_gyro_unit",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#af1e70c5defbb1302db23d9506573d0da",tooltip="This API used to read the gyro unit from register from 0x3B bit 1. "];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bno055_write_page_id",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#aba65b8682ba0645b5b9ab0ea64eb4c7e",tooltip="This API used to write the page id register 0x07. "];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="bno055_set_gyro_unit",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#ac3aacdc89e41aa4aba3ff9f1c0e3d10f",tooltip="This API used to write the gyro unit from register from 0x3B bit 1. "];
+  Node4 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="bno055_get_operation_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a610cc17a4638c57f2cc4352280ca418b",tooltip="This API used to read the operation mode from register from 0x3D bit 0 to 3. "];
+  Node5 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="bno055_set_operation_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a42db870e00f008575aa5dbafa60bf927",tooltip="This API used to write the operation mode from register from 0x3D bit 0 to 3. "];
+  Node6 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="bno055_write_register",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#adbdf24752c36e42a7c957dfc32c8a6e3",tooltip="This API gives data to the given register and the data is written in the corresponding register addre..."];
+  Node1 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="bno055_read_gyro_z",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#afdeb2a32901839665bd8a314919744c3",tooltip="This API reads gyro data z values from register 0x18 and 0x19 it is a two byte data. "];
+  Node8 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

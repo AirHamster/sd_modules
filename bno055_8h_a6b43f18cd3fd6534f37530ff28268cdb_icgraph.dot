@@ -1,0 +1,15 @@
+digraph "bno055_read_gyro_y"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bno055_read_gyro_y",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bno055_convert_float\l_gyro_y_dps",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a1f21b8c6a298ed4774600820cdbf6d74",tooltip="This API is used to convert the gyro y raw data to dps output as float. "];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bno055_convert_float\l_gyro_y_rps",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#af146f4d532ad0055ab913c88c5108d85",tooltip="This API is used to convert the gyro y raw data to rps output as float. "];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="bno055_convert_double\l_gyro_y_dps",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a86df82e0ecfb7b8b06d50767044b1f65",tooltip="This API is used to convert the gyro y raw data to dps output as double. "];
+  Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="bno055_convert_double\l_gyro_y_rps",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#afda856dcf49a34c459e38a72927edebf",tooltip="This API is used to convert the gyro y raw data to rps output as double. "];
+}

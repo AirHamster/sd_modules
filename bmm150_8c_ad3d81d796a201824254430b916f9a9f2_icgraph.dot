@@ -1,0 +1,19 @@
+digraph "set_odr"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="set_odr",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="set_odr_xyz_rep",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ac1a4774d6bb9b0fcfda59158a98ef465",tooltip="This internal API sets the preset mode ODR and repetition settings. "];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bmm150_set_presetmode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8h.html#afbd9773c2f5c5645d60231f0ba7e8626",tooltip="This API is used to set the preset mode of the sensor. "];
+  Node3 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="bmx160_full_init",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_m_x160.html#ga24f66e1149af3eaad9ce37483510bd52",tooltip="BMX160 chip and fusion algorithm initialization. "];
+  Node4 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="start_bmx160_module",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_m_x160.html#ga3c92c87bd9ca59bc115bc38377fd51e8",tooltip="Start BMX160 threads. "];
+  Node1 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="mode_settings",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ad9eee434f6a2aebd2c96c6402740e638",tooltip="This API sets the ODR , measurement axes control , repetition values of xy,z. "];
+  Node6 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="bmm150_set_sensor_settings",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8h.html#a96ceb625f7af0bf71a8a7ad8aa67fe2b",tooltip="This API sets the sensor settings based on the desired_settings and the dev structure configuration..."];
+}

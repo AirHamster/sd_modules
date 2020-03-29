@@ -1,0 +1,43 @@
+digraph "map_feature_interrupt"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="map_feature_interrupt",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="set_accel_step_detect_int",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#ad70dee7d49c9b9c36261505cbd944a67",tooltip="This API sets the step detection interrupt.This interrupt occurs when the single step causes accel va..."];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bmi160_set_int_config",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8h.html#a62ebd142768bea09f93ab63786dc3cca",tooltip="This API configures the necessary interrupt based on the user settings in the bmi160_int_settg struct..."];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="set_accel_orientation_int",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a92083d81c82d0fbeb24a80474bd42ddb",tooltip="This API sets the orientation interrupt of the sensor.This interrupt occurs when there is orientation..."];
+  Node4 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="set_accel_flat_detect_int",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a08101eee1d12bf8d9eab1fb674b2fd99",tooltip="This API sets the flat interrupt of the sensor.This interrupt occurs in case of flat orientation..."];
+  Node5 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="set_accel_low_g_int",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a7b3427b603eabe1248b3330afdfa8677",tooltip="This API sets the low-g interrupt of the sensor.This interrupt occurs during free-fall. "];
+  Node6 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="set_accel_high_g_int",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#acab0b26630427f3ee6d0374404bfc280",tooltip="This API sets the high-g interrupt of the sensor.The interrupt occurs if the absolute value of accele..."];
+  Node7 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="config_any_motion_int\l_settg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a1033718a3595b55f682916d0058172fb",tooltip="This API configure necessary setting of any-motion interrupt. "];
+  Node8 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="set_accel_any_motion_int",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#ad7da9617be15890e9deb9895241782e3",tooltip="This API sets the any-motion interrupt of the sensor. This interrupt occurs when accel values exceeds..."];
+  Node9 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="config_no_motion_int\l_settg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a0dbb00706ea1bbdbdd8c24545fabd648",tooltip="This API configure the interrupt PIN setting for no motion/slow motion interrupt. ..."];
+  Node10 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="set_accel_no_motion_int",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#ae276c8f2eb45b1088d65e92533ef8de1",tooltip="This API sets the no motion/slow motion interrupt of the sensor. Slow motion is similar to any motion..."];
+  Node11 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="config_sig_motion_int\l_settg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a09e53f1ce6505ad749fcf93d339113fd",tooltip="This API configure the interrupt PIN setting for significant motion interrupt. "];
+  Node12 -> Node13 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="set_accel_sig_motion_int",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a8a544220e2835a299e6d814f618c5127",tooltip="This API sets the significant motion interrupt of the sensor.This interrupt occurs when there is chan..."];
+  Node13 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node14 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node14 [label="config_tap_int_settg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a82f508e5883ca380ed6386cde67e230c",tooltip="This API configure the interrupt PIN setting for tap interrupt. "];
+  Node14 -> Node15 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node15 [label="set_accel_tap_int",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a105ca9bc6765fbffd4d2c60d086d375a",tooltip="This API sets tap interrupts.Interrupt is fired when tap movements happen. "];
+  Node15 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

@@ -1,0 +1,46 @@
+digraph "bmm150_set_sensor_settings"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bmm150_set_sensor_settings",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="null_ptr_check",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ab0bcb8de99dc3747e6249b8406c766dc",tooltip="This internal API is used to validate the device pointer for null conditions. "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="are_settings_changed",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a6b22bcbc4feb6e000017147c8bd6ee34",tooltip="This internal API is used to identify the settings which the user wants to modify in the sensor..."];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="mode_settings",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ad9eee434f6a2aebd2c96c6402740e638",tooltip="This API sets the ODR , measurement axes control , repetition values of xy,z. "];
+  Node4 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="set_odr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ad3d81d796a201824254430b916f9a9f2",tooltip="This internal API is used to set the output data rate of the sensor. "];
+  Node5 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="bmm150_get_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ac3b65c846fa1d826b2addbbef4292a9c",tooltip="This API reads the data from the given register address of the sensor. "];
+  Node6 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="bmm150_set_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a88285b4abe005f21a5cc9392dddb9de9",tooltip="This API writes the given data to the register address of the sensor. "];
+  Node7 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="set_control_measurement_xyz",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#aa9a12a2f23839d4bcaf1ba7415c4b163",tooltip="This internal API is used to enable or disable the magnetic measurement of x,y,z axes based on the va..."];
+  Node8 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="set_xy_rep",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a3c1a0e8617bf8131b75ba87c61e5163b",tooltip="This internal API sets the xy repetition value in the 0x51 register. "];
+  Node9 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="set_z_rep",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a9c8c78368d451831e923427b8cb04d7e",tooltip="This internal API sets the z repetition value in the 0x52 register. "];
+  Node10 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node11 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="interrupt_pin_settings",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ad53f31262cad93df7940622a18f059bf",tooltip="This API is used to enable the interrupts and map them to the corresponding interrupt pins and specif..."];
+  Node11 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node12 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="interrupt_config",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a9797e064597a5aede3b715e9264d3584",tooltip="This API is used to enable data overrun , overflow interrupts and enable/disable high/low threshold i..."];
+  Node12 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node13 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="interrupt_threshold\l_settings",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a5495206e08115e8e84e3b16a64febe32",tooltip="This API is used to write the user specified High/Low threshold value as a reference to generate the ..."];
+  Node13 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

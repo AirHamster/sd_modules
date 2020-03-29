@@ -1,0 +1,11 @@
+digraph "neo_read_bytes_no_cs"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="neo_read_bytes_no_cs",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="neo_poll",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___n_e_o-_m8.html#ga8cc90f552e6d393f9e254875ef12a387",tooltip="Polling procedure. "];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="THD_FUNCTION",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___n_e_o-_m8.html#ga1efb0d69e1fb5804e6542f41834d7811",tooltip="Thread to process data collection and filtering from NEO-M8P. "];
+}

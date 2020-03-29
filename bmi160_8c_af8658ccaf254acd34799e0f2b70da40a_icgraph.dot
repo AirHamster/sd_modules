@@ -1,0 +1,22 @@
+digraph "set_gyro_pwr"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="set_gyro_pwr",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bmi160_set_power_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8h.html#a897ca5f1bfbcd1385ace2c05f9f4aef6",tooltip="This API sets the power mode of the sensor. "];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bmi160_set_sens_conf",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8h.html#ab098d2c7fda2965b1699ae13d2a8ffc8",tooltip="This API configures the power mode, range and bandwidth of sensor. "];
+  Node3 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="enable_accel_self_test",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a46663dc05547a60fb8b7621181e257ab",tooltip="This API enables to perform the accel self test by setting proper configurations to facilitate accel ..."];
+  Node4 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="perform_accel_self_test",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a58524a9b6fe288b5fb74f0b5cfb48703",tooltip="This API performs the self test for accelerometer of BMI160. "];
+  Node5 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="bmi160_perform_self_test",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8h.html#a6f83dc85a8173886ffe58e381fd9e0b8",tooltip="This is used to perform self test of accel/gyro of the BMI160 sensor. "];
+  Node3 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="bmx160_full_init",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_m_x160.html#ga24f66e1149af3eaad9ce37483510bd52",tooltip="BMX160 chip and fusion algorithm initialization. "];
+  Node7 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="start_bmx160_module",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_m_x160.html#ga3c92c87bd9ca59bc115bc38377fd51e8",tooltip="Start BMX160 threads. "];
+  Node2 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

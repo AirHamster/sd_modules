@@ -1,0 +1,17 @@
+digraph "bno055_set_accel_high_g_durn"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bno055_set_accel_high\l_g_durn",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bno055_get_operation_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a610cc17a4638c57f2cc4352280ca418b",tooltip="This API used to read the operation mode from register from 0x3D bit 0 to 3. "];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bno055_write_page_id",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#aba65b8682ba0645b5b9ab0ea64eb4c7e",tooltip="This API used to write the page id register 0x07. "];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="bno055_set_operation_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a42db870e00f008575aa5dbafa60bf927",tooltip="This API used to write the operation mode from register from 0x3D bit 0 to 3. "];
+  Node4 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="bno055_write_register",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#adbdf24752c36e42a7c957dfc32c8a6e3",tooltip="This API gives data to the given register and the data is written in the corresponding register addre..."];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

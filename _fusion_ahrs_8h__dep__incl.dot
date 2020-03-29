@@ -1,0 +1,12 @@
+digraph "bmx160/Fusion/FusionAhrs.h"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="bmx160/Fusion/FusionAhrs.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bmx160/Fusion/Fusion.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_fusion_8h.html",tooltip="Main header file for the library. This is the only file that needs to be included when using the libr..."];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bmx160/bmx160_i2c.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmx160__i2c_8c.html",tooltip="BMX160 Driver funcs. "];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="bmx160/Fusion/FusionAhrs.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_fusion_ahrs_8c.html",tooltip="The AHRS sensor fusion algorithm to combines gyroscope, accelerometer, and magnetometer measurements ..."];
+}

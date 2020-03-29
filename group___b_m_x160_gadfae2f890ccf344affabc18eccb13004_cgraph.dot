@@ -1,0 +1,34 @@
+digraph "bmx160_mag_calibration"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bmx160_mag_calibration",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bmi160_get_sensor_data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a86fb957a2384daa2ac17345d76b7e976",tooltip="This API reads sensor data, stores it in the bmi160_sensor_data structure pointer passed by the user..."];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="get_accel_data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a9a45bdba352749b974886c547f8853bd",tooltip="This API reads accel data along with sensor time if time is requested by user. Kindly refer the user ..."];
+  Node3 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="bmi160_get_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a9bebc4a575526f49e625a87de9478e04",tooltip="This API reads the data from the given register address of sensor. "];
+  Node2 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="get_gyro_data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a4eb539e3355431e191500f01ef618c6f",tooltip="This API reads accel data along with sensor time if time is requested by user. Kindly refer the user ..."];
+  Node5 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="get_accel_gyro_data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a64af5bda307bd78b2be8b48c58dee5bc",tooltip="This API reads accel and gyro data along with sensor time if time is requested by user..."];
+  Node6 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="bmm150_read_mag_data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#abdb1f4947a1e2639326420a9fc7a2b12",tooltip="This API is used to read the magnetometer data from registers 0x42 to 0x49 and update the dev structu..."];
+  Node7 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="null_ptr_check",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ab0bcb8de99dc3747e6249b8406c766dc",tooltip="This internal API is used to validate the device pointer for null conditions. "];
+  Node7 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="bmm150_get_regs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ac3b65c846fa1d826b2addbbef4292a9c",tooltip="This API reads the data from the given register address of the sensor. "];
+  Node9 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="compensate_x",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a97392f7098a598cd4149dcf08091db0a",tooltip="This internal API is used to obtain the compensated magnetometer X axis data in float. "];
+  Node7 -> Node11 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="compensate_y",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ae7266bbdfb938c6a1e3013556a529b86",tooltip="This internal API is used to obtain the compensated magnetometer Y axis data in float. "];
+  Node7 -> Node12 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="compensate_z",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a9930bc4c2289f8199da765398d0ca303",tooltip="This internal API is used to obtain the compensated magnetometer Z axis data in float. "];
+  Node12 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 -> Node11 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

@@ -1,0 +1,7 @@
+digraph "Graphical Class Hierarchy"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="FusionBias",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$struct_fusion_bias.html",tooltip="Gyroscope bias correction algorithm structure. Structure members are used internally and should not b..."];
+}

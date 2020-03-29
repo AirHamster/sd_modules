@@ -1,0 +1,14 @@
+digraph "set_adv_self_test_current"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="set_adv_self_test_current",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="perform_adv_self_test",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#abdf010fd02ffb5abbbc88390ff59c40a",tooltip="This internal API is used to perform advanced self test for Z axis. "];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bmm150_perform_self_test",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8h.html#aabaad6846eae116f278af4c87d432b2f",tooltip="This API is used to perform the complete self test (both normal and advanced) for the BMM150 sensor..."];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="adv_self_test_measurement",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ab1fae57cefc4b440fde4c7a26f7fa49a",tooltip="This internal API is used to set the positive or negative value of self-test current and obtain the c..."];
+  Node4 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

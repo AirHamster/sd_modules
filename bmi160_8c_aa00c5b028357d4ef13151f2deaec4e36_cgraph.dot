@@ -1,0 +1,17 @@
+digraph "extract_accel_header_mode"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="extract_accel_header_mode",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="unpack_accel_frame",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a31bc6ff7462a604b4e86e8c75bc17cdb",tooltip="This API is used to parse the accelerometer data from the FIFO data in both header mode and header-le..."];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="unpack_accel_data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a8621c864c8df6417078683b5031f2cb5",tooltip="This API is used to parse the accelerometer data from the FIFO data and store it in the instance of t..."];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="move_next_frame",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a58866dc5d7ac1b024599e2878f4e8d43",tooltip="This API is used to move the data index ahead of the current_frame_length parameter when unnecessary ..."];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="unpack_sensortime_frame",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a1a38fe80a2f0daffa294f4e70b3eac90",tooltip="This API is used to parse and store the sensor time from the FIFO data in the structure instance dev..."];
+  Node1 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="unpack_skipped_frame",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmi160_8c.html#a62ccdc39fad37aedd60ebafb9147b816",tooltip="This API is used to parse and store the skipped_frame_count from the FIFO data in the structure insta..."];
+}

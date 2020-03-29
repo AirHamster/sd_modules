@@ -1,0 +1,11 @@
+digraph "xbee_create_at_write_message"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="xbee_create_at_write\l_message",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="xbee_set_10kbs_rate",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#gad1ae028c940713a1cf14dc8cd285c56e",tooltip="Setup low speed - higher distance. "];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="xbee_set_80kbs_rate",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___x_b_e_e.html#gacebc7bb503fd1559f54937bc77af1bde",tooltip="Setup high speed - less distance. "];
+}

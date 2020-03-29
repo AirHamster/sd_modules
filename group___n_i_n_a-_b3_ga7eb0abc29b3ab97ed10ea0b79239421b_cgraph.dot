@@ -1,0 +1,17 @@
+digraph "nina_wait_charac_handlers"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="nina_wait_charac_handlers",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="nina_compare_founded_dev",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___n_i_n_a-_b3.html#ga6a2104cf103f6dcc564b7c2a0eb7b71e"];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="nina_init_devices",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___n_i_n_a-_b3.html#ga6823bc17be2aa9d10cdb13c9bc89f811"];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="nina_init_services",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___n_i_n_a-_b3.html#ga2185f3750c2428c9362a7754e31fdc52"];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="nina_wait_response",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___n_i_n_a-_b3.html#gad7a5cfeff7bbe72aba0e7b4a21c0d574"];
+  Node1 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="nina_add_charac",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___n_i_n_a-_b3.html#ga2d62b1825af7b60c2bdb7dcbc1a4fc3e",tooltip="Create characteristic for device in server mode. "];
+}

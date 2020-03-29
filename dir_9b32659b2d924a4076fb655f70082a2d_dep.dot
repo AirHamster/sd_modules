@@ -1,0 +1,8 @@
+digraph "mpu9250" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  dir_9b32659b2d924a4076fb655f70082a2d [shape=box, label="mpu9250", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_9b32659b2d924a4076fb655f70082a2d.html"];
+  dir_8bedd321ef9e7f08ea8786a6386279ef [shape=box label="xbee" URL="dir_8bedd321ef9e7f08ea8786a6386279ef.html"];
+  dir_9b32659b2d924a4076fb655f70082a2d->dir_8bedd321ef9e7f08ea8786a6386279ef [headlabel="1", labeldistance=1.5 headhref="dir_000008_000028.html"];
+}

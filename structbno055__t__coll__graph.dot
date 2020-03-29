@@ -1,0 +1,25 @@
+digraph "bno055_t"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bno055_t",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" accel_offset" ,fontname="Helvetica"];
+  Node2 [label="bno055_accel_offset_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structbno055__accel__offset__t.html",tooltip="struct for Accel offset "];
+  Node3 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" accel_raw" ,fontname="Helvetica"];
+  Node3 [label="bno055_accel_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structbno055__accel__t.html",tooltip="struct for accel data read from registers "];
+  Node4 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" mag_raw" ,fontname="Helvetica"];
+  Node4 [label="bno055_mag_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structbno055__mag__t.html",tooltip="struct for Mag data read from registers "];
+  Node5 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" magn_offset" ,fontname="Helvetica"];
+  Node5 [label="bno055_mag_offset_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structbno055__mag__offset__t.html",tooltip="struct for Mag offset "];
+  Node6 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" sic_matrix" ,fontname="Helvetica"];
+  Node6 [label="bno055_sic_matrix_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structbno055__sic__matrix__t.html",tooltip="struct for soft iron calibration matrix "];
+  Node7 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" gyro_offset" ,fontname="Helvetica"];
+  Node7 [label="bno055_gyro_offset_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structbno055__gyro__offset__t.html",tooltip="struct for Gyro offset "];
+  Node8 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" gyro_raw" ,fontname="Helvetica"];
+  Node8 [label="bno055_gyro_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structbno055__gyro__t.html",tooltip="struct for Gyro data read from registers "];
+  Node9 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" calib_stat" ,fontname="Helvetica"];
+  Node9 [label="bno055_calib_status",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structbno055__calib__status.html"];
+  Node10 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" d_euler_hpr" ,fontname="Helvetica"];
+  Node10 [label="bno055_euler_float_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structbno055__euler__float__t.html",tooltip="struct for Euler-output data of precision float "];
+}

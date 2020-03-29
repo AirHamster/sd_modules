@@ -1,0 +1,14 @@
+digraph "charger_int_cb"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="charger_int_cb",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="activate_clocks",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___p_w_r.html#gab4dea8df5ecbc778264a53ce68b79826",tooltip="Switch to power state. "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="THD_WORKING_AREA",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___p_w_r.html#gaaf327990b963467334cce83450b4f0b0",tooltip="Main power management thread. "];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="button_cb",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___p_w_r.html#ga834ab8e72cbb7547199d8cbcc99259ee",tooltip="Power button callback. "];
+  Node4 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

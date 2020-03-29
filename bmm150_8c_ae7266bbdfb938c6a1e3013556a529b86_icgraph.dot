@@ -1,0 +1,26 @@
+digraph "compensate_y"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="compensate_y",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bmm150_read_mag_data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8h.html#abdb1f4947a1e2639326420a9fc7a2b12",tooltip="This API reads the magnetometer data from registers 0x42 to 0x49 and updates the dev structure with c..."];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="adv_self_test_measurement",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#ab1fae57cefc4b440fde4c7a26f7fa49a",tooltip="This internal API is used to set the positive or negative value of self-test current and obtain the c..."];
+  Node3 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="perform_adv_self_test",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#abdf010fd02ffb5abbbc88390ff59c40a",tooltip="This internal API is used to perform advanced self test for Z axis. "];
+  Node4 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="bmm150_perform_self_test",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8h.html#aabaad6846eae116f278af4c87d432b2f",tooltip="This API is used to perform the complete self test (both normal and advanced) for the BMM150 sensor..."];
+  Node2 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="start_bmx160_module",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_m_x160.html#ga3c92c87bd9ca59bc115bc38377fd51e8",tooltip="Start BMX160 threads. "];
+  Node2 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="bmx160_mag_calibration",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___b_m_x160.html#gadfae2f890ccf344affabc18eccb13004"];
+  Node7 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="bmm150_aux_mag_data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8h.html#abc0895a5c1c847e18e33daf5cd69c1b6",tooltip="This API is used to compensate the raw mag data. "];
+  Node1 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="compensate_z",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bmm150_8c.html#a9930bc4c2289f8199da765398d0ca303",tooltip="This internal API is used to obtain the compensated magnetometer Z axis data in float. "];
+  Node9 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

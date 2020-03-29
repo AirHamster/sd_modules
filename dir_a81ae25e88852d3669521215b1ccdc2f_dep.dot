@@ -1,0 +1,14 @@
+digraph "hmc6343" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  dir_a81ae25e88852d3669521215b1ccdc2f [shape=box, label="hmc6343", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_a81ae25e88852d3669521215b1ccdc2f.html"];
+  dir_a84c1585dfb9fdbc90fb56a8ecabf169 [shape=box label="bno055" URL="dir_a84c1585dfb9fdbc90fb56a8ecabf169.html"];
+  dir_fa753a09c1860d819d579f23f194701b [shape=box label="eeprom" URL="dir_fa753a09c1860d819d579f23f194701b.html"];
+  dir_d91d62955b7477f35b9ee8b17e4ea395 [shape=box label="sd_shell_cmd" URL="dir_d91d62955b7477f35b9ee8b17e4ea395.html"];
+  dir_a84c1585dfb9fdbc90fb56a8ecabf169->dir_fa753a09c1860d819d579f23f194701b [headlabel="1", labeldistance=1.5 headhref="dir_000010_000014.html"];
+  dir_a84c1585dfb9fdbc90fb56a8ecabf169->dir_d91d62955b7477f35b9ee8b17e4ea395 [headlabel="1", labeldistance=1.5 headhref="dir_000010_000025.html"];
+  dir_a81ae25e88852d3669521215b1ccdc2f->dir_a84c1585dfb9fdbc90fb56a8ecabf169 [headlabel="1", labeldistance=1.5 headhref="dir_000017_000010.html"];
+  dir_a81ae25e88852d3669521215b1ccdc2f->dir_fa753a09c1860d819d579f23f194701b [headlabel="1", labeldistance=1.5 headhref="dir_000017_000014.html"];
+  dir_a81ae25e88852d3669521215b1ccdc2f->dir_d91d62955b7477f35b9ee8b17e4ea395 [headlabel="1", labeldistance=1.5 headhref="dir_000017_000025.html"];
+}

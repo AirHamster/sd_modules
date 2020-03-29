@@ -1,0 +1,11 @@
+digraph "bno055_read_gravity_z"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bno055_read_gravity_z",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bno055_convert_gravity\l_float_z_msq",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#ad74eb3b0acb2e79b22f7092d61b5cd0a",tooltip="This API is used to convert the gravity z raw data to meterpersecseq output as float. "];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bno055_convert_gravity\l_double_z_msq",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bno055_8h.html#a70ac148255ed6fb3ceab0871ddc32909",tooltip="This API is used to convert the gravity z raw data to meterpersecseq output as double. "];
+}

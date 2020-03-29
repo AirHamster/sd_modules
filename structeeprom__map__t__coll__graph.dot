@@ -1,0 +1,25 @@
+digraph "eeprom_map_t"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="eeprom_map_t",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" INFO_MEMORY" ,fontname="Helvetica"];
+  Node2 [label="eeprom_info_memory_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structeeprom__info__memory__t.html",tooltip="FW and HW versions varables. "];
+  Node3 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" BLE_MEMORY" ,fontname="Helvetica"];
+  Node3 [label="eeprom_ble_addresses_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structeeprom__ble__addresses__t.html"];
+  Node4 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" MATH_MEMORY" ,fontname="Helvetica"];
+  Node4 [label="eeprom_math_corrections_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structeeprom__math__corrections__t.html",tooltip="Math corrections memory part. "];
+  Node5 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" LAG_MEMORY" ,fontname="Helvetica"];
+  Node5 [label="eeprom_lag_calib_memory_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structeeprom__lag__calib__memory__t.html",tooltip="Log calibration values. "];
+  Node6 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" RUDDER_MEMORY" ,fontname="Helvetica"];
+  Node6 [label="eeprom_rudder_calib\l_memory_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structeeprom__rudder__calib__memory__t.html"];
+  Node7 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" TENSO_MEMORY" ,fontname="Helvetica"];
+  Node7 [label="eeprom_tenso_calib\l_memory_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structeeprom__tenso__calib__memory__t.html"];
+  Node8 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" FLAGS_MEMORY" ,fontname="Helvetica"];
+  Node8 [label="eeprom_flags_memory_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structeeprom__flags__memory__t.html",tooltip="Flags. "];
+  Node9 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" XBEE_MEMORY" ,fontname="Helvetica"];
+  Node9 [label="eeprom_xbee_addresses_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structeeprom__xbee__addresses__t.html"];
+  Node10 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" MAGN_MEMORY" ,fontname="Helvetica"];
+  Node10 [label="eeprom_magn_calib_memory_t",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structeeprom__magn__calib__memory__t.html",tooltip="Magnetometer offset memory part. "];
+}
