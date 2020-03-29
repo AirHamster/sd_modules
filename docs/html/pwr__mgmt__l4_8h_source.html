@@ -94,23 +94,29 @@ $(document).ready(function(){initNavTree('pwr__mgmt__l4_8h_source.html',''); ini
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> *      Author: a-h</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#ifndef SD_MODULES_POWER_MANAGEMENT_PWR_MGMT_L4_H_</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#define SD_MODULES_POWER_MANAGEMENT_PWR_MGMT_L4_H_</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span>{</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    DCDC_OFF = 0,</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    DCDC_ON,</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    DCDC_3_3,</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    DCDC_5,</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    DCDC_12</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;}dcdc_enum;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#ifndef SD_MODULES_POWER_MANAGEMENT_PWR_MGMT_L4_H_</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#define SD_MODULES_POWER_MANAGEMENT_PWR_MGMT_L4_H_</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keywordtype">void</span> start_power_management_module(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* SD_MODULES_POWER_MANAGEMENT_PWR_MGMT_L4_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span>{</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    DCDC_OFF = 0,</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    DCDC_ON,</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    DCDC_3_3,</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    DCDC_5,</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    DCDC_12</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;}dcdc_enum;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keywordtype">void</span> <a class="code" href="group___p_w_r.html#ga587e65bbcd357c2b95c27c3a3d91b240">start_power_management_module</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* SD_MODULES_POWER_MANAGEMENT_PWR_MGMT_L4_H_ */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="agroup___p_w_r_html_gaaf327990b963467334cce83450b4f0b0"><div class="ttname"><a href="group___p_w_r.html#gaaf327990b963467334cce83450b4f0b0">THD_WORKING_AREA</a></div><div class="ttdeci">static THD_WORKING_AREA(pwr_mgmt_thread_wa, 512)</div><div class="ttdoc">Main power management thread.</div></div>
+<div class="ttc" id="agroup___p_w_r_html_gab4dea8df5ecbc778264a53ce68b79826"><div class="ttname"><a href="group___p_w_r.html#gab4dea8df5ecbc778264a53ce68b79826">activate_clocks</a></div><div class="ttdeci">void activate_clocks(void)</div><div class="ttdoc">Switch to power state.</div><div class="ttdef"><b>Definition:</b> pwr_mgmt_l4.c:159</div></div>
+<div class="ttc" id="agroup___p_w_r_html_ga0b8c9b7dd514e48ef95dbeae2d5064b6"><div class="ttname"><a href="group___p_w_r.html#ga0b8c9b7dd514e48ef95dbeae2d5064b6">charger_int_cb</a></div><div class="ttdeci">static void charger_int_cb(void *arg)</div><div class="ttdoc">Charger interrupt callback.</div><div class="ttdef"><b>Definition:</b> pwr_mgmt_l4.c:67</div></div>
+<div class="ttc" id="agroup___p_w_r_html_ga834ab8e72cbb7547199d8cbcc99259ee"><div class="ttname"><a href="group___p_w_r.html#ga834ab8e72cbb7547199d8cbcc99259ee">button_cb</a></div><div class="ttdeci">static void button_cb(void *arg)</div><div class="ttdoc">Power button callback.</div><div class="ttdef"><b>Definition:</b> pwr_mgmt_l4.c:45</div></div>
+<div class="ttc" id="agroup___p_w_r_html_ga587e65bbcd357c2b95c27c3a3d91b240"><div class="ttname"><a href="group___p_w_r.html#ga587e65bbcd357c2b95c27c3a3d91b240">start_power_management_module</a></div><div class="ttdeci">void start_power_management_module(void)</div><div class="ttdoc">Starting power management thread.</div><div class="ttdef"><b>Definition:</b> pwr_mgmt_l4.c:143</div></div>
+<div class="ttc" id="agroup___p_w_r_html_gadb12831cc912ec24a9f97abc6279aa35"><div class="ttname"><a href="group___p_w_r.html#gadb12831cc912ec24a9f97abc6279aa35">deactivate_clocks</a></div><div class="ttdeci">void deactivate_clocks(void)</div><div class="ttdoc">Switch to deep sleep state.</div><div class="ttdef"><b>Definition:</b> pwr_mgmt_l4.c:199</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

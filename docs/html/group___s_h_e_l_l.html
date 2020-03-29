@@ -83,6 +83,13 @@ $(document).ready(function(){initNavTree('group___s_h_e_l_l.html',''); initResiz
 </div>
 
 <div class="header">
+  <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#enumval-members">Enumerator</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">Shell Driver</div>  </div>
 </div><!--header-->
@@ -90,16 +97,411 @@ $(document).ready(function(){initNavTree('group___s_h_e_l_l.html',''); initResiz
 
 <p>Shell commands and output driver.  
 <a href="#details">More...</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structoutput__t.html">output_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:gac21db55298cd2c8ffd0d243e3af0715e"><td class="memItemLeft" align="right" valign="top"><a id="gac21db55298cd2c8ffd0d243e3af0715e"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>SHELL_WA_SIZE</b>&#160;&#160;&#160;THD_WORKING_AREA_SIZE(2048)</td></tr>
+<tr class="separator:gac21db55298cd2c8ffd0d243e3af0715e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae0352810f6fac97a10e3eb06fd82771b"><td class="memItemLeft" align="right" valign="top"><a id="gae0352810f6fac97a10e3eb06fd82771b"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>SHELL_UBX_COG_STATUS</b>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:gae0352810f6fac97a10e3eb06fd82771b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1137ae15ef3932190ebd13f6405e98b5"><td class="memItemLeft" align="right" valign="top"><a id="ga1137ae15ef3932190ebd13f6405e98b5"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>SHELL_UBX_RATE_STATUS</b>&#160;&#160;&#160;2</td></tr>
+<tr class="separator:ga1137ae15ef3932190ebd13f6405e98b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac29e273543e3dc28f6df0431a0327272"><td class="memItemLeft" align="right" valign="top"><a id="gac29e273543e3dc28f6df0431a0327272"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>SHELL_UBX_RATE_SET</b>&#160;&#160;&#160;3</td></tr>
+<tr class="separator:gac29e273543e3dc28f6df0431a0327272"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:gaa0d24b36b5a9a6d4cdd5e0a8b3f999d2"><td class="memItemLeft" align="right" valign="top"><a id="gaa0d24b36b5a9a6d4cdd5e0a8b3f999d2"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>output_threads</b> { <br />
+&#160;&#160;<b>OUTPUT_NONE</b> = 0, 
+<b>OUTPUT_TEST</b>, 
+<b>OUTPUT_GYRO_RAW</b>, 
+<b>OUTPUT_SERVICE</b>, 
+<br />
+&#160;&#160;<b>OUTPUT_MAGN_CALIB</b>, 
+<b>OUTPUT_GYRO_CALIB</b>, 
+<b>OUTPUT_ACCEL_CALIB</b>, 
+<b>OUTPUT_ALL_CALIB</b>, 
+<br />
+&#160;&#160;<b>OUTPUT_RUDDER_CALIB</b>, 
+<b>OUTPUT_RUDDER_BLE</b>, 
+<b>OUTPUT_LAG_CALIB</b>, 
+<b>OUTPUT_LAG_BLE</b>, 
+<br />
+&#160;&#160;<b>OUTPUT_RAW_BMX160</b>, 
+<b>OUTPUT_RAW_HMC</b>, 
+<b>OUTPUT_RAW_HMC_BMX</b>, 
+<b>OUTPUT_BLE</b>
+<br />
+ }</td></tr>
+<tr class="separator:gaa0d24b36b5a9a6d4cdd5e0a8b3f999d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:gaf17f978a6a850ba7e3110b6b7ff9ccd2"><td class="memItemLeft" align="right" valign="top"><a id="gaf17f978a6a850ba7e3110b6b7ff9ccd2"></a>
+static void&#160;</td><td class="memItemRight" valign="bottom"><b>send_json</b> (void)</td></tr>
+<tr class="separator:gaf17f978a6a850ba7e3110b6b7ff9ccd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac64a597408a06994e020ce5595c32a5b"><td class="memItemLeft" align="right" valign="top"><a id="gac64a597408a06994e020ce5595c32a5b"></a>
+static&#160;</td><td class="memItemRight" valign="bottom"><b>THD_WORKING_AREA</b> (output_thread_wa, 1024 *4)</td></tr>
+<tr class="separator:gac64a597408a06994e020ce5595c32a5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga559e1f056265ce03a4c260f8fafb809a"><td class="memItemLeft" align="right" valign="top"><a id="ga559e1f056265ce03a4c260f8fafb809a"></a>
+static&#160;</td><td class="memItemRight" valign="bottom"><b>THD_FUNCTION</b> (output_thread, arg)</td></tr>
+<tr class="separator:ga559e1f056265ce03a4c260f8fafb809a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2182d9719fac42b257817193eed558bb"><td class="memItemLeft" align="right" valign="top"><a id="ga2182d9719fac42b257817193eed558bb"></a>
+thread_t *&#160;</td><td class="memItemRight" valign="bottom"><b>cmd_init</b> (void)</td></tr>
+<tr class="separator:ga2182d9719fac42b257817193eed558bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga94adf30e56c9e48af192da843e45100c"><td class="memItemLeft" align="right" valign="top"><a id="ga94adf30e56c9e48af192da843e45100c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_h_e_l_l.html#ga94adf30e56c9e48af192da843e45100c">start_json_module</a> (void)</td></tr>
+<tr class="memdesc:ga94adf30e56c9e48af192da843e45100c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starting shell thread. <br /></td></tr>
+<tr class="separator:ga94adf30e56c9e48af192da843e45100c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9a8a1949132045b8703ec4eb11bccf13"><td class="memItemLeft" align="right" valign="top"><a id="ga9a8a1949132045b8703ec4eb11bccf13"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>output_gyro_raw</b> (void)</td></tr>
+<tr class="separator:ga9a8a1949132045b8703ec4eb11bccf13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad09ff055e9d0b218759a46132d9bcb99"><td class="memItemLeft" align="right" valign="top"><a id="gad09ff055e9d0b218759a46132d9bcb99"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>convert_to_ble_type</b> (float value)</td></tr>
+<tr class="separator:gad09ff055e9d0b218759a46132d9bcb99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9e20c4341610023bd94c4009b98fdd27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_h_e_l_l.html#ga9e20c4341610023bd94c4009b98fdd27">cmd_start</a> (BaseSequentialStream *chp, int argc, char *argv[])</td></tr>
+<tr class="memdesc:ga9e20c4341610023bd94c4009b98fdd27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start json output.  <a href="group___s_h_e_l_l.html#ga9e20c4341610023bd94c4009b98fdd27">More...</a><br /></td></tr>
+<tr class="separator:ga9e20c4341610023bd94c4009b98fdd27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga513ad69cace03d6c669982d8374d8a93"><td class="memItemLeft" align="right" valign="top"><a id="ga513ad69cace03d6c669982d8374d8a93"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>cmd_terminate</b> (BaseSequentialStream *chp, int argc, char *argv[])</td></tr>
+<tr class="separator:ga513ad69cace03d6c669982d8374d8a93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7fddb571c4babbb16f844c2d31c7f1be"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_h_e_l_l.html#ga7fddb571c4babbb16f844c2d31c7f1be">cmd_c</a> (BaseSequentialStream *chp, int argc, char *argv[])</td></tr>
+<tr class="memdesc:ga7fddb571c4babbb16f844c2d31c7f1be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cancel json output.  <a href="group___s_h_e_l_l.html#ga7fddb571c4babbb16f844c2d31c7f1be">More...</a><br /></td></tr>
+<tr class="separator:ga7fddb571c4babbb16f844c2d31c7f1be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga988e8ac97747e7f2ea4dc4fc550a4109"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_h_e_l_l.html#ga988e8ac97747e7f2ea4dc4fc550a4109">cmd_reset</a> (BaseSequentialStream *chp, int argc, char *argv[])</td></tr>
+<tr class="memdesc:ga988e8ac97747e7f2ea4dc4fc550a4109"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reboot system.  <a href="group___s_h_e_l_l.html#ga988e8ac97747e7f2ea4dc4fc550a4109">More...</a><br /></td></tr>
+<tr class="separator:ga988e8ac97747e7f2ea4dc4fc550a4109"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac5718d423018c8d7b464f6f164c1f70a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_h_e_l_l.html#gac5718d423018c8d7b464f6f164c1f70a">cmd_boot</a> (BaseSequentialStream *chp, int argc, char *argv[])</td></tr>
+<tr class="memdesc:gac5718d423018c8d7b464f6f164c1f70a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enter bootloader.  <a href="group___s_h_e_l_l.html#gac5718d423018c8d7b464f6f164c1f70a">More...</a><br /></td></tr>
+<tr class="separator:gac5718d423018c8d7b464f6f164c1f70a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2acfbec3f892f8cc5237c70324e4ed92"><td class="memItemLeft" align="right" valign="top"><a id="ga2acfbec3f892f8cc5237c70324e4ed92"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>cmd_ublox</b> (BaseSequentialStream *chp, int argc, char *argv[])</td></tr>
+<tr class="separator:ga2acfbec3f892f8cc5237c70324e4ed92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga411d70c9e9df6cc781e929695709f3db"><td class="memItemLeft" align="right" valign="top"><a id="ga411d70c9e9df6cc781e929695709f3db"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>toggle_test_output</b> (void)</td></tr>
+<tr class="separator:ga411d70c9e9df6cc781e929695709f3db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9d9e3d32ad53dd88690eaf9c9ce11351"><td class="memItemLeft" align="right" valign="top"><a id="ga9d9e3d32ad53dd88690eaf9c9ce11351"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>toggle_ble_output</b> (void)</td></tr>
+<tr class="separator:ga9d9e3d32ad53dd88690eaf9c9ce11351"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3d27fa913ddf9c489f87734b7e50d05f"><td class="memItemLeft" align="right" valign="top"><a id="ga3d27fa913ddf9c489f87734b7e50d05f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>toggle_gps_output</b> (void)</td></tr>
+<tr class="separator:ga3d27fa913ddf9c489f87734b7e50d05f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf12d7e93e1bf8965123141e2dfc88e56"><td class="memItemLeft" align="right" valign="top"><a id="gaf12d7e93e1bf8965123141e2dfc88e56"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>toggle_ypr_output</b> (void)</td></tr>
+<tr class="separator:gaf12d7e93e1bf8965123141e2dfc88e56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga59059d43d2f778ba0872fe100708e0b1"><td class="memItemLeft" align="right" valign="top"><a id="ga59059d43d2f778ba0872fe100708e0b1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>toggle_gyro_output</b> (void)</td></tr>
+<tr class="separator:ga59059d43d2f778ba0872fe100708e0b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabee6308ab16a62040c10a8666e3536ca"><td class="memItemLeft" align="right" valign="top"><a id="gabee6308ab16a62040c10a8666e3536ca"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>toggle_raw_output</b> (uint8_t sensor)</td></tr>
+<tr class="separator:gabee6308ab16a62040c10a8666e3536ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5dd836bbdf42adc41c0a1c306b795579"><td class="memItemLeft" align="right" valign="top"><a id="ga5dd836bbdf42adc41c0a1c306b795579"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>stop_all_tests</b> (void)</td></tr>
+<tr class="separator:ga5dd836bbdf42adc41c0a1c306b795579"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga03a7119ba9628d3ce4c49ed5adf82307"><td class="memItemLeft" align="right" valign="top"><a id="ga03a7119ba9628d3ce4c49ed5adf82307"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>cmd_xbee</b> (BaseSequentialStream *chp, int argc, char *argv[])</td></tr>
+<tr class="separator:ga03a7119ba9628d3ce4c49ed5adf82307"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6594528454146939e5df1e6f32177ad1"><td class="memItemLeft" align="right" valign="top"><a id="ga6594528454146939e5df1e6f32177ad1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>cmd_attn</b> (BaseSequentialStream *chp, int argc, char *argv[])</td></tr>
+<tr class="separator:ga6594528454146939e5df1e6f32177ad1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga36d0fa85dd7c1630c713b4bc6793fcef"><td class="memItemLeft" align="right" valign="top"><a id="ga36d0fa85dd7c1630c713b4bc6793fcef"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>cmd_help</b> (BaseSequentialStream *chp, int argc, char *argv[])</td></tr>
+<tr class="separator:ga36d0fa85dd7c1630c713b4bc6793fcef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga31763ade7e2156814760ad9fb0319243"><td class="memItemLeft" align="right" valign="top"><a id="ga31763ade7e2156814760ad9fb0319243"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>cmd_beta</b> (BaseSequentialStream *chp, int argc, char *argv[])</td></tr>
+<tr class="separator:ga31763ade7e2156814760ad9fb0319243"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1d55ed45cffcb22634f4bff1a84e595d"><td class="memItemLeft" align="right" valign="top"><a id="ga1d55ed45cffcb22634f4bff1a84e595d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>cmd_mag_calibrate</b> (BaseSequentialStream *chp, int argc, char *argv[])</td></tr>
+<tr class="separator:ga1d55ed45cffcb22634f4bff1a84e595d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9f0885b83c27a78a7227fe58dfea6d3e"><td class="memItemLeft" align="right" valign="top"><a id="ga9f0885b83c27a78a7227fe58dfea6d3e"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>output_magn_calib</b> (void)</td></tr>
+<tr class="separator:ga9f0885b83c27a78a7227fe58dfea6d3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa4a438a82d44656c41a345270b95dc69"><td class="memItemLeft" align="right" valign="top"><a id="gaa4a438a82d44656c41a345270b95dc69"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>output_accel_calib</b> (void)</td></tr>
+<tr class="separator:gaa4a438a82d44656c41a345270b95dc69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafe2328109c4619dedf07a2475baeeb3d"><td class="memItemLeft" align="right" valign="top"><a id="gafe2328109c4619dedf07a2475baeeb3d"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>output_gyro_calib</b> (void)</td></tr>
+<tr class="separator:gafe2328109c4619dedf07a2475baeeb3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabacfe2c2573f3a7f41fe8b3904660d0d"><td class="memItemLeft" align="right" valign="top"><a id="gabacfe2c2573f3a7f41fe8b3904660d0d"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>output_all_calib</b> (void)</td></tr>
+<tr class="separator:gabacfe2c2573f3a7f41fe8b3904660d0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ga8d2d26e7bfc0dec89819c7356fc8158d"><td class="memItemLeft" align="right" valign="top"><a id="ga8d2d26e7bfc0dec89819c7356fc8158d"></a>
+thread_t *&#160;</td><td class="memItemRight" valign="bottom"><b>charger_trp</b></td></tr>
+<tr class="separator:ga8d2d26e7bfc0dec89819c7356fc8158d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga967ea156994a35bf77b2c4ae7ccaf273"><td class="memItemLeft" align="right" valign="top"><a id="ga967ea156994a35bf77b2c4ae7ccaf273"></a>
+struct ch_semaphore&#160;</td><td class="memItemRight" valign="bottom"><b>usart1_semaph</b></td></tr>
+<tr class="separator:ga967ea156994a35bf77b2c4ae7ccaf273"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga505ba22fe58200deb72a2443fcd7a2f5"><td class="memItemLeft" align="right" valign="top"><a id="ga505ba22fe58200deb72a2443fcd7a2f5"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>__ram0_end__</b></td></tr>
+<tr class="separator:ga505ba22fe58200deb72a2443fcd7a2f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga42611d3954f5e1320a9b83fd19a3eb10"><td class="memItemLeft" align="right" valign="top"><a id="ga42611d3954f5e1320a9b83fd19a3eb10"></a>
+<a class="el" href="structoutput__t.html">output_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>output</b></td></tr>
+<tr class="separator:ga42611d3954f5e1320a9b83fd19a3eb10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf93ebb8eaacb450fca2813b4cd0d2089"><td class="memItemLeft" align="right" valign="top"><a id="gaf93ebb8eaacb450fca2813b4cd0d2089"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><b>complete_buffer</b> [16]</td></tr>
+<tr class="separator:gaf93ebb8eaacb450fca2813b4cd0d2089"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad3687e1754a933fdad235e33c08e9490"><td class="memItemLeft" align="right" valign="top"><a id="gad3687e1754a933fdad235e33c08e9490"></a>
+char&#160;</td><td class="memItemRight" valign="bottom"><b>history_buffer</b> [128]</td></tr>
+<tr class="separator:gad3687e1754a933fdad235e33c08e9490"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8f3dcf1cb0450976de97d524e93b0732"><td class="memItemLeft" align="right" valign="top"><a id="ga8f3dcf1cb0450976de97d524e93b0732"></a>
+const int&#160;</td><td class="memItemRight" valign="bottom"><b>history_size</b> = 128</td></tr>
+<tr class="separator:ga8f3dcf1cb0450976de97d524e93b0732"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga44a1ca9bcd7daa7c75eb989f3bc16948"><td class="memItemLeft" align="right" valign="top"><a id="ga44a1ca9bcd7daa7c75eb989f3bc16948"></a>
+thread_reference_t&#160;</td><td class="memItemRight" valign="bottom"><b>output_trp</b> = NULL</td></tr>
+<tr class="separator:ga44a1ca9bcd7daa7c75eb989f3bc16948"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga33466362cf73cff51e1c6a7b8b3a1b12"><td class="memItemLeft" align="right" valign="top"><a id="ga33466362cf73cff51e1c6a7b8b3a1b12"></a>
+static const ShellCommand&#160;</td><td class="memItemRight" valign="bottom"><b>commands</b> []</td></tr>
+<tr class="separator:ga33466362cf73cff51e1c6a7b8b3a1b12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga89919d471b45cd41d8985392c0fb80bf"><td class="memItemLeft" align="right" valign="top">static const ShellConfig&#160;</td><td class="memItemRight" valign="bottom"><b>shell_cfg1</b></td></tr>
+<tr class="separator:ga89919d471b45cd41d8985392c0fb80bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1d127017fb298b889f4ba24752d08b8e"><td class="memItemLeft" align="right" valign="top"><a id="ga1d127017fb298b889f4ba24752d08b8e"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>type</b></td></tr>
+<tr class="separator:ga1d127017fb298b889f4ba24752d08b8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3139cc32855b23dc04375cb0bc363918"><td class="memItemLeft" align="right" valign="top"><a id="ga3139cc32855b23dc04375cb0bc363918"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>ble</b></td></tr>
+<tr class="separator:ga3139cc32855b23dc04375cb0bc363918"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9f66cfa89489c3be09541452b307d5cb"><td class="memItemLeft" align="right" valign="top"><a id="ga9f66cfa89489c3be09541452b307d5cb"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>test</b></td></tr>
+<tr class="separator:ga9f66cfa89489c3be09541452b307d5cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga95128e7c36548e59e9b531f413439b46"><td class="memItemLeft" align="right" valign="top"><a id="ga95128e7c36548e59e9b531f413439b46"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>gps</b></td></tr>
+<tr class="separator:ga95128e7c36548e59e9b531f413439b46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9dd4f9a62ea36825cae5510c56fe0744"><td class="memItemLeft" align="right" valign="top"><a id="ga9dd4f9a62ea36825cae5510c56fe0744"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>ypr</b></td></tr>
+<tr class="separator:ga9dd4f9a62ea36825cae5510c56fe0744"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2bbe28f96c78372cf401a04af7bc4dc6"><td class="memItemLeft" align="right" valign="top"><a id="ga2bbe28f96c78372cf401a04af7bc4dc6"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>gyro</b></td></tr>
+<tr class="separator:ga2bbe28f96c78372cf401a04af7bc4dc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga670f8a1cac5e6907b5c7af827a245f46"><td class="memItemLeft" align="right" valign="top"><a id="ga670f8a1cac5e6907b5c7af827a245f46"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>xbee</b></td></tr>
+<tr class="separator:ga670f8a1cac5e6907b5c7af827a245f46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5856d73dde84d68d563f8a4f4858499f"><td class="memItemLeft" align="right" valign="top"><a id="ga5856d73dde84d68d563f8a4f4858499f"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>service</b></td></tr>
+<tr class="separator:ga5856d73dde84d68d563f8a4f4858499f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Shell commands and output driver. </p>
 <p>Detail will be writen soon </p><dl class="section pre"><dt>Precondition</dt><dd>In order to use the ADC driver the <code>USE_SHELL_MODULE</code> option must be enabled in <code>config.h</code>.</dd></dl>
 <h1><a class="anchor" id="shell_1"></a>
 Stateflow</h1>
-<p>The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). </p><div class="dotgraph">
-<img src="dot_inline_dotgraph_13.png" alt="dot_inline_dotgraph_13.png" border="0" usemap="#dot_inline_dotgraph_13.map"/>
-</div>
+<p>The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled).</p>
 <h1><a class="anchor" id="shell_2"></a>
 Shell operations</h1>
 <p>The ADC driver is quite complex, an explanation of the terminology and of the operational details follows. </p>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="gac5718d423018c8d7b464f6f164c1f70a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac5718d423018c8d7b464f6f164c1f70a">&#9670;&nbsp;</a></span>cmd_boot()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cmd_boot </td>
+          <td>(</td>
+          <td class="paramtype">BaseSequentialStream *&#160;</td>
+          <td class="paramname"><em>chp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>argc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>argv</em>[]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enter bootloader. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">chp</td><td></td></tr>
+    <tr><td class="paramname">argc</td><td></td></tr>
+    <tr><td class="paramname">argv</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ga7fddb571c4babbb16f844c2d31c7f1be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7fddb571c4babbb16f844c2d31c7f1be">&#9670;&nbsp;</a></span>cmd_c()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cmd_c </td>
+          <td>(</td>
+          <td class="paramtype">BaseSequentialStream *&#160;</td>
+          <td class="paramname"><em>chp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>argc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>argv</em>[]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cancel json output. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">chp</td><td></td></tr>
+    <tr><td class="paramname">argc</td><td></td></tr>
+    <tr><td class="paramname">argv</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ga988e8ac97747e7f2ea4dc4fc550a4109"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga988e8ac97747e7f2ea4dc4fc550a4109">&#9670;&nbsp;</a></span>cmd_reset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cmd_reset </td>
+          <td>(</td>
+          <td class="paramtype">BaseSequentialStream *&#160;</td>
+          <td class="paramname"><em>chp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>argc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>argv</em>[]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reboot system. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">chp</td><td></td></tr>
+    <tr><td class="paramname">argc</td><td></td></tr>
+    <tr><td class="paramname">argv</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ga9e20c4341610023bd94c4009b98fdd27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9e20c4341610023bd94c4009b98fdd27">&#9670;&nbsp;</a></span>cmd_start()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cmd_start </td>
+          <td>(</td>
+          <td class="paramtype">BaseSequentialStream *&#160;</td>
+          <td class="paramname"><em>chp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>argc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>argv</em>[]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Start json output. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">chp</td><td></td></tr>
+    <tr><td class="paramname">argc</td><td></td></tr>
+    <tr><td class="paramname">argv</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="ga89919d471b45cd41d8985392c0fb80bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga89919d471b45cd41d8985392c0fb80bf">&#9670;&nbsp;</a></span>shell_cfg1</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const ShellConfig shell_cfg1</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= { (BaseSequentialStream*) &amp;SHELL_SD,</div>
+<div class="line">        commands, history_buffer, 32, complete_buffer }</div>
+</div><!-- fragment -->
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

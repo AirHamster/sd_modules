@@ -109,8 +109,15 @@ Current modules:</h4>
 <li>Shell commands and output driver</li>
 <li>Tenso sensor driver</li>
 <li>Windsensor with SD-12 interface driver</li>
-<li>XBP9X-900 Digi module driver </li>
+<li>XBP9X-900 Digi module driver</li>
 </ul>
+<h1><a class="anchor" id="autotoc_md8"></a>
+HOWTO</h1>
+<p>Every module works as separete thread. After call start_*name*_module from main.c file modules initializes needed varables in memory and from EEPROM.</p>
+<p>Modules includes by defines in config.h in main firmware projects.</p>
+<p>Firmware repositories:</p>
+<p>Main device: (<a href="https://github.com/AirHamster/sd_fw_main_board">https://github.com/AirHamster/sd_fw_main_board</a>)[<a href="https://github.com/AirHamster/sd_fw_main_board">https://github.com/AirHamster/sd_fw_main_board</a>]</p>
+<p>BLE sensor device: (<a href="https://github.com/AirHamster/sd_sensor_box_fw">https://github.com/AirHamster/sd_sensor_box_fw</a>)[<a href="https://github.com/AirHamster/sd_sensor_box_fw">https://github.com/AirHamster/sd_sensor_box_fw</a>] </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

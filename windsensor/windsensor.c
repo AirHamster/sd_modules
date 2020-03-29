@@ -4,6 +4,13 @@
  *  Created on: Aug 10, 2019
  *      Author: a-h
  */
+/**
+ * @file    windsensor.c
+ * @brief   Windsensor driver funcs.
+ *
+ * @addtogroup WIND
+ * @{
+ */
 #include "config.h"
 #include "windsensor.h"
 #include <string.h>
@@ -19,7 +26,7 @@ static uint16_t uart_temp;
 windsensor_t *wind;
 
 
-/** @brief Driver default configuration.*/
+/** @brief USART driver default configuration.*/
 static const SerialConfig wind_uart_cfg =
 {
   19200,
@@ -30,6 +37,9 @@ static const SerialConfig wind_uart_cfg =
 
 thread_reference_t wind_trp = NULL;
 
+/**
+ * @brief Windsensor parsing thread
+ */
 static THD_WORKING_AREA(wind_thread_wa, 2048);
 static THD_FUNCTION(wind_thread, p){
 	(void)p;
@@ -79,6 +89,9 @@ static THD_FUNCTION(wind_thread, p){
 	}
 }
 
+/**
+ * @brief Start windsensor thread
+ */
 void start_windsensor_module(void)
 {
 

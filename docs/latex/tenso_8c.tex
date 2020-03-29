@@ -1,0 +1,58 @@
+\hypertarget{tenso_8c}{}\doxysection{tenso/tenso.c File Reference}
+\label{tenso_8c}\index{tenso/tenso.c@{tenso/tenso.c}}
+
+
+Tenso driver funcs.  
+
+
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}ch.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}hal.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}shell.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}chprintf.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}adc.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}tenso.\+h\char`\"{}}\newline
+Include dependency graph for tenso.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{tenso_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{group___t_e_n_s_o_gaa661b5dc6806dca4f73be7f9ff07ade3}{T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA}} (tenso\+\_\+thread\+\_\+wa, 256)
+\begin{DoxyCompactList}\small\item\em Main tenso thread. \end{DoxyCompactList}\item 
+static {\bfseries T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON} (tenso\+\_\+thread, p)
+\item 
+void {\bfseries tenso\+\_\+print\+\_\+info} (\mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}} $\ast$tenso\+\_\+data)
+\item 
+void \mbox{\hyperlink{group___t_e_n_s_o_ga4da7ca04fd2597423fa385bf215b2e59}{start\+\_\+tenso\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Start tenso thread. \end{DoxyCompactList}\item 
+int8\+\_\+t {\bfseries tenso\+\_\+read\+\_\+coefs\+\_\+from\+\_\+eeprom} (\mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}} $\ast$tenso\+\_\+data)
+\item 
+int8\+\_\+t {\bfseries tenso\+\_\+write\+\_\+coefs\+\_\+to\+\_\+eeprom} (\mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}} $\ast$tenso\+\_\+data)
+\item 
+float {\bfseries tenso\+\_\+calculate\+\_\+kilograms} (\mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}} $\ast$tenso\+\_\+data)
+\item 
+float {\bfseries tenso\+\_\+calculate\+\_\+newtons} (\mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}} $\ast$tenso\+\_\+data)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___t_e_n_s_o_ga4c875b5a52113e0b80fa020c0d8d88c6}{cmd\+\_\+tenso\+\_\+calibrate}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Calibration routine. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{group___t_e_n_s_o_ga2020559439351494df38c7c7279a5efa}{tenso\+\_\+calculate\+\_\+coefs}} (\mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}} $\ast$tenso\+\_\+data)
+\begin{DoxyCompactList}\small\item\em ax+b coefs calculations \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}} $\ast$ {\bfseries tenso}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Tenso driver funcs. 
+

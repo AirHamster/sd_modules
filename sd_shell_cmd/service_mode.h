@@ -5,14 +5,6 @@
  *      Author: a-h
  */
 
-/**
- * @file    service_mode.h
- * @brief   Service mode macros and structures.
- *
- * @addtogroup SERVICE_MODE
- * @{
- */
-
 #include <ch.h>
 #include "hal.h"
 #include "chprintf.h"

@@ -5,15 +5,295 @@
 Shell commands and output driver.  
 
 
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structoutput__t}{output\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_gac21db55298cd2c8ffd0d243e3af0715e}\label{group___s_h_e_l_l_gac21db55298cd2c8ffd0d243e3af0715e}} 
+\#define {\bfseries S\+H\+E\+L\+L\+\_\+\+W\+A\+\_\+\+S\+I\+ZE}~T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+E\+A\+\_\+\+S\+I\+ZE(2048)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_gae0352810f6fac97a10e3eb06fd82771b}\label{group___s_h_e_l_l_gae0352810f6fac97a10e3eb06fd82771b}} 
+\#define {\bfseries S\+H\+E\+L\+L\+\_\+\+U\+B\+X\+\_\+\+C\+O\+G\+\_\+\+S\+T\+A\+T\+US}~1
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga1137ae15ef3932190ebd13f6405e98b5}\label{group___s_h_e_l_l_ga1137ae15ef3932190ebd13f6405e98b5}} 
+\#define {\bfseries S\+H\+E\+L\+L\+\_\+\+U\+B\+X\+\_\+\+R\+A\+T\+E\+\_\+\+S\+T\+A\+T\+US}~2
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_gac29e273543e3dc28f6df0431a0327272}\label{group___s_h_e_l_l_gac29e273543e3dc28f6df0431a0327272}} 
+\#define {\bfseries S\+H\+E\+L\+L\+\_\+\+U\+B\+X\+\_\+\+R\+A\+T\+E\+\_\+\+S\+ET}~3
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_gaa0d24b36b5a9a6d4cdd5e0a8b3f999d2}\label{group___s_h_e_l_l_gaa0d24b36b5a9a6d4cdd5e0a8b3f999d2}} 
+enum {\bfseries output\+\_\+threads} \{ \newline
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+N\+O\+NE} = 0, 
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+T\+E\+ST}, 
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+G\+Y\+R\+O\+\_\+\+R\+AW}, 
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+S\+E\+R\+V\+I\+CE}, 
+\newline
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+M\+A\+G\+N\+\_\+\+C\+A\+L\+IB}, 
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+G\+Y\+R\+O\+\_\+\+C\+A\+L\+IB}, 
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+A\+C\+C\+E\+L\+\_\+\+C\+A\+L\+IB}, 
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+A\+L\+L\+\_\+\+C\+A\+L\+IB}, 
+\newline
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+R\+U\+D\+D\+E\+R\+\_\+\+C\+A\+L\+IB}, 
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+R\+U\+D\+D\+E\+R\+\_\+\+B\+LE}, 
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+L\+A\+G\+\_\+\+C\+A\+L\+IB}, 
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+L\+A\+G\+\_\+\+B\+LE}, 
+\newline
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+R\+A\+W\+\_\+\+B\+M\+X160}, 
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+R\+A\+W\+\_\+\+H\+MC}, 
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+R\+A\+W\+\_\+\+H\+M\+C\+\_\+\+B\+MX}, 
+{\bfseries O\+U\+T\+P\+U\+T\+\_\+\+B\+LE}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_gaf17f978a6a850ba7e3110b6b7ff9ccd2}\label{group___s_h_e_l_l_gaf17f978a6a850ba7e3110b6b7ff9ccd2}} 
+static void {\bfseries send\+\_\+json} (void)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_gac64a597408a06994e020ce5595c32a5b}\label{group___s_h_e_l_l_gac64a597408a06994e020ce5595c32a5b}} 
+static {\bfseries T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA} (output\+\_\+thread\+\_\+wa, 1024 $\ast$4)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga559e1f056265ce03a4c260f8fafb809a}\label{group___s_h_e_l_l_ga559e1f056265ce03a4c260f8fafb809a}} 
+static {\bfseries T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON} (output\+\_\+thread, arg)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga2182d9719fac42b257817193eed558bb}\label{group___s_h_e_l_l_ga2182d9719fac42b257817193eed558bb}} 
+thread\+\_\+t $\ast$ {\bfseries cmd\+\_\+init} (void)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga94adf30e56c9e48af192da843e45100c}\label{group___s_h_e_l_l_ga94adf30e56c9e48af192da843e45100c}} 
+void \mbox{\hyperlink{group___s_h_e_l_l_ga94adf30e56c9e48af192da843e45100c}{start\+\_\+json\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Starting shell thread. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga9a8a1949132045b8703ec4eb11bccf13}\label{group___s_h_e_l_l_ga9a8a1949132045b8703ec4eb11bccf13}} 
+void {\bfseries output\+\_\+gyro\+\_\+raw} (void)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_gad09ff055e9d0b218759a46132d9bcb99}\label{group___s_h_e_l_l_gad09ff055e9d0b218759a46132d9bcb99}} 
+int32\+\_\+t {\bfseries convert\+\_\+to\+\_\+ble\+\_\+type} (float value)
+\item 
+void \mbox{\hyperlink{group___s_h_e_l_l_ga9e20c4341610023bd94c4009b98fdd27}{cmd\+\_\+start}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Start json output. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga513ad69cace03d6c669982d8374d8a93}\label{group___s_h_e_l_l_ga513ad69cace03d6c669982d8374d8a93}} 
+void {\bfseries cmd\+\_\+terminate} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+void \mbox{\hyperlink{group___s_h_e_l_l_ga7fddb571c4babbb16f844c2d31c7f1be}{cmd\+\_\+c}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Cancel json output. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___s_h_e_l_l_ga988e8ac97747e7f2ea4dc4fc550a4109}{cmd\+\_\+reset}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Reboot system. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___s_h_e_l_l_gac5718d423018c8d7b464f6f164c1f70a}{cmd\+\_\+boot}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Enter bootloader. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga2acfbec3f892f8cc5237c70324e4ed92}\label{group___s_h_e_l_l_ga2acfbec3f892f8cc5237c70324e4ed92}} 
+void {\bfseries cmd\+\_\+ublox} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga411d70c9e9df6cc781e929695709f3db}\label{group___s_h_e_l_l_ga411d70c9e9df6cc781e929695709f3db}} 
+void {\bfseries toggle\+\_\+test\+\_\+output} (void)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga9d9e3d32ad53dd88690eaf9c9ce11351}\label{group___s_h_e_l_l_ga9d9e3d32ad53dd88690eaf9c9ce11351}} 
+void {\bfseries toggle\+\_\+ble\+\_\+output} (void)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga3d27fa913ddf9c489f87734b7e50d05f}\label{group___s_h_e_l_l_ga3d27fa913ddf9c489f87734b7e50d05f}} 
+void {\bfseries toggle\+\_\+gps\+\_\+output} (void)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_gaf12d7e93e1bf8965123141e2dfc88e56}\label{group___s_h_e_l_l_gaf12d7e93e1bf8965123141e2dfc88e56}} 
+void {\bfseries toggle\+\_\+ypr\+\_\+output} (void)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga59059d43d2f778ba0872fe100708e0b1}\label{group___s_h_e_l_l_ga59059d43d2f778ba0872fe100708e0b1}} 
+void {\bfseries toggle\+\_\+gyro\+\_\+output} (void)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_gabee6308ab16a62040c10a8666e3536ca}\label{group___s_h_e_l_l_gabee6308ab16a62040c10a8666e3536ca}} 
+void {\bfseries toggle\+\_\+raw\+\_\+output} (uint8\+\_\+t sensor)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga5dd836bbdf42adc41c0a1c306b795579}\label{group___s_h_e_l_l_ga5dd836bbdf42adc41c0a1c306b795579}} 
+void {\bfseries stop\+\_\+all\+\_\+tests} (void)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga03a7119ba9628d3ce4c49ed5adf82307}\label{group___s_h_e_l_l_ga03a7119ba9628d3ce4c49ed5adf82307}} 
+void {\bfseries cmd\+\_\+xbee} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga6594528454146939e5df1e6f32177ad1}\label{group___s_h_e_l_l_ga6594528454146939e5df1e6f32177ad1}} 
+void {\bfseries cmd\+\_\+attn} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga36d0fa85dd7c1630c713b4bc6793fcef}\label{group___s_h_e_l_l_ga36d0fa85dd7c1630c713b4bc6793fcef}} 
+void {\bfseries cmd\+\_\+help} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga31763ade7e2156814760ad9fb0319243}\label{group___s_h_e_l_l_ga31763ade7e2156814760ad9fb0319243}} 
+void {\bfseries cmd\+\_\+beta} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga1d55ed45cffcb22634f4bff1a84e595d}\label{group___s_h_e_l_l_ga1d55ed45cffcb22634f4bff1a84e595d}} 
+void {\bfseries cmd\+\_\+mag\+\_\+calibrate} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga9f0885b83c27a78a7227fe58dfea6d3e}\label{group___s_h_e_l_l_ga9f0885b83c27a78a7227fe58dfea6d3e}} 
+uint8\+\_\+t {\bfseries output\+\_\+magn\+\_\+calib} (void)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_gaa4a438a82d44656c41a345270b95dc69}\label{group___s_h_e_l_l_gaa4a438a82d44656c41a345270b95dc69}} 
+uint8\+\_\+t {\bfseries output\+\_\+accel\+\_\+calib} (void)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_gafe2328109c4619dedf07a2475baeeb3d}\label{group___s_h_e_l_l_gafe2328109c4619dedf07a2475baeeb3d}} 
+uint8\+\_\+t {\bfseries output\+\_\+gyro\+\_\+calib} (void)
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_gabacfe2c2573f3a7f41fe8b3904660d0d}\label{group___s_h_e_l_l_gabacfe2c2573f3a7f41fe8b3904660d0d}} 
+uint8\+\_\+t {\bfseries output\+\_\+all\+\_\+calib} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga8d2d26e7bfc0dec89819c7356fc8158d}\label{group___s_h_e_l_l_ga8d2d26e7bfc0dec89819c7356fc8158d}} 
+thread\+\_\+t $\ast$ {\bfseries charger\+\_\+trp}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga967ea156994a35bf77b2c4ae7ccaf273}\label{group___s_h_e_l_l_ga967ea156994a35bf77b2c4ae7ccaf273}} 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga505ba22fe58200deb72a2443fcd7a2f5}\label{group___s_h_e_l_l_ga505ba22fe58200deb72a2443fcd7a2f5}} 
+uint32\+\_\+t {\bfseries \+\_\+\+\_\+ram0\+\_\+end\+\_\+\+\_\+}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga42611d3954f5e1320a9b83fd19a3eb10}\label{group___s_h_e_l_l_ga42611d3954f5e1320a9b83fd19a3eb10}} 
+\mbox{\hyperlink{structoutput__t}{output\+\_\+t}} $\ast$ {\bfseries output}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_gaf93ebb8eaacb450fca2813b4cd0d2089}\label{group___s_h_e_l_l_gaf93ebb8eaacb450fca2813b4cd0d2089}} 
+char $\ast$ {\bfseries complete\+\_\+buffer} \mbox{[}16\mbox{]}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_gad3687e1754a933fdad235e33c08e9490}\label{group___s_h_e_l_l_gad3687e1754a933fdad235e33c08e9490}} 
+char {\bfseries history\+\_\+buffer} \mbox{[}128\mbox{]}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga8f3dcf1cb0450976de97d524e93b0732}\label{group___s_h_e_l_l_ga8f3dcf1cb0450976de97d524e93b0732}} 
+const int {\bfseries history\+\_\+size} = 128
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga44a1ca9bcd7daa7c75eb989f3bc16948}\label{group___s_h_e_l_l_ga44a1ca9bcd7daa7c75eb989f3bc16948}} 
+thread\+\_\+reference\+\_\+t {\bfseries output\+\_\+trp} = N\+U\+LL
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga33466362cf73cff51e1c6a7b8b3a1b12}\label{group___s_h_e_l_l_ga33466362cf73cff51e1c6a7b8b3a1b12}} 
+static const Shell\+Command {\bfseries commands} \mbox{[}$\,$\mbox{]}
+\item 
+static const Shell\+Config {\bfseries shell\+\_\+cfg1}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga1d127017fb298b889f4ba24752d08b8e}\label{group___s_h_e_l_l_ga1d127017fb298b889f4ba24752d08b8e}} 
+uint8\+\_\+t {\bfseries type}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga3139cc32855b23dc04375cb0bc363918}\label{group___s_h_e_l_l_ga3139cc32855b23dc04375cb0bc363918}} 
+uint8\+\_\+t {\bfseries ble}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga9f66cfa89489c3be09541452b307d5cb}\label{group___s_h_e_l_l_ga9f66cfa89489c3be09541452b307d5cb}} 
+uint8\+\_\+t {\bfseries test}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga95128e7c36548e59e9b531f413439b46}\label{group___s_h_e_l_l_ga95128e7c36548e59e9b531f413439b46}} 
+uint8\+\_\+t {\bfseries gps}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga9dd4f9a62ea36825cae5510c56fe0744}\label{group___s_h_e_l_l_ga9dd4f9a62ea36825cae5510c56fe0744}} 
+uint8\+\_\+t {\bfseries ypr}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga2bbe28f96c78372cf401a04af7bc4dc6}\label{group___s_h_e_l_l_ga2bbe28f96c78372cf401a04af7bc4dc6}} 
+uint8\+\_\+t {\bfseries gyro}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga670f8a1cac5e6907b5c7af827a245f46}\label{group___s_h_e_l_l_ga670f8a1cac5e6907b5c7af827a245f46}} 
+uint8\+\_\+t {\bfseries xbee}
+\item 
+\mbox{\Hypertarget{group___s_h_e_l_l_ga5856d73dde84d68d563f8a4f4858499f}\label{group___s_h_e_l_l_ga5856d73dde84d68d563f8a4f4858499f}} 
+uint8\+\_\+t {\bfseries service}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
 Shell commands and output driver. 
 
 Detail will be writen soon \begin{DoxyPrecond}{Precondition}
 In order to use the A\+DC driver the {\ttfamily U\+S\+E\+\_\+\+S\+H\+E\+L\+L\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}.
 \end{DoxyPrecond}
 \hypertarget{group___t_e_n_s_o_shell_1}{}\doxysubsection{Stateflow}\label{group___t_e_n_s_o_shell_1}
-The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
-\begin{DoxyImageNoCaption}
-  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_13}}
-\end{DoxyImageNoCaption}
-\hypertarget{group___t_e_n_s_o_shell_2}{}\doxysubsection{Shell operations}\label{group___t_e_n_s_o_shell_2}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled).\hypertarget{group___t_e_n_s_o_shell_2}{}\doxysubsection{Shell operations}\label{group___t_e_n_s_o_shell_2}
 The A\+DC driver is quite complex, an explanation of the terminology and of the operational details follows. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group___s_h_e_l_l_gac5718d423018c8d7b464f6f164c1f70a}\label{group___s_h_e_l_l_gac5718d423018c8d7b464f6f164c1f70a}} 
+\index{Shell Driver@{Shell Driver}!cmd\_boot@{cmd\_boot}}
+\index{cmd\_boot@{cmd\_boot}!Shell Driver@{Shell Driver}}
+\doxysubsubsection{\texorpdfstring{cmd\_boot()}{cmd\_boot()}}
+{\footnotesize\ttfamily void cmd\+\_\+boot (\begin{DoxyParamCaption}\item[{Base\+Sequential\+Stream $\ast$}]{chp,  }\item[{int}]{argc,  }\item[{char $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Enter bootloader. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em chp} & \\
+\hline
+{\em argc} & \\
+\hline
+{\em argv} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___s_h_e_l_l_ga7fddb571c4babbb16f844c2d31c7f1be}\label{group___s_h_e_l_l_ga7fddb571c4babbb16f844c2d31c7f1be}} 
+\index{Shell Driver@{Shell Driver}!cmd\_c@{cmd\_c}}
+\index{cmd\_c@{cmd\_c}!Shell Driver@{Shell Driver}}
+\doxysubsubsection{\texorpdfstring{cmd\_c()}{cmd\_c()}}
+{\footnotesize\ttfamily void cmd\+\_\+c (\begin{DoxyParamCaption}\item[{Base\+Sequential\+Stream $\ast$}]{chp,  }\item[{int}]{argc,  }\item[{char $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Cancel json output. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em chp} & \\
+\hline
+{\em argc} & \\
+\hline
+{\em argv} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___s_h_e_l_l_ga988e8ac97747e7f2ea4dc4fc550a4109}\label{group___s_h_e_l_l_ga988e8ac97747e7f2ea4dc4fc550a4109}} 
+\index{Shell Driver@{Shell Driver}!cmd\_reset@{cmd\_reset}}
+\index{cmd\_reset@{cmd\_reset}!Shell Driver@{Shell Driver}}
+\doxysubsubsection{\texorpdfstring{cmd\_reset()}{cmd\_reset()}}
+{\footnotesize\ttfamily void cmd\+\_\+reset (\begin{DoxyParamCaption}\item[{Base\+Sequential\+Stream $\ast$}]{chp,  }\item[{int}]{argc,  }\item[{char $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Reboot system. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em chp} & \\
+\hline
+{\em argc} & \\
+\hline
+{\em argv} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___s_h_e_l_l_ga9e20c4341610023bd94c4009b98fdd27}\label{group___s_h_e_l_l_ga9e20c4341610023bd94c4009b98fdd27}} 
+\index{Shell Driver@{Shell Driver}!cmd\_start@{cmd\_start}}
+\index{cmd\_start@{cmd\_start}!Shell Driver@{Shell Driver}}
+\doxysubsubsection{\texorpdfstring{cmd\_start()}{cmd\_start()}}
+{\footnotesize\ttfamily void cmd\+\_\+start (\begin{DoxyParamCaption}\item[{Base\+Sequential\+Stream $\ast$}]{chp,  }\item[{int}]{argc,  }\item[{char $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Start json output. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em chp} & \\
+\hline
+{\em argc} & \\
+\hline
+{\em argv} & \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{group___s_h_e_l_l_ga89919d471b45cd41d8985392c0fb80bf}\label{group___s_h_e_l_l_ga89919d471b45cd41d8985392c0fb80bf}} 
+\index{Shell Driver@{Shell Driver}!shell\_cfg1@{shell\_cfg1}}
+\index{shell\_cfg1@{shell\_cfg1}!Shell Driver@{Shell Driver}}
+\doxysubsubsection{\texorpdfstring{shell\_cfg1}{shell\_cfg1}}
+{\footnotesize\ttfamily const Shell\+Config shell\+\_\+cfg1\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{= \{ (BaseSequentialStream*) \&SHELL\_SD,}
+\DoxyCodeLine{        commands, history\_buffer, 32, complete\_buffer \}}
+
+\end{DoxyCode}

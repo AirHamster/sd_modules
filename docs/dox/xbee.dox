@@ -18,7 +18,7 @@
  * @defgroup XBEE Xbee Driver
  * @brief XBP9X-900 Digi module driver.
  * @details Detail will be writen soon
- * @pre     In order to use the ADC driver the @p USE_XBEE_MODULE option
+ * @pre     In order to use the Xbee driver the @p USE_XBEE_MODULE option
  *          must be enabled in @p config.h.
  *
  * @section xbee_1 Stateflow
@@ -35,27 +35,19 @@
     node [shape=circle, fontname=Helvetica, fontsize=8, fixedsize="true", width="0.9", height="0.9"];
     edge [fontname=Helvetica, fontsize=8];
 
-    stop  [label="ADC_STOP\nLow Power"];
-    uninit [label="ADC_UNINIT", style="bold"];
-    ready [label="ADC_READY\nClock Enabled"];
-    active [label="ADC_ACTIVE\nConverting"];
-    error [label="ADC_ERROR\nError"];
-    complete [label="ADC_COMPLETE\nComplete"];
+    stop  [label="XBEE_STOP\n"];
+    ready [label="XBEE_READY\n"];
+    receive [label="XBEE_RECEIVE\n"];
+    send [label="JSON_SEND\n"];
+    parse [label="XBEE_PARSE\nMSG"];
+    xbee_send_rf_message[label="XBEE_SEND_RF"];
 
-    uninit -> stop [label="\n adcInit()", constraint=false];
-    stop -> ready [label="\nadcStart()"];
-    ready -> ready [label="\nadcStart()\nadcStopConversion()"];
-    ready -> stop [label="\nadcStop()"];
-    stop -> stop [label="\nadcStop()"];
-    ready -> active [label="\nadcStartConversion() (async)\nadcConvert() (sync)"];
-    active -> ready [label="\nadcStopConversion()\nsync return"];
-    active -> active [label="\nasync callback (half buffer, circular)\nasync callback (full buffer)\n>acg_endcb<"];
-    active -> complete [label="\n\nasync callback (full buffer)\n>end_cb<"];
-    active -> error [label="\n\nasync callback (error)\n>error_cb<"];
-    complete -> active [label="\nadcStartConversionI()\nthen\ncallback return"];
-    complete -> ready [label="\ncallback return"];
-    error -> active [label="\nadcStartConversionI()\nthen\ncallback return"];
-    error -> ready [label="\ncallback return"];
+    stop -> ready [label="\n start_xbee_module()", constraint=false];
+    ready -> send [label="\nsend_data()\n"];
+    send -> xbee_send_rf_message[label="\nxbee_send_rf_message()\n"]
+    ready -> receive [label="\nxbee_polling()\n"];
+    receive -> parse [label="\xbee_process_receive_packet_frame()\n"];
+    
   }
  * @enddot
  * @else
@@ -66,27 +58,19 @@
     node [shape=circle, fontname=Helvetica, fontsize=8, fixedsize="true", width="0.9", height="0.9"];
     edge [fontname=Helvetica, fontsize=8];
 
-    stop  [label="ADC_STOP\nLow Power"];
-    uninit [label="ADC_UNINIT", style="bold"];
-    ready [label="ADC_READY\nClock Enabled"];
-    active [label="ADC_ACTIVE\nConverting"];
-    error [label="ADC_ERROR\nError"];
-    complete [label="ADC_COMPLETE\nComplete"];
+    stop  [label="XBEE_STOP\n"];
+    ready [label="XBEE_READY\n"];
+    receive [label="XBEE_RECEIVE\n"];
+    send [label="JSON_SEND\n"];
+    parse [label="XBEE_PARSE\nMSG"];
+    xbee_send_rf_message[label="XBEE_SEND_RF"];
 
-    uninit -> stop [label="\n adcInit()", constraint=false];
-    stop -> ready [label="\nadcStart()"];
-    ready -> ready [label="\nadcStart()\nadcStopConversion()"];
-    ready -> stop [label="\nadcStop()"];
-    stop -> stop [label="\nadcStop()"];
-    ready -> active [label="\nadcStartConversion() (async)\nadcConvert() (sync)"];
-    active -> ready [label="\nadcStopConversion()\nsync return"];
-    active -> active [label="\nasync callback (half buffer, circular)\nasync callback (full buffer)\n>acg_endcb<"];
-    active -> complete [label="\n\nasync callback (full buffer)\n>end_cb<"];
-    active -> error [label="\n\nasync callback (error)\n>error_cb<"];
-    complete -> active [label="\nadcStartConversionI()\nthen\ncallback return"];
-    complete -> ready [label="\ncallback return"];
-    error -> active [label="\nadcStartConversionI()\nthen\ncallback return"];
-    error -> ready [label="\ncallback return"];
+    stop -> ready [label="\n start_xbee_module()", constraint=false];
+    ready -> send [label="\nsend_data()\n"];
+    send -> xbee_send_rf_message[label="\nxbee_send_rf_message()\n"]
+    ready -> receive [label="\nxbee_polling()\n"];
+    receive -> parse [label="\xbee_process_receive_packet_frame()\n"];
+    
   }
  * @enddot
  * @endif
