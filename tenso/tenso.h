@@ -4,6 +4,13 @@
  *  Created on: Jan 30, 2020
  *      Author: a-h
  */
+/**
+ * @file    tenso.h
+ * @brief   Tenso driver macros and structures.
+ *
+ * @addtogroup TENSO
+ * @{
+ */
 
 #ifndef SD_MODULES_TENSO_TENSO_H_
 #define SD_MODULES_TENSO_TENSO_H_

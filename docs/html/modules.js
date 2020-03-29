@@ -11,10 +11,10 @@ var modules =
     [ "MCU-MCU Communication Driver", "group___m_c_u-_m_c_u.html", "group___m_c_u-_m_c_u" ],
     [ "MicroSD Driver", "group___m_i_c_r_o_s_d.html", "group___m_i_c_r_o_s_d" ],
     [ "Ublox NEO-M8 Driver", "group___n_e_o-_m8.html", "group___n_e_o-_m8" ],
-    [ "Ublox NINA-B3 Device", "group___n_i_n_a-_b3.html", null ],
-    [ "Power Management Driver", "group___p_w_r.html", null ],
-    [ "Shell Driver", "group___s_h_e_l_l.html", null ],
-    [ "Tenso sensor Driver", "group___t_e_n_s_o.html", null ],
-    [ "Windsensor Driver", "group___w_i_n_d.html", null ],
-    [ "Xbee Driver", "group___x_b_e_e.html", null ]
+    [ "Ublox NINA-B3 Device", "group___n_i_n_a-_b3.html", "group___n_i_n_a-_b3" ],
+    [ "Power Management Driver", "group___p_w_r.html", "group___p_w_r" ],
+    [ "Shell Driver", "group___s_h_e_l_l.html", "group___s_h_e_l_l" ],
+    [ "Tenso sensor Driver", "group___t_e_n_s_o.html", "group___t_e_n_s_o" ],
+    [ "Windsensor Driver", "group___w_i_n_d.html", "group___w_i_n_d" ],
+    [ "Xbee Driver", "group___x_b_e_e.html", "group___x_b_e_e" ]
 ];

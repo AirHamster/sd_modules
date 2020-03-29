@@ -162,7 +162,7 @@ struct ch_semaphore&#160;</td><td class="memItemRight" valign="bottom"><b>i2c1_s
 <p>Bosch 9-axis sensor with build-in fusion algorith driver. </p>
 <p>Detail will be writen soon </p><dl class="section pre"><dt>Precondition</dt><dd>In order to use the CAN driver the <code>USE_BNO055_MODULE</code> option must be enabled in <code>config.h</code>.</dd></dl>
 <h1><a class="anchor" id="bno055_1"></a>
-Driver State Machine</h1>
+Stateflow</h1>
 <p>The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). </p><div class="dotgraph">
 <img src="dot_inline_dotgraph_2.png" alt="dot_inline_dotgraph_2.png" border="0" usemap="#dot_inline_dotgraph_2.map"/>
 </div>

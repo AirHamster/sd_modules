@@ -1,3 +1,10 @@
+/**
+ * @file    sd_shell_cmd.c
+ * @brief   Shell driver funcs.
+ *
+ * @addtogroup SHELL
+ * @{
+ */
 #include "config.h"
 #include "sd_shell_cmds.h"
 #include <hal.h>
@@ -192,6 +199,9 @@ thread_t *cmd_init(void) {
 			shellThread, (void *) &shell_cfg1);
 }
 
+/**
+ * @brief Starting shell thread
+ */
 void start_json_module(void){
 	trainer_dev.rf_data = &trainer_data;
 	//trainer_dev.
@@ -254,10 +264,10 @@ static THD_FUNCTION(output_thread, arg) {
 				case OUTPUT_SERVICE:
 					break;
 				case OUTPUT_BLE:
-		/*			if (i++ == 10){
+					if (i++ == 10){
 					nina_send_all(peer);
 					i = 0;
-					}*/
+					}
 					break;
 				default:
 					break;
@@ -293,10 +303,6 @@ static THD_FUNCTION(output_thread, arg) {
 #endif
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 	}
-}
-
-void collect_dev_data(xbee_remote_dev_t *dev){
-
 }
 
 #ifdef USE_BNO055_MODULE
@@ -339,14 +345,6 @@ void output_gyro_raw(void){
 	}
 #endif
 	chSemSignal(&usart1_semaph);
-		/*	chprintf(SHELL_IFACE, "%f,", bmx160.ay);
-			chprintf(SHELL_IFACE, "%f,", bmx160.az);
-			chprintf(SHELL_IFACE, "%f,", bmx160.gx);
-			chprintf(SHELL_IFACE, "%f,", bmx160.gy);
-			chprintf(SHELL_IFACE, "%f,", bmx160.gz);
-			chprintf(SHELL_IFACE, "%f,", bmx160.mx);
-			chprintf(SHELL_IFACE, "%f,", bmx160.my);
-			chprintf(SHELL_IFACE, "%f,\r\n", bmx160.mz);*/
 }
 
 #ifdef USE_XBEE_MODULE
@@ -409,8 +407,6 @@ int32_t convert_to_ble_type(float value){
 		value = value * -1;
 		cel = (int16_t)(value);
 		drob = (uint8_t)((value - (float)cel) * 100);
-		//chprintf(SHELL_IFACE, "cel %x\r\n", cel);
-		//	chprintf(SHELL_IFACE, "drob %x\r\n", drob);
 		cel = cel * -1;
 		val = cel << 8 | drob;
 		val &= 0xFFFFFF;
@@ -420,9 +416,6 @@ int32_t convert_to_ble_type(float value){
 	val = cel << 8 | drob;
 	}
 
-
-
-	//chprintf(SHELL_IFACE, "val %x\r\n", val);
 	return val;
 }
 
@@ -431,12 +424,9 @@ int32_t convert_to_ble_type(float value){
 
 void send_json(void)
 {
-	//return;
-
 #ifdef USE_XBEE_MODULE
 		send_data(OUTPUT_XBEE);
 #endif
-
 }
 
 #ifdef SD_SENSOR_BOX_LAG
@@ -482,6 +472,12 @@ void cmd_mag_calibrate(BaseSequentialStream* chp, int argc, char* argv[]){
 }
 #endif
 
+/**
+ * @brief Start json output
+ * @param chp
+ * @param argc
+ * @param argv
+ */
 void cmd_start(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
 		if (strcmp(argv[0], "test") == 0) {
@@ -528,6 +524,12 @@ void cmd_terminate(BaseSequentialStream* chp, int argc, char* argv[]){
 
 }
 
+/**
+ * @brief Cancel json output
+ * @param chp
+ * @param argc
+ * @param argv
+ */
 void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]) {
 	(void) argc;
 	(void) argv;
@@ -535,6 +537,12 @@ void cmd_c(BaseSequentialStream* chp, int argc, char* argv[]) {
 	chprintf(chp, "Stopped all outputs\n\r");
 }
 
+/**
+ * @brief Reboot system
+ * @param chp
+ * @param argc
+ * @param argv
+ */
 void cmd_reset(BaseSequentialStream* chp, int argc, char* argv[]){
 	(void) argc;
 	(void) argv;
@@ -550,17 +558,18 @@ void cmd_reset(BaseSequentialStream* chp, int argc, char* argv[]){
 	NVIC_SystemReset();
 }
 
+/**
+ * @brief Enter bootloader
+ * @param chp
+ * @param argc
+ * @param argv
+ */
 void cmd_boot(BaseSequentialStream* chp, int argc, char* argv[]) {
 	(void) argc;
 	(void) argv;
 	chprintf(chp, "Entering bootloader after system reset");
 	chThdSleepMilliseconds(500);
 	chprintf(chp, ".");
-/*	chThdSleepMilliseconds(500);
-	chprintf(chp, ".");
-	chThdSleepMilliseconds(500);
-	chprintf(chp, ".");
-	chThdSleepMilliseconds(500);*/
 	chprintf(chp, "\r\n");
 
 	// *((unsigned long *)(SYMVAL(__ram0_end__) - 4)) = 0xDEADBEEF;
@@ -570,7 +579,6 @@ void cmd_boot(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 	 if (RTC->BKP0R == MAGIC_BOOTLOADER_NUMBER) {
 	 chprintf(chp, "Writed to the end of RAM %x, reset\r\n", RTC->BKP0R);
-	// chThdSleepMilliseconds(500);
 	 NVIC_SystemReset();
 	 }else{
 		 chprintf(chp, "Comparsion failed\r\n");

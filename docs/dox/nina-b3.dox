@@ -19,7 +19,7 @@
  * @ingroup HAL_BLOCKS
  ** @brief Ublox BLE module driver.
  * @details Detail will be writen soon
- * @pre     In order to use the ADC driver the @p USE_UBLOX_BLE_MODULE option
+ * @pre     In order to use the BLE driver the @p USE_UBLOX_BLE_MODULE option
  *          must be enabled in @p config.h.
  * @section ble_1 Stateflow
  * The drivers implementing this interface shall implement the following

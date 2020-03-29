@@ -5,15 +5,135 @@
 Tenso sensor driver.  
 
 
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_gaa661b5dc6806dca4f73be7f9ff07ade3}\label{group___t_e_n_s_o_gaa661b5dc6806dca4f73be7f9ff07ade3}} 
+static \mbox{\hyperlink{group___t_e_n_s_o_gaa661b5dc6806dca4f73be7f9ff07ade3}{T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA}} (tenso\+\_\+thread\+\_\+wa, 256)
+\begin{DoxyCompactList}\small\item\em Main tenso thread. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_ga278e9f29ad92ac25ba58676ef5b10d1e}\label{group___t_e_n_s_o_ga278e9f29ad92ac25ba58676ef5b10d1e}} 
+static {\bfseries T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON} (tenso\+\_\+thread, p)
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_gae7444cf346cb59f78afc926112baccc9}\label{group___t_e_n_s_o_gae7444cf346cb59f78afc926112baccc9}} 
+void {\bfseries tenso\+\_\+print\+\_\+info} (\mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}} $\ast$tenso\+\_\+data)
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_ga4da7ca04fd2597423fa385bf215b2e59}\label{group___t_e_n_s_o_ga4da7ca04fd2597423fa385bf215b2e59}} 
+void \mbox{\hyperlink{group___t_e_n_s_o_ga4da7ca04fd2597423fa385bf215b2e59}{start\+\_\+tenso\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Start tenso thread. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_ga896b67eb099ff10316d830fc8bc9af44}\label{group___t_e_n_s_o_ga896b67eb099ff10316d830fc8bc9af44}} 
+int8\+\_\+t {\bfseries tenso\+\_\+read\+\_\+coefs\+\_\+from\+\_\+eeprom} (\mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}} $\ast$tenso\+\_\+data)
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_gab8f45b6ea77f91256f94540a507d132d}\label{group___t_e_n_s_o_gab8f45b6ea77f91256f94540a507d132d}} 
+int8\+\_\+t {\bfseries tenso\+\_\+write\+\_\+coefs\+\_\+to\+\_\+eeprom} (\mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}} $\ast$tenso\+\_\+data)
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_ga589abc7e09623fa3d8f1233e3b1fbcb5}\label{group___t_e_n_s_o_ga589abc7e09623fa3d8f1233e3b1fbcb5}} 
+float {\bfseries tenso\+\_\+calculate\+\_\+kilograms} (\mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}} $\ast$tenso\+\_\+data)
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_ga96798c7fc338ae9d1345384c86b7ca7e}\label{group___t_e_n_s_o_ga96798c7fc338ae9d1345384c86b7ca7e}} 
+float {\bfseries tenso\+\_\+calculate\+\_\+newtons} (\mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}} $\ast$tenso\+\_\+data)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___t_e_n_s_o_ga4c875b5a52113e0b80fa020c0d8d88c6}{cmd\+\_\+tenso\+\_\+calibrate}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Calibration routine. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{group___t_e_n_s_o_ga2020559439351494df38c7c7279a5efa}{tenso\+\_\+calculate\+\_\+coefs}} (\mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}} $\ast$tenso\+\_\+data)
+\begin{DoxyCompactList}\small\item\em ax+b coefs calculations \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_gade40841d606289f04f73a03d7d4d4194}\label{group___t_e_n_s_o_gade40841d606289f04f73a03d7d4d4194}} 
+\mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}} $\ast$ {\bfseries tenso}
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_gaa7a7e16b3e6e0f4d607a0b324ee0469d}\label{group___t_e_n_s_o_gaa7a7e16b3e6e0f4d607a0b324ee0469d}} 
+float {\bfseries newtons}
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_gab7a7a7fa5a4841a2ee7d7fb0547233f5}\label{group___t_e_n_s_o_gab7a7a7fa5a4841a2ee7d7fb0547233f5}} 
+float {\bfseries kilograms}
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_gaa6dda66212a4110668ae6c8c492d2668}\label{group___t_e_n_s_o_gaa6dda66212a4110668ae6c8c492d2668}} 
+float {\bfseries coef\+\_\+newton}
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_ga6587765292293bd14da9e64e92256245}\label{group___t_e_n_s_o_ga6587765292293bd14da9e64e92256245}} 
+float {\bfseries coef\+\_\+kilograms}
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_ga97c6a28c5842fb0c90bca8403c796d22}\label{group___t_e_n_s_o_ga97c6a28c5842fb0c90bca8403c796d22}} 
+float {\bfseries point\+\_\+kilograms}
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_gabaacd799d5f6e269f7f471d4ea60d78e}\label{group___t_e_n_s_o_gabaacd799d5f6e269f7f471d4ea60d78e}} 
+float {\bfseries point\+\_\+one\+\_\+kgs}
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_ga850b098f5056da2895912d141293f883}\label{group___t_e_n_s_o_ga850b098f5056da2895912d141293f883}} 
+float {\bfseries point\+\_\+two\+\_\+kgs}
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_ga3e60b3c561be982d7c8e23f14c01fd5b}\label{group___t_e_n_s_o_ga3e60b3c561be982d7c8e23f14c01fd5b}} 
+float {\bfseries offset}
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_ga23a9ff0941fec6c87b0ee44cf0b70c51}\label{group___t_e_n_s_o_ga23a9ff0941fec6c87b0ee44cf0b70c51}} 
+uint16\+\_\+t {\bfseries adc\+\_\+native}
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_ga68563df3c84e6dd0c0c1f3ffd6fa9f19}\label{group___t_e_n_s_o_ga68563df3c84e6dd0c0c1f3ffd6fa9f19}} 
+uint16\+\_\+t {\bfseries point\+\_\+one\+\_\+native}
+\item 
+\mbox{\Hypertarget{group___t_e_n_s_o_gaa801ffdb986898fffeb1f68bfd050c59}\label{group___t_e_n_s_o_gaa801ffdb986898fffeb1f68bfd050c59}} 
+uint16\+\_\+t {\bfseries point\+\_\+two\+\_\+native}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
 Tenso sensor driver. 
 
 Detail will be writen soon \begin{DoxyPrecond}{Precondition}
-In order to use the A\+DC driver the {\ttfamily U\+S\+E\+\_\+\+T\+E\+N\+S\+O\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}.
+In order to use the tenso driver the {\ttfamily U\+S\+E\+\_\+\+T\+E\+N\+S\+O\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}.
 \end{DoxyPrecond}
 \hypertarget{group___t_e_n_s_o_shell_1}{}\doxysubsection{Stateflow}\label{group___t_e_n_s_o_shell_1}
 The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
 \begin{DoxyImageNoCaption}
-  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_14}}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_13}}
 \end{DoxyImageNoCaption}
 \hypertarget{group___t_e_n_s_o_shell_2}{}\doxysubsection{Shell operations}\label{group___t_e_n_s_o_shell_2}
 The A\+DC driver is quite complex, an explanation of the terminology and of the operational details follows. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group___t_e_n_s_o_ga4c875b5a52113e0b80fa020c0d8d88c6}\label{group___t_e_n_s_o_ga4c875b5a52113e0b80fa020c0d8d88c6}} 
+\index{Tenso sensor Driver@{Tenso sensor Driver}!cmd\_tenso\_calibrate@{cmd\_tenso\_calibrate}}
+\index{cmd\_tenso\_calibrate@{cmd\_tenso\_calibrate}!Tenso sensor Driver@{Tenso sensor Driver}}
+\doxysubsubsection{\texorpdfstring{cmd\_tenso\_calibrate()}{cmd\_tenso\_calibrate()}}
+{\footnotesize\ttfamily int8\+\_\+t cmd\+\_\+tenso\+\_\+calibrate (\begin{DoxyParamCaption}\item[{Base\+Sequential\+Stream $\ast$}]{chp,  }\item[{int}]{argc,  }\item[{char $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Calibration routine. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em chp} & \\
+\hline
+{\em argc} & \\
+\hline
+{\em argv} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___t_e_n_s_o_ga2020559439351494df38c7c7279a5efa}\label{group___t_e_n_s_o_ga2020559439351494df38c7c7279a5efa}} 
+\index{Tenso sensor Driver@{Tenso sensor Driver}!tenso\_calculate\_coefs@{tenso\_calculate\_coefs}}
+\index{tenso\_calculate\_coefs@{tenso\_calculate\_coefs}!Tenso sensor Driver@{Tenso sensor Driver}}
+\doxysubsubsection{\texorpdfstring{tenso\_calculate\_coefs()}{tenso\_calculate\_coefs()}}
+{\footnotesize\ttfamily int8\+\_\+t tenso\+\_\+calculate\+\_\+coefs (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structtenso__data__t}{tenso\+\_\+data\+\_\+t}} $\ast$}]{tenso\+\_\+data }\end{DoxyParamCaption})}
+
+
+
+ax+b coefs calculations 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tenso\+\_\+data} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}

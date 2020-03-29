@@ -83,6 +83,11 @@ $(document).ready(function(){initNavTree('group___w_i_n_d.html',''); initResizab
 </div>
 
 <div class="header">
+  <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">Windsensor Driver</div>  </div>
 </div><!--header-->
@@ -90,16 +95,126 @@ $(document).ready(function(){initNavTree('group___w_i_n_d.html',''); initResizab
 
 <p>Windsensor with SD-12 interface driver.  
 <a href="#details">More...</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structwindsensor__t.html">windsensor_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:gaff40cfceeaffa01add54a73612cecced"><td class="memItemLeft" align="right" valign="top"><a id="gaff40cfceeaffa01add54a73612cecced"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>UART_CHAR_RECEIVED</b>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:gaff40cfceeaffa01add54a73612cecced"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga883c4e1cf6f012c60c5cbee10065fb6a"><td class="memItemLeft" align="right" valign="top"><a id="ga883c4e1cf6f012c60c5cbee10065fb6a"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>UART_GENERIC_NOTIFY</b>&#160;&#160;&#160;2</td></tr>
+<tr class="separator:ga883c4e1cf6f012c60c5cbee10065fb6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7e3562e7931cf51b41a32d8109072251"><td class="memItemLeft" align="right" valign="top"><a id="ga7e3562e7931cf51b41a32d8109072251"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>UART_ERROR</b>&#160;&#160;&#160;3</td></tr>
+<tr class="separator:ga7e3562e7931cf51b41a32d8109072251"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ga2a84be71a45be32373f14e7e4eac9d99"><td class="memItemLeft" align="right" valign="top"><a id="ga2a84be71a45be32373f14e7e4eac9d99"></a>
+static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___w_i_n_d.html#ga2a84be71a45be32373f14e7e4eac9d99">THD_WORKING_AREA</a> (wind_thread_wa, 2048)</td></tr>
+<tr class="memdesc:ga2a84be71a45be32373f14e7e4eac9d99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Windsensor parsing thread. <br /></td></tr>
+<tr class="separator:ga2a84be71a45be32373f14e7e4eac9d99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga06d33f6956d2c288bb5d9cb5a1a3139e"><td class="memItemLeft" align="right" valign="top"><a id="ga06d33f6956d2c288bb5d9cb5a1a3139e"></a>
+static&#160;</td><td class="memItemRight" valign="bottom"><b>THD_FUNCTION</b> (wind_thread, p)</td></tr>
+<tr class="separator:ga06d33f6956d2c288bb5d9cb5a1a3139e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0ac43f93f16184775fb171aa76f52025"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___w_i_n_d.html#ga0ac43f93f16184775fb171aa76f52025">start_windsensor_module</a> (void)</td></tr>
+<tr class="memdesc:ga0ac43f93f16184775fb171aa76f52025"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start windsensor thread.  <a href="group___w_i_n_d.html#ga0ac43f93f16184775fb171aa76f52025">More...</a><br /></td></tr>
+<tr class="separator:ga0ac43f93f16184775fb171aa76f52025"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ga967ea156994a35bf77b2c4ae7ccaf273"><td class="memItemLeft" align="right" valign="top"><a id="ga967ea156994a35bf77b2c4ae7ccaf273"></a>
+struct ch_semaphore&#160;</td><td class="memItemRight" valign="bottom"><b>usart1_semaph</b></td></tr>
+<tr class="separator:ga967ea156994a35bf77b2c4ae7ccaf273"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7b33db9e50759fcd39d9f7363c485f09"><td class="memItemLeft" align="right" valign="top"><a id="ga7b33db9e50759fcd39d9f7363c485f09"></a>
+static uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>uart_temp</b></td></tr>
+<tr class="separator:ga7b33db9e50759fcd39d9f7363c485f09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga10850c2179392a926e664921bb24bf99"><td class="memItemLeft" align="right" valign="top"><a id="ga10850c2179392a926e664921bb24bf99"></a>
+<a class="el" href="structwindsensor__t.html">windsensor_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>wind</b></td></tr>
+<tr class="separator:ga10850c2179392a926e664921bb24bf99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga72afd3727c9e2f94ea9fa00c696b7b65"><td class="memItemLeft" align="right" valign="top">static const SerialConfig&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___w_i_n_d.html#ga72afd3727c9e2f94ea9fa00c696b7b65">wind_uart_cfg</a></td></tr>
+<tr class="memdesc:ga72afd3727c9e2f94ea9fa00c696b7b65"><td class="mdescLeft">&#160;</td><td class="mdescRight">USART driver default configuration.  <a href="group___w_i_n_d.html#ga72afd3727c9e2f94ea9fa00c696b7b65">More...</a><br /></td></tr>
+<tr class="separator:ga72afd3727c9e2f94ea9fa00c696b7b65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga222ce6d84c0261106a3160eb540f1f3d"><td class="memItemLeft" align="right" valign="top"><a id="ga222ce6d84c0261106a3160eb540f1f3d"></a>
+thread_reference_t&#160;</td><td class="memItemRight" valign="bottom"><b>wind_trp</b> = NULL</td></tr>
+<tr class="separator:ga222ce6d84c0261106a3160eb540f1f3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7f7e4724cf57d59513b39c5ecc81adc8"><td class="memItemLeft" align="right" valign="top"><a id="ga7f7e4724cf57d59513b39c5ecc81adc8"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>speed</b></td></tr>
+<tr class="separator:ga7f7e4724cf57d59513b39c5ecc81adc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3ba40bd7fdf9f889a8fbb66770fdd524"><td class="memItemLeft" align="right" valign="top"><a id="ga3ba40bd7fdf9f889a8fbb66770fdd524"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>direction</b></td></tr>
+<tr class="separator:ga3ba40bd7fdf9f889a8fbb66770fdd524"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Windsensor with SD-12 interface driver. </p>
-<p>Detail will be writen soon </p><dl class="section pre"><dt>Precondition</dt><dd>In order to use the ADC driver the <code>USE_WINDSENSOR_MODULE</code> option must be enabled in <code>config.h</code>.</dd></dl>
+<p>Detail will be writen soon </p><dl class="section pre"><dt>Precondition</dt><dd>In order to use the windsensor driver the <code>USE_WINDSENSOR_MODULE</code> option must be enabled in <code>config.h</code>.</dd></dl>
 <h1><a class="anchor" id="wind_1"></a>
 Stateflow</h1>
 <p>The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). </p><div class="dotgraph">
-<img src="dot_inline_dotgraph_15.png" alt="dot_inline_dotgraph_15.png" border="0" usemap="#dot_inline_dotgraph_15.map"/>
+<img src="dot_inline_dotgraph_14.png" alt="dot_inline_dotgraph_14.png" border="0" usemap="#dot_inline_dotgraph_14.map"/>
 </div>
 <h1><a class="anchor" id="wind_2"></a>
 ADC Operations</h1>
 <p>The ADC driver is quite complex, an explanation of the terminology and of the operational details follows. </p>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ga0ac43f93f16184775fb171aa76f52025"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0ac43f93f16184775fb171aa76f52025">&#9670;&nbsp;</a></span>start_windsensor_module()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void start_windsensor_module </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Start windsensor thread. </p>
+<p>Start windsensor threads </p>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="ga72afd3727c9e2f94ea9fa00c696b7b65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga72afd3727c9e2f94ea9fa00c696b7b65">&#9670;&nbsp;</a></span>wind_uart_cfg</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const SerialConfig wind_uart_cfg</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">{</div>
+<div class="line">  19200,</div>
+<div class="line">  0,</div>
+<div class="line">  USART_CR2_STOP1_BITS,</div>
+<div class="line">  0</div>
+<div class="line">}</div>
+</div><!-- fragment -->
+<p>USART driver default configuration. </p>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -23,6 +23,7 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "SD_Modules", "index.html", [
+    [ "HOWTO", "index.html#autotoc_md8", null ],
     [ "Modules", "modules.html", "modules" ],
     [ "Data Structures", "annotated.html", [
       [ "Data Structures", "annotated.html", "annotated_dup" ],
@@ -62,17 +63,19 @@ var NAVTREEINDEX =
 "bno055_8h.html#a9e2669948cf82e5ee1c39c1ef9002e87",
 "bno055_8h.html#ac7ee575d250ecf95b91f47d626e4f87b",
 "bno055_8h.html#af585aaaf523218d7fc32467003b2fd99",
-"group___b_m_x160.html#ga15b28db0edbc69d313a4feb736306773",
-"group___c_h_a_r_g_e_r.html#ga545ab86605bc42d2b90f8965e91604eb",
-"group___c_h_a_r_g_e_r.html#ggab61f275a2f795e463e6d07cd4d19008aa1ee36c8415514d11ef1c30c3458229f0",
-"group___c_h_a_r_g_e_r.html#ggab982cb787d6f8da311b204e5a69b6d16abce58bd31e34101ae34c7ca3b4e88619",
-"group___f_u_e_l___g_a_u_g_e.html#ga8697b7f619365d6cedb1f6c0ef4b3012",
-"group___m_i_c_r_o_s_d.html#ga92b217498fb153fb9dca066be26d31cf",
-"group___n_e_o-_m8.html#gab646063644081078388592d6b57ad5bb",
-"structbmi160__acc__flat__detect__int__cfg.html#ac7015faff5676dac7bc91cb22c762dda",
-"structbno055__euler__float__t.html#a4788d82c901b9367dd5c0daff8a7616b",
-"structoutput__t.html#a670f8a1cac5e6907b5c7af827a245f46",
-"tenso_8h_source.html"
+"group___b_m_x160.html#ga0b87d7aacb9a17f928bc5efb9f415101",
+"group___c_h_a_r_g_e_r.html#ga519bbe63204b6c54b1afea56d92864d7",
+"group___c_h_a_r_g_e_r.html#ggab61f275a2f795e463e6d07cd4d19008aa1a3e7a751d6819840c1a355d10b0e7dd",
+"group___c_h_a_r_g_e_r.html#ggab982cb787d6f8da311b204e5a69b6d16abc851284b17332e7e66762ebf693dc35",
+"group___f_u_e_l___g_a_u_g_e.html#ga81da0c7da9924ffd4bc48a1d8dc1642e",
+"group___m_i_c_r_o_s_d.html#ga891b0c0cd9e14f01f55c3a2fecf275e8",
+"group___n_e_o-_m8.html#gab5ca717a489880dc89ae1e20ce799ead",
+"group___n_i_n_a-_b3.html#gafaa9d6398fc85f1a98cf15eeae9df151",
+"group___x_b_e_e.html#ga3d5a7eca5d6d742fb6b8a16bc705437e",
+"group___x_b_e_e.html#gafc359c5d9dee595178c41946753b6c1d",
+"structbmi160__int__status__bits.html#a49584974f656b54705c8bb25eb52dd2b",
+"structflip__t.html",
+"structts__dataxyzf32.html#a926b2d9b2c55c060ab0e53d96fecb214"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

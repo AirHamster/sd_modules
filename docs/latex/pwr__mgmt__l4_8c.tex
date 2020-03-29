@@ -1,0 +1,68 @@
+\hypertarget{pwr__mgmt__l4_8c}{}\doxysection{power\+\_\+management/pwr\+\_\+mgmt\+\_\+l4.c File Reference}
+\label{pwr__mgmt__l4_8c}\index{power\_management/pwr\_mgmt\_l4.c@{power\_management/pwr\_mgmt\_l4.c}}
+
+
+Power management driver funcs.  
+
+
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$hal.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}math.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$shell.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}pwr\+\_\+mgmt\+\_\+l4.\+h\char`\"{}}\newline
+Include dependency graph for pwr\+\_\+mgmt\+\_\+l4.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{pwr__mgmt__l4_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries enter\+\_\+stop\+\_\+mode} (void)
+\item 
+void {\bfseries leave\+\_\+stop\+\_\+mode} (void)
+\item 
+void \mbox{\hyperlink{group___p_w_r_gadb12831cc912ec24a9f97abc6279aa35}{deactivate\+\_\+clocks}} (void)
+\begin{DoxyCompactList}\small\item\em Switch to deep sleep state. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___p_w_r_gab4dea8df5ecbc778264a53ce68b79826}{activate\+\_\+clocks}} (void)
+\begin{DoxyCompactList}\small\item\em Switch to power state. \end{DoxyCompactList}\item 
+static void {\bfseries pwr\+\_\+pins\+\_\+to\+\_\+save\+\_\+state} (void)
+\item 
+static void {\bfseries pwr\+\_\+pins\+\_\+to\+\_\+work\+\_\+state} (void)
+\item 
+static void \mbox{\hyperlink{group___p_w_r_ga834ab8e72cbb7547199d8cbcc99259ee}{button\+\_\+cb}} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em Power button callback. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{group___p_w_r_ga0b8c9b7dd514e48ef95dbeae2d5064b6}{charger\+\_\+int\+\_\+cb}} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em Charger interrupt callback. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{group___p_w_r_gaaf327990b963467334cce83450b4f0b0}{T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA}} (pwr\+\_\+mgmt\+\_\+thread\+\_\+wa, 512)
+\begin{DoxyCompactList}\small\item\em Main power management thread. \end{DoxyCompactList}\item 
+static {\bfseries T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON} (pwr\+\_\+mgmt\+\_\+thread, p)
+\item 
+void \mbox{\hyperlink{group___p_w_r_ga587e65bbcd357c2b95c27c3a3d91b240}{start\+\_\+power\+\_\+management\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Starting power management thread. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+static volatile uint8\+\_\+t {\bfseries device\+\_\+power\+\_\+state} = 0
+\item 
+static volatile uint8\+\_\+t {\bfseries deepsleep} = 1
+\item 
+static event\+\_\+source\+\_\+t {\bfseries button\+\_\+pressed\+\_\+event}
+\item 
+static event\+\_\+source\+\_\+t {\bfseries button\+\_\+released\+\_\+event}
+\item 
+static event\+\_\+source\+\_\+t {\bfseries charger\+\_\+int\+\_\+low\+\_\+event}
+\item 
+static event\+\_\+source\+\_\+t {\bfseries charger\+\_\+int\+\_\+high\+\_\+event}
+\item 
+event\+\_\+source\+\_\+t {\bfseries power\+\_\+state\+\_\+change\+\_\+event}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Power management driver funcs. 
+

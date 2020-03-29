@@ -22,3 +22,17 @@
 - Tenso sensor driver
 - Windsensor with SD-12 interface driver
 - XBP9X-900 Digi module driver
+
+# HOWTO
+
+Every module works as separete thread. After call start_*name*_module from main.c file modules initializes needed varables in memory and from EEPROM.
+
+Modules includes by defines in config.h in main firmware projects.
+
+Firmware repositories:
+
+Main device:
+[https://github.com/AirHamster/sd_fw_main_board]
+
+BLE sensor device:
+[https://github.com/AirHamster/sd_sensor_box_fw]

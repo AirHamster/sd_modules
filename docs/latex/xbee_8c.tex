@@ -1,0 +1,194 @@
+\hypertarget{xbee_8c}{}\doxysection{xbee/xbee.c File Reference}
+\label{xbee_8c}\index{xbee/xbee.c@{xbee/xbee.c}}
+
+
+Xbee driver funcs.  
+
+
+{\ttfamily \#include \char`\"{}xbee.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+Include dependency graph for xbee.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{xbee_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \mbox{\hyperlink{group___x_b_e_e_ga2e0ca3d65704d9e742de3e12fd546d4b}{xbee\+\_\+attn\+\_\+cb}} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em Xbee attention pin interrupt handler. \end{DoxyCompactList}\item 
+int8\+\_\+t \mbox{\hyperlink{group___x_b_e_e_ga6866cb3a7a3705647d65bf4395ebf99e}{xbee\+\_\+init\+\_\+data\+\_\+structs}} (\mbox{\hyperlink{structxbee__remote__dev__t}{xbee\+\_\+remote\+\_\+dev\+\_\+t}} $\ast$dev)
+\begin{DoxyCompactList}\small\item\em Initialization of remote devices structs. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{group___x_b_e_e_ga36ee67df05326e7826f1c8c40fa68ca1}{T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA}} (xbee\+\_\+thread\+\_\+wa, 1024)
+\begin{DoxyCompactList}\small\item\em Main X\+B\+EE thread. \end{DoxyCompactList}\item 
+static {\bfseries T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON} (xbee\+\_\+thread, p)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_gaf50a15366b0f487d1793b506c1b92a24}{start\+\_\+xbee\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Starting xbee module. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga5254e1be6790abc2bcee85d67da7f63d}{xbee\+\_\+read}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint8\+\_\+t rxlen, uint8\+\_\+t $\ast$at\+\_\+msg, uint8\+\_\+t $\ast$rxbuff)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga4567a9cfb7d92d8e867fc67ca91ca89d}{xbee\+\_\+write}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Manual writting AT command from shell (debug) \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___x_b_e_e_gab3795d7dc7f3bcd92fbfa1e0f16bdc11}{xbee\+\_\+attn}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Manual reading A\+T\+TN pint status (debug) \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{group___x_b_e_e_gad5fc55d4988dc4eba587b44d17a1fe20}{xbee\+\_\+create\+\_\+at\+\_\+read\+\_\+message}} (uint8\+\_\+t $\ast$at, uint8\+\_\+t $\ast$buffer)
+\begin{DoxyCompactList}\small\item\em Form S\+PI AT read message packet. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{group___x_b_e_e_gafe3d94a0acf14ace77c958664c3a03b6}{xbee\+\_\+create\+\_\+at\+\_\+write\+\_\+message}} (char $\ast$at, uint8\+\_\+t $\ast$buffer, uint8\+\_\+t $\ast$data, uint8\+\_\+t num)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___x_b_e_e_gae97cbacefe61b49ff3e1b775d06369ca}{xbee\+\_\+create\+\_\+data\+\_\+read\+\_\+message}} (uint8\+\_\+t $\ast$at, uint8\+\_\+t $\ast$buffer)
+\begin{DoxyCompactList}\small\item\em Reads incoming data. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{group___x_b_e_e_gaec25bb3748a6a8ed0ed3a95df30bb885}{xbee\+\_\+create\+\_\+data\+\_\+write\+\_\+message}} (uint8\+\_\+t $\ast$buffer, void $\ast$data, uint8\+\_\+t packet\+\_\+type)
+\begin{DoxyCompactList}\small\item\em Sending telemetry data over air. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga795c0c12ac17bc19a63fd2868174fa46}{xbee\+\_\+receive}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint8\+\_\+t len, uint8\+\_\+t $\ast$rxbuf)
+\begin{DoxyCompactList}\small\item\em Low-\/level S\+PI reading operation. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga7021d2a9da606e65cda41ecbff0c0648}{xbee\+\_\+send}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint8\+\_\+t $\ast$txbuf, uint8\+\_\+t len)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga8a8e2507ce3548a284bc2bb67b027d0b}{xbee\+\_\+read\+\_\+no\+\_\+cs}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint8\+\_\+t len, uint8\+\_\+t $\ast$rxbuff)
+\begin{DoxyCompactList}\small\item\em Reading @len of data from spi, don not release CS. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga13d35e4fc0efbce1a806d18067be08f9}{xbee\+\_\+read\+\_\+release\+\_\+cs}} (S\+P\+I\+Driver $\ast$S\+P\+ID, uint8\+\_\+t len, uint8\+\_\+t $\ast$rxbuff)
+\begin{DoxyCompactList}\small\item\em Reading data from S\+PI with releasing CS in the end. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{group___x_b_e_e_gad11ba8a7713cd36d2090bd6563580480}{xbee\+\_\+check\+\_\+attn}} (void)
+\begin{DoxyCompactList}\small\item\em Checking A\+T\+TN pin. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{group___x_b_e_e_ga350cf9addd8a53d61a827112ce70e1cf}{xbee\+\_\+calc\+\_\+\+C\+RC}} (uint8\+\_\+t $\ast$buffer, uint8\+\_\+t num)
+\begin{DoxyCompactList}\small\item\em Calculate Xbee C\+RC. \end{DoxyCompactList}\item 
+void {\bfseries xbee\+\_\+get\+\_\+addr} (void)
+\item 
+void {\bfseries xbee\+\_\+get\+\_\+rssi} (void)
+\item 
+void {\bfseries xbee\+\_\+get\+\_\+stat} (void)
+\item 
+void {\bfseries xbee\+\_\+get\+\_\+lb\+\_\+status} (void)
+\item 
+void {\bfseries xbee\+\_\+set\+\_\+loopback} (char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+void {\bfseries xbee\+\_\+get\+\_\+ping} (void)
+\item 
+void {\bfseries xbee\+\_\+get\+\_\+channels} (void)
+\item 
+void {\bfseries xbee\+\_\+thread\+\_\+execute} (uint8\+\_\+t command)
+\item 
+void {\bfseries xbee\+\_\+read\+\_\+own\+\_\+addr} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+get\+\_\+attn\+\_\+pin\+\_\+cfg} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+read\+\_\+last\+\_\+rssi} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint32\+\_\+t {\bfseries xbee\+\_\+read\+\_\+channels} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+read\+\_\+baudrate} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+get\+\_\+packet\+\_\+payload} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+get\+\_\+bytes\+\_\+transmitted} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+get\+\_\+good\+\_\+packets\+\_\+res} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+get\+\_\+received\+\_\+err\+\_\+count} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+get\+\_\+transceived\+\_\+err\+\_\+count} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+uint16\+\_\+t {\bfseries xbee\+\_\+get\+\_\+unicast\+\_\+trans\+\_\+count} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+str)
+\item 
+void {\bfseries xbee\+\_\+send\+\_\+ping\+\_\+message} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+strc)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_gaac3cb4fdf683977f60e38c3657d21a07}{xbee\+\_\+send\+\_\+rf\+\_\+message}} (void $\ast$packet, uint8\+\_\+t packet\+\_\+type)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga917c69ae653e731d1e05402c6eed63f4}{xbee\+\_\+send\+\_\+rf\+\_\+message\+\_\+back}} (\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$xbee\+\_\+strc, uint8\+\_\+t $\ast$buffer, uint8\+\_\+t len)
+\begin{DoxyCompactList}\small\item\em Debug -\/ return data back. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga043d925464ee191a74d266cb2a8f69d8}{xbee\+\_\+attn\+\_\+event}} (void)
+\begin{DoxyCompactList}\small\item\em A\+T\+TN pin interrupt handler. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga341983a0050640556d238b8e13481cf1}{xbee\+\_\+polling}} (void)
+\begin{DoxyCompactList}\small\item\em Poll and parse data from spi. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga4d1f88b1a58dde336a188386f035370e}{xbee\+\_\+process\+\_\+at\+\_\+frame}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_gae2d50e9734ede27f7b54bce93b0bb5db}{xbee\+\_\+process\+\_\+at\+\_\+queue\+\_\+frame}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga7a875bfa2bfe583a92d42906f72aef9a}{xbee\+\_\+process\+\_\+tx\+\_\+req\+\_\+frame}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga919ab0aafbef27087257c6e4c8046dec}{xbee\+\_\+process\+\_\+explicit\+\_\+frame}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga9207781d66b2ca5ab730e1957800e8bc}{xbee\+\_\+process\+\_\+remote\+\_\+at\+\_\+frame}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga1791b581c0cef2506ebb76b100ff0ac0}{xbee\+\_\+process\+\_\+at\+\_\+response}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_gae4d681ec824990ffec24ca915be4d8a7}{xbee\+\_\+process\+\_\+modem\+\_\+stat\+\_\+frame}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga7493166f703a3b1b956e7d9e48383410}{xbee\+\_\+process\+\_\+tx\+\_\+stat}} (uint8\+\_\+t $\ast$buffer)
+\item 
+void {\bfseries xbee\+\_\+process\+\_\+route\+\_\+inf\+\_\+frame} (uint8\+\_\+t $\ast$buffer)
+\item 
+void {\bfseries xbee\+\_\+process\+\_\+aggregade\+\_\+addr\+\_\+frame} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_gaf5bbf8926649923f15e540bc9117c5e0}{xbee\+\_\+process\+\_\+receive\+\_\+packet\+\_\+frame}} (uint8\+\_\+t $\ast$buffer)
+\begin{DoxyCompactList}\small\item\em Reads all data from Xbee via S\+PI. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga0b878255a5cf56364a31fb8999724a17}{xbee\+\_\+parse\+\_\+rf\+\_\+packet}} (uint8\+\_\+t $\ast$rxbuff)
+\begin{DoxyCompactList}\small\item\em Parse incoming message. \end{DoxyCompactList}\item 
+void {\bfseries xbee\+\_\+parse\+\_\+gps\+\_\+packet\+\_\+back} (uint8\+\_\+t $\ast$rxbuff)
+\item 
+void {\bfseries xbee\+\_\+parse\+\_\+gps\+\_\+packet} (uint8\+\_\+t $\ast$rxbuff)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga8796f9f0e06ac8f7fbcb5387aa06aeaf}{xbee\+\_\+parse\+\_\+bouy\+\_\+packet}} (uint8\+\_\+t $\ast$rxbuff)
+\begin{DoxyCompactList}\small\item\em Copy data from received packet to bouy struct. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga536b743d1649225664a9ba8deb1d3ca3}{xbee\+\_\+parse\+\_\+sportsman\+\_\+packet}} (uint8\+\_\+t $\ast$rxbuff)
+\begin{DoxyCompactList}\small\item\em Copy data from received packet to sportsman struct. \end{DoxyCompactList}\item 
+void {\bfseries xbee\+\_\+process\+\_\+explicit\+\_\+rx\+\_\+frame} (uint8\+\_\+t $\ast$buffer)
+\item 
+void {\bfseries xbee\+\_\+process\+\_\+data\+\_\+sample\+\_\+frame} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_ga603d370aa284c0d00ff866b7ae45b889}{xbee\+\_\+process\+\_\+node\+\_\+id\+\_\+frame}} (uint8\+\_\+t $\ast$buffer)
+\begin{DoxyCompactList}\small\item\em Indication if broadcast message. \end{DoxyCompactList}\item 
+void {\bfseries xbee\+\_\+process\+\_\+remote\+\_\+response\+\_\+frame} (uint8\+\_\+t $\ast$buffer)
+\item 
+void \mbox{\hyperlink{group___x_b_e_e_gad1ae028c940713a1cf14dc8cd285c56e}{xbee\+\_\+set\+\_\+10kbs\+\_\+rate}} (void)
+\begin{DoxyCompactList}\small\item\em Setup low speed -\/ higher distance. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___x_b_e_e_gacebc7bb503fd1559f54937bc77af1bde}{xbee\+\_\+set\+\_\+80kbs\+\_\+rate}} (void)
+\begin{DoxyCompactList}\small\item\em Setup high speed -\/ less distance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+thread\+\_\+reference\+\_\+t {\bfseries xbee\+\_\+trp} = N\+U\+LL
+\item 
+thread\+\_\+reference\+\_\+t {\bfseries xbee\+\_\+poll\+\_\+trp}
+\item 
+uint8\+\_\+t {\bfseries payload} \mbox{[}$\,$\mbox{]}
+\item 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} {\bfseries xbee\+\_\+struct}
+\item 
+\mbox{\hyperlink{structxbee__struct__t}{xbee\+\_\+struct\+\_\+t}} $\ast$ {\bfseries xbee} = \&xbee\+\_\+struct
+\item 
+\mbox{\hyperlink{structtx__box__t}{tx\+\_\+box\+\_\+t}} {\bfseries tx\+\_\+struct}
+\item 
+\mbox{\hyperlink{structtx__box__t}{tx\+\_\+box\+\_\+t}} $\ast$ {\bfseries tx\+\_\+box} = \&tx\+\_\+struct
+\item 
+const uint8\+\_\+t {\bfseries xbee\+\_\+trainer\+\_\+addr} \mbox{[}$\,$\mbox{]} = \{0x00, 0x13, 0x\+A2, 0x00, 0x41, 0x9E, 0x8D, 0x5D\}
+\item 
+const uint8\+\_\+t {\bfseries xbee\+\_\+sportsmen1\+\_\+addr} \mbox{[}$\,$\mbox{]} = \{0x00, 0x13, 0x\+A2, 0x00, 0x41, 0x9E, 0x8D, 0x08\}
+\item 
+const uint8\+\_\+t {\bfseries xbee\+\_\+sportsmen2\+\_\+addr} \mbox{[}$\,$\mbox{]} = \{0x00, 0x13, 0x\+A2, 0x00, 0x41, 0x9E, 0x94, 0x56\}
+\item 
+const uint8\+\_\+t {\bfseries xbee\+\_\+bouy\+\_\+addr} \mbox{[}$\,$\mbox{]} = \{0x00, 0x13, 0x\+A2, 0x00, 0x41, 0x9E, 0x8D, 0x38\}
+\item 
+static \mbox{\hyperlink{structxbee__sportsman__data__t}{xbee\+\_\+sportsman\+\_\+data\+\_\+t}} {\bfseries sportsman\+\_\+data} \mbox{[}N\+U\+M\+\_\+\+O\+F\+\_\+\+S\+P\+O\+R\+T\+S\+M\+A\+N\+\_\+\+D\+E\+V\+I\+C\+ES\mbox{]}
+\item 
+static \mbox{\hyperlink{structxbee__bouy__data__t}{xbee\+\_\+bouy\+\_\+data\+\_\+t}} {\bfseries bouy\+\_\+data} \mbox{[}N\+U\+M\+\_\+\+O\+F\+\_\+\+B\+O\+U\+Y\+\_\+\+D\+E\+V\+I\+C\+ES\mbox{]}
+\item 
+static \mbox{\hyperlink{structxbee__remote__dev__t}{xbee\+\_\+remote\+\_\+dev\+\_\+t}} {\bfseries remote\+\_\+dev} \mbox{[}N\+U\+M\+\_\+\+O\+F\+\_\+\+S\+P\+O\+R\+T\+S\+M\+A\+N\+\_\+\+D\+E\+V\+I\+C\+ES+N\+U\+M\+\_\+\+O\+F\+\_\+\+B\+O\+U\+Y\+\_\+\+D\+E\+V\+I\+C\+ES\mbox{]}
+\item 
+event\+\_\+listener\+\_\+t {\bfseries xbee\+\_\+attn\+\_\+pin\+\_\+el}
+\item 
+static event\+\_\+source\+\_\+t {\bfseries xbee\+\_\+attn\+\_\+pin}
+\item 
+static const S\+P\+I\+Config {\bfseries xbee\+\_\+spi\+\_\+cfg}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Xbee driver funcs. 
+

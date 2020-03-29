@@ -5,15 +5,105 @@
 Windsensor with S\+D-\/12 interface driver.  
 
 
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structwindsensor__t}{windsensor\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___w_i_n_d_gaff40cfceeaffa01add54a73612cecced}\label{group___w_i_n_d_gaff40cfceeaffa01add54a73612cecced}} 
+\#define {\bfseries U\+A\+R\+T\+\_\+\+C\+H\+A\+R\+\_\+\+R\+E\+C\+E\+I\+V\+ED}~1
+\item 
+\mbox{\Hypertarget{group___w_i_n_d_ga883c4e1cf6f012c60c5cbee10065fb6a}\label{group___w_i_n_d_ga883c4e1cf6f012c60c5cbee10065fb6a}} 
+\#define {\bfseries U\+A\+R\+T\+\_\+\+G\+E\+N\+E\+R\+I\+C\+\_\+\+N\+O\+T\+I\+FY}~2
+\item 
+\mbox{\Hypertarget{group___w_i_n_d_ga7e3562e7931cf51b41a32d8109072251}\label{group___w_i_n_d_ga7e3562e7931cf51b41a32d8109072251}} 
+\#define {\bfseries U\+A\+R\+T\+\_\+\+E\+R\+R\+OR}~3
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___w_i_n_d_ga2a84be71a45be32373f14e7e4eac9d99}\label{group___w_i_n_d_ga2a84be71a45be32373f14e7e4eac9d99}} 
+static \mbox{\hyperlink{group___w_i_n_d_ga2a84be71a45be32373f14e7e4eac9d99}{T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA}} (wind\+\_\+thread\+\_\+wa, 2048)
+\begin{DoxyCompactList}\small\item\em Windsensor parsing thread. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___w_i_n_d_ga06d33f6956d2c288bb5d9cb5a1a3139e}\label{group___w_i_n_d_ga06d33f6956d2c288bb5d9cb5a1a3139e}} 
+static {\bfseries T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON} (wind\+\_\+thread, p)
+\item 
+void \mbox{\hyperlink{group___w_i_n_d_ga0ac43f93f16184775fb171aa76f52025}{start\+\_\+windsensor\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Start windsensor thread. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___w_i_n_d_ga967ea156994a35bf77b2c4ae7ccaf273}\label{group___w_i_n_d_ga967ea156994a35bf77b2c4ae7ccaf273}} 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+\mbox{\Hypertarget{group___w_i_n_d_ga7b33db9e50759fcd39d9f7363c485f09}\label{group___w_i_n_d_ga7b33db9e50759fcd39d9f7363c485f09}} 
+static uint16\+\_\+t {\bfseries uart\+\_\+temp}
+\item 
+\mbox{\Hypertarget{group___w_i_n_d_ga10850c2179392a926e664921bb24bf99}\label{group___w_i_n_d_ga10850c2179392a926e664921bb24bf99}} 
+\mbox{\hyperlink{structwindsensor__t}{windsensor\+\_\+t}} $\ast$ {\bfseries wind}
+\item 
+static const Serial\+Config \mbox{\hyperlink{group___w_i_n_d_ga72afd3727c9e2f94ea9fa00c696b7b65}{wind\+\_\+uart\+\_\+cfg}}
+\begin{DoxyCompactList}\small\item\em U\+S\+A\+RT driver default configuration. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___w_i_n_d_ga222ce6d84c0261106a3160eb540f1f3d}\label{group___w_i_n_d_ga222ce6d84c0261106a3160eb540f1f3d}} 
+thread\+\_\+reference\+\_\+t {\bfseries wind\+\_\+trp} = N\+U\+LL
+\item 
+\mbox{\Hypertarget{group___w_i_n_d_ga7f7e4724cf57d59513b39c5ecc81adc8}\label{group___w_i_n_d_ga7f7e4724cf57d59513b39c5ecc81adc8}} 
+float {\bfseries speed}
+\item 
+\mbox{\Hypertarget{group___w_i_n_d_ga3ba40bd7fdf9f889a8fbb66770fdd524}\label{group___w_i_n_d_ga3ba40bd7fdf9f889a8fbb66770fdd524}} 
+uint16\+\_\+t {\bfseries direction}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
 Windsensor with S\+D-\/12 interface driver. 
 
 Detail will be writen soon \begin{DoxyPrecond}{Precondition}
-In order to use the A\+DC driver the {\ttfamily U\+S\+E\+\_\+\+W\+I\+N\+D\+S\+E\+N\+S\+O\+R\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}.
+In order to use the windsensor driver the {\ttfamily U\+S\+E\+\_\+\+W\+I\+N\+D\+S\+E\+N\+S\+O\+R\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}.
 \end{DoxyPrecond}
 \hypertarget{group___w_i_n_d_wind_1}{}\doxysubsection{Stateflow}\label{group___w_i_n_d_wind_1}
 The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
 \begin{DoxyImageNoCaption}
-  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_15}}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_14}}
 \end{DoxyImageNoCaption}
 \hypertarget{group___w_i_n_d_wind_2}{}\doxysubsection{A\+D\+C Operations}\label{group___w_i_n_d_wind_2}
 The A\+DC driver is quite complex, an explanation of the terminology and of the operational details follows. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group___w_i_n_d_ga0ac43f93f16184775fb171aa76f52025}\label{group___w_i_n_d_ga0ac43f93f16184775fb171aa76f52025}} 
+\index{Windsensor Driver@{Windsensor Driver}!start\_windsensor\_module@{start\_windsensor\_module}}
+\index{start\_windsensor\_module@{start\_windsensor\_module}!Windsensor Driver@{Windsensor Driver}}
+\doxysubsubsection{\texorpdfstring{start\_windsensor\_module()}{start\_windsensor\_module()}}
+{\footnotesize\ttfamily void start\+\_\+windsensor\+\_\+module (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Start windsensor thread. 
+
+Start windsensor threads 
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{group___w_i_n_d_ga72afd3727c9e2f94ea9fa00c696b7b65}\label{group___w_i_n_d_ga72afd3727c9e2f94ea9fa00c696b7b65}} 
+\index{Windsensor Driver@{Windsensor Driver}!wind\_uart\_cfg@{wind\_uart\_cfg}}
+\index{wind\_uart\_cfg@{wind\_uart\_cfg}!Windsensor Driver@{Windsensor Driver}}
+\doxysubsubsection{\texorpdfstring{wind\_uart\_cfg}{wind\_uart\_cfg}}
+{\footnotesize\ttfamily const Serial\+Config wind\+\_\+uart\+\_\+cfg\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  19200,}
+\DoxyCodeLine{  0,}
+\DoxyCodeLine{  USART\_CR2\_STOP1\_BITS,}
+\DoxyCodeLine{  0}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+U\+S\+A\+RT driver default configuration. 
+
