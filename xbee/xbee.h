@@ -58,6 +58,7 @@
 
 #define DEV_TYPE_SPORTSMAN		1
 #define DEV_TYPE_BOUY			2
+#define DEV_TYPE_TRAINER		3
 
 // Diagnostic commands
 
@@ -211,6 +212,31 @@ typedef struct {
 	uint8_t sat;
 	uint8_t bat;
 } xbee_sportsman_data_t;
+
+typedef struct {
+	int32_t lat;
+	int32_t lon;
+	int32_t headMot;
+	int32_t headVeh;
+	int32_t yaw;
+	float pitch;
+	float roll;
+	float speed;
+	float rdr;
+	float wind_speed;
+	uint16_t log;
+	uint16_t tenso_1;
+	uint16_t tenso_2;
+	uint16_t tenso_3;
+	uint16_t tenso_4;
+	uint16_t dist;
+	uint16_t wind_direction;
+	uint8_t hour;
+	uint8_t min;
+	uint8_t sec;
+	uint8_t sat;
+	uint8_t bat;
+} xbee_trainer_data_t;
 
 typedef struct {
 	int32_t lat;

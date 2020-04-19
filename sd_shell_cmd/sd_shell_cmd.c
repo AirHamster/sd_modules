@@ -15,12 +15,14 @@ extern thread_reference_t microsd_trp;
 extern tx_box_t *tx_box;
 extern xbee_struct_t *xbee;
 xbee_sportsman_data_t xbee_sportsman_data;
-xbee_sportsman_data_t trainer_data;
+xbee_trainer_data_t trainer_data;
 xbee_remote_dev_t trainer_dev;
 #ifdef SD_BOUY_MODULE
 xbee_bouy_data_t xbee_bouy_data;
 #endif
 #endif
+
+#include "json_output.h"
 #ifdef USE_UBLOX_GPS_MODULE
 #include "neo-m8.h"
 #include "neo_ubx.h"
@@ -195,7 +197,7 @@ thread_t *cmd_init(void) {
 
 void start_json_module(void){
 	trainer_dev.rf_data = &trainer_data;
-	//trainer_dev.
+	trainer_dev.type = DEV_TYPE_TRAINER;
 	trainer_dev.number = 0;
 	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO + 4, output_thread, NULL);
 }
@@ -357,6 +359,33 @@ void send_data(uint8_t stream) {
 	double spd;
 	double dlat, dlon;
 
+#ifdef SD_MODULE_TRAINER
+	trainer_data.lat = pvt_box->lat;
+	trainer_data.lon = pvt_box->lon;
+	trainer_data.headMot = pvt_box->headMot;
+	trainer_data.headVeh = pvt_box->headVeh;
+	trainer_data.yaw = (uint16_t)bmx160.yaw;
+	trainer_data.pitch = bmx160.pitch;
+	trainer_data.roll = bmx160.roll;
+	trainer_data.speed = (float) (pvt_box->gSpeed * 0.0036);
+	trainer_data.rdr = r_rudder->native;
+	trainer_data.log = r_lag->meters;
+	trainer_data.tenso_1 = 0;
+	trainer_data.tenso_2 = 0;
+	trainer_data.tenso_3 = 0;
+	trainer_data.tenso_4 = 0;
+	trainer_data.dist = tx_box->dist;
+	trainer_data.hour = pvt_box->hour;
+	trainer_data.min = pvt_box->min;
+	trainer_data.sec = pvt_box->sec;
+	trainer_data.sat = pvt_box->numSV;
+	trainer_data.wind_direction = wind->direction;
+	trainer_data.wind_speed = wind->speed;
+	trainer_data.bat = 99;
+
+	json_print_remote_dev_data(&trainer_dev);
+#endif
+
 #ifdef SD_MODULE_SPORTSMEN
 	xbee_sportsman_data.lat = pvt_box->lat;
 	xbee_sportsman_data.lon = pvt_box->lon;
@@ -392,9 +421,10 @@ void send_data(uint8_t stream) {
 
 #ifdef SD_MODULE_SPORTSMEN
 	xbee_send_rf_message(&xbee_sportsman_data, RF_SPORTSMAN_PACKET);
+	//json_print_remote_dev_data(&trainer_dev);
 #endif
 
-#ifdef SD_MODULE_SPORTSMEN
+#ifdef SD_MODULE_BOUY
 	xbee_send_rf_message(&xbee_sportsman_data, RF_BOUY_PACKET);
 #endif
 
@@ -433,7 +463,7 @@ int32_t convert_to_ble_type(float value){
 void send_json(void)
 {
 	//return;
-
+	chprintf(SHELL_IFACE, "Test\r\n");
 #ifdef USE_XBEE_MODULE
 		send_data(OUTPUT_XBEE);
 #endif

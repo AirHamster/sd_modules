@@ -769,7 +769,6 @@ void xbee_send_rf_message(void *packet, uint8_t packet_type){
 		xbee_send(&SPID1, txbuff, pack_len);
 		xbee->tx_ready = 0;
 	}
-
 }
 
 void xbee_send_rf_message_back(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len){
@@ -1301,11 +1300,14 @@ void xbee_parse_sportsman_packet(uint8_t *rxbuff) {
 			memcpy(remote_dev[i].rf_data, &rxbuff[12],
 					sizeof(xbee_sportsman_data_t));
 			data = remote_dev[i].rf_data;
-			chprintf((BaseSequentialStream*) &SD1,
+			/*
+			 chprintf((BaseSequentialStream*) &SD1,
 					"\r\nResieved xbee frame from sportsmen %d \r\n", i);
 			chprintf(SHELL_IFACE, "\r\nyaw: %d\r\n", data->yaw);
 			chprintf(SHELL_IFACE, "pitch: %f\r\n", data->pitch);
 			chprintf(SHELL_IFACE, "roll: %f\r\n", data->roll);
+			*/
+			json_print_remote_dev_data(data);
 		}
 	}
 /*
