@@ -577,7 +577,7 @@ static void microsd_write_logfile_header(BaseSequentialStream *chp) {
 	f_lseek(&logfile, f_size(&logfile));
 	//if (microsd->file_created == 0) {
 	written =
-			f_printf(&logfile, "DATE,HOUR,MIN,SEC,LAT,LON,SPD,COG_GPS,YAW,PITCH,ROLL,WIND_DIR,WIND_SPD,SAT,RDR,LOG\r\n");
+			f_printf(&logfile, "DATE,HOUR,MIN,SEC,LAT,LON,SOG,COG_GPS,HDG,PITCH,ROLL,AWA,AWS,SAT,RDR,LOG,LOG_DIR,TRIM1,TRIM2,TRIM3,TRIM4,BMP,SAIL_TIME\r\n");
 
 	if (written == -1) {
 		chprintf(chp, "\r\nWriting failed. No card inserted or corrupted FS\r\n");
@@ -588,6 +588,30 @@ static void microsd_write_logfile_header(BaseSequentialStream *chp) {
 	//}
 }
 
+static void microsd_write_calibration_header(BaseSequentialStream *chp) {
+	FRESULT res;
+	FILINFO fno;
+	int written;
+	f_lseek(&logfile, f_size(&logfile));
+	//if (microsd->file_created == 0) {
+	written = f_printf(&logfile, "#Calibration parameters\r\n");
+	written = f_printf(&logfile, "CompassCorrection:%f\tWindCorrection:%f\r\n",paramSD.CompassCorrection, paramSD.WindCorrection);
+	written = f_printf(&logfile, "MagneticDeclanation:%f\tHSPCorrection:%f\r\n",paramSD.MagneticDeclanation,paramSD.HSPCorrection);
+	written = f_printf(&logfile, "HeelCorrection:%f\tPitchCorrection:%f\r\n",paramSD.HeelCorrection, paramSD.PitchCorrection);
+	written = f_printf(&logfile, "WindowSize1:%d\tWindowSize2:%d\r\n", paramSD.WindowSize1, paramSD.WindowSize2);
+	written = f_printf(&logfile, "WindowSize3:%d\tRudderLeftNative:%f\r\n", paramSD.WindowSize3, r_rudder->native);
+	written = f_printf(&logfile, "RudderLeftDegrees:%f\tRudderCenterNative:%f\r\n", r_rudder->min_degrees, r_rudder->center_native);
+	written = f_printf(&logfile, "RudderCenterDegrees:%f\tRudderRightNative:%d\r\n", r_rudder->center_degrees, r_rudder->max_native);
+	written = f_printf(&logfile, "RudderRightDegrees:%f\r\n", r_rudder->max_degrees);
+
+	if (written == -1) {
+		chprintf(chp, "\r\nWriting failed. No card inserted or corrupted FS\r\n");
+	} else {
+		//chprintf(chp, "FS: f_puts(\"Hello World\",\"%s\") succeeded\r\n", path_to_file);
+	}
+	f_sync(&logfile);
+	//}
+}
 void start_microsd_module(void) {
 	chThdCreateStatic(microsd_thread_wa, sizeof(microsd_thread_wa), NORMALPRIO + 4, microsd_thread, NULL);
 }
