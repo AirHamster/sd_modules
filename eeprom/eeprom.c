@@ -13,13 +13,22 @@
 extern struct ch_semaphore usart1_semaph;
 uint8_t eeprom_buff[32];
 uint8_t eeprom_buff_rx[32];
-#ifdef SD_MODULE_TRAINER
+#ifdef SD_MAIN_MODULE
 const I2CConfig eeprom_i2c_cfg = {
   0xD0D43C4C,
   0,
   0
 };
 #endif
+
+#ifdef SD_MODULE_SPORTSMAN
+const I2CConfig eeprom_i2c_cfg = {
+  0xD0D43C4C,
+  0,
+  0
+};
+#endif
+
 #ifdef SD_SENSOR_BOX
 const I2CConfig eeprom_i2c_cfg = {
   0x10E37AFF,

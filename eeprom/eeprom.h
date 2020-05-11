@@ -13,7 +13,11 @@
 
 //#define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
 
-#ifdef SD_MODULE_TRAINER
+#ifdef SD_MAIN_MODULE
+#define EEPROM_ADDRESS 0x57
+#endif
+
+#ifdef SD_MODULE_SPORTSMAN
 #define EEPROM_ADDRESS 0x57
 #endif
 

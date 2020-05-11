@@ -18,6 +18,8 @@ xbee_struct_t *xbee = &xbee_struct;
 tx_box_t tx_struct;
 tx_box_t *tx_box = &tx_struct;
 
+uint32_t pacs_per_sec = 0;
+
 const uint8_t xbee_trainer_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x5D};
 const uint8_t xbee_sportsmen1_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x08};
 const uint8_t xbee_sportsmen2_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x94, 0x56};
@@ -26,7 +28,7 @@ const uint8_t xbee_bouy_addr[] = 		{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x
 static xbee_sportsman_data_t sportsman_data[NUM_OF_SPORTSMAN_DEVICES];
 static xbee_bouy_data_t bouy_data[NUM_OF_BOUY_DEVICES];
 
-static xbee_remote_dev_t remote_dev[NUM_OF_SPORTSMAN_DEVICES + NUM_OF_BOUY_DEVICES];
+xbee_remote_dev_t remote_dev[NUM_OF_SPORTSMAN_DEVICES + NUM_OF_BOUY_DEVICES];
 event_listener_t xbee_attn_pin_el;
 static event_source_t xbee_attn_pin;
 
@@ -88,6 +90,19 @@ int8_t xbee_init_data_structs(xbee_remote_dev_t *dev) {
 	memcpy(dev[10].addr, &xbee_bouy_addr, SIZE_OF_XBEE_ADDR);
 	return 0;
 }
+
+static THD_WORKING_AREA(xbee_meas_thread_wa, 1024);
+static THD_FUNCTION(xbee_meas_thread, p) {
+	(void) p;
+	chRegSetThreadName("XBee meas thread");
+
+	while(1){
+		chThdSleepSeconds(1);
+		//chprintf(SHELL_IFACE, "Resieved packets per second: %d\r\n", pacs_per_sec);
+		pacs_per_sec = 0;
+	}
+}
+
 
 thread_reference_t xbee_trp = NULL;
 
@@ -207,6 +222,11 @@ static THD_FUNCTION(xbee_thread, p) {
 void start_xbee_module(void){
 	chThdCreateStatic(xbee_thread_wa, sizeof(xbee_thread_wa), NORMALPRIO + 1,
 				xbee_thread, NULL);
+
+#ifdef SD_MODULE_TRAINER
+	chThdCreateStatic(xbee_meas_thread_wa, sizeof(xbee_meas_thread_wa), NORMALPRIO + 1,
+					xbee_meas_thread, NULL);
+#endif
 }
 
 void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff){
@@ -1061,7 +1081,7 @@ void xbee_process_receive_packet_frame(uint8_t* buffer){
 void xbee_parse_rf_packet(uint8_t *rxbuff){
 	uint8_t packet_type;
 	packet_type = rxbuff[11];
-
+	pacs_per_sec++;
 	switch (packet_type){
 	case RF_GPS_PACKET:
 		xbee_parse_gps_packet(rxbuff);
@@ -1212,10 +1232,10 @@ void xbee_parse_bouy_packet(uint8_t *rxbuff){
 	for (i = 0; i < NUM_OF_BOUY_DEVICES; i++){
 	if (memcmp(rxbuff, remote_dev[NUM_OF_SPORTSMAN_DEVICES + i].addr, SIZE_OF_XBEE_ADDR) == 0){
 		memcpy(remote_dev[NUM_OF_SPORTSMAN_DEVICES + i].rf_data, &rxbuff[12], sizeof(xbee_bouy_data_t));
-
+		remote_dev[NUM_OF_SPORTSMAN_DEVICES + i].heartbit = 50;
 	}
 	}
-
+/*
 	chSemWait(&usart1_semaph);
 		if(memcmp(rxbuff, &xbee_sportsmen1_addr, sizeof(xbee_sportsmen1_addr))){
 			chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame from sportsmen 1 \r\n");
@@ -1226,7 +1246,7 @@ void xbee_parse_bouy_packet(uint8_t *rxbuff){
 		}else if(memcmp(rxbuff, &xbee_trainer_addr, sizeof(xbee_trainer_addr))){
 			chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame from trainer \r\n");
 		}
-
+*/
 
 	/*	chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame: ");
 		int8_t i;
@@ -1300,6 +1320,7 @@ void xbee_parse_sportsman_packet(uint8_t *rxbuff) {
 			memcpy(remote_dev[i].rf_data, &rxbuff[12],
 					sizeof(xbee_sportsman_data_t));
 			data = remote_dev[i].rf_data;
+			remote_dev[i].heartbit = 50;
 			/*
 			 chprintf((BaseSequentialStream*) &SD1,
 					"\r\nResieved xbee frame from sportsmen %d \r\n", i);
@@ -1307,7 +1328,8 @@ void xbee_parse_sportsman_packet(uint8_t *rxbuff) {
 			chprintf(SHELL_IFACE, "pitch: %f\r\n", data->pitch);
 			chprintf(SHELL_IFACE, "roll: %f\r\n", data->roll);
 			*/
-			json_print_remote_dev_data(data);
+
+			//json_print_remote_dev_data(data);
 		}
 	}
 /*

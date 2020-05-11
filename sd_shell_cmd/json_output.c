@@ -113,7 +113,7 @@ void json_print_remote_dev_data(xbee_remote_dev_t *r_data){
 		}else if (r_data->type == DEV_TYPE_TRAINER){
 			tdata = r_data->rf_data;
 		}
-	chprintf(SHELL_IFACE, "DEV %d\r\n", r_data->type);
+	//chprintf(SHELL_IFACE, "DEV %d\r\n", r_data->type);
 	chSemWait(&usart1_semaph);
 	if ((r_data->type == DEV_TYPE_SPORTSMAN) || (r_data->type == DEV_TYPE_TRAINER)){
 		chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_%d\":{\r\n\t\t\t", r_data->number);

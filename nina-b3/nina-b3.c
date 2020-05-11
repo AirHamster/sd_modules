@@ -164,7 +164,7 @@ extern bno055_t *bno055;
 #endif
 struct ch_semaphore usart_nina;
 extern struct ch_semaphore usart1_semaph;
-#ifdef SD_MODULE_TRAINER
+#ifdef SD_MAIN_MODULE
 ble_charac_t *thdg;
 ble_charac_t *rdr;
 ble_charac_t *twd;
@@ -916,7 +916,7 @@ void nina_wait_charac_handlers(ble_charac_t *charac){
 	charac->value_handle = val_handle;
 }
 
-#ifdef SD_MODULE_TRAINER
+#ifdef SD_MAIN_MODULE
 /**
  *
  * @param strp

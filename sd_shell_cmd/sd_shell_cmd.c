@@ -14,10 +14,11 @@ extern thread_reference_t microsd_trp;
 #include "xbee.h"
 extern tx_box_t *tx_box;
 extern xbee_struct_t *xbee;
+extern xbee_remote_dev_t remote_dev[];
 xbee_sportsman_data_t xbee_sportsman_data;
 xbee_trainer_data_t trainer_data;
 xbee_remote_dev_t trainer_dev;
-#ifdef SD_BOUY_MODULE
+#ifdef SD_MODULE_BUOY
 xbee_bouy_data_t xbee_bouy_data;
 #endif
 #endif
@@ -354,6 +355,8 @@ void output_gyro_raw(void){
 
 #ifdef USE_XBEE_MODULE
 void send_data(uint8_t stream) {
+	time_measurement_t time;
+	uint32_t time_us;
 	uint8_t databuff[34];
 	int32_t spdi = 0;
 	double spd;
@@ -382,11 +385,21 @@ void send_data(uint8_t stream) {
 	trainer_data.wind_direction = wind->direction;
 	trainer_data.wind_speed = wind->speed;
 	trainer_data.bat = 99;
+	chTMObjectInit(&time);
+	chTMStartMeasurementX(&time);
+	//for (int i = 0; i < 14; i++) {
+		//json_print_remote_dev_data(&trainer_dev);
+	//}
 
-	json_print_remote_dev_data(&trainer_dev);
+	chTMStopMeasurementX(&time);
+
+	//toggle_test_output();
+	//stop_all_tests();
+	time_us = RTC2US(STM32_SYSCLK, time.last);
+	//chprintf(SHELL_IFACE, "Print time: %d\r\n", time_us);
 #endif
 
-#ifdef SD_MODULE_SPORTSMEN
+#ifdef SD_MODULE_SPORTSMAN
 	xbee_sportsman_data.lat = pvt_box->lat;
 	xbee_sportsman_data.lon = pvt_box->lon;
 	xbee_sportsman_data.headMot = pvt_box->headMot;
@@ -395,8 +408,8 @@ void send_data(uint8_t stream) {
 	xbee_sportsman_data.pitch = bmx160.pitch;
 	xbee_sportsman_data.roll = bmx160.roll;
 	xbee_sportsman_data.speed = (float) (pvt_box->gSpeed * 0.0036);
-	xbee_sportsman_data.rdr = r_rudder->native;
-	xbee_sportsman_data.log = r_lag->meters;
+//	xbee_sportsman_data.rdr = r_rudder->native;
+//	xbee_sportsman_data.log = r_lag->meters;
 	xbee_sportsman_data.tenso_1 = 0;
 	xbee_sportsman_data.tenso_2 = 0;
 	xbee_sportsman_data.tenso_3 = 0;
@@ -419,13 +432,13 @@ void send_data(uint8_t stream) {
 	xbee_bouy_data.bat = 99;
 #endif
 
-#ifdef SD_MODULE_SPORTSMEN
+#ifdef SD_MODULE_SPORTSMAN
 	xbee_send_rf_message(&xbee_sportsman_data, RF_SPORTSMAN_PACKET);
 	//json_print_remote_dev_data(&trainer_dev);
 #endif
 
-#ifdef SD_MODULE_BOUY
-	xbee_send_rf_message(&xbee_sportsman_data, RF_BOUY_PACKET);
+#ifdef SD_MODULE_BUOY
+	xbee_send_rf_message(&xbee_bouy_data, RF_BOUY_PACKET);
 #endif
 
 }
@@ -460,12 +473,27 @@ int32_t convert_to_ble_type(float value){
 
 
 
-void send_json(void)
-{
+void send_json(void) {
 	//return;
-	chprintf(SHELL_IFACE, "Test\r\n");
+	//chprintf(SHELL_IFACE, "Test\r\n");
+	json_print_remote_dev_data(&trainer_dev);
+	for (int i = 0; i < 10; i++) {
+		if (remote_dev[i].heartbit > 0) {
+			remote_dev[i].heartbit--;
+			json_print_remote_dev_data(&remote_dev[i]);
+		}
+
+	}
+
+	for (int i = 10; i < 14; i++) {
+		if (remote_dev[i].heartbit > 0) {
+			remote_dev[i].heartbit--;
+			json_print_remote_dev_data(&remote_dev[i]);
+		}
+	}
+
 #ifdef USE_XBEE_MODULE
-		send_data(OUTPUT_XBEE);
+	send_data(OUTPUT_XBEE);
 #endif
 
 }
