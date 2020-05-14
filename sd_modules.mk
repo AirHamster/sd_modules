@@ -168,6 +168,9 @@ SD_SRC += ./sd_modules/power_management/pwr_mgmt_l4.c
 SD_INC += ./sd_modules/power_management
 endif
 
+SD_SRC += ./sd_modules/calibration/calibration.c
+SD_INC += ./sd_modules/calibration
+
 # Shared variables
 ALLCSRC += $(SD_SRC)
 ALLINC  += $(SD_INC)

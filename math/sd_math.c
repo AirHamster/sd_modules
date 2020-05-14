@@ -32,12 +32,14 @@ extern bmx160_t bmx160;
 extern struct bmm150_dev bmm;
 extern volatile float beta;
 #endif
+#include "calibration.h"
 extern windsensor_t *wind;
 extern bno055_t *bno055;
 extern ubx_nav_pvt_t *pvt_box;
 extern float lastSensorValues[SIZE_BUFFER_VALUES];
 extern rudder_t *r_rudder;
 CalibrationParmDef paramSD;
+extern calib_parameters_t calibrations;
 float windAngleTarget = 0.0;
 float hullSpeedTarget = 0.0;
 float velocityMadeGoodTarget = 0.0;
@@ -53,81 +55,19 @@ void start_math_module(void){
 static THD_FUNCTION( math_thread, p) {
 	(void) p;
 	chRegSetThreadName("Math Thd");
-	math_init_calibration_params(&paramSD);
+	calib_init_params();
+	//math_init_calibration_params(&paramSD);
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 	while (true) {
 		math_copy_sensor_values(lastSensorValues);
-		calculateValues(&paramSD);
-		dataFiltering(&paramSD);
+		calculateValues(&calibrations);
+		dataFiltering(&calibrations);
 		calculateTargets();
-				//calculateTargets(&windAngleTarget, &hullSpeedTarget,
-				//&velocityMadeGoodTarget);
-/*		chprintf(SHELL_IFACE, "\r\nAfter targets\r\n");
-		chprintf(SHELL_IFACE, "AWA: %f\r\n", lastSensorValues[AWA]);
-		chprintf(SHELL_IFACE, "AWS: %f\r\n", lastSensorValues[AWS]);
-		chprintf(SHELL_IFACE, "CMG: %f\r\n", lastSensorValues[CMG]);
-		chprintf(SHELL_IFACE, "HDM: %f\r\n", lastSensorValues[HDM]);
-		chprintf(SHELL_IFACE, "HEEL: %f\r\n", lastSensorValues[HEEL]);
-		chprintf(SHELL_IFACE, "PITCH: %f\r\n", lastSensorValues[PITCH]);
-		chprintf(SHELL_IFACE, "SOG: %f\r\n", lastSensorValues[SOG]);*/
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
 	}
 }
 
-void math_init_calibration_params(CalibrationParmDef *param) {
-	EEPROM_READ(MATH_MEMORY.MATH_COMPASS_CORRECTION, (uint8_t*)&paramSD.CompassCorrection);
-	//eeprom_read(EEPROM_MATH_COMPASS_CORRECTION, (uint8_t*)&paramSD.CompassCorrection, 4);
-	//chThdSleepMilliseconds(10);
-	//paramSD.CompassCorrection = 0.0;
-	EEPROM_READ(MATH_MEMORY.MATH_HSP_CORRECTION, (uint8_t*)&paramSD.HSPCorrection);
-	//eeprom_read(EEPROM_MATH_HSP_CORRECTION, (uint8_t*)&paramSD.HSPCorrection, 4);
-	//chThdSleepMilliseconds(10);
-	//paramSD.HSPCorrection = 0.0;
-	EEPROM_READ(MATH_MEMORY.MATH_HEEL_CORRECTION, (uint8_t*)&paramSD.HeelCorrection);
-	//eeprom_read(EEPROM_MATH_HEEL_CORRECTION, (uint8_t*)&paramSD.HeelCorrection, 4);
-	//chThdSleepMilliseconds(10);
-	//paramSD.HeelCorrection = -4.75;
-	EEPROM_READ(MATH_MEMORY.MATH_DECLANATION_CORRECTION, (uint8_t*)&paramSD.MagneticDeclanation);
-	//eeprom_read(EEPROM_MATH_DECLANATION_CORRECTION, (uint8_t*)&paramSD.MagneticDeclanation, 4);
-	//chThdSleepMilliseconds(10);
-	//paramSD.MagneticDeclanation = 0.0;
-	EEPROM_READ(MATH_MEMORY.MATH_PITCH_CORRECTION, (uint8_t*)&paramSD.PitchCorrection);
-	//eeprom_read(EEPROM_MATH_PITCH_CORRECTION, (uint8_t*)&paramSD.PitchCorrection, 4);
-	//chThdSleepMilliseconds(10);
-	//paramSD.PitchCorrection = -6.5625;
-	EEPROM_READ(MATH_MEMORY.MATH_RUDDER_CORRECTION, (uint8_t*)&paramSD.RudderCorrection);
-	//eeprom_read(EEPROM_MATH_RUDDER_CORRECTION, (uint8_t*)&paramSD.RudderCorrection, 4);
-	//chThdSleepMilliseconds(10);
-	//paramSD.RudderCorrection = 0.0;
-	EEPROM_READ(MATH_MEMORY.MATH_WIND_CORRECTION, (uint8_t*)&paramSD.WindCorrection);
-	//eeprom_read(EEPROM_MATH_WIND_CORRECTION, (uint8_t*)&paramSD.WindCorrection, 4);
-	//chThdSleepMilliseconds(10);
-	//paramSD.WindCorrection = -4.0;
-	EEPROM_READ(MATH_MEMORY.MATH_WINSIZE1_CORRECTION, (uint8_t*)&paramSD.WindowSize1);
-	//eeprom_read(EEPROM_MATH_WINSIZE1_CORRECTION, (uint8_t*)&paramSD.WindowSize1, 1);
-	//chThdSleepMilliseconds(10);
-	EEPROM_READ(MATH_MEMORY.MATH_WINSIZE2_CORRECTION, (uint8_t*)&paramSD.WindowSize2);
-	//eeprom_read(EEPROM_MATH_WINSIZE2_CORRECTION, (uint8_t*)&paramSD.WindowSize2, 1);
-	//chThdSleepMilliseconds(10);
-	EEPROM_READ(MATH_MEMORY.MATH_WINSIZE3_CORRECTION, (uint8_t*)&paramSD.WindowSize3);
-	//eeprom_read(EEPROM_MATH_WINSIZE3_CORRECTION, (uint8_t*)&paramSD.WindowSize3, 1);
-/*
-	eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_LEFT, (uint8_t*) &r_rudder->min_native,
-			4);
-	chThdSleepMilliseconds(10);
-	eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_LEFT, (uint8_t*) &r_rudder->min_degrees, 4);
-	chThdSleepMilliseconds(10);
-	eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_CENTER,	(uint8_t*) &r_rudder->center_native, 4);
-	chThdSleepMilliseconds(10);
-	eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_CENTER, (uint8_t*) &r_rudder->center_degrees, 4);
-	chThdSleepMilliseconds(10);
-	eeprom_read(EEPROM_RUDDER_CALIB_NATIVE_RIGHT, (uint8_t*) &r_rudder->max_degrees,
-			4);
-	chThdSleepMilliseconds(10);
-	eeprom_read(EEPROM_RUDDER_CALIB_DEGREES_RIGHT, (uint8_t*) &r_rudder->max_degrees, 4);
 
-	chThdSleepMilliseconds(10);*/
-}
 
 void math_copy_sensor_values(float *lastSensorValues) {
 	lastSensorValues[AWA] = (float) wind->direction;

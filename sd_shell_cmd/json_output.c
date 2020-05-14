@@ -18,6 +18,8 @@
 #include "xbee.h"
 extern struct ch_semaphore usart1_semaph;
 
+extern xbee_remote_dev_t remote_dev[NUM_OF_SPORTSMAN_DEVICES + NUM_OF_BOUY_DEVICES];
+
 void json_print_remote_dev_data(xbee_remote_dev_t *r_data){
 
 	xbee_sportsman_data_t *sdata = NULL;
@@ -57,7 +59,8 @@ void json_print_remote_dev_data(xbee_remote_dev_t *r_data){
 			chprintf(SHELL_IFACE, "\"log\":%f,\r\n\t\t\t", sdata->log);
 			//chprintf(SHELL_IFACE, "\"wind_dir\":%d,\r\n\t\t\t", wind->direction);
 			//chprintf(SHELL_IFACE, "\"wind_spd\":%f,\r\n\t\t\t", wind->speed);
-			chprintf(SHELL_IFACE, "\"rssi\":%d,\r\n\t\t\t", r_data->rssi);
+			chprintf(SHELL_IFACE, "\"rssi\":%d,\r\n\t\t\t", remote_dev[1].rssi);
+			//chprintf(SHELL_IFACE, "\"rssi\":%d,\r\n\t\t\t", r_data->rssi);
 			chprintf(SHELL_IFACE, "\"bat\":0\r\n\t\t\t");
 			chprintf(SHELL_IFACE, "}\r\n\t}");
 	}else if (r_data->type == DEV_TYPE_BOUY){
