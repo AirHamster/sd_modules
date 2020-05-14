@@ -52,6 +52,9 @@
 
 #define RF_BOUY_PACKET	2
 #define RF_SPORTSMAN_PACKET	3
+#define RF_GET_CALIB_REQUEST_FROM_TRAINER	4
+#define RF_SPORTSMAN_CALIB_DATA_PACKET		5
+#define RF_WRITE_CALIB_TO_SPORTSMAN			6
 
 #define NUM_OF_SPORTSMAN_DEVICES	10
 #define NUM_OF_BOUY_DEVICES			4
@@ -171,7 +174,7 @@ typedef struct{
 	uint8_t poll_suspend_state;
 	uint8_t loopback_mode;
 	uint8_t tx_ready;
-}xbee_struct_t;
+} xbee_struct_t;
 
 typedef struct{
 	int32_t lat;
@@ -188,7 +191,27 @@ typedef struct{
 	uint8_t sec;
 	uint8_t sat;
 	uint8_t bat;
-}tx_box_t;
+} tx_box_t;
+
+typedef struct {
+	float MagneticDeclanation;
+	float WindCorrection;
+	float PitchCorrection;
+	float HeelCorrection;
+	float CompassCorrection;
+	float HSPCorrection;
+	float RudderCorrection;
+	float min_native;
+	float center_native;
+	float max_native;
+	float native_full_scale;
+	float min_degrees;
+	float center_degrees;
+	float max_degrees;
+	uint8_t WindowSize1;
+	uint8_t WindowSize2;
+	uint8_t WindowSize3;
+} dev_calibration_t;
 
 typedef struct {
 	int32_t lat;
@@ -249,6 +272,7 @@ typedef struct {
 } xbee_bouy_data_t;
 
 typedef struct {
+	dev_calibration_t calibration;
 	uint8_t addr[8];	//64 bit addressing
 	uint8_t type;		//sportsmen or bouy
 	uint8_t is_connected;
@@ -256,7 +280,6 @@ typedef struct {
 	int8_t rssi;
 	int8_t number;
 	void *rf_data;
-
 } xbee_remote_dev_t;
 
 

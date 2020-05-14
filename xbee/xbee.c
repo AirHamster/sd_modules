@@ -1093,6 +1093,15 @@ void xbee_parse_rf_packet(uint8_t *rxbuff){
 	case RF_SPORTSMAN_PACKET:
 		xbee_parse_sportsman_packet(rxbuff);
 		break;
+	case RF_GET_CALIB_REQUEST_FROM_TRAINER:
+		//xbee_send_calibration_data_to_trainer();
+		break;
+	case RF_SPORTSMAN_CALIB_DATA_PACKET:
+		xbee_parse_sportsman_calib_data_packet(rxbuff);
+		break;
+	case RF_WRITE_CALIB_TO_SPORTSMAN:
+		xbee_parse_calib_write_packet_from_trainer(rxbuff);
+		break;
 	default:
 		break;
 	}
@@ -1139,8 +1148,6 @@ void xbee_parse_gps_packet_back(uint8_t *rxbuff){
 			databuff[14] = (uint8_t)(tx_box->dist);
 			databuff[15] = (uint8_t)(tx_box->speed);
 			xbee_send_rf_message_back(xbee, databuff, 16);
-
-
 }
 
 void xbee_parse_gps_packet(uint8_t *rxbuff){
@@ -1188,40 +1195,10 @@ void xbee_parse_gps_packet(uint8_t *rxbuff){
 		chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame from trainer \r\n");
 	}
 
-
-/*	chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame: ");
-	int8_t i;
-		for (i = 0; i < 12; i++){
-			chprintf((BaseSequentialStream*)&SD1, "%x ", rxbuff[i]);
-		}
-		chprintf((BaseSequentialStream*)&SD1, "\r\n");
-		*/
-
-	/*chprintf((BaseSequentialStream*)&SD1, "%f,%f,%d:%d:%d:%d,%d,%d,%d\r\n",
-						flat, flon, hour, min, sec, sat, dist, speed, xbee->rssi);*/
-	/*
-	chprintf((BaseSequentialStream*)&SD1, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
-	chprintf((BaseSequentialStream*)&SD1, "\"hour\":%d,\r\n\t\t\t", hour);
-	chprintf((BaseSequentialStream*)&SD1, "\"min\":%d,\r\n\t\t\t", min);
-	chprintf((BaseSequentialStream*)&SD1, "\"sec\":%d,\r\n\t\t\t", sec);
-	chprintf((BaseSequentialStream*)&SD1, "\"lat\":%f,\r\n\t\t\t", flat);
-	chprintf((BaseSequentialStream*)&SD1, "\"lon\":%f,\r\n\t\t\t", flon);
-	chprintf((BaseSequentialStream*)&SD1, "\"speed\":%f,\r\n\t\t\t", speed);
-	chprintf((BaseSequentialStream*)&SD1, "\"dist\":%d,\r\n\t\t\t", dist);
-	chprintf((BaseSequentialStream*)&SD1, "\"yaw\":%d,\r\n\t\t\t", yaw);
-	chprintf((BaseSequentialStream*)&SD1, "\"pitch\":%f,\r\n\t\t\t", pitch);
-	chprintf((BaseSequentialStream*)&SD1, "\"roll\":%f,\r\n\t\t\t", roll);
-	chprintf((BaseSequentialStream*)&SD1, "\"headMot\":%d,\r\n\t\t\t", headMot_int);
-	chprintf((BaseSequentialStream*)&SD1, "\"sat\":%d,\r\n\t\t\t", sat);
-	chprintf((BaseSequentialStream*)&SD1, "\"rssi\":%d,\r\n\t\t\t", xbee->rssi);
-	chprintf((BaseSequentialStream*)&SD1, "\"bat\":0\r\n\t\t\t");
-	chprintf((BaseSequentialStream*)&SD1, "}\r\n\t}");
-	*/
-	//chprintf((BaseSequentialStream*)&SD1, "");
 	chSemSignal(&usart1_semaph);
 }
 
-void xbee_parse_bouy_packet(uint8_t *rxbuff){
+void xbee_parse_bouy_packet(uint8_t *rxbuff) {
 	int8_t i;
 	int32_t lat, lon;
 	float flat, flon, headMot, headVeh;
@@ -1229,85 +1206,15 @@ void xbee_parse_bouy_packet(uint8_t *rxbuff){
 	float pitch, roll, speed;
 	uint8_t hour, min, sec, sat, bat;
 
-	for (i = 0; i < NUM_OF_BOUY_DEVICES; i++){
-	if (memcmp(rxbuff, remote_dev[NUM_OF_SPORTSMAN_DEVICES + i].addr, SIZE_OF_XBEE_ADDR) == 0){
-		memcpy(remote_dev[NUM_OF_SPORTSMAN_DEVICES + i].rf_data, &rxbuff[12], sizeof(xbee_bouy_data_t));
-		remote_dev[NUM_OF_SPORTSMAN_DEVICES + i].heartbit = 50;
-	}
-	}
-/*
-	chSemWait(&usart1_semaph);
-		if(memcmp(rxbuff, &xbee_sportsmen1_addr, sizeof(xbee_sportsmen1_addr))){
-			chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame from sportsmen 1 \r\n");
-		}else if(memcmp(rxbuff, &xbee_sportsmen2_addr, sizeof(xbee_sportsmen2_addr))){
-			chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame from sportsmen 2 \r\n");
-		}else if(memcmp(rxbuff, &xbee_bouy_addr, sizeof(xbee_bouy_addr))){
-			chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame from bouy \r\n");
-		}else if(memcmp(rxbuff, &xbee_trainer_addr, sizeof(xbee_trainer_addr))){
-			chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame from trainer \r\n");
+	for (i = 0; i < NUM_OF_BOUY_DEVICES; i++) {
+		if (memcmp(rxbuff, remote_dev[NUM_OF_SPORTSMAN_DEVICES + i].addr,
+				SIZE_OF_XBEE_ADDR) == 0) {
+			memcpy(remote_dev[NUM_OF_SPORTSMAN_DEVICES + i].rf_data,
+					&rxbuff[12], sizeof(xbee_bouy_data_t));
+			remote_dev[NUM_OF_SPORTSMAN_DEVICES + i].heartbit = 50;
 		}
-*/
-
-	/*	chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame: ");
-		int8_t i;
-			for (i = 0; i < 12; i++){
-				chprintf((BaseSequentialStream*)&SD1, "%x ", rxbuff[i]);
-			}
-			chprintf((BaseSequentialStream*)&SD1, "\r\n");
-			*/
-
-		/*chprintf((BaseSequentialStream*)&SD1, "%f,%f,%d:%d:%d:%d,%d,%d,%d\r\n",
-							flat, flon, hour, min, sec, sat, dist, speed, xbee->rssi);*/
-		/*
-		chprintf((BaseSequentialStream*)&SD1, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
-		chprintf((BaseSequentialStream*)&SD1, "\"hour\":%d,\r\n\t\t\t", hour);
-		chprintf((BaseSequentialStream*)&SD1, "\"min\":%d,\r\n\t\t\t", min);
-		chprintf((BaseSequentialStream*)&SD1, "\"sec\":%d,\r\n\t\t\t", sec);
-		chprintf((BaseSequentialStream*)&SD1, "\"lat\":%f,\r\n\t\t\t", flat);
-		chprintf((BaseSequentialStream*)&SD1, "\"lon\":%f,\r\n\t\t\t", flon);
-		chprintf((BaseSequentialStream*)&SD1, "\"speed\":%f,\r\n\t\t\t", speed);
-		chprintf((BaseSequentialStream*)&SD1, "\"dist\":%d,\r\n\t\t\t", dist);
-		chprintf((BaseSequentialStream*)&SD1, "\"yaw\":%d,\r\n\t\t\t", yaw);
-		chprintf((BaseSequentialStream*)&SD1, "\"pitch\":%f,\r\n\t\t\t", pitch);
-		chprintf((BaseSequentialStream*)&SD1, "\"roll\":%f,\r\n\t\t\t", roll);
-		chprintf((BaseSequentialStream*)&SD1, "\"headMot\":%d,\r\n\t\t\t", headMot_int);
-		chprintf((BaseSequentialStream*)&SD1, "\"sat\":%d,\r\n\t\t\t", sat);
-		chprintf((BaseSequentialStream*)&SD1, "\"rssi\":%d,\r\n\t\t\t", xbee->rssi);
-		chprintf((BaseSequentialStream*)&SD1, "\"bat\":0\r\n\t\t\t");
-		chprintf((BaseSequentialStream*)&SD1, "}\r\n\t}");
-		*/
-		//chprintf((BaseSequentialStream*)&SD1, "");
-		chSemSignal(&usart1_semaph);
-
-	/*
-	lat = rxbuff[12] << 24 | rxbuff[13] << 16 | rxbuff[14] << 8 | rxbuff[15];
-	lon = rxbuff[16] << 24 | rxbuff[17] << 16 | rxbuff[18] << 8 | rxbuff[19];
-	flat = lat / 10000000.0f;
-	flon = lon / 10000000.0f;
-	hour = rxbuff[20];
-	min = rxbuff[21];
-	sec = rxbuff[22];
-	sat = rxbuff[23];
-	dist = rxbuff[24] << 8 | rxbuff[25];
-
-	memcpy(&speed, &rxbuff[26], sizeof(speed));
-	//speed = rxbuff[26] << 24 | rxbuff[27] << 16 | rxbuff[28] << 8 | rxbuff[29];
-
-
-	yaw = (rxbuff[30] << 8 | rxbuff[31]);
-	memcpy(&pitch, &rxbuff[32], sizeof(pitch));
-	//pitch = (float)(rxbuff[32] + (float)(rxbuff[33] / 10));
-	//pitch = (rxbuff[32] << 24 | rxbuff[33] << 16 | rxbuff[34] << 8 | rxbuff[35]);
-	memcpy(&roll, &rxbuff[36], sizeof(roll));
-	//roll = (rxbuff[36] << 24 | rxbuff[37] << 16 | rxbuff[38] << 8 | rxbuff[39]);
-	bat = rxbuff[40];
-
-	headMot = rxbuff[41] << 24 | rxbuff[42] << 16 | rxbuff[43] << 8 | rxbuff[44];
-	//headVeh = rxbuff[47] << 24 | rxbuff[48] << 16 | rxbuff[49] << 8 | rxbuff[50];
-	headMot_int = (uint16_t)(headMot / 100000);
-	//json_create_message
-*/
-
+	}
+	chSemSignal(&usart1_semaph);
 }
 
 void xbee_parse_sportsman_packet(uint8_t *rxbuff) {
@@ -1321,96 +1228,76 @@ void xbee_parse_sportsman_packet(uint8_t *rxbuff) {
 					sizeof(xbee_sportsman_data_t));
 			data = remote_dev[i].rf_data;
 			remote_dev[i].heartbit = 50;
-			/*
-			 chprintf((BaseSequentialStream*) &SD1,
-					"\r\nResieved xbee frame from sportsmen %d \r\n", i);
-			chprintf(SHELL_IFACE, "\r\nyaw: %d\r\n", data->yaw);
-			chprintf(SHELL_IFACE, "pitch: %f\r\n", data->pitch);
-			chprintf(SHELL_IFACE, "roll: %f\r\n", data->roll);
-			*/
-
-			//json_print_remote_dev_data(data);
 		}
 	}
-/*
-	chSemWait(&usart1_semaph);
-	if (memcmp(rxbuff, &xbee_sportsmen1_addr, sizeof(xbee_sportsmen1_addr))) {
-		chprintf((BaseSequentialStream*) &SD1,
-				"\r\nResieved xbee frame from sportsmen 1 \r\n");
-	} else if (memcmp(rxbuff, &xbee_sportsmen2_addr,
-			sizeof(xbee_sportsmen2_addr))) {
-		chprintf((BaseSequentialStream*) &SD1,
-				"\r\nResieved xbee frame from sportsmen 2 \r\n");
-	} else if (memcmp(rxbuff, &xbee_bouy_addr, sizeof(xbee_bouy_addr))) {
-		chprintf((BaseSequentialStream*) &SD1,
-				"\r\nResieved xbee frame from bouy \r\n");
-	} else if (memcmp(rxbuff, &xbee_trainer_addr, sizeof(xbee_trainer_addr))) {
-		chprintf((BaseSequentialStream*) &SD1,
-				"\r\nResieved xbee frame from trainer \r\n");
-	}
-	chSemSignal(&usart1_semaph);
-	*/
-/*
-	lat = rxbuff[12] << 24 | rxbuff[13] << 16 | rxbuff[14] << 8 | rxbuff[15];
-	lon = rxbuff[16] << 24 | rxbuff[17] << 16 | rxbuff[18] << 8 | rxbuff[19];
-	flat = lat / 10000000.0f;
-	flon = lon / 10000000.0f;
-	hour = rxbuff[20];
-	min = rxbuff[21];
-	sec = rxbuff[22];
-	sat = rxbuff[23];
-	dist = rxbuff[24] << 8 | rxbuff[25];
+}
 
-	memcpy(&speed, &rxbuff[26], sizeof(speed));
-	//speed = rxbuff[26] << 24 | rxbuff[27] << 16 | rxbuff[28] << 8 | rxbuff[29];
+void xbee_parse_sportsman_calib_data_packet(uint8_t *rxbuff) {
 
-
-	yaw = (rxbuff[30] << 8 | rxbuff[31]);
-	memcpy(&pitch, &rxbuff[32], sizeof(pitch));
-	//pitch = (float)(rxbuff[32] + (float)(rxbuff[33] / 10));
-	//pitch = (rxbuff[32] << 24 | rxbuff[33] << 16 | rxbuff[34] << 8 | rxbuff[35]);
-	memcpy(&roll, &rxbuff[36], sizeof(roll));
-	//roll = (rxbuff[36] << 24 | rxbuff[37] << 16 | rxbuff[38] << 8 | rxbuff[39]);
-	bat = rxbuff[40];
-
-	headMot = rxbuff[41] << 24 | rxbuff[42] << 16 | rxbuff[43] << 8 | rxbuff[44];
-	//headVeh = rxbuff[47] << 24 | rxbuff[48] << 16 | rxbuff[49] << 8 | rxbuff[50];
-	headMot_int = (uint16_t)(headMot / 100000);
-	//json_create_message
-
-	*/
-
-
-/*	chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame: ");
 	int8_t i;
-		for (i = 0; i < 12; i++){
-			chprintf((BaseSequentialStream*)&SD1, "%x ", rxbuff[i]);
+
+	for (i = 0; i < NUM_OF_SPORTSMAN_DEVICES; i++) {
+		if (memcmp(rxbuff, remote_dev[i].addr, SIZE_OF_XBEE_ADDR) == 0) {
+			memcpy(remote_dev[i].calibration, &rxbuff[12],
+					sizeof(dev_calibration_t));
+			//remote_dev[i].heartbit = 50;
+			//print_sportsman_calibration(i);
 		}
-		chprintf((BaseSequentialStream*)&SD1, "\r\n");
-		*/
+	}
+}
 
-	/*chprintf((BaseSequentialStream*)&SD1, "%f,%f,%d:%d:%d:%d,%d,%d,%d\r\n",
-						flat, flon, hour, min, sec, sat, dist, speed, xbee->rssi);*/
-	/*
-	chprintf((BaseSequentialStream*)&SD1, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_1\":{\r\n\t\t\t");
-	chprintf((BaseSequentialStream*)&SD1, "\"hour\":%d,\r\n\t\t\t", hour);
-	chprintf((BaseSequentialStream*)&SD1, "\"min\":%d,\r\n\t\t\t", min);
-	chprintf((BaseSequentialStream*)&SD1, "\"sec\":%d,\r\n\t\t\t", sec);
-	chprintf((BaseSequentialStream*)&SD1, "\"lat\":%f,\r\n\t\t\t", flat);
-	chprintf((BaseSequentialStream*)&SD1, "\"lon\":%f,\r\n\t\t\t", flon);
-	chprintf((BaseSequentialStream*)&SD1, "\"speed\":%f,\r\n\t\t\t", speed);
-	chprintf((BaseSequentialStream*)&SD1, "\"dist\":%d,\r\n\t\t\t", dist);
-	chprintf((BaseSequentialStream*)&SD1, "\"yaw\":%d,\r\n\t\t\t", yaw);
-	chprintf((BaseSequentialStream*)&SD1, "\"pitch\":%f,\r\n\t\t\t", pitch);
-	chprintf((BaseSequentialStream*)&SD1, "\"roll\":%f,\r\n\t\t\t", roll);
-	chprintf((BaseSequentialStream*)&SD1, "\"headMot\":%d,\r\n\t\t\t", headMot_int);
-	chprintf((BaseSequentialStream*)&SD1, "\"sat\":%d,\r\n\t\t\t", sat);
-	chprintf((BaseSequentialStream*)&SD1, "\"rssi\":%d,\r\n\t\t\t", xbee->rssi);
-	chprintf((BaseSequentialStream*)&SD1, "\"bat\":0\r\n\t\t\t");
-	chprintf((BaseSequentialStream*)&SD1, "}\r\n\t}");
-	*/
-	//chprintf((BaseSequentialStream*)&SD1, "");
+void xbee_parse_calib_write_packet_from_trainer(uint8_t *rxbuff) {
 
+	int8_t i;
+
+	switch (rxbuff[11]){
+	case RF_MagneticDeclanation:
+		break;
+	case RF_WindCorrection:
+		break;
+	case RF_PitchCorrection:
+			break;
+	case RF_HeelCorrection:
+			break;
+	case RF_CompassCorrection:
+			break;
+	case RF_HSPCorrection:
+			break;
+	case RF_RudderCorrection:
+			break;
+	case RF_min_native:
+			break;
+	case RF_center_native:
+			break;
+	case RF_max_native:
+			break;
+	case RF_native_full_scale:
+			break;
+	case RF_min_degrees:
+			break;
+	case RF_center_degrees:
+				break;
+	case RF_max_degrees:
+				break;
+	case RF_WindowSize1:
+				break;
+	case RF_WindowSize2:
+				break;
+	case RF_WindowSize3:
+				break;
+
+	default:
+		break;
+	}
+
+	for (i = 0; i < NUM_OF_SPORTSMAN_DEVICES; i++) {
+		if (memcmp(rxbuff, remote_dev[i].addr, SIZE_OF_XBEE_ADDR) == 0) {
+			memcpy(remote_dev[i].calibration, &rxbuff[12],
+					sizeof(dev_calibration_t));
+			//remote_dev[i].heartbit = 50;
+			//print_sportsman_calibration(i);
+		}
+	}
 }
 
 void xbee_process_explicit_rx_frame(uint8_t* buffer){
