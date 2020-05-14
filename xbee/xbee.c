@@ -484,7 +484,10 @@ uint8_t xbee_calc_CRC(uint8_t *buffer, uint8_t num){
 	return (uint8_t)sum;
 }
 
+void xbee_send_calibration(uint8_t dev_num, uint8_t calib_type, float calib_val)
+{
 
+}
 /*=============================================================
  *
  * Xbee thread wakeup functions - callbacks for shell commands
@@ -587,7 +590,7 @@ uint16_t xbee_get_attn_pin_cfg(xbee_struct_t *xbee_str){
     return (packet[7] << 8) | packet[8];
 }
 
-uint16_t xbee_read_last_rssi(xbee_struct_t *xbee_str){
+uint16_t xbee_read_last_rssi(void){
 	uint8_t len;
 		uint8_t txbuffer[20];
 		uint8_t i;
@@ -993,7 +996,7 @@ void xbee_process_at_response(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);*/
 			if (rxbuff[1] == 'D' && rxbuff[2] == 'B')
 			{
-				xbee->rssi = rxbuff[3] << 8 | rxbuff[4];
+				remote_dev[1].rssi = rxbuff[3] << 8 | rxbuff[4];
 			}
 }
 
@@ -1072,7 +1075,7 @@ void xbee_process_receive_packet_frame(uint8_t* buffer){
 	if (xbee->loopback_mode){
 		//xbee_send_payoad
 	}
-	xbee_read_last_rssi(xbee);
+	xbee_read_last_rssi();
 	//chSemWait(&usart1_semaph);
 	//chprintf((BaseSequentialStream*)&SD1, "RSSI: %d\r\n", xbee->rssi);
 	//chSemSignal(&usart1_semaph);

@@ -104,7 +104,7 @@ extern float velocityMadeGoodTarget;
 dots_t *r_rudder_dots;
 coefs_t *r_rudder_coefs;
 #endif
-
+#include "calibration.h"
 thread_t *charger_trp;
 
 extern struct ch_semaphore usart1_semaph;
@@ -476,7 +476,8 @@ int32_t convert_to_ble_type(float value){
 void send_json(void) {
 	//return;
 	//chprintf(SHELL_IFACE, "Test\r\n");
-	json_print_remote_dev_data(&trainer_dev);
+	//xbee_read_last_rssi();
+	//json_print_remote_dev_data(&trainer_dev);
 	for (int i = 0; i < 10; i++) {
 		if (remote_dev[i].heartbit > 0) {
 			remote_dev[i].heartbit--;

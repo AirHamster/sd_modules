@@ -13,7 +13,7 @@
 #include "hal.h"
 #include "shell.h"
 #include "chprintf.h"
-
+#include "calibration.h"
 #define XBEE_ATTN_MASK			1
 
 
@@ -255,11 +255,26 @@ typedef struct {
 	uint8_t heartbit;	//decrease every second, if == 0 - dev not availible, update to 10 if new data has come
 	int8_t rssi;
 	int8_t number;
+	calib_parameters_t calibrations;
 	void *rf_data;
 
 } xbee_remote_dev_t;
 
-
+enum rf_calibrations {
+	RF_CALIB_COMPASS = 0,
+	RF_CALIB_HSP,
+	RF_CALIB_HEEL,
+	RF_CALIB_MAGN,
+	RF_CALIB_PITCH,
+	RF_CALIB_RUDDER,
+	RF_CALIB_WIND,
+	RF_CALIB_WINDOW_1,
+	RF_CALIB_WINDOW_2,
+	RF_CALIB_WINDOW_3,
+	RF_CALIB_RUDDER_LEFT,
+	RF_CALIB_RUDDER_CENTER,
+	RF_CALIB_RUDDER_RIGHT
+};
 
 void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff);
 void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]);
@@ -299,6 +314,7 @@ void xbee_process_explicit_rx_frame(uint8_t* buffer);
 void xbee_process_data_sample_frame(uint8_t* buffer);
 void xbee_process_node_id_frame(uint8_t* buffer);
 void xbee_process_remote_response_frame(uint8_t* buffer);
+void xbee_send_calibration(uint8_t dev_num, uint8_t calib_type, float calib_val);
 
 void xbee_send_rf_message(void *packet, uint8_t packet_type);
 //void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len);
@@ -306,7 +322,7 @@ void xbee_send_rf_message_back(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_
 void xbee_parse_rf_packet(uint8_t *rxbuff);
 void xbee_parse_gps_packet_back(uint8_t *rxbuff);
 void xbee_parse_gps_packet(uint8_t *rxbuff);
-uint16_t xbee_read_last_rssi(xbee_struct_t *xbee_str);
+uint16_t xbee_read_last_rssi(void);
 uint32_t xbee_read_channels(xbee_struct_t *xbee_str);
 uint16_t xbee_read_baudrate(xbee_struct_t *xbee_str);
 uint16_t xbee_get_attn_pin_cfg(xbee_struct_t *xbee_str);
