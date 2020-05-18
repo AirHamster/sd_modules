@@ -129,6 +129,7 @@ static void send_json(void);
 thread_reference_t output_trp = NULL;
 static THD_WORKING_AREA(output_thread_wa, 1024*4);
 static THD_FUNCTION(output_thread, arg);
+extern const uint8_t xbee_trainer_addr[];
 static const ShellCommand commands[] = {
 		{ "start", cmd_start },
 		{ "c", cmd_c },
@@ -433,7 +434,7 @@ void send_data(uint8_t stream) {
 #endif
 
 #ifdef SD_MODULE_SPORTSMAN
-	xbee_send_rf_message(&xbee_sportsman_data, RF_SPORTSMAN_PACKET);
+	xbee_send_rf_message(&xbee_trainer_addr[0], &xbee_sportsman_data, RF_SPORTSMAN_PACKET);
 	//json_print_remote_dev_data(&trainer_dev);
 #endif
 
@@ -474,10 +475,9 @@ int32_t convert_to_ble_type(float value){
 
 
 void send_json(void) {
-	//return;
-	//chprintf(SHELL_IFACE, "Test\r\n");
-	//xbee_read_last_rssi();
-	//json_print_remote_dev_data(&trainer_dev);
+
+#ifdef SD_MODULE_TRAINER
+	json_print_remote_dev_data(&trainer_dev);
 	for (int i = 0; i < 10; i++) {
 		if (remote_dev[i].heartbit > 0) {
 			remote_dev[i].heartbit--;
@@ -492,6 +492,8 @@ void send_json(void) {
 			json_print_remote_dev_data(&remote_dev[i]);
 		}
 	}
+
+#endif
 
 #ifdef USE_XBEE_MODULE
 	send_data(OUTPUT_XBEE);
@@ -537,7 +539,6 @@ void send_rudder_over_ble(rudder_t *rudder){
 #ifdef USE_BMX160_MODULE
 void cmd_mag_calibrate(BaseSequentialStream* chp, int argc, char* argv[]){
 	stop_all_tests();
-
 	bmx160.calib_flag = 1;
 }
 #endif

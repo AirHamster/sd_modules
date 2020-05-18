@@ -62,7 +62,7 @@ void json_print_remote_dev_data(xbee_remote_dev_t *r_data){
 			chprintf(SHELL_IFACE, "\"rssi\":%d,\r\n\t\t\t", remote_dev[1].rssi);
 			//chprintf(SHELL_IFACE, "\"rssi\":%d,\r\n\t\t\t", r_data->rssi);
 			chprintf(SHELL_IFACE, "\"bat\":0\r\n\t\t\t");
-			chprintf(SHELL_IFACE, "}\r\n\t}");
+			chprintf(SHELL_IFACE, "}\r\n\t}*");
 	}else if (r_data->type == DEV_TYPE_BOUY){
 		chprintf(SHELL_IFACE, "\"hour\":%d,\r\n\t\t\t", bdata->hour);
 		chprintf(SHELL_IFACE, "\"min\":%d,\r\n\t\t\t", bdata->min);
@@ -72,7 +72,7 @@ void json_print_remote_dev_data(xbee_remote_dev_t *r_data){
 		chprintf(SHELL_IFACE, "\"sat\":%d,\r\n\t\t\t", bdata->sat);
 		chprintf(SHELL_IFACE, "\"rssi\":%d,\r\n\t\t\t", r_data->rssi);
 		chprintf(SHELL_IFACE, "\"bat\":0\r\n\t\t\t");
-		chprintf(SHELL_IFACE, "}\r\n\t}");
+		chprintf(SHELL_IFACE, "}\r\n\t}*");
 	}else if (r_data->type == DEV_TYPE_TRAINER){
 		chprintf(SHELL_IFACE, "\"hour\":%d,\r\n\t\t\t", tdata->hour);
 		chprintf(SHELL_IFACE, "\"min\":%d,\r\n\t\t\t", tdata->min);
@@ -94,7 +94,7 @@ void json_print_remote_dev_data(xbee_remote_dev_t *r_data){
 		chprintf(SHELL_IFACE, "\"wind_spd\":%f,\r\n\t\t\t", tdata->wind_speed);
 		chprintf(SHELL_IFACE, "\"rssi\":%d,\r\n\t\t\t", r_data->rssi);
 		chprintf(SHELL_IFACE, "\"bat\":0\r\n\t\t\t");
-		chprintf(SHELL_IFACE, "}\r\n\t}");
+		chprintf(SHELL_IFACE, "}\r\n\t}*");
 	}
 			chSemSignal(&usart1_semaph);
 }

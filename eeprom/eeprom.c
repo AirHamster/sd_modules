@@ -21,6 +21,7 @@ const I2CConfig eeprom_i2c_cfg = {
 };
 #endif
 
+/*
 #ifdef SD_MODULE_SPORTSMAN
 const I2CConfig eeprom_i2c_cfg = {
   0xD0D43C4C,
@@ -28,6 +29,7 @@ const I2CConfig eeprom_i2c_cfg = {
   0
 };
 #endif
+*/
 
 #ifdef SD_SENSOR_BOX
 const I2CConfig eeprom_i2c_cfg = {

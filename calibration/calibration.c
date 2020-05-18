@@ -61,6 +61,8 @@ void cmd_get_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 			chprintf(chp, "Usage: - get_math_calib sportsman <NUM> \n\r");
 		} else {
 			uint8_t dev_num = atoi(argv[1]);
+			xbee_get_calib_request_to_remote_dev(dev_num);
+			chThdSleepMilliseconds(500);
 			calib_print_calib_to_shell(chp, dev_num);
 		}
 	}
@@ -125,12 +127,14 @@ void calib_init_params(void) {
 
 int8_t calib_update_compass_correction(uint8_t dev_num, float calib_val)
 {
+	chprintf(SHELL_IFACE, "input compass corr: %f, devnum %d", calib_val, dev_num);
 	if (dev_num == 0) {
 	EEPROM_WRITE(MATH_MEMORY.MATH_COMPASS_CORRECTION, (uint8_t*) &calib_val);
+	//chprintf(chp, "input compass corr: %f", calib_val);
 	calibrations.CompassCorrection = calib_val;
 	microsd_update_calibfile();
 	} else {
-		xbee_send_calibration(dev_num, RF_CALIB_COMPASS, calib_val);
+		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_COMPASS, calib_val);
 	}
 	return 0;
 }
@@ -142,7 +146,7 @@ int8_t calib_update_hsp_correction(uint8_t dev_num, float calib_val)
 	calibrations.CompassCorrection = calib_val;
 	microsd_update_calibfile();
 	}else {
-		xbee_send_calibration(dev_num, RF_CALIB_HSP, calib_val);
+		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_HSP, calib_val);
 	}
 	return 0;
 }
@@ -154,7 +158,7 @@ int8_t calib_update_heel_correction(uint8_t dev_num, float calib_val)
 	calibrations.HeelCorrection = calib_val;
 	microsd_update_calibfile();
 	} else {
-		xbee_send_calibration(dev_num, RF_CALIB_HEEL, calib_val);
+		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_HEEL, calib_val);
 	}
 	return 0;
 }
@@ -166,7 +170,7 @@ int8_t calib_update_magnetic_declanation(uint8_t dev_num, float calib_val)
 	calibrations.MagneticDeclanation = calib_val;
 	microsd_update_calibfile();
 	} else {
-		xbee_send_calibration(dev_num, RF_CALIB_MAGN, calib_val);
+		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_MAGN, calib_val);
 	}
 	return 0;
 }
@@ -178,7 +182,7 @@ int8_t calib_update_pitch_correction(uint8_t dev_num, float calib_val)
 	calibrations.PitchCorrection = calib_val;
 	microsd_update_calibfile();
 	} else {
-		xbee_send_calibration(dev_num, RF_CALIB_PITCH, calib_val);
+		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_PITCH, calib_val);
 	}
 	return 0;
 }
@@ -190,7 +194,7 @@ int8_t calib_update_rudder_correction(uint8_t dev_num, float calib_val)
 	calibrations.RudderCorrection = calib_val;
 	microsd_update_calibfile();
 	} else {
-		xbee_send_calibration(dev_num, RF_CALIB_RUDDER, calib_val);
+		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_RUDDER, calib_val);
 	}
 	return 0;
 }
@@ -202,42 +206,42 @@ int8_t calib_update_wind_correction(uint8_t dev_num, float calib_val)
 	calibrations.WindCorrection = calib_val;
 	microsd_update_calibfile();
 	} else {
-		xbee_send_calibration(dev_num, RF_CALIB_WIND, calib_val);
+		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_WIND, calib_val);
 	}
 	return 0;
 }
 
-int8_t calib_update_window_size_1(uint8_t dev_num, uint32_t calib_val_i)
+int8_t calib_update_window_size_1(uint8_t dev_num, uint8_t calib_val_i)
 {
 	if (dev_num == 0) {
 	EEPROM_WRITE(MATH_MEMORY.MATH_WINSIZE1_CORRECTION, (uint8_t*) &calib_val_i);
 	calibrations.WindowSize1 = calib_val_i;
 	microsd_update_calibfile();
 	} else {
-		xbee_send_calibration(dev_num, RF_CALIB_WINDOW_1, (float) calib_val_i);
+		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_WINDOW_1, (float) calib_val_i);
 	}
 	return 0;
 }
 
-int8_t calib_update_window_size_2(uint8_t dev_num, uint32_t calib_val_i)
+int8_t calib_update_window_size_2(uint8_t dev_num, uint8_t calib_val_i)
 {
 	if (dev_num == 0) {
 	EEPROM_WRITE(MATH_MEMORY.MATH_WINSIZE3_CORRECTION, (uint8_t*) &calib_val_i);
 	calibrations.WindowSize1 = calib_val_i;
 	microsd_update_calibfile();
 	} else {
-		xbee_send_calibration(dev_num, RF_CALIB_WINDOW_2, (float) calib_val_i);
+		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_WINDOW_2, (float) calib_val_i);
 	}
 	return 0;
 }
-int8_t calib_update_window_size_3(uint8_t dev_num, uint32_t calib_val_i)
+int8_t calib_update_window_size_3(uint8_t dev_num, uint8_t calib_val_i)
 {
 	if (dev_num == 0) {
 	EEPROM_WRITE(MATH_MEMORY.MATH_WINSIZE3_CORRECTION, (uint8_t*) &calib_val_i);
 	calibrations.WindowSize1 = calib_val_i;
 	microsd_update_calibfile();
 	} else {
-		xbee_send_calibration(dev_num, RF_CALIB_WINDOW_3, (float) calib_val_i);
+		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_WINDOW_3, (float) calib_val_i);
 	}
 	return 0;
 }
@@ -254,7 +258,7 @@ int8_t calib_update_rudder_left(uint8_t dev_num, float calib_val)
 	calculate_polynom_coefs(&calibrations.rudder_dots, &calibrations.rudder_coefs);
 	microsd_update_calibfile();
 	} else {
-		xbee_send_calibration(dev_num, RF_CALIB_RUDDER_LEFT, calib_val);
+		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_RUDDER_LEFT, calib_val);
 	}
 	return 0;
 }
@@ -271,7 +275,7 @@ int8_t calib_update_rudder_center(uint8_t dev_num, float calib_val)
 	calculate_polynom_coefs(&calibrations.rudder_dots, &calibrations.rudder_coefs);
 	microsd_update_calibfile();
 	} else {
-		xbee_send_calibration(dev_num, RF_CALIB_RUDDER_CENTER, calib_val);
+		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_RUDDER_CENTER, calib_val);
 	}
 	return 0;
 }
@@ -288,7 +292,7 @@ int8_t calib_update_rudder_right(uint8_t dev_num, float calib_val)
 	calculate_polynom_coefs(&calibrations.rudder_dots, &calibrations.rudder_coefs);
 	microsd_update_calibfile();
 	} else {
-		xbee_send_calibration(dev_num, RF_CALIB_RUDDER_RIGHT, calib_val);
+		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_RUDDER_RIGHT, calib_val);
 	}
 	return 0;
 }

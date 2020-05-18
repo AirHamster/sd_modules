@@ -8,13 +8,13 @@
  * @brief   Shell maximum input line length.
  */
 
-#define SHELL_MAX_LINE_LENGTH       64
+#define SHELL_MAX_LINE_LENGTH       256
 
 
 /**
  * @brief   Shell maximum arguments per command.
  */
-#define SHELL_MAX_ARGUMENTS         4
+#define SHELL_MAX_ARGUMENTS         8
 
 
 /**
