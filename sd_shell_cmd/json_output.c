@@ -38,14 +38,14 @@ void json_print_remote_dev_data(xbee_remote_dev_t *r_data){
 	if ((r_data->type == DEV_TYPE_SPORTSMAN) || (r_data->type == DEV_TYPE_TRAINER)){
 		chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_%d\":{\r\n\t\t\t", r_data->number);
 	}else if (r_data->type == DEV_TYPE_BOUY){
-		chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"bouy_data\",\r\n\t\t\"bouy_%d\":{\r\n\t\t\t", r_data->number);
+		chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"bouy_data\",\r\n\t\t\"bouy_%d\":{\r\n\t\t\t", r_data->number - 10);
 	}
 	if (r_data->type == DEV_TYPE_SPORTSMAN){
 			chprintf(SHELL_IFACE, "\"hour\":%d,\r\n\t\t\t", sdata->hour);
 			chprintf(SHELL_IFACE, "\"min\":%d,\r\n\t\t\t", sdata->min);
 			chprintf(SHELL_IFACE, "\"sec\":%d,\r\n\t\t\t", sdata->sec);
-			chprintf(SHELL_IFACE, "\"lat\":%f,\r\n\t\t\t", sdata->lat);
-			chprintf(SHELL_IFACE, "\"lon\":%f,\r\n\t\t\t", sdata->lon);
+			chprintf(SHELL_IFACE, "\"lat\":%f,\r\n\t\t\t", sdata->lat / 10000000.0f);
+			chprintf(SHELL_IFACE, "\"lon\":%f,\r\n\t\t\t", sdata->lon / 10000000.0f);
 			chprintf(SHELL_IFACE, "\"speed\":%f,\r\n\t\t\t", sdata->speed);
 			chprintf(SHELL_IFACE, "\"dist\":%d,\r\n\t\t\t", sdata->dist);
 			chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", sdata->yaw);
@@ -67,8 +67,8 @@ void json_print_remote_dev_data(xbee_remote_dev_t *r_data){
 		chprintf(SHELL_IFACE, "\"hour\":%d,\r\n\t\t\t", bdata->hour);
 		chprintf(SHELL_IFACE, "\"min\":%d,\r\n\t\t\t", bdata->min);
 		chprintf(SHELL_IFACE, "\"sec\":%d,\r\n\t\t\t", bdata->sec);
-		chprintf(SHELL_IFACE, "\"lat\":%f,\r\n\t\t\t", bdata->lat);
-		chprintf(SHELL_IFACE, "\"lon\":%f,\r\n\t\t\t", bdata->lon);
+		chprintf(SHELL_IFACE, "\"lat\":%f,\r\n\t\t\t", bdata->lat / 10000000.0f);
+		chprintf(SHELL_IFACE, "\"lon\":%f,\r\n\t\t\t", bdata->lon / 10000000.0f);
 		chprintf(SHELL_IFACE, "\"sat\":%d,\r\n\t\t\t", bdata->sat);
 		chprintf(SHELL_IFACE, "\"rssi\":%d,\r\n\t\t\t", r_data->rssi);
 		chprintf(SHELL_IFACE, "\"bat\":0\r\n\t\t\t");
@@ -77,8 +77,8 @@ void json_print_remote_dev_data(xbee_remote_dev_t *r_data){
 		chprintf(SHELL_IFACE, "\"hour\":%d,\r\n\t\t\t", tdata->hour);
 		chprintf(SHELL_IFACE, "\"min\":%d,\r\n\t\t\t", tdata->min);
 		chprintf(SHELL_IFACE, "\"sec\":%d,\r\n\t\t\t", tdata->sec);
-		chprintf(SHELL_IFACE, "\"lat\":%f,\r\n\t\t\t", tdata->lat);
-		chprintf(SHELL_IFACE, "\"lon\":%f,\r\n\t\t\t", tdata->lon);
+		chprintf(SHELL_IFACE, "\"lat\":%f,\r\n\t\t\t", tdata->lat / 10000000.0f);
+		chprintf(SHELL_IFACE, "\"lon\":%f,\r\n\t\t\t", tdata->lon / 10000000.0f);
 		chprintf(SHELL_IFACE, "\"speed\":%f,\r\n\t\t\t", tdata->speed);
 		chprintf(SHELL_IFACE, "\"dist\":%d,\r\n\t\t\t", tdata->dist);
 		chprintf(SHELL_IFACE, "\"yaw\":%d,\r\n\t\t\t", tdata->yaw);

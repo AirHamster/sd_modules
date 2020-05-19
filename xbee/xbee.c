@@ -40,6 +40,7 @@ xbee_remote_dev_t remote_dev[NUM_OF_SPORTSMAN_DEVICES + NUM_OF_BOUY_DEVICES];
 event_listener_t xbee_attn_pin_el;
 static event_source_t xbee_attn_pin;
 
+uint8_t txbuff_for_tx[256];
 /*
  * Maximum speed SPI configuration (3.3MHz, CPHA=0, CPOL=0, MSb first).
  */
@@ -165,12 +166,12 @@ static THD_FUNCTION(xbee_thread, p) {
 }
 
 void start_xbee_module(void){
-	chThdCreateStatic(xbee_thread_wa, sizeof(xbee_thread_wa), NORMALPRIO + 5,
+	chThdCreateStatic(xbee_thread_wa, sizeof(xbee_thread_wa), NORMALPRIO,
 				xbee_thread, NULL);
 
 #ifdef SD_MODULE_TRAINER
-	chThdCreateStatic(xbee_meas_thread_wa, sizeof(xbee_meas_thread_wa), NORMALPRIO + 1,
-					xbee_meas_thread, NULL);
+//	chThdCreateStatic(xbee_meas_thread_wa, sizeof(xbee_meas_thread_wa), NORMALPRIO + 1,
+	//				xbee_meas_thread, NULL);
 #endif
 }
 
@@ -261,7 +262,7 @@ uint8_t xbee_create_data_read_message(uint8_t *at, uint8_t *buffer){
 
 uint8_t xbee_create_data_write_message(uint8_t *buffer, void *data, xbee_addr_t *addr, uint8_t packet_type){
 	uint8_t i = 0;
-	uint8_t num;
+	uint16_t num;
 
 	if (packet_type == RF_SPORTSMAN_PACKET) {
 		num = sizeof(xbee_sportsman_data_t);	// Length MSB
@@ -343,6 +344,7 @@ void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len){
 	spiSend(SPID, len, txbuf);
 	//spiExchange(SPID, 8, rxbuf, txbuf); 			/* Atomic transfer operations.      */
 	spiReleaseBus(SPID); 				/* Ownership release.               */
+	chThdSleepMilliseconds(1);
 	palSetLine(LINE_RF_868_CS);
 	//chThdSleepMilliseconds(1);
 	//palClearLine(LINE_RED_LED);
@@ -710,18 +712,21 @@ void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len
 */
 
 void xbee_send_rf_message(uint8_t *address, void *packet, uint8_t packet_type){
-	uint8_t txbuff[128];
+	//uint8_t txbuff[256];
 	uint8_t pack_len;
 	xbee_addr_t addr;
 
+	memset(txbuff_for_tx, 0, 256);
 	addr.dest_addr_h = address[0] << 24 | address[1] << 16| address[2] << 8 | address[3];
     addr.dest_addr_l = address[4] << 24 | address[5] << 16| address[6] << 8 | address[7];
 
-	pack_len = xbee_create_data_write_message(txbuff, packet, &addr, packet_type);
-	chThdSleepMilliseconds(50);
-	//if (xbee->tx_ready)
+	pack_len = xbee_create_data_write_message(txbuff_for_tx, packet, &addr, packet_type);
+	//chThdSleepMilliseconds(500);
+
+	if (xbee->tx_ready)
 	{
-		xbee_send(&SPID1, txbuff, pack_len);
+		//chprintf(SHELL_IFACE, "sending rf message\r\n");
+		xbee_send(&SPID1, txbuff_for_tx, pack_len);
 		xbee->tx_ready = 0;
 	}
 }
@@ -954,7 +959,7 @@ void xbee_process_modem_stat_frame(uint8_t* buffer){
 
 void xbee_process_tx_stat(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
-			uint8_t rxbuff[payload_len + 1];
+			uint8_t rxbuff[32];
 			uint8_t i;
 			xbee_read_release_cs(&SPID1, payload_len + 1, rxbuff);
 		/*	chSemWait(&usart1_semaph);
@@ -1003,7 +1008,7 @@ void xbee_process_receive_packet_frame(uint8_t* buffer){
 	uint8_t i;
 	memset(rxbuff, 0, RF_PACK_LEN + 1);
 	xbee_read_release_cs(&SPID1, payload_len + 1, rxbuff);
-	chprintf(SHELL_IFACE, "Received packet\r\n ");
+	//chprintf(SHELL_IFACE, "Received packet\r\n ");
 	xbee_parse_rf_packet(rxbuff);
 	if (xbee->loopback_mode){
 		//xbee_send_payoad
@@ -1187,7 +1192,7 @@ void xbee_parse_sportsman_calib_data_packet(uint8_t *rxbuff) {
 		if (memcmp(rxbuff, remote_dev[i].addr, SIZE_OF_XBEE_ADDR) == 0) {
 			memcpy(&remote_dev[i].calibrations, &rxbuff[12],
 					sizeof(calib_parameters_t));
-			chprintf(SHELL_IFACE, "Sportsman calib data packet recieved\r\n");
+			//chprintf(SHELL_IFACE, "Sportsman calib data packet recieved\r\n");
 			//remote_dev[i].heartbit = 50;
 			//print_sportsman_calibration(i);
 		}
@@ -1200,8 +1205,8 @@ void xbee_parse_calib_write_packet_from_trainer(uint8_t *rxbuff)
 	float calib_val;
 	uint8_t calib_val_i;
 	memcpy(&calib_val, &rxbuff[13], sizeof(float));
-	chprintf(SHELL_IFACE, "rxbuff 12: %d", rxbuff[12]);
-	chprintf(SHELL_IFACE, "Calib write: %x %x %x %x", rxbuff[13], rxbuff[14], rxbuff[15], rxbuff[16]);
+	//chprintf(SHELL_IFACE, "rxbuff 12: %d", rxbuff[12]);
+//	chprintf(SHELL_IFACE, "Calib write: %x %x %x %x", rxbuff[13], rxbuff[14], rxbuff[15], rxbuff[16]);
 	calib_print_calib_to_shell(SHELL_IFACE, 0);
 	switch (rxbuff[12]){
 	case RF_CALIB_COMPASS:

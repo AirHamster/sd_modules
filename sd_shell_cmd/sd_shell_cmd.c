@@ -478,6 +478,29 @@ void send_json(void) {
 
 #ifdef SD_MODULE_TRAINER
 	json_print_remote_dev_data(&trainer_dev);
+
+	xbee_sportsman_data_t *sdata = remote_dev[0].rf_data;
+
+	xbee_bouy_data_t *bdata = remote_dev[10].rf_data;
+	xbee_bouy_data_t *bdata2 = remote_dev[11].rf_data;
+	xbee_trainer_data_t *tdata = trainer_dev.rf_data;
+
+	sdata->roll = tdata->pitch;
+	sdata->pitch = tdata->roll;
+
+	bdata->lat = 1 * 10000000;
+	bdata->lon = 1 * 10000000;
+
+	bdata2->lat = 2 * 10000000;
+	bdata2->lon = 2 * 10000000;
+/*
+	remote_dev[0].heartbit = 2;
+	remote_dev[10].heartbit = 2;
+	remote_dev[11].heartbit = 2;
+	*/
+	//remote_dev[12].heartbit = 2;
+	//remote_dev[13].heartbit = 2;
+
 	for (int i = 0; i < 10; i++) {
 		if (remote_dev[i].heartbit > 0) {
 			remote_dev[i].heartbit--;

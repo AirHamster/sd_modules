@@ -107,7 +107,7 @@ void calib_print_calib_to_shell(BaseSequentialStream* chp, uint8_t dev_num) {
 	chprintf(chp, "\"CompassRawOffsetX\":%f,\r\n\t\t\t", bmx160.mag_offset.x);
 	chprintf(chp, "\"CompassRawOffsetY\":%f,\r\n\t\t\t", bmx160.mag_offset.y);
 	chprintf(chp, "\"CompassRawOffsetZ\":%f\r\n\t\t\t", bmx160.mag_offset.z);
-	chprintf(chp, "}\r\n\t}\r\n");
+	chprintf(chp, "}\r\n\t}*\r\n");
 	chSemSignal(&usart1_semaph);
 
 }
