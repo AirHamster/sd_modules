@@ -181,7 +181,7 @@ ble_charac_t *charac_array[NUM_OF_CHARACTS];
 ble_remote_t *remote_lag;
 ble_remote_t *remote_rudder;
 ble_remote_t *remote_wind;
-
+ble_remote_t *remote_heart;
 #include "adc.h"
 extern dots_t *r_rudder_dots;
 extern coefs_t *r_rudder_coefs;
@@ -371,8 +371,9 @@ while(true){
 						if (i++ == 10) {
 		remote_lag->is_avalible = 0;
 		remote_rudder->is_avalible = 0;
+		remote_heart->is_avalible = 0;
 
-		if (remote_lag->is_connected == 0 || remote_rudder->is_connected == 0) {
+		if (remote_lag->is_connected == 0 || remote_rudder->is_connected == 0 || remote_heart->is_connected == 0) {
 
 			chprintf(NINA_IFACE, "AT+UBTD=2,1,2000\r");
 			chThdSleepMilliseconds(2500);
@@ -388,6 +389,12 @@ while(true){
 
 				nina_connect("D4CA6EBAFDA0", 0); //Rudder
 				chThdSleepMilliseconds(1500);
+			}
+			if (remote_heart->is_connected == 0 && remote_heart->is_avalible == 1) {
+
+				nina_connect("E0A11511A663", 0); //LAG
+				chThdSleepMilliseconds(1500);
+
 			}
 			i = 0;
 						}
@@ -576,6 +583,13 @@ uint8_t nina_parse_command(int8_t *strp) {
 			remote_rudder->is_avalible = 1;
 			return 1;
 		}
+		scan_res_p = strstr(strp, "E0A11511A663");
+				if (scan_res_p != NULL) {
+					chprintf((BaseSequentialStream*) &SD1,
+							"Scanned available heart %x\r\n", scan_res_p);
+					remote_heart->is_avalible = 1;
+					return 1;
+				}
 	}
 
 #endif
@@ -805,6 +819,7 @@ void nina_fill_memory(void){
 	remote_lag = calloc(1, sizeof(ble_remote_t));
 	remote_rudder = calloc(1, sizeof(ble_remote_t));
 	remote_wind = calloc(1, sizeof(ble_remote_t));
+	remote_heart = calloc(1, sizeof(ble_remote_t));
 
 	charac_array[0] = thdg;
 	charac_array[1] = rdr;
@@ -955,7 +970,7 @@ int8_t nina_init_devices(ble_remote_dev_t *devlist) {
 	memcpy(devlist[1].addr, BLE_LOG_ADDR, sizeof(devlist[1].addr));
 	memcpy(devlist[1].ascii_name, BLE_LOG_ASCII_NAME, sizeof(BLE_LOG_ASCII_NAME));
 
-#if NUM_OF_REMOTE_DEV == 6
+#if NUM_OF_REMOTE_DEV == 7
 	memcpy(devlist[2].addr, BLE_TENSO1_ADDR, sizeof(devlist[2].addr));
 	memcpy(devlist[2].ascii_name, BLE_TENSO1_ASCII_NAME, sizeof(BLE_TENSO1_ASCII_NAME));
 
@@ -967,6 +982,9 @@ int8_t nina_init_devices(ble_remote_dev_t *devlist) {
 
 	memcpy(devlist[5].addr, BLE_TENSO4_ADDR, sizeof(devlist[5].addr));
 	memcpy(devlist[5].ascii_name, BLE_TENSO4_ASCII_NAME, sizeof(BLE_TENSO4_ASCII_NAME));
+
+	memcpy(devlist[6].addr, BLE_HEART_ADDR, sizeof(devlist[5].addr));
+	memcpy(devlist[6].ascii_name, BLE_HEART_ASCII_NAME, sizeof(BLE_HEART_ASCII_NAME));
 #endif
 	return NUM_OF_REMOTE_DEV;
 }
@@ -976,7 +994,7 @@ int8_t nina_init_devices(ble_remote_dev_t *devlist) {
  * @return
  */
 uint8_t nina_init_services(void){
-	chprintf(NINA_IFACE, "AT+UBTLE=3\r");
+	chprintf(NINA_IFACE, "AT+UBTLE=1\r");
 	if (nina_wait_response("+UBTLE\r") != NINA_SUCCESS) {
 		return -1;
 	}
@@ -1150,7 +1168,7 @@ uint8_t nina_init_services(void){
  * @param peer
  */
 void nina_send_all(ble_peer_t *peer){
-#ifdef SD_MODULE_TRAINER
+#ifdef SD_MAIN_MODULE
 	//if (peer->is_connected == 1) {
 
 		chSemWait(&usart_nina);

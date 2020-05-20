@@ -66,6 +66,7 @@ static uint8_t microsd_mount_fs(void);
 static char* fresult_str(FRESULT stat);
 static int8_t microsd_create_filename_from_date(uint8_t *name_str);
 static void microsd_write_sensor_log_line(BaseSequentialStream *chp);
+static void microsd_close_logfile();
 static FIL logfile;   /* file object */
 static FIL calibfile; //file with calibration data update info
 static uint8_t path_to_calibfile[32];
@@ -136,6 +137,7 @@ static THD_FUNCTION( microsd_thread, p) {
 			fsm_switch_to_default_state();
 			break;
 		case MICROSD_WRITE_LOG:
+			microsd_open_logfile(SHELL_IFACE);
 			microsd_write_sensor_log_line(SHELL_IFACE);
 			break;
 		case MICROSD_FREE:
@@ -155,6 +157,10 @@ static THD_FUNCTION( microsd_thread, p) {
 		case MICROSD_REMOVE:
 			remove_file(SHELL_IFACE, microsd->path_to_file);
 			fsm_switch_to_default_state();
+			break;
+		case MICROSD_CLOSE_LOG:
+			microsd_close_logfile();
+			fsm_change_state(MICROSD_WRITE_LOG);
 			break;
 		default:
 			fsm_switch_to_default_state();
@@ -551,6 +557,7 @@ static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
 	FILINFO fno;
 	int written = 0;
 	uint8_t megastring[256];
+	if (microsd->file_created != 0) {
 	memset(megastring, 0, 256);
 	sprintf((char*)megastring, "%d-%d,%d,%d,%d,%f,%f,%f,%d,%d,%f,%f,%d,%f,%d,%f,%f\r\n",
 			pvt_box->month, pvt_box->day, pvt_box->hour, pvt_box->min, pvt_box->sec, pvt_box->lat / 10000000.0f, pvt_box->lon / 10000000.0f,
@@ -568,6 +575,7 @@ static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
 	}
 
 	f_sync(&logfile);
+	}
 }
 
 static void microsd_write_logfile_header(BaseSequentialStream *chp) {
@@ -701,11 +709,23 @@ static int8_t microsd_add_new_calibfile(FIL *file) {
 return 0;
 }
 
+static void microsd_close_logfile()
+{
+	microsd->file_created = 0;
+	fsm_change_state(MICROSD_CLOSE_LOG);
+	//f_sync(&calibfile);
+	//f_close(&calibfile);
+}
+
 static void microsd_open_logfile(BaseSequentialStream *chp) {
 	FRESULT err;
 	uint16_t i;
 	//microsd_create_filename_from_date(path_to_file);
 	i = 1;
+
+	if ((pvt_box->valid & (1 << 2)) == 0) {
+		return;
+}
 	if (microsd->file_created == 0) {
 
 		memset(path_to_file, 0, 32);
@@ -719,6 +739,8 @@ static void microsd_open_logfile(BaseSequentialStream *chp) {
 			microsd_create_filename(i, path_to_file);
 			err = f_open(&logfile, path_to_file,
 					FA_READ | FA_WRITE | FA_CREATE_NEW);
+			microsd_write_calibration_header(SHELL_IFACE);
+			microsd_write_logfile_header(SHELL_IFACE);
 		}
 	} else {
 		err = f_open(&logfile, path_to_file,
@@ -937,7 +959,8 @@ static void fsm_enter_state(uint8_t state_new){
 			break;
 		case MICROSD_WRITE_LOG:
 			microsd_open_logfile((BaseSequentialStream*) &SD1);
-			microsd_write_logfile_header((BaseSequentialStream*) &SD1);
+		//	microsd_write_calibration_header((BaseSequentialStream*) &SD1);
+		//	microsd_write_logfile_header((BaseSequentialStream*) &SD1);
 			break;
 		case MICROSD_CAT:
 			break;
