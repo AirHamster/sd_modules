@@ -221,7 +221,7 @@ const I2CConfig bmx160_i2c_cfg = {
  */
 void start_bmx160_module(void){
 
-	chThdCreateStatic(bmx160_thread_wa, sizeof(bmx160_thread_wa), NORMALPRIO + 3, bmx160_thread, NULL);
+	chThdCreateStatic(bmx160_thread_wa, sizeof(bmx160_thread_wa), NORMALPRIO + 5, bmx160_thread, NULL);
 	//chThdCreateStatic(bmx160_calib_thread_wa, sizeof(bmx160_calib_thread_wa), NORMALPRIO, bmx160_calib_thread, NULL);
 }
 
@@ -262,7 +262,7 @@ static THD_FUNCTION(bmx160_thread, arg) {
 	s_input.usecase = (BSX_U8 *) &bsxLibConf;
 
 	if (bsx_init(&s_input) == 0) {
-		chprintf(SHELL_IFACE, "\r\nBSX library initialized\r\n");
+		//chprintf(SHELL_IFACE, "\r\nBSX library initialized\r\n");
 		s_workingmodes.opMode = BSX_WORKINGMODE_NDOF_GEORV_FMC_OFF;
 		bsx_set_workingmode(&s_workingmodes);
 		//HWsensorSwitchList.acc

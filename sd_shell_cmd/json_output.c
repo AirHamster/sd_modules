@@ -36,9 +36,9 @@ void json_print_remote_dev_data(xbee_remote_dev_t *r_data){
 	//chprintf(SHELL_IFACE, "DEV %d\r\n", r_data->type);
 	chSemWait(&usart1_semaph);
 	if ((r_data->type == DEV_TYPE_SPORTSMAN) || (r_data->type == DEV_TYPE_TRAINER)){
-		chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_%d\":{\r\n\t\t\t", r_data->number);
+		chprintf(SHELL_IFACE, "\r\n*{\"msg_type\":\"boats_data\",\r\n\t\t\"boat_%d\":{\r\n\t\t\t", r_data->number);
 	}else if (r_data->type == DEV_TYPE_BOUY){
-		chprintf(SHELL_IFACE, "\r\n{\"msg_type\":\"bouy_data\",\r\n\t\t\"bouy_%d\":{\r\n\t\t\t", r_data->number - 10);
+		chprintf(SHELL_IFACE, "\r\n*{\"msg_type\":\"bouy_data\",\r\n\t\t\"bouy_%d\":{\r\n\t\t\t", r_data->number - 10);
 	}
 	if (r_data->type == DEV_TYPE_SPORTSMAN){
 			chprintf(SHELL_IFACE, "\"hour\":%d,\r\n\t\t\t", sdata->hour);
@@ -52,13 +52,18 @@ void json_print_remote_dev_data(xbee_remote_dev_t *r_data){
 			//chprintf(SHELL_IFACE, "\"bno_yaw  \":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
 			chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", sdata->pitch);
 			chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", sdata->roll);
-			chprintf(SHELL_IFACE, "\"headMot\":%d,\r\n\t\t\t", sdata->headMot);
+			chprintf(SHELL_IFACE, "\"headMot\":%d,\r\n\t\t\t", (uint16_t)(sdata->headMot / 100000));
 			chprintf(SHELL_IFACE, "\"sat\":%d,\r\n\t\t\t", sdata->sat);
 			//chprintf(SHELL_IFACE, "\"rudder\":%f,\r\n\t\t\t", sdata->rdr);
 			chprintf(SHELL_IFACE, "\"rudder_deg\":%f,\r\n\t\t\t", sdata->rdr);
 			chprintf(SHELL_IFACE, "\"log\":%f,\r\n\t\t\t", sdata->log);
 			//chprintf(SHELL_IFACE, "\"wind_dir\":%d,\r\n\t\t\t", wind->direction);
 			//chprintf(SHELL_IFACE, "\"wind_spd\":%f,\r\n\t\t\t", wind->speed);
+			chprintf(SHELL_IFACE, "\"tenso_1\":%f,\r\n\t\t\t", sdata->tenso_1);
+			chprintf(SHELL_IFACE, "\"tenso_2\":%f,\r\n\t\t\t", sdata->tenso_2);
+			chprintf(SHELL_IFACE, "\"tenso_3\":%f,\r\n\t\t\t", sdata->tenso_3);
+			chprintf(SHELL_IFACE, "\"tenso_4\":%f,\r\n\t\t\t", sdata->tenso_4);
+			//chprintf(SHELL_IFACE, "\"heart_rate\":%d,\r\n\t\t\t", sdata->heart_rate);
 			chprintf(SHELL_IFACE, "\"rssi\":%d,\r\n\t\t\t", remote_dev[1].rssi);
 			//chprintf(SHELL_IFACE, "\"rssi\":%d,\r\n\t\t\t", r_data->rssi);
 			chprintf(SHELL_IFACE, "\"bat\":0\r\n\t\t\t");
@@ -96,5 +101,6 @@ void json_print_remote_dev_data(xbee_remote_dev_t *r_data){
 		chprintf(SHELL_IFACE, "\"bat\":0\r\n\t\t\t");
 		chprintf(SHELL_IFACE, "}\r\n\t}*");
 	}
+	chThdSleepMilliseconds(10);
 			chSemSignal(&usart1_semaph);
 }

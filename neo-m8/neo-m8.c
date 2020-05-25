@@ -78,7 +78,7 @@ static neo_init_module(void){
 
 void start_gps_module(void){
 
-	chThdCreateStatic(coords_thread_wa, sizeof(coords_thread_wa), NORMALPRIO + 1,
+	chThdCreateStatic(coords_thread_wa, sizeof(coords_thread_wa), NORMALPRIO + 8,
 			coords_thread, NULL);
 }
 
@@ -96,7 +96,7 @@ static THD_FUNCTION( coords_thread, arg) {
 	while (true) {
 		chSemWait(&spi2_semaph);
 		neo_create_poll_request(UBX_NAV_CLASS, UBX_NAV_PVT_ID);
-		chThdSleepMilliseconds(5);
+		chThdSleepMilliseconds(50);
 		neo_poll();
 		chSemSignal(&spi2_semaph);
 

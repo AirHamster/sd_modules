@@ -46,7 +46,7 @@ void cmd_load_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
 		if (strcmp(argv[0], "help") == 0) {
 			chprintf(chp,
-					"Usage: - load_math_calib sportsman <NUM> CompassCorrection|HSPCorrection|HeelCorrection|MagneticDeclanation|PitchCorrection|RudderCorrection|WindCorrection|WindowSize1|WindowSize2|WindowSize3 <float>\n\r");
+					"Usage: - load_calib sportsman <NUM> CompassCorrection|HSPCorrection|HeelCorrection|MagneticDeclanation|PitchCorrection|RudderCorrection|WindCorrection|WindowSize1|WindowSize2|WindowSize3 <float>\n\r");
 		} else {
 			calib_parse_shell_command(chp, &argv[1]);
 		}
@@ -58,10 +58,12 @@ void cmd_get_math_cal(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 	if (argc != 0) {
 		if (strcmp(argv[0], "help") == 0) {
-			chprintf(chp, "Usage: - get_math_calib sportsman <NUM> \n\r");
+			chprintf(chp, "Usage: - get_calib sportsman <NUM> \n\r");
 		} else {
 			uint8_t dev_num = atoi(argv[1]);
-			xbee_get_calib_request_to_remote_dev(dev_num);
+			if (dev_num != 0){
+				xbee_get_calib_request_to_remote_dev(dev_num);
+			}
 			chThdSleepMilliseconds(500);
 			calib_print_calib_to_shell(chp, dev_num);
 		}
@@ -78,7 +80,7 @@ void calib_print_calib_to_shell(BaseSequentialStream* chp, uint8_t dev_num) {
 
 	chSemWait(&usart1_semaph);
 	chprintf(chp,
-			"\r\n{\"msg_type\":\"math_calib_data\",\r\n\t\t\"boat_%d\":{\r\n\t\t\t",
+			"\r\n*{\"msg_type\":\"math_calib_data\",\r\n\t\t\"boat_%d\":{\r\n\t\t\t",
 			dev_num);
 	chprintf(chp, "\"CompassCorrection\":%f,\r\n\t\t\t",
 			cal->CompassCorrection);
@@ -143,7 +145,7 @@ int8_t calib_update_hsp_correction(uint8_t dev_num, float calib_val)
 {
 	if (dev_num == 0) {
 	EEPROM_WRITE(MATH_MEMORY.MATH_HSP_CORRECTION, (uint8_t*) &calib_val);
-	calibrations.CompassCorrection = calib_val;
+	calibrations.HSPCorrection = calib_val;
 	//microsd_update_calibfile();
 	}else {
 		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_HSP, calib_val);
@@ -226,8 +228,8 @@ int8_t calib_update_window_size_1(uint8_t dev_num, uint8_t calib_val_i)
 int8_t calib_update_window_size_2(uint8_t dev_num, uint8_t calib_val_i)
 {
 	if (dev_num == 0) {
-	EEPROM_WRITE(MATH_MEMORY.MATH_WINSIZE3_CORRECTION, (uint8_t*) &calib_val_i);
-	calibrations.WindowSize1 = calib_val_i;
+	EEPROM_WRITE(MATH_MEMORY.MATH_WINSIZE2_CORRECTION, (uint8_t*) &calib_val_i);
+	calibrations.WindowSize2 = calib_val_i;
 	//microsd_update_calibfile();
 	} else {
 		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_WINDOW_2, (float) calib_val_i);
@@ -238,7 +240,7 @@ int8_t calib_update_window_size_3(uint8_t dev_num, uint8_t calib_val_i)
 {
 	if (dev_num == 0) {
 	EEPROM_WRITE(MATH_MEMORY.MATH_WINSIZE3_CORRECTION, (uint8_t*) &calib_val_i);
-	calibrations.WindowSize1 = calib_val_i;
+	calibrations.WindowSize3 = calib_val_i;
 	//microsd_update_calibfile();
 	} else {
 		xbee_write_calibration_to_remote_dev(dev_num, RF_CALIB_WINDOW_3, (float) calib_val_i);
@@ -300,12 +302,14 @@ int8_t calib_update_rudder_right(uint8_t dev_num, float calib_val)
 void calib_parse_shell_command(BaseSequentialStream* chp, char* argv[]) {
 	float calib_val;
 	uint32_t calib_val_i;
+	int8_t res = -1;
 	uint8_t dev_num = atoi(argv[0]);
 	if (strcmp(argv[1], "CompassCorrection") == 0) {
 		if (strlen(argv[2]) != 0) {
 			calib_val = atof(argv[2]);
 			calib_update_compass_correction(dev_num, calib_val);
 			chprintf(chp, "Saved CompassCorrection value: %f\r\n", calib_val);
+			res = 0;
 		} else {
 			chprintf(chp, "Error: no value\r\n");
 		}
@@ -314,6 +318,7 @@ void calib_parse_shell_command(BaseSequentialStream* chp, char* argv[]) {
 			calib_val = atof(argv[2]);
 			calib_update_hsp_correction(dev_num, calib_val);
 			chprintf(chp, "Saved HSPCorrection value: %f\r\n", calib_val);
+			res = 0;
 
 		} else {
 			chprintf(chp, "Error: no value\r\n");
@@ -324,7 +329,7 @@ void calib_parse_shell_command(BaseSequentialStream* chp, char* argv[]) {
 			calib_update_heel_correction(dev_num, calib_val);
 
 			chprintf(chp, "Saved HeelCorrection value: %f\r\n", calib_val);
-
+			res = 0;
 		} else {
 			chprintf(chp, "Error: no value\r\n");
 		}
@@ -333,6 +338,7 @@ void calib_parse_shell_command(BaseSequentialStream* chp, char* argv[]) {
 			calib_val = atof(argv[2]);
 			calib_update_magnetic_declanation(dev_num, calib_val);
 			chprintf(chp, "Saved MagneticDeclanation value: %f\r\n", calib_val);
+			res = 0;
 		} else {
 			chprintf(chp, "Error: no value\r\n");
 		}
@@ -341,6 +347,7 @@ void calib_parse_shell_command(BaseSequentialStream* chp, char* argv[]) {
 			calib_val = atof(argv[2]);
 			calib_update_pitch_correction(dev_num, calib_val);
 			chprintf(chp, "Saved PitchCorrection value: %f\r\n", calib_val);
+			res = 0;
 		} else {
 			chprintf(chp, "Error: no value\r\n");
 		}
@@ -349,7 +356,7 @@ void calib_parse_shell_command(BaseSequentialStream* chp, char* argv[]) {
 			calib_val = atof(argv[2]);
 			calib_update_rudder_correction(dev_num, calib_val);
 			chprintf(chp, "Saved RudderCorrection value: %f\r\n", calib_val);
-
+			res = 0;
 		} else {
 			chprintf(chp, "Error: no value\r\n");
 		}
@@ -358,7 +365,7 @@ void calib_parse_shell_command(BaseSequentialStream* chp, char* argv[]) {
 			calib_val = atof(argv[2]);
 			calib_update_wind_correction(dev_num, calib_val);
 			chprintf(chp, "Saved WindCorrection value: %f\r\n", calib_val);
-
+			res = 0;
 		} else {
 			chprintf(chp, "Error: no value\r\n");
 		}
@@ -366,8 +373,9 @@ void calib_parse_shell_command(BaseSequentialStream* chp, char* argv[]) {
 		if (strlen(argv[2]) != 0) {
 			calib_val_i = atoi(argv[2]);
 			if (calib_val_i <= FILTER_BUFFER_SIZE) {
-				calib_update_window_size_1(dev_num, calib_val);
+				calib_update_window_size_1(dev_num, calib_val_i);
 				chprintf(chp, "Saved WindowSize1 value: %d\r\n", calib_val_i);
+				res = 0;
 			} else {
 				chprintf(chp,
 						"Saving WindowSize1 error: value is greater than FILTER_BUFFER_SIZE\r\n");
@@ -380,8 +388,9 @@ void calib_parse_shell_command(BaseSequentialStream* chp, char* argv[]) {
 		if (strlen(argv[2]) != 0) {
 			calib_val_i = atoi(argv[2]);
 			if (calib_val_i <= FILTER_BUFFER_SIZE) {
-				calib_update_window_size_2(dev_num, calib_val);
+				calib_update_window_size_2(dev_num, calib_val_i);
 				chprintf(chp, "Saved WindowSize2 value: %d\r\n", calib_val_i);
+				res = 0;
 			} else {
 				chprintf(chp,
 						"Saving WindowSize2 error: value is greater than FILTER_BUFFER_SIZE\r\n");
@@ -394,8 +403,9 @@ void calib_parse_shell_command(BaseSequentialStream* chp, char* argv[]) {
 		if (strlen(argv[2]) != 0) {
 			calib_val_i = atoi(argv[2]);
 			if (calib_val_i <= FILTER_BUFFER_SIZE) {
-				calib_update_window_size_3(dev_num, calib_val);
+				calib_update_window_size_3(dev_num, calib_val_i);
 				chprintf(chp, "Saved WindowSize3 value: %d\r\n", calib_val_i);
+				res = 0;
 			} else {
 				chprintf(chp,
 						"Saving WindowSize3 error: value is greater than FILTER_BUFFER_SIZE\r\n");
@@ -445,6 +455,7 @@ void calib_parse_shell_command(BaseSequentialStream* chp, char* argv[]) {
 				chprintf(chp,
 						"Saved left rudder value: %f native and %f degrees\r\n",
 						calibrations.rudder_calib.native, calib_val);
+				res = 0;
 			} else {
 				chprintf(chp,
 						"Saving left rudder value error: value not valid\r\n");
@@ -459,6 +470,7 @@ void calib_parse_shell_command(BaseSequentialStream* chp, char* argv[]) {
 				chprintf(chp,
 						"Saved central rudder value: %f native and %f degrees\r\n",
 						calibrations.rudder_calib.native, calib_val);
+				res = 0;
 			} else {
 				chprintf(chp,
 						"Saving center rudder value error: value not valid\r\n");
@@ -474,11 +486,16 @@ void calib_parse_shell_command(BaseSequentialStream* chp, char* argv[]) {
 				chprintf(chp,
 						"Saved right rudder value: %f native and %f degrees\r\n",
 						calibrations.rudder_calib.native, calib_val);
+				res = 0;
 			} else {
 				chprintf(chp,
 						"Saving right rudder value error: value not valid\r\n");
 			}
 		}
 
+	}
+
+	if (res == 0){
+		fsm_new_state(MICROSD_CLOSE_LOG);
 	}
 }

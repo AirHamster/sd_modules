@@ -227,9 +227,9 @@ static THD_FUNCTION(ble_thread, arg);
  *
  */
 void start_ble_module(void){
-	chThdCreateStatic(ble_parsing_thread_wa, sizeof(ble_parsing_thread_wa), NORMALPRIO + 1,
+	chThdCreateStatic(ble_parsing_thread_wa, sizeof(ble_parsing_thread_wa), NORMALPRIO + 3,
 			ble_parsing_thread, NULL);
-	chThdCreateStatic(ble_thread_wa, sizeof(ble_thread_wa), NORMALPRIO + 1,
+	chThdCreateStatic(ble_thread_wa, sizeof(ble_thread_wa), NORMALPRIO + 3,
 				ble_thread, NULL);
 }
 
@@ -273,9 +273,9 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		megastring[i] = token;
 		i++;
 
-	//	chSemWait(&usart1_semaph);
-	//	chprintf((BaseSequentialStream*) &SD1, "%c", token);
-	//	chSemSignal(&usart1_semaph);
+		chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*) &SD1, "%c", token);
+		chSemSignal(&usart1_semaph);
 
 		if (token == '\r' || token == '+'){
 			str_flag = 1;
@@ -303,7 +303,7 @@ static THD_FUNCTION(ble_thread, arg) {
 	chThdSleepMilliseconds(500);
 	nina_init_services();
 	chThdSleepMilliseconds(500);
-#ifdef SD_MODULE_TRAINER
+#ifdef SD_MODULE_SPORTSMAN
 	nina_init_devices(&ble_remote_dev_list);
 #endif
 	/* Events initialization and registration.*/
@@ -326,13 +326,13 @@ static THD_FUNCTION(ble_thread, arg) {
 	output->type = OUTPUT_RUDDER_BLE;
 #endif
 */
-#ifdef SD_MODULE_TRAINER
+#ifdef SD_MODULE_SPORTSMAN
 /*
 	chprintf((BaseSequentialStream*) &SD1, "Connecting to lag module\r\n");
 	nina_connect("D4CA6EB91DD3", 0); //LAG
 	chThdSleepMilliseconds(2000);
 	chprintf((BaseSequentialStream*) &SD1, "Connecting to rudder module\r\n");
-	nina_connect("D4CA6EBAFDA0", 0); //Rudder
+	nina_connect("CCF957874132", 0); //Rudder
 	chThdSleepMilliseconds(1000);
 	if (remote_lag->is_connected == 1) {
 		nina_get_remote_characs(remote_lag->conn_handle, 0x4A01);
@@ -351,7 +351,7 @@ static THD_FUNCTION(ble_thread, arg) {
 	output->ble = OUTPUT_LAG_BLE;
 #endif
 	while (true) {
-#ifdef SD_MODULE_TRAINER
+#ifdef SD_MODULE_SPORTSMAN
 
 		/* LED timer initialization.*/
 		  chVTObjectInit(&ble_observe_tim);
@@ -387,7 +387,7 @@ while(true){
 			if (remote_rudder->is_connected == 0
 					&& remote_rudder->is_avalible == 1) {
 
-				nina_connect("D4CA6EBAFDA0", 0); //Rudder
+				nina_connect("CCF957874132", 0); //Rudder
 				chThdSleepMilliseconds(1500);
 			}
 			if (remote_heart->is_connected == 0 && remote_heart->is_avalible == 1) {
@@ -410,7 +410,7 @@ while(true){
  *
  */
 void copy_to_ble(void){
-#ifdef SD_MODULE_TRAINER
+#ifdef SD_MODULE_SPORTSMAN
 #ifdef USE_MATH_MODULE
 
 	thdg->value = convert_to_ble_type(lastSensorValues[HDT]);
@@ -564,7 +564,7 @@ uint8_t nina_parse_command(int8_t *strp) {
 	 }*/
 
 	//scan_res = sscanf(strp, "\r\n+UBTD:%12sp,", addr);
-#ifdef SD_MODULE_TRAINER
+#ifdef SD_MODULE_SPORTSMAN
 	if (strstr(strp, "+UBTD:") != NULL) {
 		nina_compare_founded_dev(strp, &ble_remote_dev_list);
 		return;
@@ -576,7 +576,7 @@ uint8_t nina_parse_command(int8_t *strp) {
 			remote_lag->is_avalible = 1;
 			return 1;
 		}
-		scan_res_p = strstr(strp, "D4CA6EBAFDA0");
+		scan_res_p = strstr(strp, "CCF957874132");
 		if (scan_res_p != NULL) {
 			chprintf((BaseSequentialStream*) &SD1,
 					"Scanned available rudder %x\r\n", scan_res_p);
@@ -642,7 +642,7 @@ uint8_t nina_parse_command(int8_t *strp) {
  * @param value
  */
 void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t value){
-#ifdef SD_MODULE_TRAINER
+#ifdef SD_MODULE_SPORTSMAN
 	if ((remote_lag->is_connected == 1) && (remote_lag->conn_handle == conn_handle)){
 #ifdef RAW_BLE_SENSOR_DATA
 		r_lag->meters = (float)((value >> 8) & 0x0000FFFF);
@@ -693,7 +693,7 @@ void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr){
 	memcpy(peer->addr, addr, 12);
 	peer->is_connected = 1;
 	chprintf((BaseSequentialStream*) &SD1, "Connected peer %d %d %s\r\n", peer->conn_handle, peer->type, peer->addr);
-#ifdef SD_MODULE_TRAINER
+#ifdef SD_MODULE_SPORTSMAN
 	output->ble = OUTPUT_BLE;
 #endif
 #ifdef SD_SENSOR_BOX_RUDDER
@@ -711,7 +711,7 @@ void nina_register_peer(uint8_t conn_handle, uint8_t type, int8_t *addr){
  * @param conn_handle
  */
 void nina_unregister_peer(ble_remote_dev_t* devlist, uint8_t conn_handle) {
-#ifdef SD_MODULE_TRAINER
+#ifdef SD_MODULE_SPORTSMAN
 
 	uint8_t i = 0;
 	//int8_t scan_res_p;
@@ -757,7 +757,7 @@ void nina_unregister_peer(ble_remote_dev_t* devlist, uint8_t conn_handle) {
  * @param addr
  */
 void nina_register_remote_dev(ble_remote_dev_t* devlist, uint8_t conn_handle, uint8_t type, int8_t *addr){
-#ifdef SD_MODULE_TRAINER
+#ifdef SD_MODULE_SPORTSMAN
 
 	uint8_t i = 0;
 	int8_t scan_res_p;
@@ -805,7 +805,7 @@ void nina_fill_memory(void){
 	peer = calloc(1, sizeof(ble_peer_t));
 	r_lag = calloc(1, sizeof(lag_t));
 	r_rudder = calloc(1, sizeof(rudder_t));
-#ifdef SD_MODULE_TRAINER
+#ifdef SD_MODULE_SPORTSMAN
 	thdg = calloc(1, sizeof(ble_charac_t));
 	rdr = calloc(1, sizeof(ble_charac_t));
 	twd = calloc(1, sizeof(ble_charac_t));

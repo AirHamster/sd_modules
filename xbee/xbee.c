@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include "calibration.h"
 #include "bmx160_i2c.h"
+#include "microsd.h"
 extern thread_reference_t xbee_trp;
 extern thread_reference_t xbee_poll_trp;
 extern uint8_t payload[];
@@ -24,14 +25,20 @@ extern bmx160_t bmx160;
 uint32_t pacs_per_sec = 0;
 
 const uint8_t xbee_trainer_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x5D};
+const uint8_t xbee_bouy2_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x08};
+
+const uint8_t xbee_sportsmen1_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x94, 0x56};
+const uint8_t xbee_bouy_addr[] = 		{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x38};
+
+
+
+/*
+const uint8_t xbee_bouy_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x5D};
 const uint8_t xbee_sportsmen1_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x08};
 
-const uint8_t xbee_sportsmen2_addr[] =  {0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x38};
-const uint8_t xbee_bouy_addr[] = 		{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x94, 0x56};
-
-
-//const uint8_t xbee_sportsmen2_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x94, 0x56};
-//const uint8_t xbee_bouy_addr[] = 		{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x38};
+const uint8_t xbee_sportsmen2_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x94, 0x56};
+const uint8_t xbee_trainer_addr[] = 		{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x38};
+*/
 
 static xbee_sportsman_data_t sportsman_data[NUM_OF_SPORTSMAN_DEVICES];
 static xbee_bouy_data_t bouy_data[NUM_OF_BOUY_DEVICES];
@@ -54,21 +61,6 @@ static const SPIConfig xbee_spi_cfg = {
 		0
 };
 
-static void xbee_attn_cb(void *arg){
-	(void) arg;
-	//palToggleLine(LINE_ORANGE_LED);
-	//chprintf((BaseSequentialStream*) &SD1, "Rx CB!\r\n");
-
-	if (palReadLine(LINE_SUSART1_RX) == PAL_LOW){
-		chSysLockFromISR();
-
-		//palDisableLineEventI(LINE_SUSART1_RX);
-		//set_timer_interrupt();
-		chSysUnlockFromISR();
-	}
-
-}
-
 int8_t xbee_init_data_structs(xbee_remote_dev_t *dev) {
 
 	int i = 0;
@@ -80,7 +72,7 @@ int8_t xbee_init_data_structs(xbee_remote_dev_t *dev) {
 		dev[i].is_connected = 0;
 		dev[i].heartbit = 0;
 		dev[i].rssi = 0;
-		dev[i].number = i + 1;	//cos 0 - trainer module
+		dev[i].number = i;
 	}
 
 	for (i = NUM_OF_SPORTSMAN_DEVICES; i < (NUM_OF_SPORTSMAN_DEVICES + NUM_OF_BOUY_DEVICES); i++) {
@@ -94,9 +86,11 @@ int8_t xbee_init_data_structs(xbee_remote_dev_t *dev) {
 
 	//Init devices addresses
 	//xbee_load_addresses_from_eeprom();
-	memcpy(dev[0].addr, &xbee_sportsmen1_addr, SIZE_OF_XBEE_ADDR);
-	memcpy(dev[1].addr, &xbee_sportsmen2_addr, SIZE_OF_XBEE_ADDR);
+	//memcpy(dev[0].addr, &xbee_sportsmen1_addr, SIZE_OF_XBEE_ADDR);
+	memcpy(dev[1].addr, &xbee_sportsmen1_addr, SIZE_OF_XBEE_ADDR);
+	//memcpy(dev[2].addr, &xbee_sportsmen1_addr, SIZE_OF_XBEE_ADDR);
 	memcpy(dev[10].addr, &xbee_bouy_addr, SIZE_OF_XBEE_ADDR);
+	memcpy(dev[11].addr, &xbee_bouy2_addr, SIZE_OF_XBEE_ADDR);
 	return 0;
 }
 
@@ -115,7 +109,7 @@ static THD_FUNCTION(xbee_meas_thread, p) {
 
 thread_reference_t xbee_trp = NULL;
 
-static THD_WORKING_AREA(xbee_thread_wa, 1024);
+static THD_WORKING_AREA(xbee_thread_wa, 1024*5);
 static THD_FUNCTION(xbee_thread, p) {
 	(void) p;
 	msg_t msg;
@@ -134,39 +128,45 @@ static THD_FUNCTION(xbee_thread, p) {
 	spiStart(&XBEE_IF, &xbee_spi_cfg);
 
 	palClearLine(LINE_RF_868_RST);
-	chThdSleepMilliseconds(100);
+	chThdSleepMilliseconds(1000);
 	palSetLine(LINE_RF_868_RST);
-	chThdSleepMilliseconds(100);
+	chThdSleepMilliseconds(1000);
 	if (!palReadLine(LINE_RF_868_SPI_ATTN)) {
 		xbee_polling();
 	}
 
 	xbee->tx_ready = 1;
 	while (true) {
+/*
 
-		if (!palReadLine(LINE_RF_868_SPI_ATTN)) {
+		*/
+		//chThdSleepMilliseconds(15);
+		eventmask_t evt = chEvtWaitAnyTimeout(ALL_EVENTS, TIME_MS2I(50));
+
+		if (evt & EVENT_MASK(XBEE_ATTN_MASK)) {
+			xbee_polling();
+		} else if (evt == 0) {
+			if (!palReadLine(LINE_RF_868_SPI_ATTN)) {
 				xbee_polling();
 			}
-		chThdSleepMilliseconds(5);
+		}
 
 		/*
 		while (!palReadLine(LINE_RF_868_SPI_ATTN)) {
 			xbee_polling();
 		}
 
-		eventmask_t evt = chEvtWaitAny(ALL_EVENTS);
 
 
 
-		 if (evt & EVENT_MASK(XBEE_ATTN_MASK)) {
-		 xbee_polling();
-		 }
+
+
 */
 	}
 }
 
 void start_xbee_module(void){
-	chThdCreateStatic(xbee_thread_wa, sizeof(xbee_thread_wa), NORMALPRIO,
+	chThdCreateStatic(xbee_thread_wa, sizeof(xbee_thread_wa), NORMALPRIO + 6,
 				xbee_thread, NULL);
 
 #ifdef SD_MODULE_TRAINER
@@ -189,7 +189,7 @@ void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff)
 	    chprintf((BaseSequentialStream*)&SD1, "\n\r");
 */
 	    xbee_send(SPID, txbuff, len);
-		chThdSleepMilliseconds(10);
+		chThdSleepMilliseconds(1);
 		xbee_receive(SPID, rxlen, rxbuff);
 		spiReleaseBus(SPID); // Ownership release.
 }
@@ -329,7 +329,7 @@ void xbee_receive(SPIDriver *SPID, uint8_t len, uint8_t *rxbuf){
 	memset(txbuf, 0xff, len);
 	spiAcquireBus(SPID);              	/* Acquire ownership of the bus.    */
 	palClearLine(LINE_RF_868_CS);
-	chThdSleepMilliseconds(1);
+	chThdSleepMicroseconds(50);
 	spiExchange(SPID, len, txbuf, rxbuf); // Atomic transfer operations.
 	spiReleaseBus(SPID); 				/* Ownership release.               */
 	palSetLine(LINE_RF_868_CS);
@@ -340,11 +340,11 @@ void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len){
 	//palSetLine(LINE_RED_LED);
 	spiAcquireBus(SPID);              	/* Acquire ownership of the bus.    */
 	palClearLine(LINE_RF_868_CS);
-	chThdSleepMilliseconds(1);
+	chThdSleepMicroseconds(50);
 	spiSend(SPID, len, txbuf);
 	//spiExchange(SPID, 8, rxbuf, txbuf); 			/* Atomic transfer operations.      */
 	spiReleaseBus(SPID); 				/* Ownership release.               */
-	chThdSleepMilliseconds(1);
+	//chThdSleepMilliseconds(1);
 	palSetLine(LINE_RF_868_CS);
 	//chThdSleepMilliseconds(1);
 	//palClearLine(LINE_RED_LED);
@@ -358,7 +358,7 @@ void xbee_read_no_cs(SPIDriver *SPID, uint8_t len, uint8_t *rxbuff){
 	if(palReadLine(LINE_RF_868_CS))
 	{
 		palClearLine(LINE_RF_868_CS);
-		chThdSleepMilliseconds(1);
+		chThdSleepMicroseconds(50);
 	}else{
 		palClearLine(LINE_RF_868_CS);
 	}
@@ -386,7 +386,7 @@ void xbee_read_release_cs(SPIDriver *SPID, uint8_t len, uint8_t *rxbuff){
 	spiExchange(SPID, len, txbuff, rxbuff); 			/* Atomic transfer operations.      */
 	spiReleaseBus(SPID); 				/* Ownership release.               */
 	palSetLine(LINE_RF_868_CS);
-	chThdSleepMilliseconds(1);
+	//chThdSleepMilliseconds(1);
 }
 
 uint8_t xbee_check_attn(void){
@@ -840,8 +840,8 @@ void xbee_polling(void){
 					xbee_process_remote_response_frame(message);
 					break;
 				default:
-					xbee_flush_frame(message);
-					return;
+					//xbee_flush_frame(message);
+					//return;
 					break;
 				}
 				return;
@@ -1008,6 +1008,7 @@ void xbee_process_receive_packet_frame(uint8_t* buffer){
 	uint8_t i;
 	memset(rxbuff, 0, RF_PACK_LEN + 1);
 	xbee_read_release_cs(&SPID1, payload_len + 1, rxbuff);
+	palToggleLine(LINE_GREEN_LED);
 	//chprintf(SHELL_IFACE, "Received packet\r\n ");
 	xbee_parse_rf_packet(rxbuff);
 	if (xbee->loopback_mode){
@@ -1139,7 +1140,7 @@ void xbee_parse_gps_packet(uint8_t *rxbuff){
 	chSemWait(&usart1_semaph);
 	if(memcmp(rxbuff, &xbee_sportsmen1_addr, sizeof(xbee_sportsmen1_addr))){
 		chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame from sportsmen 1 \r\n");
-	}else if(memcmp(rxbuff, &xbee_sportsmen2_addr, sizeof(xbee_sportsmen2_addr))){
+	}else if(memcmp(rxbuff, &xbee_bouy2_addr, sizeof(xbee_bouy2_addr))){
 		chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame from sportsmen 2 \r\n");
 	}else if(memcmp(rxbuff, &xbee_bouy_addr, sizeof(xbee_bouy_addr))){
 		chprintf((BaseSequentialStream*)&SD1, "\r\nResieved xbee frame from bouy \r\n");
@@ -1231,15 +1232,15 @@ void xbee_parse_calib_write_packet_from_trainer(uint8_t *rxbuff)
 		calib_update_wind_correction(0, calib_val);
 			break;
 	case RF_CALIB_WINDOW_1:
-		calib_val_i = rxbuff[12];
+		calib_val_i = (uint8_t)calib_val;
 		calib_update_window_size_1(0, calib_val_i);
 			break;
 	case RF_CALIB_WINDOW_2:
-		calib_val_i = rxbuff[12];
+		calib_val_i = (uint8_t)calib_val;
 		calib_update_window_size_2(0, calib_val_i);
 			break;
 	case RF_CALIB_WINDOW_3:
-		calib_val_i = rxbuff[12];
+		calib_val_i = (uint8_t)calib_val;
 		calib_update_window_size_3(0, calib_val_i);
 			break;
 	case RF_CALIB_RUDDER_LEFT:
@@ -1258,6 +1259,7 @@ void xbee_parse_calib_write_packet_from_trainer(uint8_t *rxbuff)
 	default:
 		break;
 	}
+	fsm_new_state(MICROSD_CLOSE_LOG);
 }
 
 void xbee_process_explicit_rx_frame(uint8_t* buffer){

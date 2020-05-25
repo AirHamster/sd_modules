@@ -22,7 +22,7 @@ void start_windsensor_module(void);
 
 typedef struct{
 	float speed;
-	uint16_t direction;
+	int16_t direction;
 }windsensor_t;
 
 #endif /* SD_MODULES_WINDSENSOR_WINDSENSOR_H_ */

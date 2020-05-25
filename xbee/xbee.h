@@ -253,7 +253,7 @@ typedef struct {
 	uint16_t tenso_3;
 	uint16_t tenso_4;
 	uint16_t dist;
-	uint16_t wind_direction;
+	int16_t wind_direction;
 	uint8_t hour;
 	uint8_t min;
 	uint8_t sec;

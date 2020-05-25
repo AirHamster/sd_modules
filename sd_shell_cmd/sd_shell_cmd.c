@@ -201,7 +201,7 @@ void start_json_module(void){
 	trainer_dev.rf_data = &trainer_data;
 	trainer_dev.type = DEV_TYPE_TRAINER;
 	trainer_dev.number = 0;
-	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO + 4, output_thread, NULL);
+	chThdCreateStatic(output_thread_wa, sizeof(output_thread_wa), NORMALPRIO + 12, output_thread, NULL);
 }
 
 /*
@@ -215,8 +215,6 @@ static THD_FUNCTION(output_thread, arg) {
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 
 	while (true) {
-		//wdgReset(&WDGD1);
-		//palToggleLine(LINE_GREEN_LED);
 		chThdSleepMilliseconds(5);
 #ifdef USE_BNO055_MODULE
 		switch (output->type){
@@ -296,7 +294,16 @@ static THD_FUNCTION(output_thread, arg) {
 			break;
 		}
 #endif
+#ifdef SD_MODULE_TRAINER
 		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(100));
+#endif
+#ifdef SD_MODULE_SPORTSMAN
+		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(250));
+#endif
+
+#ifdef SD_MODULE_BUOY
+		prev = chThdSleepUntilWindowed(prev, prev + TIME_MS2I(1000));
+#endif
 	}
 }
 
@@ -439,7 +446,7 @@ void send_data(uint8_t stream) {
 #endif
 
 #ifdef SD_MODULE_BUOY
-	xbee_send_rf_message(&xbee_bouy_data, RF_BOUY_PACKET);
+	xbee_send_rf_message(&xbee_trainer_addr[0], &xbee_bouy_data, RF_BOUY_PACKET);
 #endif
 
 }
@@ -478,7 +485,7 @@ void send_json(void) {
 
 #ifdef SD_MODULE_TRAINER
 	json_print_remote_dev_data(&trainer_dev);
-
+/*
 	xbee_sportsman_data_t *sdata = remote_dev[0].rf_data;
 
 	xbee_bouy_data_t *bdata = remote_dev[10].rf_data;
@@ -493,6 +500,7 @@ void send_json(void) {
 
 	bdata2->lat = 2 * 10000000;
 	bdata2->lon = 2 * 10000000;
+	*/
 /*
 	remote_dev[0].heartbit = 2;
 	remote_dev[10].heartbit = 2;

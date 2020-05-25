@@ -55,9 +55,12 @@ static THD_FUNCTION(wind_thread, p){
 	chSemWait(&usart1_semaph);
 	chprintf((BaseSequentialStream*)&SD1, "Wind thd");
 	chSemSignal(&usart1_semaph);
+
+	wind->direction = -1;
+	wind->speed = -1.0;
 	memset(str, 0, 64);
 	while (true) {
-		token = sdGet(&SD8);
+		token = sdGet(&SD3);
 			str[i] = token;
 			if (str[i] == '\n'){
 
@@ -82,7 +85,7 @@ static THD_FUNCTION(wind_thread, p){
 void start_windsensor_module(void)
 {
 
-	sdStart(&SD8, &wind_uart_cfg);
+	sdStart(&SD3, &wind_uart_cfg);
 	chThdCreateStatic(wind_thread_wa, sizeof(wind_thread_wa), NORMALPRIO, wind_thread, NULL);
 
 }

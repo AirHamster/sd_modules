@@ -38,6 +38,9 @@ extern struct bmm150_dev bmm;
 extern volatile float beta;
 #endif
 
+#include "calibration.h"
+
+extern calib_parameters_t calibrations;
 microsd_t *microsd;
 microsd_fsm_t *microsd_fsm;
 extern lag_t *r_lag;
@@ -71,7 +74,7 @@ static FIL logfile;   /* file object */
 static FIL calibfile; //file with calibration data update info
 static uint8_t path_to_calibfile[32];
 static uint8_t path_to_file[32];
-
+uint8_t megastring[256];
 extern lag_t *r_lag;
 extern rudder_t *r_rudder;
 
@@ -322,19 +325,36 @@ FRESULT err;
 	 * On insertion SDC initialization and FS mount.
 	 */
 
-	chprintf((BaseSequentialStream*) &SD1, "FS: mmcConnect\r\n");
-	chThdSleepMilliseconds(110);
-#if HAL_USE_SDC
-	if (sdcConnect(&SDCD1))
-#else
+	//chprintf((BaseSequentialStream*) &SD1, "FS: mmcConnect\r\n");
+	chThdSleepMilliseconds(1000);
+//#if HAL_USE_SDC
+//	if (sdcConnect(&SDCD1))
+//#else
 	if (mmcConnect(&MMCD1))
-#endif
-		return;
+//#endif
+	//	return;
+	//chSemWait(&usart1_semaph);
 	chprintf((BaseSequentialStream*) &SD1, "FS: trying to mounting\r\n");
-	chThdSleepMilliseconds(110);
+	//chSemSignal(&usart1_semaph);
+	//chThdSleepMilliseconds(110);
 	err = f_mount(&SDC_FS, "/", 1);
+
+	if (err == FR_NOT_READY) {
+		err = f_mount(0, "/", 0);
+
+	//	chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*) &SD1, "FS: mounted successfully\r\n");
+		chThdSleepMilliseconds(110);
+		err = f_mount(&SDC_FS, "/", 0);
+	//	chSemSignal(&usart1_semaph);
+		return;
+	}
+
 	if (err != FR_OK) {
+		//chSemWait(&usart1_semaph);
 		chprintf((BaseSequentialStream*) &SD1, "FS: error mounting %d\r\n", err);
+		err = f_mount(&SDC_FS, "/", 1);
+	//	chSemSignal(&usart1_semaph);
 #if HAL_USE_SDC
 		sdcDisconnect(&SDCD1);
 #else
@@ -343,7 +363,6 @@ FRESULT err;
 		return;
 	}
 	fs_ready = TRUE;
-	chprintf((BaseSequentialStream*) &SD1, "FS: mounted successfully\r\n");
 	}
 
 void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]) {
@@ -556,13 +575,12 @@ static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
 	FRESULT res;
 	FILINFO fno;
 	int written = 0;
-	uint8_t megastring[256];
 	if (microsd->file_created != 0) {
 	memset(megastring, 0, 256);
-	sprintf((char*)megastring, "%d-%d,%d,%d,%d,%f,%f,%f,%d,%d,%f,%f,%d,%f,%d,%f,%f\r\n",
+	sprintf((char*)megastring, "%d-%d,%d,%d,%d,%.7f,%.7f,%f,%d,%d,%f,%f,%d,%f,%d,%f,%f\r\n",
 			pvt_box->month, pvt_box->day, pvt_box->hour, pvt_box->min, pvt_box->sec, pvt_box->lat / 10000000.0f, pvt_box->lon / 10000000.0f,
-			(float) (pvt_box->gSpeed * 0.0036), (uint16_t) (pvt_box->headMot / 100000), (uint16_t)bmx160.yaw, bno055->d_euler_hpr.p,
-			bno055->d_euler_hpr.r, wind->direction, wind->speed, pvt_box->numSV, r_rudder->degrees, r_lag->meters);
+			(float) (pvt_box->gSpeed * 0.0036), (uint16_t) (pvt_box->headMot / 100000), (uint16_t)bmx160.yaw, bmx160.pitch,
+			bmx160.roll, wind->direction, wind->speed, pvt_box->numSV, r_rudder->degrees, r_lag->meters);
 
 	f_lseek(&logfile, f_size(&logfile));
 	written = f_puts((char*)megastring, &logfile);
@@ -602,15 +620,54 @@ static void microsd_write_calibration_header(BaseSequentialStream *chp) {
 	int written;
 	f_lseek(&logfile, f_size(&logfile));
 	//if (microsd->file_created == 0) {
-	written = f_printf(&logfile, "#Calibration parameters\r\n");
-	written = f_printf(&logfile, "CompassCorrection:%f\tWindCorrection:%f\r\n",paramSD.CompassCorrection, paramSD.WindCorrection);
-	written = f_printf(&logfile, "MagneticDeclanation:%f\tHSPCorrection:%f\r\n",paramSD.MagneticDeclanation,paramSD.HSPCorrection);
-	written = f_printf(&logfile, "HeelCorrection:%f\tPitchCorrection:%f\r\n",paramSD.HeelCorrection, paramSD.PitchCorrection);
-	written = f_printf(&logfile, "WindowSize1:%d\tWindowSize2:%d\r\n", paramSD.WindowSize1, paramSD.WindowSize2);
-	written = f_printf(&logfile, "WindowSize3:%d\tRudderLeftNative:%f\r\n", paramSD.WindowSize3, r_rudder->native);
-	written = f_printf(&logfile, "RudderLeftDegrees:%f\tRudderCenterNative:%f\r\n", r_rudder->min_degrees, r_rudder->center_native);
-	written = f_printf(&logfile, "RudderCenterDegrees:%f\tRudderRightNative:%d\r\n", r_rudder->center_degrees, r_rudder->max_native);
-	written = f_printf(&logfile, "RudderRightDegrees:%f\r\n", r_rudder->max_degrees);
+
+	memset(megastring, 0, 256);
+	sprintf((char*) megastring, "#Calibration parameters\r\n");
+	f_lseek(&logfile, f_size(&logfile));
+	written = f_puts((char*) megastring, &logfile);
+	memset(megastring, 0, 256);
+	//written = f_printf(&logfile, "#Calibration parameters\r\n");
+	sprintf((char*) megastring, "CompassCorrection:%f\tWindCorrection:%f\r\n",
+			calibrations.CompassCorrection, calibrations.WindCorrection);
+	f_lseek(&logfile, f_size(&logfile));
+	written = f_puts((char*) megastring, &logfile);
+	memset(megastring, 0, 256);
+	sprintf((char*) megastring, "MagneticDeclanation:%f\tHSPCorrection:%f\r\n",
+			calibrations.MagneticDeclanation, calibrations.HSPCorrection);
+	f_lseek(&logfile, f_size(&logfile));
+	written = f_puts((char*) megastring, &logfile);
+	memset(megastring, 0, 256);
+	sprintf((char*) megastring, "HeelCorrection:%f\tPitchCorrection:%f\r\n",
+			calibrations.HeelCorrection, calibrations.PitchCorrection);
+	f_lseek(&logfile, f_size(&logfile));
+	written = f_puts((char*) megastring, &logfile);
+	memset(megastring, 0, 256);
+	sprintf((char*) megastring, "WindowSize1:%d\tWindowSize2:%d\r\n",
+			calibrations.WindowSize1, calibrations.WindowSize2);
+	f_lseek(&logfile, f_size(&logfile));
+	written = f_puts((char*) megastring, &logfile);
+	memset(megastring, 0, 256);
+	sprintf((char*) megastring, "WindowSize3:%d\tRudderLeftNative:%f\r\n",
+			calibrations.WindowSize3, r_rudder->native);
+	f_lseek(&logfile, f_size(&logfile));
+	written = f_puts((char*) megastring, &logfile);
+	memset(megastring, 0, 256);
+	sprintf((char*) megastring,
+			"RudderLeftDegrees:%f\tRudderCenterNative:%f\r\n",
+			r_rudder->min_degrees, r_rudder->center_native);
+	f_lseek(&logfile, f_size(&logfile));
+	written = f_puts((char*) megastring, &logfile);
+	memset(megastring, 0, 256);
+	sprintf((char*) megastring,
+			"RudderCenterDegrees:%f\tRudderRightNative:%d\r\n",
+			r_rudder->center_degrees, r_rudder->max_native);
+	f_lseek(&logfile, f_size(&logfile));
+	written = f_puts((char*) megastring, &logfile);
+	memset(megastring, 0, 256);
+	sprintf((char*) megastring, "RudderRightDegrees:%f\r\n",
+			r_rudder->max_degrees);
+	f_lseek(&logfile, f_size(&logfile));
+	written = f_puts((char*) megastring, &logfile);
 
 	if (written == -1) {
 		chprintf(chp, "\r\nWriting failed. No card inserted or corrupted FS\r\n");
@@ -621,7 +678,7 @@ static void microsd_write_calibration_header(BaseSequentialStream *chp) {
 	//}
 }
 void start_microsd_module(void) {
-	chThdCreateStatic(microsd_thread_wa, sizeof(microsd_thread_wa), NORMALPRIO + 4, microsd_thread, NULL);
+	chThdCreateStatic(microsd_thread_wa, sizeof(microsd_thread_wa), NORMALPRIO + 7, microsd_thread, NULL);
 }
 
 static void write_test_file(BaseSequentialStream *chp) {
@@ -688,12 +745,12 @@ static int8_t microsd_add_new_calibfile(FIL *file) {
 			f_printf(&calibfile,
 					"%d,%d,%d,%d,%d,%d,%f,%f,%f,%f,%f,%f,%f,%d,%d,%d,%d,%d,%d,%f,%f,%f,%f\r\n",
 					pvt_box->year, pvt_box->month, pvt_box->day, pvt_box->hour,
-					pvt_box->min, pvt_box->sec, paramSD.CompassCorrection,
-					paramSD.HSPCorrection, paramSD.MagneticDeclanation,
-					paramSD.HeelCorrection, paramSD.PitchCorrection,
-					paramSD.RudderCorrection, paramSD.WindCorrection,
-					paramSD.WindowSize1, paramSD.WindowSize2,
-					paramSD.WindowSize3, r_rudder->min_native,
+					pvt_box->min, pvt_box->sec, calibrations.CompassCorrection,
+					calibrations.HSPCorrection, calibrations.MagneticDeclanation,
+					calibrations.HeelCorrection, calibrations.PitchCorrection,
+					calibrations.RudderCorrection, calibrations.WindCorrection,
+					calibrations.WindowSize1, calibrations.WindowSize2,
+					calibrations.WindowSize3, r_rudder->min_native,
 					r_rudder->center_native, r_rudder->max_native,
 					r_rudder->min_degrees, r_rudder->center_degrees,
 					r_rudder->max_degrees, r_lag->calib_num);
@@ -724,7 +781,7 @@ static void microsd_open_logfile(BaseSequentialStream *chp) {
 	i = 1;
 
 	if ((pvt_box->valid & (1 << 2)) == 0) {
-		return;
+		//return;
 }
 	if (microsd->file_created == 0) {
 
@@ -739,9 +796,10 @@ static void microsd_open_logfile(BaseSequentialStream *chp) {
 			microsd_create_filename(i, path_to_file);
 			err = f_open(&logfile, path_to_file,
 					FA_READ | FA_WRITE | FA_CREATE_NEW);
-			microsd_write_calibration_header(SHELL_IFACE);
-			microsd_write_logfile_header(SHELL_IFACE);
+
 		}
+		microsd_write_calibration_header(SHELL_IFACE);
+		microsd_write_logfile_header(SHELL_IFACE);
 	} else {
 		err = f_open(&logfile, path_to_file,
 				FA_READ | FA_WRITE | FA_OPEN_APPEND);
@@ -874,10 +932,23 @@ static char* fresult_str(FRESULT stat) {
 }
 
 static int8_t microsd_create_filename(uint16_t iteration, uint8_t *name_str){
-	uint8_t buffer[10];
-	memset(buffer, 0, 10);
+	uint8_t buffer[100];
+	memset(buffer, 0, 100);
 
 	itoa(iteration, (char*) buffer, 10);
+
+#ifdef SD_MODULE_SPORTSMAN
+	strcat(buffer, "_sportsman");
+#endif
+
+#ifdef SD_MODULE_TRAINER
+	strcat(buffer, "_coach");
+#endif
+
+#ifdef SD_MODULE_BOUY
+	strcat(buffer, "_bouy");
+#endif
+
 	strcat(buffer, ".csv");
 	memcpy(name_str, buffer, strlen(buffer));
 	return 0;
