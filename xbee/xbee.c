@@ -56,7 +56,7 @@ static const SPIConfig xbee_spi_cfg = {
 		NULL,
 		GPIOA,
 		GPIOA_RF_868_CS,
-		SPI_CR1_BR_2 | SPI_CR1_BR_1 | SPI_CR1_BR_0,	//FPCLK1 is 54 MHZ. XBEE support 3.5 max, so divide it by 16
+		SPI_CR1_BR_1 | SPI_CR1_BR_0,	//FPCLK1 is 54 MHZ. XBEE support 3.5 max, so divide it by 16
 		//  0,
 		0
 };
