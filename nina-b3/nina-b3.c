@@ -180,6 +180,7 @@ ble_charac_t *charac_array[NUM_OF_CHARACTS];
 
 ble_remote_t *remote_lag;
 ble_remote_t *remote_rudder;
+ble_remote_t *remote_tenso_1;
 ble_remote_t *remote_wind;
 ble_remote_t *remote_heart;
 #include "adc.h"
@@ -213,6 +214,10 @@ ble_charac_t *charac_array[NUM_OF_CHARACTS];
 extern output_t *output;
 lag_t *r_lag;
 rudder_t *r_rudder;
+#include "tenso.h"
+tenso_data_t *r_tenso_1;
+uint8_t heart_beat;
+
 ble_temp_charac_t *charac_temporary;
 ble_peer_t *peer;
 ble_t *ble;
@@ -273,9 +278,9 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		megastring[i] = token;
 		i++;
 
-		chSemWait(&usart1_semaph);
-		chprintf((BaseSequentialStream*) &SD1, "%c", token);
-		chSemSignal(&usart1_semaph);
+		//chSemWait(&usart1_semaph);
+		//chprintf((BaseSequentialStream*) &SD1, "%c", token);
+		//chSemSignal(&usart1_semaph);
 
 		if (token == '\r' || token == '+'){
 			str_flag = 1;
@@ -373,7 +378,7 @@ while(true){
 		remote_rudder->is_avalible = 0;
 		remote_heart->is_avalible = 0;
 
-		if (remote_lag->is_connected == 0 || remote_rudder->is_connected == 0 || remote_heart->is_connected == 0) {
+		if (remote_lag->is_connected == 0 || remote_rudder->is_connected == 0 || remote_heart->is_connected == 0 | remote_tenso_1->is_connected == 0) {
 
 			chprintf(NINA_IFACE, "AT+UBTD=2,1,2000\r");
 			chThdSleepMilliseconds(2500);
@@ -668,6 +673,15 @@ void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t v
 		//	chSemWait(&usart1_semaph);
 	//	chprintf((BaseSequentialStream*) &SD1, "R rdr %f\r\n", r_rudder->degrees);
 	//	chSemSignal(&usart1_semaph);
+	} else if ((remote_tenso_1->is_connected == 1) && (remote_tenso_1->conn_handle == conn_handle)){
+		r_tenso_1->adc_native = (uint16_t)((value >> 8) & 0x0000FFFF);
+		r_tenso_1->kilograms = 	r_tenso_1->adc_native * 500 / 4096;
+	} else if ((remote_heart->is_connected == 1) && (remote_heart->conn_handle == conn_handle)){
+		if ((value & 0xFF000000) == 0x10000000) { //parse only short notifications
+		heart_beat = (value & 0x00FF0000) >> 16;// (uint16_t)((value >> 8) & 0x0000FFFF);
+		chprintf((BaseSequentialStream*) &SD1, "Heart rate %d\r\n", heart_beat);
+		//r_tenso_1->kilograms = 	r_tenso_1->adc_native * 500 / 4096;
+		}
 	}
 #endif
 }
@@ -678,7 +692,7 @@ void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t v
  * @param type
  */
 void nina_connect(uint8_t *addr, uint8_t type){
-	chprintf(NINA_IFACE, "AT+UBTACLC=%s,%d\r", addr, type);
+	chprintf(NINA_IFACE, "AT+UBTACLC=%sr,%d\r", addr, type);
 }
 
 /**
@@ -725,6 +739,13 @@ void nina_unregister_peer(ble_remote_dev_t* devlist, uint8_t conn_handle) {
 			devlist[i].connected = 0;
 			devlist[i].charac.conn_handle = 99;
 			devlist[i].conn_type = 0;
+			if (i == 0){
+				remote_rudder->is_connected = 0;
+			}else if (i == 2){
+				remote_tenso_1->is_connected = 0;
+			}else if (i == 6){
+				remote_heart->is_connected = 0;
+			}
 			//nina_get_remote_characs(devlist[i].charac.conn_handle, 0x4A01);	//TODO: uuid not used, should be removed
 			return;
 		}
@@ -768,10 +789,24 @@ void nina_register_remote_dev(ble_remote_dev_t* devlist, uint8_t conn_handle, ui
 				devlist[i].charac.conn_handle = conn_handle;
 				devlist[i].conn_type = type;
 				chprintf((BaseSequentialStream*) &SD1, "Connected to %s with conn_handle %d, conn_type %d (addr: %s)\r\n", devlist[i].ascii_name, devlist[i].charac.conn_handle, devlist[i].conn_type, devlist[i].addr);
-				nina_get_remote_characs(devlist[i].charac.conn_handle, 0x4A01);	//TODO: uuid not used, should be removed
+
+				if (i == 0){
+					remote_rudder->is_connected = 1;
+					remote_rudder->conn_handle = conn_handle;
+					nina_get_remote_characs(devlist[i].charac.conn_handle, 0x4A01);	//TODO: uuid not used, should be removed
+				}else if (i == 2){
+					remote_tenso_1->is_connected = 1;
+					remote_tenso_1->conn_handle = conn_handle;
+					nina_get_remote_characs(devlist[i].charac.conn_handle, 0x4A01);	//TODO: uuid not used, should be removed
+				}else if (i == 6){
+					remote_heart->is_connected = 1;
+					remote_heart->conn_handle = conn_handle;
+					nina_get_remote_characs_heart_rate(devlist[i].charac.conn_handle, 0x4A01);	//TODO: uuid not used, should be removed
+				}
 				return;
 		}
 	}
+
 	nina_register_peer(conn_handle, type, addr);
 			output->ble = OUTPUT_BLE;
 		//	toggle_test_output();
@@ -797,6 +832,15 @@ void nina_get_remote_characs(uint16_t handle, uint16_t uuid){
 	chprintf(NINA_IFACE, "AT+UBTGWC=%d,%d,%d\r", handle, 33, 1);
 }
 
+void nina_get_remote_characs_heart_rate(uint16_t handle, uint16_t uuid){
+	chprintf(NINA_IFACE, "AT+UBTGDP=%d\r", handle);
+	chThdSleepMilliseconds(300);
+	chprintf(NINA_IFACE, "AT+UBTGDCS=%d,%d,%d\r", handle, 14, 19);
+	chThdSleepMilliseconds(300);
+	chprintf(NINA_IFACE, "AT+UBTGDCD=%d,%d,%d\r", handle, 16, 19);
+	chThdSleepMilliseconds(300);
+	chprintf(NINA_IFACE, "AT+UBTGWC=%d,%d,%d\r", handle, 17, 1);
+}
 /**
  *
  */
@@ -805,6 +849,7 @@ void nina_fill_memory(void){
 	peer = calloc(1, sizeof(ble_peer_t));
 	r_lag = calloc(1, sizeof(lag_t));
 	r_rudder = calloc(1, sizeof(rudder_t));
+	r_tenso_1 = calloc(1, sizeof(tenso_data_t));
 #ifdef SD_MODULE_SPORTSMAN
 	thdg = calloc(1, sizeof(ble_charac_t));
 	rdr = calloc(1, sizeof(ble_charac_t));
@@ -820,6 +865,7 @@ void nina_fill_memory(void){
 	remote_rudder = calloc(1, sizeof(ble_remote_t));
 	remote_wind = calloc(1, sizeof(ble_remote_t));
 	remote_heart = calloc(1, sizeof(ble_remote_t));
+	remote_tenso_1 = calloc(1, sizeof(ble_remote_t));
 
 	charac_array[0] = thdg;
 	charac_array[1] = rdr;
@@ -994,6 +1040,10 @@ int8_t nina_init_devices(ble_remote_dev_t *devlist) {
  * @return
  */
 uint8_t nina_init_services(void){
+
+	chThdSleepMilliseconds(1000);
+	chprintf(NINA_IFACE, "AT+CGMR\r");
+	chThdSleepMilliseconds(1000);
 	chprintf(NINA_IFACE, "AT+UBTLE=1\r");
 	if (nina_wait_response("+UBTLE\r") != NINA_SUCCESS) {
 		return -1;

@@ -59,7 +59,7 @@ void start_tenso_module(void){
 int8_t tenso_read_coefs_from_eeprom(tenso_data_t *tenso_data){
 
 	int8_t result = 0;
-
+/*
 	result |= eeprom_read(EEPROM_TENSO_COEF_KILOGRAMS, &tenso_data->coef_kilograms, sizeof(float));
 	result |= eeprom_read(EEPROM_TENSO_COEF_NEWTONS, &tenso_data->coef_newton, sizeof(float));
 	result |= eeprom_read(EEPROM_TENSO_POINT_ONE_KILOGRAMS, &tenso_data->point_one_kgs, sizeof(float));
@@ -68,13 +68,13 @@ int8_t tenso_read_coefs_from_eeprom(tenso_data_t *tenso_data){
 	result |= eeprom_read(EEPROM_TENSO_POINT_ONE_NATIVE, &tenso_data->point_one_native, sizeof(uint16_t));
 	result |= eeprom_read(EEPROM_TENSO_POINT_TWO_NATIVE, &tenso_data->point_two_native, sizeof(uint16_t));
 
-
+*/
 	return result;
 
 }
 
 int8_t tenso_write_coefs_to_eeprom(tenso_data_t *tenso_data){
-
+/*
 	int8_t result = 0;
 	chThdSleepMilliseconds(10);
 	result |= eeprom_write(EEPROM_TENSO_COEF_KILOGRAMS, &tenso_data->coef_kilograms, sizeof(float));
@@ -91,7 +91,7 @@ int8_t tenso_write_coefs_to_eeprom(tenso_data_t *tenso_data){
 	chThdSleepMilliseconds(10);
 	result |= eeprom_write(EEPROM_TENSO_OFFSET, &tenso_data->offset, sizeof(float));
 	return result;
-
+*/
 }
 
 float tenso_calculate_kilograms(tenso_data_t *tenso_data){

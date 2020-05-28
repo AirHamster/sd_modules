@@ -29,7 +29,7 @@
 
 #define BLE_RDR_ADDR		"CCF957874132"
 #define BLE_LOG_ADDR		"D4CA6EB91DD3"
-#define BLE_HEART_ADDR		"E0A11511A663"
+#define BLE_HEART_ADDR		"EBBEF86274F5"
 
 #define BLE_TENSO1_ADDR		"CCF957874018"
 #define BLE_TENSO2_ADDR		"D4CA6EB91D02"
@@ -268,3 +268,5 @@ int8_t nina_init_devices(ble_remote_dev_t *devlist);
  */
 int8_t nina_compare_founded_dev(uint8_t *strp, ble_remote_dev_t *devlist);
 #endif /* SD_MODULES_NINA_B3_NINA_B3_H_ */
+
+void nina_get_remote_characs_heart_rate(uint16_t handle, uint16_t uuid);

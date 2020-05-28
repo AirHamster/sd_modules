@@ -723,7 +723,7 @@ void xbee_send_rf_message(uint8_t *address, void *packet, uint8_t packet_type){
 	pack_len = xbee_create_data_write_message(txbuff_for_tx, packet, &addr, packet_type);
 	//chThdSleepMilliseconds(500);
 
-	if (xbee->tx_ready)
+//	if (xbee->tx_ready)
 	{
 		//chprintf(SHELL_IFACE, "sending rf message\r\n");
 		xbee_send(&SPID1, txbuff_for_tx, pack_len);
