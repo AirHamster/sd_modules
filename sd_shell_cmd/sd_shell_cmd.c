@@ -106,6 +106,7 @@ coefs_t *r_rudder_coefs;
 #endif
 #include "calibration.h"
 thread_t *charger_trp;
+#include "tenso.h"
 
 extern struct ch_semaphore usart1_semaph;
 #ifdef USE_BLE_MODULE
@@ -130,6 +131,9 @@ thread_reference_t output_trp = NULL;
 static THD_WORKING_AREA(output_thread_wa, 1024*4);
 static THD_FUNCTION(output_thread, arg);
 extern const uint8_t xbee_trainer_addr[];
+extern uint8_t heart_beat;
+extern tenso_data_t *r_tenso_1;
+
 static const ShellCommand commands[] = {
 		{ "start", cmd_start },
 		{ "c", cmd_c },
@@ -418,10 +422,11 @@ void send_data(uint8_t stream) {
 	xbee_sportsman_data.speed = (float) (pvt_box->gSpeed * 0.0036);
 //	xbee_sportsman_data.rdr = r_rudder->native;
 //	xbee_sportsman_data.log = r_lag->meters;
-	xbee_sportsman_data.tenso_1 = 0;
+	xbee_sportsman_data.tenso_1 = (uint16_t)r_tenso_1->kilograms;
 	xbee_sportsman_data.tenso_2 = 0;
 	xbee_sportsman_data.tenso_3 = 0;
 	xbee_sportsman_data.tenso_4 = 0;
+	xbee_sportsman_data.heart_beat = heart_beat;
 	xbee_sportsman_data.dist = tx_box->dist;
 	xbee_sportsman_data.hour = pvt_box->hour;
 	xbee_sportsman_data.min = pvt_box->min;

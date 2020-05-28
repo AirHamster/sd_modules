@@ -216,7 +216,7 @@ lag_t *r_lag;
 rudder_t *r_rudder;
 #include "tenso.h"
 tenso_data_t *r_tenso_1;
-uint8_t heart_beat;
+uint8_t heart_beat = 0;
 
 ble_temp_charac_t *charac_temporary;
 ble_peer_t *peer;
@@ -278,9 +278,9 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		megastring[i] = token;
 		i++;
 
-		//chSemWait(&usart1_semaph);
-		//chprintf((BaseSequentialStream*) &SD1, "%c", token);
-		//chSemSignal(&usart1_semaph);
+		chSemWait(&usart1_semaph);
+		chprintf((BaseSequentialStream*) &SD1, "%c", token);
+		chSemSignal(&usart1_semaph);
 
 		if (token == '\r' || token == '+'){
 			str_flag = 1;
@@ -482,7 +482,11 @@ STATE_DEFINE(Pairing, ble_remote_dev_t) {
 	uint8_t i = 0;
 	for (i = 0; i < NUM_OF_REMOTE_DEV; i++) {
 		if ((devlist[i].avalible == 1) && (devlist[i].connected == 0)) {
-			nina_connect(devlist[i].addr, 0);
+			if (i == 6){
+				nina_connect_heart_rate(devlist[i].addr, 0);
+			} else {
+				nina_connect(devlist[i].addr, 0);
+			}
 			chThdSleepMilliseconds(1500);
 			//SM_InternalEvent(ST_PAIRING, NULL);
 		}
@@ -692,6 +696,15 @@ void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t v
  * @param type
  */
 void nina_connect(uint8_t *addr, uint8_t type){
+	chprintf(NINA_IFACE, "AT+UBTACLC=%s,%d\r", addr, type);
+}
+
+/**
+ *
+ * @param addr
+ * @param type
+ */
+void nina_connect_heart_rate(uint8_t *addr, uint8_t type){
 	chprintf(NINA_IFACE, "AT+UBTACLC=%sr,%d\r", addr, type);
 }
 

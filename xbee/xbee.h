@@ -229,6 +229,7 @@ typedef struct {
 	uint16_t tenso_3;
 	uint16_t tenso_4;
 	uint16_t dist;
+	uint8_t heart_beat;
 	uint8_t hour;
 	uint8_t min;
 	uint8_t sec;

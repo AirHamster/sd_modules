@@ -59,11 +59,11 @@ void json_print_remote_dev_data(xbee_remote_dev_t *r_data){
 			chprintf(SHELL_IFACE, "\"log\":%f,\r\n\t\t\t", sdata->log);
 			//chprintf(SHELL_IFACE, "\"wind_dir\":%d,\r\n\t\t\t", wind->direction);
 			//chprintf(SHELL_IFACE, "\"wind_spd\":%f,\r\n\t\t\t", wind->speed);
-			chprintf(SHELL_IFACE, "\"tenso_1\":%f,\r\n\t\t\t", sdata->tenso_1);
-			chprintf(SHELL_IFACE, "\"tenso_2\":%f,\r\n\t\t\t", sdata->tenso_2);
-			chprintf(SHELL_IFACE, "\"tenso_3\":%f,\r\n\t\t\t", sdata->tenso_3);
-			chprintf(SHELL_IFACE, "\"tenso_4\":%f,\r\n\t\t\t", sdata->tenso_4);
-			//chprintf(SHELL_IFACE, "\"heart_rate\":%d,\r\n\t\t\t", sdata->heart_rate);
+			chprintf(SHELL_IFACE, "\"tenso_1\":%d,\r\n\t\t\t", sdata->tenso_1);
+			chprintf(SHELL_IFACE, "\"tenso_2\":%d,\r\n\t\t\t", sdata->tenso_2);
+			chprintf(SHELL_IFACE, "\"tenso_3\":%d,\r\n\t\t\t", sdata->tenso_3);
+			chprintf(SHELL_IFACE, "\"tenso_4\":%d,\r\n\t\t\t", sdata->tenso_4);
+			chprintf(SHELL_IFACE, "\"heart_rate\":%d,\r\n\t\t\t", sdata->heart_beat);
 			chprintf(SHELL_IFACE, "\"rssi\":%d,\r\n\t\t\t", remote_dev[1].rssi);
 			//chprintf(SHELL_IFACE, "\"rssi\":%d,\r\n\t\t\t", r_data->rssi);
 			chprintf(SHELL_IFACE, "\"bat\":0\r\n\t\t\t");

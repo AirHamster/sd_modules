@@ -270,3 +270,4 @@ int8_t nina_compare_founded_dev(uint8_t *strp, ble_remote_dev_t *devlist);
 #endif /* SD_MODULES_NINA_B3_NINA_B3_H_ */
 
 void nina_get_remote_characs_heart_rate(uint16_t handle, uint16_t uuid);
+void nina_connect_heart_rate(uint8_t *addr, uint8_t type);
