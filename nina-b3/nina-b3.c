@@ -278,9 +278,9 @@ static THD_FUNCTION(ble_parsing_thread, arg) {
 		megastring[i] = token;
 		i++;
 
-		chSemWait(&usart1_semaph);
-		chprintf((BaseSequentialStream*) &SD1, "%c", token);
-		chSemSignal(&usart1_semaph);
+		//chSemWait(&usart1_semaph);
+		//chprintf((BaseSequentialStream*) &SD1, "%c", token);
+		//chSemSignal(&usart1_semaph);
 
 		if (token == '\r' || token == '+'){
 			str_flag = 1;
@@ -683,7 +683,7 @@ void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t v
 	} else if ((remote_heart->is_connected == 1) && (remote_heart->conn_handle == conn_handle)){
 		if ((value & 0xFF000000) == 0x10000000) { //parse only short notifications
 		heart_beat = (value & 0x00FF0000) >> 16;// (uint16_t)((value >> 8) & 0x0000FFFF);
-		chprintf((BaseSequentialStream*) &SD1, "Heart rate %d\r\n", heart_beat);
+		//chprintf((BaseSequentialStream*) &SD1, "Heart rate %d\r\n", heart_beat);
 		//r_tenso_1->kilograms = 	r_tenso_1->adc_native * 500 / 4096;
 		}
 	}

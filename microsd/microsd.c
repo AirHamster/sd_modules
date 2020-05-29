@@ -74,17 +74,20 @@ static FIL logfile;   /* file object */
 static FIL calibfile; //file with calibration data update info
 static uint8_t path_to_calibfile[32];
 static uint8_t path_to_file[32];
-uint8_t megastring[256];
+uint8_t megastring[4096];
 extern lag_t *r_lag;
 extern rudder_t *r_rudder;
+extern uint8_t heart_beat;
+#include "tenso.h"
+extern tenso_data_t *r_tenso_1;
 
 thread_reference_t microsd_trp = NULL;
 /* Maximum speed SPI configuration (18MHz, CPHA=0, CPOL=0, MSb first).*/
-static const SPIConfig hs_spicfg = { false, NULL, GPIOD, GPIOD_SD_CS, SPI_CR1_BR_1, 0 };
+static const SPIConfig hs_spicfg = { false, NULL, GPIOD, GPIOD_SD_CS, SPI_CR1_BR_1 | SPI_CR1_BR_0, 0 };
 
 /* Low speed SPI configuration (281.250kHz, CPHA=0, CPOL=0, MSb first).*/
 static const SPIConfig ls_spicfg = { false, NULL, GPIOD, GPIOD_SD_CS,
-		SPI_CR1_BR_2 | SPI_CR1_BR_1, 0 };
+		SPI_CR1_BR_2 | SPI_CR1_BR_1 | SPI_CR1_BR_0, 0 };
 
 /* MMC/SD over SPI driver configuration.*/
 static MMCConfig const mmccfg = {&MICROSD_IF, &ls_spicfg, &hs_spicfg};
@@ -140,7 +143,6 @@ static THD_FUNCTION( microsd_thread, p) {
 			fsm_switch_to_default_state();
 			break;
 		case MICROSD_WRITE_LOG:
-			microsd_open_logfile(SHELL_IFACE);
 			microsd_write_sensor_log_line(SHELL_IFACE);
 			break;
 		case MICROSD_FREE:
@@ -572,27 +574,44 @@ void microsd_update_calibfile(void){
 }
 
 static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
+	static lines_counter = 0;
+	uint8_t megastring_local[256];
 	FRESULT res;
 	FILINFO fno;
 	int written = 0;
-	if (microsd->file_created != 0) {
-	memset(megastring, 0, 256);
-	sprintf((char*)megastring, "%d-%d,%d,%d,%d,%.7f,%.7f,%f,%d,%d,%f,%f,%d,%f,%d,%f,%f\r\n",
-			pvt_box->month, pvt_box->day, pvt_box->hour, pvt_box->min, pvt_box->sec, pvt_box->lat / 10000000.0f, pvt_box->lon / 10000000.0f,
-			(float) (pvt_box->gSpeed * 0.0036), (uint16_t) (pvt_box->headMot / 100000), (uint16_t)bmx160.yaw, bmx160.pitch,
-			bmx160.roll, wind->direction, wind->speed, pvt_box->numSV, r_rudder->degrees, r_lag->meters);
 
-	f_lseek(&logfile, f_size(&logfile));
-	written = f_puts((char*)megastring, &logfile);
+	memset(megastring_local, 0, 256);
+	sprintf((char*) megastring_local,
+			"%d-%d,%d,%d,%d,%.7f,%.7f,%f,%d,%d,%f,%f,%d,%f,%d,%f,%f,%d,%f,%d,%d,%d,%d,%d\r\n",
+			pvt_box->month, pvt_box->day, pvt_box->hour, pvt_box->min,
+			pvt_box->sec, pvt_box->lat / 10000000.0f,
+			pvt_box->lon / 10000000.0f, (float) (pvt_box->gSpeed * 0.0036),
+			(uint16_t) (pvt_box->headMot / 100000), (uint16_t) bmx160.yaw,
+			bmx160.pitch, bmx160.roll, wind->direction, wind->speed,
+			pvt_box->numSV, r_rudder->degrees, r_lag->meters, 0, r_tenso_1->kilograms, 0, 0, 0, heart_beat, 0);
 
-	if (written == -1) {
-		chprintf(chp, "\r\nWriting failed. No card inserted or corrupted FS\r\n");
-	} else {
-		palToggleLine(LINE_ORANGE_LED);
-		//chprintf(chp, "FS: f_puts %s to %s succeeded\r\n", megastring, path_to_file);
-	}
+	strcat(megastring, megastring_local);
 
-	f_sync(&logfile);
+	if (lines_counter++ >= 10) {
+		microsd_open_logfile(SHELL_IFACE);
+		if (microsd->file_created != 0) {
+			f_lseek(&logfile, f_size(&logfile));
+			written = f_puts((char*) megastring, &logfile);
+
+			if (written == -1) {
+				chprintf(chp,
+						"\r\nWriting failed. No card inserted or corrupted FS\r\n");
+				verbose_error(chp, written);
+			} else {
+				palToggleLine(LINE_ORANGE_LED);
+				//chprintf(chp, "FS: f_puts %s to %s succeeded\r\n", megastring, path_to_file);
+			}
+
+			f_sync(&logfile);
+			f_close(&logfile);
+		}
+		lines_counter = 0;
+		memset(megastring, 0, 4096);
 	}
 }
 
@@ -603,7 +622,7 @@ static void microsd_write_logfile_header(BaseSequentialStream *chp) {
 	f_lseek(&logfile, f_size(&logfile));
 	//if (microsd->file_created == 0) {
 	written =
-			f_printf(&logfile, "DATE,HOUR,MIN,SEC,LAT,LON,SOG,COG_GPS,HDG,PITCH,ROLL,AWA,AWS,SAT,RDR,LOG,LOG_DIR,TRIM1,TRIM2,TRIM3,TRIM4,BMP,SAIL_TIME\r\n");
+			f_printf(&logfile, "\r\nDATE,HOUR,MIN,SEC,LAT,LON,SOG,COG_GPS,HDG,PITCH,ROLL,AWA,AWS,SAT,RDR,LOG,LOG_DIR,TRIM1,TRIM2,TRIM3,TRIM4,BMP,SAIL_TIME\r\n");
 
 	if (written == -1) {
 		chprintf(chp, "\r\nWriting failed. No card inserted or corrupted FS\r\n");
@@ -674,11 +693,12 @@ static void microsd_write_calibration_header(BaseSequentialStream *chp) {
 	} else {
 		//chprintf(chp, "FS: f_puts(\"Hello World\",\"%s\") succeeded\r\n", path_to_file);
 	}
+	memset(megastring, 0, 4096);
 	f_sync(&logfile);
 	//}
 }
 void start_microsd_module(void) {
-	chThdCreateStatic(microsd_thread_wa, sizeof(microsd_thread_wa), NORMALPRIO + 7, microsd_thread, NULL);
+	chThdCreateStatic(microsd_thread_wa, sizeof(microsd_thread_wa), NORMALPRIO + 10, microsd_thread, NULL);
 }
 
 static void write_test_file(BaseSequentialStream *chp) {
@@ -799,6 +819,7 @@ static void microsd_open_logfile(BaseSequentialStream *chp) {
 
 		}
 		microsd_write_calibration_header(SHELL_IFACE);
+		chThdSleepMilliseconds(100);
 		microsd_write_logfile_header(SHELL_IFACE);
 	} else {
 		err = f_open(&logfile, path_to_file,
