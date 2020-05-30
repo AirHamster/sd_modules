@@ -22,6 +22,7 @@
 #include "pwr_mgmt_l4.h"
 #endif
 #include "fsm.h"
+#include "calibration.h"
 
 static virtual_timer_t ble_observe_tim;
 static virtual_timer_t ble_data_tx_tim;
@@ -35,6 +36,8 @@ static event_source_t ble_remote_dev_cfg_request_event;
 #ifdef USE_POWER_MANAGEMENT
 extern event_source_t power_state_change_event;
 #endif
+
+extern calib_parameters_t calibrations;
 
 SM_DEFINE(BLE_SM_1, ble_remote_dev_list)
 
@@ -665,7 +668,7 @@ void nina_parse_notification(uint8_t conn_handle, uint8_t val_handle, uint32_t v
 	}else if ((remote_rudder->is_connected == 1) && (remote_rudder->conn_handle == conn_handle)){
 #ifdef RAW_BLE_SENSOR_DATA
 		r_rudder->native = (float)((value >> 8) & 0x0000FFFF);
-		r_rudder->degrees = get_polynom_degrees(r_rudder->native, r_rudder_coefs);
+		r_rudder->degrees = get_polynom_degrees(r_rudder->native, &calibrations.rudder_coefs);
 
 		//rdr->value = value;
 		//in value we have native data - need to send degrees

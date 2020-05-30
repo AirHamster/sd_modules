@@ -420,8 +420,8 @@ void send_data(uint8_t stream) {
 	xbee_sportsman_data.pitch = bmx160.pitch;
 	xbee_sportsman_data.roll = bmx160.roll;
 	xbee_sportsman_data.speed = (float) (pvt_box->gSpeed * 0.0036);
-//	xbee_sportsman_data.rdr = r_rudder->native;
-//	xbee_sportsman_data.log = r_lag->meters;
+	xbee_sportsman_data.rdr = r_rudder->degrees;
+	xbee_sportsman_data.log = r_lag->meters;
 	xbee_sportsman_data.tenso_1 = (uint16_t)r_tenso_1->kilograms;
 	xbee_sportsman_data.tenso_2 = 0;
 	xbee_sportsman_data.tenso_3 = 0;

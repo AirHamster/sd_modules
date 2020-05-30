@@ -125,6 +125,17 @@ void calib_init_params(void) {
 	EEPROM_READ(MATH_MEMORY.MATH_WINSIZE1_CORRECTION, (uint8_t*)&calibrations.WindowSize1);
 	EEPROM_READ(MATH_MEMORY.MATH_WINSIZE2_CORRECTION, (uint8_t*)&calibrations.WindowSize2);
 	EEPROM_READ(MATH_MEMORY.MATH_WINSIZE3_CORRECTION, (uint8_t*)&calibrations.WindowSize3);
+	init_coefs(&calibrations.rudder_dots, &calibrations.rudder_coefs);
+
+	calibrations.rudder_calib.center_degrees = calibrations.rudder_dots.y2;
+	calibrations.rudder_calib.center_native = calibrations.rudder_dots.x2;
+
+	calibrations.rudder_calib.min_degrees = calibrations.rudder_dots.y1;
+	calibrations.rudder_calib.min_native = calibrations.rudder_dots.x1;
+
+	calibrations.rudder_calib.max_degrees = calibrations.rudder_dots.y3;
+	calibrations.rudder_calib.max_native = calibrations.rudder_dots.x3;
+
 }
 
 int8_t calib_update_compass_correction(uint8_t dev_num, float calib_val)

@@ -90,7 +90,7 @@ void json_print_remote_dev_data(xbee_remote_dev_t *r_data){
 		//chprintf(SHELL_IFACE, "\"bno_yaw  \":%d,\r\n\t\t\t", (uint16_t)bno055->d_euler_hpr.h);
 		chprintf(SHELL_IFACE, "\"pitch\":%f,\r\n\t\t\t", tdata->pitch);
 		chprintf(SHELL_IFACE, "\"roll\":%f,\r\n\t\t\t", tdata->roll);
-		chprintf(SHELL_IFACE, "\"headMot\":%d,\r\n\t\t\t", tdata->headMot);
+		chprintf(SHELL_IFACE, "\"headMot\":%d,\r\n\t\t\t", (uint16_t)(sdata->headMot / 100000));
 		chprintf(SHELL_IFACE, "\"sat\":%d,\r\n\t\t\t", tdata->sat);
 		//chprintf(SHELL_IFACE, "\"rudder\":%f,\r\n\t\t\t", sdata->rdr);
 		chprintf(SHELL_IFACE, "\"rudder_deg\":%f,\r\n\t\t\t", tdata->rdr);

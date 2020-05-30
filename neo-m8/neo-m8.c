@@ -58,6 +58,8 @@ static neo_init_module(void){
 		chThdSleepMilliseconds(50);
 		neo_poll();
 		rate_box->measRate = 250;
+		rate_box->navRate = 1;
+		rate_box->timeRef = 1;
 		chThdSleepMilliseconds(50);
 		neo_write_struct((uint8_t *) rate_box, UBX_CFG_CLASS, UBX_CFG_RATE_ID,
 				sizeof(ubx_cfg_rate_t));
