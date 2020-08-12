@@ -23,22 +23,13 @@ tx_box_t tx_struct;
 tx_box_t *tx_box = &tx_struct;
 extern bmx160_t bmx160;
 uint32_t pacs_per_sec = 0;
+struct ch_semaphore tx_semaph;
 
-const uint8_t xbee_trainer_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x5D};
-const uint8_t xbee_bouy2_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x08};
-
-const uint8_t xbee_sportsmen1_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x94, 0x56};
-const uint8_t xbee_bouy_addr[] = 		{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x38};
-
-
-
-/*
-const uint8_t xbee_bouy_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x5D};
-const uint8_t xbee_sportsmen1_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x08};
-
+const uint8_t xbee_trainer_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0xB0, 0x6F, 0x2B};
 const uint8_t xbee_sportsmen2_addr[] = 	{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x94, 0x56};
-const uint8_t xbee_trainer_addr[] = 		{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x38};
-*/
+const uint8_t xbee_sportsmen1_addr[] =  {0x00, 0x13, 0xA2, 0x00, 0x41, 0xB0, 0x67, 0x1E};
+const uint8_t xbee_bouy_addr[] = 		{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x38};
+const uint8_t xbee_bouy2_addr[] = 		{0x00, 0x13, 0xA2, 0x00, 0x41, 0x9E, 0x8D, 0x5D};
 
 static xbee_sportsman_data_t sportsman_data[NUM_OF_SPORTSMAN_DEVICES];
 static xbee_bouy_data_t bouy_data[NUM_OF_BOUY_DEVICES];
@@ -87,8 +78,10 @@ int8_t xbee_init_data_structs(xbee_remote_dev_t *dev) {
 	//Init devices addresses
 	//xbee_load_addresses_from_eeprom();
 	//memcpy(dev[0].addr, &xbee_sportsmen1_addr, SIZE_OF_XBEE_ADDR);
+
 	memcpy(dev[1].addr, &xbee_sportsmen1_addr, SIZE_OF_XBEE_ADDR);
-	//memcpy(dev[2].addr, &xbee_sportsmen1_addr, SIZE_OF_XBEE_ADDR);
+	memcpy(dev[2].addr, &xbee_sportsmen2_addr, SIZE_OF_XBEE_ADDR);
+
 	memcpy(dev[10].addr, &xbee_bouy_addr, SIZE_OF_XBEE_ADDR);
 	memcpy(dev[11].addr, &xbee_bouy2_addr, SIZE_OF_XBEE_ADDR);
 	return 0;
@@ -116,7 +109,7 @@ static THD_FUNCTION(xbee_thread, p) {
 	uint8_t at[] = { 'S', 'L' };
 	uint8_t rxbuf[15];
 	chRegSetThreadName("XBee Thread");
-
+	chSemObjectInit(&tx_semaph, 1);
 	xbee_init_data_structs(remote_dev);
 
 	chEvtObjectInit(&xbee_attn_pin);
@@ -128,9 +121,13 @@ static THD_FUNCTION(xbee_thread, p) {
 	spiStart(&XBEE_IF, &xbee_spi_cfg);
 
 	palClearLine(LINE_RF_868_RST);
-	chThdSleepMilliseconds(1000);
+	chThdSleepMilliseconds(100);
 	palSetLine(LINE_RF_868_RST);
-	chThdSleepMilliseconds(1000);
+	chThdSleepMilliseconds(100);
+
+	xbee_set_sm_mode_0();
+	xbee_restore();
+
 	if (!palReadLine(LINE_RF_868_SPI_ATTN)) {
 		xbee_polling();
 	}
@@ -145,11 +142,10 @@ static THD_FUNCTION(xbee_thread, p) {
 
 		if (evt & EVENT_MASK(XBEE_ATTN_MASK)) {
 			xbee_polling();
-		} else if (evt == 0) {
-			if (!palReadLine(LINE_RF_868_SPI_ATTN)) {
+		}
+		if (!palReadLine(LINE_RF_868_SPI_ATTN)) {
 				xbee_polling();
 			}
-		}
 
 		/*
 		while (!palReadLine(LINE_RF_868_SPI_ATTN)) {
@@ -715,6 +711,7 @@ void xbee_send_rf_message(uint8_t *address, void *packet, uint8_t packet_type){
 	//uint8_t txbuff[256];
 	uint8_t pack_len;
 	xbee_addr_t addr;
+	msg_t err;
 
 	memset(txbuff_for_tx, 0, 256);
 	addr.dest_addr_h = address[0] << 24 | address[1] << 16| address[2] << 8 | address[3];
@@ -723,11 +720,16 @@ void xbee_send_rf_message(uint8_t *address, void *packet, uint8_t packet_type){
 	pack_len = xbee_create_data_write_message(txbuff_for_tx, packet, &addr, packet_type);
 	//chThdSleepMilliseconds(500);
 
-//	if (xbee->tx_ready)
+	err = chSemWaitTimeout(&tx_semaph, TIME_MS2I(2500));
+	if (err != MSG_OK)
+	{
+		chSemSignal(&tx_semaph);
+	}
+	//if (xbee->tx_ready)
 	{
 		//chprintf(SHELL_IFACE, "sending rf message\r\n");
 		xbee_send(&SPID1, txbuff_for_tx, pack_len);
-		xbee->tx_ready = 0;
+		//xbee->tx_ready = 0;
 	}
 }
 
@@ -970,6 +972,7 @@ void xbee_process_tx_stat(uint8_t* buffer){
 							    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
 			chSemSignal(&usart1_semaph);
 			*/
+			chSemSignal(&tx_semaph);
 			xbee->tx_ready = 1;
 }
 
@@ -1052,12 +1055,17 @@ void xbee_parse_rf_packet(uint8_t *rxbuff){
 void xbee_send_calibration_data_to_trainer()
 {
 	xbee_addr_t addr;
+	stop_all_tests();
+
 	memcpy(&addr.dest_addr_h, xbee_trainer_addr, 4);
 	memcpy(&addr.dest_addr_l, &xbee_trainer_addr[4], 4);
 	//chprintf(SHELL_IFACE, "Calibration get request\r\n");
 	calib_print_calib_to_shell(SHELL_IFACE, 0);
 	chThdSleepMilliseconds(100);
 	xbee_send_rf_message(&addr, &calibrations, RF_SPORTSMAN_CALIB_DATA_PACKET);
+	chThdSleepMilliseconds(300);
+	xbee_polling();
+	toggle_test_output();
 }
 
 void xbee_parse_gps_packet_back(uint8_t *rxbuff){
@@ -1350,6 +1358,31 @@ void xbee_set_10kbs_rate(void){
 									    }
 									    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
 					chSemSignal(&usart1_semaph);*/
+	xbee_send(&SPID1, &txbuffer[0], len);
+}
+
+void xbee_set_sm_mode_0(void){
+	uint8_t len;
+	uint8_t txbuffer[20];
+	uint8_t i;
+	uint8_t zero_byte = 0;
+		len = xbee_create_at_write_message("SM", &txbuffer[0], &zero_byte, 1);
+		/*chSemWait(&usart1_semaph);
+						chprintf((BaseSequentialStream*)&SD1, "Write BD %d command \n\r", zero_byte);
+									    for (i = 0; i < len; i++){
+									    	chprintf((BaseSequentialStream*)&SD1, "%x ", txbuffer[i]);
+									    }
+									    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
+					chSemSignal(&usart1_semaph);*/
+	xbee_send(&SPID1, &txbuffer[0], len);
+}
+
+void xbee_restore(void){
+	uint8_t len;
+	uint8_t txbuffer[20];
+	uint8_t i;
+	uint8_t zero_byte = 0;
+	len = xbee_create_at_write_message("RE", &txbuffer[0], &zero_byte, 0);
 	xbee_send(&SPID1, &txbuffer[0], len);
 }
 

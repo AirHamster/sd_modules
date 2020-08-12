@@ -136,6 +136,7 @@ void calib_init_params(void) {
 	calibrations.rudder_calib.max_degrees = calibrations.rudder_dots.y3;
 	calibrations.rudder_calib.max_native = calibrations.rudder_dots.x3;
 
+
 }
 
 int8_t calib_update_compass_correction(uint8_t dev_num, float calib_val)

@@ -294,11 +294,11 @@ static THD_FUNCTION(bmx160_thread, arg) {
 			bmx160.mag_offset.y = bmx160.magBias[1];
 			bmx160.mag_offset.z = bmx160.magBias[2];
 			bmx160_save_calib_to_eeprom(&bmx160);
-			hardIronBias.axis.x = bmx160.mag_offset.x;
-			hardIronBias.axis.y = bmx160.mag_offset.y;
-			hardIronBias.axis.z = bmx160.mag_offset.z;
 			bmx160.calib_flag = 0;
 		}
+		hardIronBias.axis.x = bmx160.mag_offset.x;
+		hardIronBias.axis.y = bmx160.mag_offset.y;
+		hardIronBias.axis.z = bmx160.mag_offset.z;
 
 		bmi160_get_sensor_data((BMI160_ACCEL_SEL | BMI160_GYRO_SEL), &accel,
 				&gyro, &bmi);
@@ -434,8 +434,8 @@ static THD_FUNCTION(bmx160_thread, arg) {
 			eulerAngles.angle.yaw += 360.0;
 		}
 		bmx160.yaw = eulerAngles.angle.yaw;
-		bmx160.pitch = eulerAngles.angle.pitch;
-		bmx160.roll = eulerAngles.angle.roll;
+		bmx160.roll = eulerAngles.angle.pitch;
+		bmx160.pitch = eulerAngles.angle.roll;
 		//eulerAngles.angle.yaw = 180.0 - eulerAngles.angle.yaw;
 
 	/*	chprintf(SHELL_IFACE, "Roll = %0.1f, Pitch = %0.1f, Yaw = %0.1f\r\n",
@@ -580,6 +580,9 @@ int8_t bmx160_read_calib_from_eeprom(bmx160_t *bmx160){
 	EEPROM_READ(MAGN_MEMORY.MAGN_X_OFFSET, (uint8_t*)&bmx160->mag_offset.x);
 	EEPROM_READ(MAGN_MEMORY.MAGN_Y_OFFSET, (uint8_t*)&bmx160->mag_offset.y);
 	EEPROM_READ(MAGN_MEMORY.MAGN_Z_OFFSET, (uint8_t*)&bmx160->mag_offset.z);
+	hardIronBias.axis.x = bmx160->mag_offset.x;
+	hardIronBias.axis.y = bmx160->mag_offset.y;
+	hardIronBias.axis.z = bmx160->mag_offset.z;
 	//eeprom_read(EEPROM_MAGN_X_OFFSET_ADDR, (uint8_t*)&bmx160->mag_offset.x, sizeof(float)*3);
 }
 

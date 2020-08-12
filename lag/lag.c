@@ -25,7 +25,7 @@ static void lag_init_pins(void);
 extern struct ch_semaphore usart1_semaph;
 lag_t *lag;
 
-extern time_measurement_t time;
+time_measurement_t time_lag;
 
 
 static THD_WORKING_AREA(lag_thread_wa, 512);
@@ -57,15 +57,15 @@ static THD_FUNCTION(lag_thread, arg) {
 /* Callback associated to the event. */
 static void lag_callback(void *arg) {
   (void)arg;
-  chTMStopMeasurementX(&time);
+  chTMStopMeasurementX(&time_lag);
 //  lag->rtc_cnt = time.last;
-  lag->millis = RTC2MS(STM32_SYSCLK, time.last);
+  lag->millis = RTC2MS(STM32_SYSCLK, time_lag.last);
  // chSemWait(&usart1_semaph);
 /*  chprintf((BaseSequentialStream*) &SD1,
   				"LAG calback: %d\r\n", TIME_I2MS(lag->time.last));*/
  // chprintf((BaseSequentialStream*) &SD1, "LAG calback: %d\r\n");
  // chSemSignal(&usart1_semaph);
-  chTMStartMeasurementX(&time);
+  chTMStartMeasurementX(&time_lag);
 }
 
 static void lag_init_pins(void){

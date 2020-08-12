@@ -372,4 +372,6 @@ void start_xbee_module(void);
 void xbee_polling(void);
 void xbee_set_10kbs_rate(void);
 void xbee_set_80kbs_rate(void);
+void xbee_set_sm_mode_0(void);
+void xbee_restore(void);
 #endif /* SD_MODULES_XBEE_XBEE_H_ */

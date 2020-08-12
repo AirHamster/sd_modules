@@ -133,6 +133,9 @@ static THD_FUNCTION(output_thread, arg);
 extern const uint8_t xbee_trainer_addr[];
 extern uint8_t heart_beat;
 extern tenso_data_t *r_tenso_1;
+extern tenso_data_t *r_tenso_2;
+extern tenso_data_t *r_tenso_3;
+extern tenso_data_t *r_tenso_4;
 
 static const ShellCommand commands[] = {
 		{ "start", cmd_start },
@@ -142,12 +145,10 @@ static const ShellCommand commands[] = {
 	//	{ "terminate", cmd_terminate },
 #ifdef USE_SERVICE_MODE
 		{ "service", cmd_service },
-#ifdef SD_MODULE_TRAINER
-#ifdef USE_MATH_MODULE
+
 		{ "load_calib", cmd_load_math_cal },
 		{ "get_calib", cmd_get_math_cal },
-#endif
-#endif // SD_MODULE_TRAINER
+
 #ifdef USE_HMC6343_MODULE
 		{ "compass", cmd_compass },
 #endif
@@ -367,7 +368,7 @@ void output_gyro_raw(void){
 
 #ifdef USE_XBEE_MODULE
 void send_data(uint8_t stream) {
-	time_measurement_t time;
+	//time_measurement_t time;
 	uint32_t time_us;
 	uint8_t databuff[34];
 	int32_t spdi = 0;
@@ -397,17 +398,17 @@ void send_data(uint8_t stream) {
 	trainer_data.wind_direction = wind->direction;
 	trainer_data.wind_speed = wind->speed;
 	trainer_data.bat = 99;
-	chTMObjectInit(&time);
-	chTMStartMeasurementX(&time);
+//	chTMObjectInit(&time);
+//	chTMStartMeasurementX(&time);
 	//for (int i = 0; i < 14; i++) {
 		//json_print_remote_dev_data(&trainer_dev);
 	//}
 
-	chTMStopMeasurementX(&time);
+//	chTMStopMeasurementX(&time);
 
 	//toggle_test_output();
 	//stop_all_tests();
-	time_us = RTC2US(STM32_SYSCLK, time.last);
+//	time_us = RTC2US(STM32_SYSCLK, time.last);
 	//chprintf(SHELL_IFACE, "Print time: %d\r\n", time_us);
 #endif
 
@@ -423,9 +424,9 @@ void send_data(uint8_t stream) {
 	xbee_sportsman_data.rdr = r_rudder->degrees;
 	xbee_sportsman_data.log = r_lag->meters;
 	xbee_sportsman_data.tenso_1 = (uint16_t)r_tenso_1->kilograms;
-	xbee_sportsman_data.tenso_2 = 0;
-	xbee_sportsman_data.tenso_3 = 0;
-	xbee_sportsman_data.tenso_4 = 0;
+	xbee_sportsman_data.tenso_2 = (uint16_t)r_tenso_2->kilograms;
+	xbee_sportsman_data.tenso_3 = (uint16_t)r_tenso_3->kilograms;
+	xbee_sportsman_data.tenso_4 = (uint16_t)r_tenso_4->kilograms;
 	xbee_sportsman_data.heart_beat = heart_beat;
 	xbee_sportsman_data.dist = tx_box->dist;
 	xbee_sportsman_data.hour = pvt_box->hour;

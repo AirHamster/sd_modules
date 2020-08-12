@@ -55,7 +55,6 @@ void start_math_module(void){
 static THD_FUNCTION( math_thread, p) {
 	(void) p;
 	chRegSetThreadName("Math Thd");
-	calib_init_params();
 	//math_init_calibration_params(&paramSD);
 	systime_t prev = chVTGetSystemTime(); // Current system time.
 	while (true) {

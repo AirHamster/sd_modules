@@ -47,10 +47,10 @@ typedef struct{
 }eeprom_flags_memory_t;
 
 typedef struct{
-	int16_t MAGN_X_OFFSET;
-	int16_t MAGN_Y_OFFSET;
-	int16_t MAGN_Z_OFFSET;
-	int16_t MAGN_RADIUS;
+	float MAGN_X_OFFSET;
+	float MAGN_Y_OFFSET;
+	float MAGN_Z_OFFSET;
+	float MAGN_RADIUS;
 }eeprom_magn_calib_memory_t;
 
 typedef struct{

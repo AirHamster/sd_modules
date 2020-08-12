@@ -332,7 +332,7 @@ FRESULT err;
 //#if HAL_USE_SDC
 //	if (sdcConnect(&SDCD1))
 //#else
-	if (mmcConnect(&MMCD1))
+	mmcConnect(&MMCD1);
 //#endif
 	//	return;
 	//chSemWait(&usart1_semaph);
@@ -599,9 +599,9 @@ static void microsd_write_sensor_log_line(BaseSequentialStream *chp) {
 			written = f_puts((char*) megastring, &logfile);
 
 			if (written == -1) {
-				chprintf(chp,
+			/*	chprintf(chp,
 						"\r\nWriting failed. No card inserted or corrupted FS\r\n");
-				verbose_error(chp, written);
+				verbose_error(chp, written); */
 			} else {
 				palToggleLine(LINE_ORANGE_LED);
 				//chprintf(chp, "FS: f_puts %s to %s succeeded\r\n", megastring, path_to_file);
@@ -625,7 +625,7 @@ static void microsd_write_logfile_header(BaseSequentialStream *chp) {
 			f_printf(&logfile, "\r\nDATE,HOUR,MIN,SEC,LAT,LON,SOG,COG_GPS,HDG,PITCH,ROLL,AWA,AWS,SAT,RDR,LOG,LOG_DIR,TRIM1,TRIM2,TRIM3,TRIM4,BMP,SAIL_TIME\r\n");
 
 	if (written == -1) {
-		chprintf(chp, "\r\nWriting failed. No card inserted or corrupted FS\r\n");
+		//chprintf(chp, "\r\nWriting failed. No card inserted or corrupted FS\r\n");
 	} else {
 		//chprintf(chp, "FS: f_puts(\"Hello World\",\"%s\") succeeded\r\n", path_to_file);
 	}
@@ -689,7 +689,7 @@ static void microsd_write_calibration_header(BaseSequentialStream *chp) {
 	written = f_puts((char*) megastring, &logfile);
 
 	if (written == -1) {
-		chprintf(chp, "\r\nWriting failed. No card inserted or corrupted FS\r\n");
+		//chprintf(chp, "\r\nWriting failed. No card inserted or corrupted FS\r\n");
 	} else {
 		//chprintf(chp, "FS: f_puts(\"Hello World\",\"%s\") succeeded\r\n", path_to_file);
 	}
@@ -698,7 +698,7 @@ static void microsd_write_calibration_header(BaseSequentialStream *chp) {
 	//}
 }
 void start_microsd_module(void) {
-	chThdCreateStatic(microsd_thread_wa, sizeof(microsd_thread_wa), NORMALPRIO + 10, microsd_thread, NULL);
+	chThdCreateStatic(microsd_thread_wa, sizeof(microsd_thread_wa), NORMALPRIO + 15, microsd_thread, NULL);
 }
 
 static void write_test_file(BaseSequentialStream *chp) {
@@ -742,7 +742,7 @@ static int8_t microsd_open_calibfile(FIL *file){
 	} else if (err == FR_OK){
 		written = f_printf(&calibfile, "YEAR,MONTH,DAY,HOUR,MIN,SEC,COMPASS_CORRECTION,HSP_CORRECTION,DECLANATION_CORRECTION,HEEL_CORRECTION,PITCH_CORRECTION,RUDDER_CORRECTION,WIND_CORRECTION,WINSIZE1_CORRECTION,WINSIZE2_CORRECTION,WINSIZE3_CORRECTION,RDR_NATIVE_LEFT,RDR_NATIVE_CENTER,RDR_NATIVE_RIGHT,RDR_DEGREES_LEFT,RDR_DEGREES_CENTER,RDR_DEGREES_RIGHT,LAG_CALIB_NUMBER\r\n");
 			if (written == -1) {
-				chprintf(SHELL_IFACE, "\r\nWriting failed. No card inserted or corrupted FS\r\n");
+				//chprintf(SHELL_IFACE, "\r\nWriting failed. No card inserted or corrupted FS\r\n");
 			}else {
 				f_sync(&calibfile);
 			}
@@ -776,8 +776,8 @@ static int8_t microsd_add_new_calibfile(FIL *file) {
 					r_rudder->max_degrees, r_lag->calib_num);
 
 	if (written == -1) {
-		chprintf(SHELL_IFACE,
-				"\r\nWriting failed. No card inserted or corrupted FS\r\n");
+	/*	chprintf(SHELL_IFACE,
+				"\r\nWriting failed. No card inserted or corrupted FS\r\n");*/
 		return -1;
 	}else{
 		f_sync(&calibfile);
@@ -826,8 +826,11 @@ static void microsd_open_logfile(BaseSequentialStream *chp) {
 				FA_READ | FA_WRITE | FA_OPEN_APPEND);
 	}
 	if (err != FR_OK) {
-		chprintf(chp, "FS: f_open(\"%s\") failed.\r\n", path_to_file);
-		verbose_error(chp, err);
+	//	chprintf(chp, "FS: f_open(\"%s\") failed.\r\n", path_to_file);
+	//	verbose_error(chp, err);
+		mmcConnect(&MMCD1);
+		//chprintf((BaseSequentialStream*) &SD1, "FS: trying to mounting\r\n");
+		err = f_mount(&SDC_FS, "/", 1);
 		return;
 	} else {
 		//chprintf(chp, "FS: f_open(\"%s\") succeeded\r\n", path_to_file);
@@ -966,8 +969,8 @@ static int8_t microsd_create_filename(uint16_t iteration, uint8_t *name_str){
 	strcat(buffer, "_coach");
 #endif
 
-#ifdef SD_MODULE_BOUY
-	strcat(buffer, "_bouy");
+#ifdef SD_MODULE_BUOY
+	strcat(buffer, "_buoy");
 #endif
 
 	strcat(buffer, ".csv");
