@@ -4,6 +4,15 @@
  *  Created on: Jul 16, 2019
  *      Author: a-h
  */
+
+/**
+ * @file    bno055_i2c.c
+ * @brief   BNO055 Driver funcs.
+ *
+ * @addtogroup BNO055
+ * @{
+ */
+
 #include "config.h"
 #include <stdlib.h>
 #include <string.h>

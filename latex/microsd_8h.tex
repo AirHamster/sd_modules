@@ -1,0 +1,126 @@
+\hypertarget{microsd_8h}{}\doxysection{microsd/microsd.h File Reference}
+\label{microsd_8h}\index{microsd/microsd.h@{microsd/microsd.h}}
+
+
+Microsd enums and structs.  
+
+
+{\ttfamily \#include \char`\"{}stdint.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}ch.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}hal.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}ff.\+h\char`\"{}}\newline
+Include dependency graph for microsd.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=287pt]{microsd_8h__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structmicrosd__t}{microsd\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Struct with common file info. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structmicrosd__fsm__t}{microsd\+\_\+fsm\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em F\+SM struct. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define {\bfseries M\+I\+C\+R\+O\+S\+D\+\_\+\+W\+R\+I\+T\+E\+\_\+\+F\+I\+LE}~1
+\item 
+\#define {\bfseries M\+I\+C\+R\+O\+S\+D\+\_\+\+O\+P\+E\+N\+\_\+\+F\+I\+LE}~2
+\item 
+\#define {\bfseries M\+I\+C\+R\+O\+S\+D\+\_\+\+C\+L\+O\+S\+E\+\_\+\+F\+I\+LE}~3
+\item 
+\#define {\bfseries M\+I\+C\+R\+O\+S\+D\+\_\+\+S\+C\+A\+N\+\_\+\+F\+I\+L\+ES}~4
+\item 
+\#define {\bfseries M\+I\+C\+R\+O\+S\+D\+\_\+\+M\+O\+U\+N\+T\+\_\+\+FS}~5
+\item 
+\#define {\bfseries M\+I\+C\+R\+O\+S\+D\+\_\+\+S\+H\+O\+W\+\_\+\+T\+R\+EE}~6
+\item 
+\#define {\bfseries M\+I\+C\+R\+O\+S\+D\+\_\+\+S\+H\+O\+W\+\_\+\+F\+R\+EE}~7
+\item 
+\#define {\bfseries M\+I\+C\+R\+O\+S\+D\+\_\+\+W\+R\+I\+T\+E\+\_\+\+S\+E\+N\+S\+O\+R\+\_\+\+L\+O\+G\+\_\+\+L\+I\+NE}~8
+\item 
+\#define \mbox{\hyperlink{group___m_i_c_r_o_s_d_ga767109abe4fcbcafb6dbc6960cd0c59c}{M\+I\+C\+R\+O\+S\+D\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+S\+T\+A\+TE}}~\mbox{\hyperlink{group___m_i_c_r_o_s_d_ggaa135e1d2d101b56a3df19fec57ac7e19a0bcb3ea6b8d69bca8dc10e8a10ce2275}{M\+I\+C\+R\+O\+S\+D\+\_\+\+W\+R\+I\+T\+E\+\_\+\+L\+OG}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{group___m_i_c_r_o_s_d_gaa135e1d2d101b56a3df19fec57ac7e19}{microsd\+\_\+commands}} \{ \newline
+\mbox{\hyperlink{group___m_i_c_r_o_s_d_ggaa135e1d2d101b56a3df19fec57ac7e19a1f6ac97f1be9362570fff80b46ef432d}{M\+I\+C\+R\+O\+S\+D\+\_\+\+N\+O\+NE}} = 0, 
+\mbox{\hyperlink{group___m_i_c_r_o_s_d_ggaa135e1d2d101b56a3df19fec57ac7e19a85ba1d3aedf8d1b212fd04661875a8ba}{M\+I\+C\+R\+O\+S\+D\+\_\+\+M\+K\+FS}}, 
+\mbox{\hyperlink{group___m_i_c_r_o_s_d_ggaa135e1d2d101b56a3df19fec57ac7e19a987d42d407bab100eecdd9b1ca1bb540}{M\+I\+C\+R\+O\+S\+D\+\_\+\+T\+R\+EE}}, 
+\mbox{\hyperlink{group___m_i_c_r_o_s_d_ggaa135e1d2d101b56a3df19fec57ac7e19a06f44b5650ff5e2924d3ca957ce6a0f2}{M\+I\+C\+R\+O\+S\+D\+\_\+\+M\+O\+U\+NT}}, 
+\newline
+\mbox{\hyperlink{group___m_i_c_r_o_s_d_ggaa135e1d2d101b56a3df19fec57ac7e19ad95ad51cacb36d94d30cb2056757350f}{M\+I\+C\+R\+O\+S\+D\+\_\+\+LS}}, 
+\mbox{\hyperlink{group___m_i_c_r_o_s_d_ggaa135e1d2d101b56a3df19fec57ac7e19a8c9049907803b115405c2e4ffb46c373}{M\+I\+C\+R\+O\+S\+D\+\_\+\+C\+AT}}, 
+\mbox{\hyperlink{group___m_i_c_r_o_s_d_ggaa135e1d2d101b56a3df19fec57ac7e19a0bcb3ea6b8d69bca8dc10e8a10ce2275}{M\+I\+C\+R\+O\+S\+D\+\_\+\+W\+R\+I\+T\+E\+\_\+\+L\+OG}}, 
+\mbox{\hyperlink{group___m_i_c_r_o_s_d_ggaa135e1d2d101b56a3df19fec57ac7e19ab8e6f732a86ec3336694fd0960b4d9dc}{M\+I\+C\+R\+O\+S\+D\+\_\+\+U\+P\+D\+A\+T\+E\+\_\+\+C\+A\+L\+I\+B\+F\+I\+LE}}, 
+\newline
+\mbox{\hyperlink{group___m_i_c_r_o_s_d_ggaa135e1d2d101b56a3df19fec57ac7e19a6b7da89823b2b2642ca28cef0e406ea3}{M\+I\+C\+R\+O\+S\+D\+\_\+\+R\+E\+M\+O\+VE}}, 
+\mbox{\hyperlink{group___m_i_c_r_o_s_d_ggaa135e1d2d101b56a3df19fec57ac7e19a4d6bc145535240b00db483ffc923881d}{M\+I\+C\+R\+O\+S\+D\+\_\+\+F\+R\+EE}}
+ \}
+\begin{DoxyCompactList}\small\item\em States for F\+SM. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries cmd\+\_\+open} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+void {\bfseries microsd\+\_\+update\+\_\+calibfile} (void)
+\item 
+void \mbox{\hyperlink{group___m_i_c_r_o_s_d_ga0943ae9d80c89a56334a551f3d6d8783}{cmd\+\_\+tree}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Print file tree. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___m_i_c_r_o_s_d_ga1c40153534e1689582908a7adf1f1317}{microsd\+\_\+show\+\_\+tree}} (Base\+Sequential\+Stream $\ast$chp)
+\begin{DoxyCompactList}\small\item\em Print file tree. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___m_i_c_r_o_s_d_ga891b0c0cd9e14f01f55c3a2fecf275e8}{cmd\+\_\+mount}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Manual mount SD card. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___m_i_c_r_o_s_d_ga92b217498fb153fb9dca066be26d31cf}{cmd\+\_\+remove}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Deleting file from SD card. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___m_i_c_r_o_s_d_ga9b8cf10979eb90f7390a99824cfd32f1}{cmd\+\_\+free}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Print available space. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___m_i_c_r_o_s_d_ga76f0d1248f34ab7d8253a942b190e4e3}{cmd\+\_\+write}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Write. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___m_i_c_r_o_s_d_gaa449ffd63cf92fe88d29df0dd4473b5b}{cmd\+\_\+mkfs}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Format SD card. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___m_i_c_r_o_s_d_gaa8125f387447a60fef51ea165e88bc85}{cmd\+\_\+cat}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Same as tree. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___m_i_c_r_o_s_d_gaea5381e7f1947dc028b0880a0545c05d}{start\+\_\+microsd\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Start Micro\+SD threads. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___m_i_c_r_o_s_d_ga5ba4fe4ebcabd87b1d1fd3c6413c1ae5}{fsm\+\_\+from\+\_\+ls}} (uint8\+\_\+t new\+\_\+state)
+\item 
+void {\bfseries fsm\+\_\+switch\+\_\+to\+\_\+default\+\_\+state} (void)
+\item 
+void {\bfseries fsm\+\_\+change\+\_\+state} (uint8\+\_\+t state)
+\item 
+void {\bfseries fsm\+\_\+new\+\_\+state} (uint8\+\_\+t state)
+\item 
+void {\bfseries fsm\+\_\+from\+\_\+writing} (uint8\+\_\+t new\+\_\+state)
+\item 
+void {\bfseries fsm\+\_\+from\+\_\+none} (uint8\+\_\+t new\+\_\+state)
+\item 
+void {\bfseries fsm\+\_\+from\+\_\+mount} (uint8\+\_\+t new\+\_\+state)
+\item 
+void {\bfseries fsm\+\_\+from\+\_\+free} (uint8\+\_\+t new\+\_\+state)
+\item 
+void {\bfseries fsm\+\_\+from\+\_\+cat} (uint8\+\_\+t new\+\_\+state)
+\item 
+void {\bfseries fsm\+\_\+from\+\_\+mkfs} (uint8\+\_\+t new\+\_\+state)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___m_i_c_r_o_s_d_gaffa36144b645b0cb0ad24d6141f77cc3}{fs\+\_\+create\+\_\+new\+\_\+log}} (void)
+\begin{DoxyCompactList}\small\item\em Creates new logfile. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{group___m_i_c_r_o_s_d_gad8f101aa1db7f383622dcfe6aff3e4c7}{fs\+\_\+write\+\_\+file\+\_\+header}} (void)
+\begin{DoxyCompactList}\small\item\em Writes csv header to file. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{group___m_i_c_r_o_s_d_ga98306623ec44a04561ac47a43ca52136}{fs\+\_\+write\+\_\+line}} (void)
+\begin{DoxyCompactList}\small\item\em Writes sensors data to file. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{group___m_i_c_r_o_s_d_ga41b5e422269547751fa823e35db6c775}{fs\+\_\+check\+\_\+space}} (void)
+\begin{DoxyCompactList}\small\item\em Check and print available space on SD card. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{group___m_i_c_r_o_s_d_ga1f0b47730c85a55f2050c3c7c199db9d}{fs\+\_\+close\+\_\+log}} (void)
+\begin{DoxyCompactList}\small\item\em Close the logfile. \end{DoxyCompactList}\item 
+uint8\+\_\+t \mbox{\hyperlink{group___m_i_c_r_o_s_d_ga6f60e50c84d3aaa72065f9278e7df386}{fs\+\_\+continue\+\_\+log}} (void)
+\begin{DoxyCompactList}\small\item\em Open logfile without writing header line. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Microsd enums and structs. 
+

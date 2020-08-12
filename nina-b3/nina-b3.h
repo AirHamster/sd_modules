@@ -5,6 +5,15 @@
  *      Author: a-h
  */
 
+
+/**
+ * @file    nina-b3.h
+ * @brief   NINA-B3 Driver macros and structures.
+ *
+ * @addtogroup NINA-B3
+ * @{
+ */
+
 #ifndef SD_MODULES_NINA_B3_NINA_B3_H_
 #define SD_MODULES_NINA_B3_NINA_B3_H_
 #include "stdint.h"
@@ -58,24 +67,9 @@
 #define BLE_TENSO3_ASCII_NAME		"REMOTE_TENSO_3"
 #define BLE_TENSO4_ASCII_NAME		"REMOTE_TENSO_4"
 
-// Motor object structure
-typedef struct
-{
-    int16_t currentSpeed;
-} Motor;
-
-// Event data structure
-typedef struct
-{
-    int16_t speed;
-} MotorData;
-
-typedef struct{
-
-}ble_t;
-
 /**
- * Peer properties
+ * @struct ble_peer_t
+ * @brief Peer properties
  */
 typedef struct{
 	int8_t addr[13];
@@ -85,7 +79,8 @@ typedef struct{
 }ble_peer_t;
 
 /**
- *  Internal characteristic properties
+ * @struct ble_charac_t
+ * @brief Internal characteristic properties
  */
 typedef struct{
 	uint16_t value_handle;
@@ -100,7 +95,8 @@ typedef struct{
 }ble_charac_t;
 
 /**
- * Remote device characteristic properties
+ * @struct ble_remote_charac_t
+ * @brief Remote device characteristic properties
  */
 typedef struct{
 	uint16_t conn_handle;
@@ -119,7 +115,8 @@ typedef struct{
 }ble_remote_t;
 
 /**
- * Remote device connection properties
+ * @struct ble_remote_dev_t
+ * @brief Remote device connection properties
  */
 typedef struct{
 	ble_remote_charac_t charac;
@@ -131,7 +128,8 @@ typedef struct{
 }ble_remote_dev_t;
 
 /**
- * Remote peer connection properties
+ * @struct ble_remote_peer_t
+ * @brief Remote peer connection properties
  */
 typedef struct{
 	ble_remote_charac_t charac;
@@ -163,9 +161,7 @@ typedef struct {
 #define NUM_OF_CHARACTS 1
 #endif
 
-/**
- * Start BLE threads
- */
+
 void start_ble_module(void);
 void nina_send_at(void);
 /**

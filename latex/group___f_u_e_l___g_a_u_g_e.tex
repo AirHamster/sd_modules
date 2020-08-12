@@ -1,0 +1,690 @@
+\hypertarget{group___f_u_e_l___g_a_u_g_e}{}\doxysection{Fuel\+\_\+gauge Driver}
+\label{group___f_u_e_l___g_a_u_g_e}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}}
+
+
+TI B\+Q27441 fuel gauge driver.  
+
+
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structfuel__t}{fuel\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Common fuel gauge struct. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga1619b1151a6eace5482bd82a14e4c726}\label{group___f_u_e_l___g_a_u_g_e_ga1619b1151a6eace5482bd82a14e4c726}} 
+\#define {\bfseries F\+U\+E\+L\+\_\+\+A\+D\+D\+R\+E\+SS}~0x55
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga995a0c2a59a7e074e67f2e7c62a3b0a1}\label{group___f_u_e_l___g_a_u_g_e_ga995a0c2a59a7e074e67f2e7c62a3b0a1}} 
+\#define {\bfseries B\+Q72441\+\_\+\+I2\+C\+\_\+\+T\+I\+M\+E\+O\+UT}~2000
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gac8178770c590a37967472b6f2212d5a4}\label{group___f_u_e_l___g_a_u_g_e_gac8178770c590a37967472b6f2212d5a4}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gac8178770c590a37967472b6f2212d5a4}{B\+Q27441\+\_\+\+U\+N\+S\+E\+A\+L\+\_\+\+K\+EY}}~0x8000
+\begin{DoxyCompactList}\small\item\em Secret code to unseal the B\+Q27441-\/\+G1A. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga98085c4798f8be86d6176b7cdb64fee8}\label{group___f_u_e_l___g_a_u_g_e_ga98085c4798f8be86d6176b7cdb64fee8}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga98085c4798f8be86d6176b7cdb64fee8}{B\+Q27441\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+ID}}~0x0421
+\begin{DoxyCompactList}\small\item\em Default device ID. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga1820791fdba16289b23905c2b5da7188}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+C\+O\+N\+T\+R\+OL}}~0x00
+\begin{DoxyCompactList}\small\item\em Control() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gabfead4db8282c61a3509e551279f42d1}\label{group___f_u_e_l___g_a_u_g_e_gabfead4db8282c61a3509e551279f42d1}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gabfead4db8282c61a3509e551279f42d1}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+T\+E\+MP}}~0x02
+\begin{DoxyCompactList}\small\item\em Temperature() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga047588c1ba00770c221522e5570df706}\label{group___f_u_e_l___g_a_u_g_e_ga047588c1ba00770c221522e5570df706}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga047588c1ba00770c221522e5570df706}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+V\+O\+L\+T\+A\+GE}}~0x04
+\begin{DoxyCompactList}\small\item\em Voltage() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga00b625a29e2cec9e9dcb674b8a766c92}\label{group___f_u_e_l___g_a_u_g_e_ga00b625a29e2cec9e9dcb674b8a766c92}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga00b625a29e2cec9e9dcb674b8a766c92}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+F\+L\+A\+GS}}~0x06
+\begin{DoxyCompactList}\small\item\em Flags() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga2629dbdddef603bd9d35bffd219432fd}\label{group___f_u_e_l___g_a_u_g_e_ga2629dbdddef603bd9d35bffd219432fd}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga2629dbdddef603bd9d35bffd219432fd}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+N\+O\+M\+\_\+\+C\+A\+P\+A\+C\+I\+TY}}~0x08
+\begin{DoxyCompactList}\small\item\em Nominal\+Available\+Capacity() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gab975def55dcf473206adabc8a38b3f55}\label{group___f_u_e_l___g_a_u_g_e_gab975def55dcf473206adabc8a38b3f55}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gab975def55dcf473206adabc8a38b3f55}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+A\+V\+A\+I\+L\+\_\+\+C\+A\+P\+A\+C\+I\+TY}}~0x0A
+\begin{DoxyCompactList}\small\item\em Full\+Available\+Capacity() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga8ee02243fa47924f09bfd81745b38438}\label{group___f_u_e_l___g_a_u_g_e_ga8ee02243fa47924f09bfd81745b38438}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga8ee02243fa47924f09bfd81745b38438}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+R\+E\+M\+\_\+\+C\+A\+P\+A\+C\+I\+TY}}~0x0C
+\begin{DoxyCompactList}\small\item\em Remaining\+Capacity() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gab3d621e800f215118fa0ecd4e112b814}\label{group___f_u_e_l___g_a_u_g_e_gab3d621e800f215118fa0ecd4e112b814}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gab3d621e800f215118fa0ecd4e112b814}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+F\+U\+L\+L\+\_\+\+C\+A\+P\+A\+C\+I\+TY}}~0x0E
+\begin{DoxyCompactList}\small\item\em Full\+Charge\+Capacity() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga55abf20f23af6e036377b51d41c2d3d4}\label{group___f_u_e_l___g_a_u_g_e_ga55abf20f23af6e036377b51d41c2d3d4}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga55abf20f23af6e036377b51d41c2d3d4}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+A\+V\+G\+\_\+\+C\+U\+R\+R\+E\+NT}}~0x10
+\begin{DoxyCompactList}\small\item\em Average\+Current() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga9275e3a57c26c8575c68a7bb2f088400}\label{group___f_u_e_l___g_a_u_g_e_ga9275e3a57c26c8575c68a7bb2f088400}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga9275e3a57c26c8575c68a7bb2f088400}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+S\+T\+D\+B\+Y\+\_\+\+C\+U\+R\+R\+E\+NT}}~0x12
+\begin{DoxyCompactList}\small\item\em Standby\+Current() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gae809138b31dc9614f371945bf359fa92}\label{group___f_u_e_l___g_a_u_g_e_gae809138b31dc9614f371945bf359fa92}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gae809138b31dc9614f371945bf359fa92}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+M\+A\+X\+\_\+\+C\+U\+R\+R\+E\+NT}}~0x14
+\begin{DoxyCompactList}\small\item\em Max\+Load\+Current() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gab3d598de50317c92ba811b684e56690a}\label{group___f_u_e_l___g_a_u_g_e_gab3d598de50317c92ba811b684e56690a}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gab3d598de50317c92ba811b684e56690a}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+A\+V\+G\+\_\+\+P\+O\+W\+ER}}~0x18
+\begin{DoxyCompactList}\small\item\em Average\+Power() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga9ed5d2719d1c25c1d35cd6f7344f49fd}\label{group___f_u_e_l___g_a_u_g_e_ga9ed5d2719d1c25c1d35cd6f7344f49fd}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga9ed5d2719d1c25c1d35cd6f7344f49fd}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+S\+OC}}~0x1C
+\begin{DoxyCompactList}\small\item\em State\+Of\+Charge() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga3fbc651c60e80e7e7728e52a964ad6ad}\label{group___f_u_e_l___g_a_u_g_e_ga3fbc651c60e80e7e7728e52a964ad6ad}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga3fbc651c60e80e7e7728e52a964ad6ad}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+I\+N\+T\+\_\+\+T\+E\+MP}}~0x1E
+\begin{DoxyCompactList}\small\item\em Internal\+Temperature() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga70e8323d1cd9c62f6ce1d432de5cf887}\label{group___f_u_e_l___g_a_u_g_e_ga70e8323d1cd9c62f6ce1d432de5cf887}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga70e8323d1cd9c62f6ce1d432de5cf887}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+S\+OH}}~0x20
+\begin{DoxyCompactList}\small\item\em State\+Of\+Health() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaa03213cc1a11f1bd02ade9df79d94dab}\label{group___f_u_e_l___g_a_u_g_e_gaa03213cc1a11f1bd02ade9df79d94dab}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gaa03213cc1a11f1bd02ade9df79d94dab}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+R\+E\+M\+\_\+\+C\+A\+P\+\_\+\+U\+N\+FL}}~0x28
+\begin{DoxyCompactList}\small\item\em Remaining\+Capacity\+Unfiltered() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaf0ee403ae2173493e168c03ff9430484}\label{group___f_u_e_l___g_a_u_g_e_gaf0ee403ae2173493e168c03ff9430484}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gaf0ee403ae2173493e168c03ff9430484}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+R\+E\+M\+\_\+\+C\+A\+P\+\_\+\+F\+IL}}~0x2A
+\begin{DoxyCompactList}\small\item\em Remaining\+Capacity\+Filtered() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaf47cebc2996353d8ce951f07a678160e}\label{group___f_u_e_l___g_a_u_g_e_gaf47cebc2996353d8ce951f07a678160e}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gaf47cebc2996353d8ce951f07a678160e}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+F\+U\+L\+L\+\_\+\+C\+A\+P\+\_\+\+U\+N\+FL}}~0x2C
+\begin{DoxyCompactList}\small\item\em Full\+Charge\+Capacity\+Unfiltered() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga0eee4cb7405a10eaa3c03302f93f21c0}\label{group___f_u_e_l___g_a_u_g_e_ga0eee4cb7405a10eaa3c03302f93f21c0}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga0eee4cb7405a10eaa3c03302f93f21c0}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+F\+U\+L\+L\+\_\+\+C\+A\+P\+\_\+\+F\+IL}}~0x2E
+\begin{DoxyCompactList}\small\item\em Full\+Charge\+Capacity\+Filtered() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gac64dd8585e570b152141ec0fc4045bde}\label{group___f_u_e_l___g_a_u_g_e_gac64dd8585e570b152141ec0fc4045bde}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gac64dd8585e570b152141ec0fc4045bde}{B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+S\+O\+C\+\_\+\+U\+N\+FL}}~0x30
+\begin{DoxyCompactList}\small\item\em State\+Of\+Charge\+Unfiltered() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga459082183e34de5fc08c0d201814d130}\label{group___f_u_e_l___g_a_u_g_e_ga459082183e34de5fc08c0d201814d130}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga459082183e34de5fc08c0d201814d130}{B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+T\+A\+T\+US}}~0x00
+\begin{DoxyCompactList}\small\item\em Issuing a Control() command requires a subsequent 2-\/byte subcommand. These additional bytes specify the particular control function desired. The Control() command allows the system to control specific features of the fuel gauge during normal operation and additional features when the device is in different access modes. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga17f9a428025c807018d5addada6b9dc7}\label{group___f_u_e_l___g_a_u_g_e_ga17f9a428025c807018d5addada6b9dc7}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+T\+Y\+PE}~0x01
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga99307064fa784fda81d4bf2561ba75ae}\label{group___f_u_e_l___g_a_u_g_e_ga99307064fa784fda81d4bf2561ba75ae}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+F\+W\+\_\+\+V\+E\+R\+S\+I\+ON}~0x02
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gab6b42eb97ef68bc7f90a92e3291e02be}\label{group___f_u_e_l___g_a_u_g_e_gab6b42eb97ef68bc7f90a92e3291e02be}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+D\+M\+\_\+\+C\+O\+DE}~0x04
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga426682c875d57374de8f73ea3a294333}\label{group___f_u_e_l___g_a_u_g_e_ga426682c875d57374de8f73ea3a294333}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+P\+R\+E\+V\+\_\+\+M\+A\+C\+W\+R\+I\+TE}~0x07
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gae32b1fd686d4bafb14247c7ed209bb3c}\label{group___f_u_e_l___g_a_u_g_e_gae32b1fd686d4bafb14247c7ed209bb3c}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+C\+H\+E\+M\+\_\+\+ID}~0x08
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga41e2b584c61a46570522e7dfc3b52e2a}\label{group___f_u_e_l___g_a_u_g_e_ga41e2b584c61a46570522e7dfc3b52e2a}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+B\+A\+T\+\_\+\+I\+N\+S\+E\+RT}~0x0C
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga285d38fb3f1e75ec27df75d4ed1d4358}\label{group___f_u_e_l___g_a_u_g_e_ga285d38fb3f1e75ec27df75d4ed1d4358}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+B\+A\+T\+\_\+\+R\+E\+M\+O\+VE}~0x0D
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga18e4afdd8f5e60516a85ff33af0a0ac9}\label{group___f_u_e_l___g_a_u_g_e_ga18e4afdd8f5e60516a85ff33af0a0ac9}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+E\+T\+\_\+\+H\+I\+B\+E\+R\+N\+A\+TE}~0x11
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaa421c0b2a6cee1d351a8ef8dfd6cd140}\label{group___f_u_e_l___g_a_u_g_e_gaa421c0b2a6cee1d351a8ef8dfd6cd140}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+C\+L\+E\+A\+R\+\_\+\+H\+I\+B\+E\+R\+N\+A\+TE}~0x12
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga8ca00bd4fd960d3e863b8eaaeda9abe2}\label{group___f_u_e_l___g_a_u_g_e_ga8ca00bd4fd960d3e863b8eaaeda9abe2}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+E\+T\+\_\+\+C\+F\+G\+U\+P\+D\+A\+TE}~0x13
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga5b60e5903eee8fe3318f1f5f5350aacb}\label{group___f_u_e_l___g_a_u_g_e_ga5b60e5903eee8fe3318f1f5f5350aacb}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+H\+U\+T\+D\+O\+W\+N\+\_\+\+E\+N\+A\+B\+LE}~0x1B
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gacea0a1faab4f088ec89cf8c4f442c649}\label{group___f_u_e_l___g_a_u_g_e_gacea0a1faab4f088ec89cf8c4f442c649}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+H\+U\+T\+D\+O\+WN}~0x1C
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga1a6c6ca38de7f7daa4682b78cd2fd210}\label{group___f_u_e_l___g_a_u_g_e_ga1a6c6ca38de7f7daa4682b78cd2fd210}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+E\+A\+L\+ED}~0x20
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gadb29099bf29c756b7585c28308a43ce6}\label{group___f_u_e_l___g_a_u_g_e_gadb29099bf29c756b7585c28308a43ce6}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+P\+U\+L\+S\+E\+\_\+\+S\+O\+C\+\_\+\+I\+NT}~0x23
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaeeb0ff546b6ee1f3e26632cec9b83e7c}\label{group___f_u_e_l___g_a_u_g_e_gaeeb0ff546b6ee1f3e26632cec9b83e7c}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+R\+E\+S\+ET}~0x41
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga2de41b3c43309689cd345e0a4e71d077}\label{group___f_u_e_l___g_a_u_g_e_ga2de41b3c43309689cd345e0a4e71d077}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+O\+F\+T\+\_\+\+R\+E\+S\+ET}~0x42
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gac45d45cb2cc364982a0641ad622256ae}\label{group___f_u_e_l___g_a_u_g_e_gac45d45cb2cc364982a0641ad622256ae}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+E\+X\+I\+T\+\_\+\+C\+F\+G\+U\+P\+D\+A\+TE}~0x43
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga4398a288e286802d86f9a87255e6ee45}\label{group___f_u_e_l___g_a_u_g_e_ga4398a288e286802d86f9a87255e6ee45}} 
+\#define {\bfseries B\+Q27441\+\_\+\+C\+O\+N\+T\+R\+O\+L\+\_\+\+E\+X\+I\+T\+\_\+\+R\+E\+S\+IM}~0x44
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gacb63d9ccc7983b9446cf7672f90a9db6}\label{group___f_u_e_l___g_a_u_g_e_gacb63d9ccc7983b9446cf7672f90a9db6}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gacb63d9ccc7983b9446cf7672f90a9db6}{B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+S\+H\+U\+T\+D\+O\+W\+N\+EN}}~(1$<$$<$15)
+\begin{DoxyCompactList}\small\item\em Bit positions for the 16-\/bit data of C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+T\+A\+T\+US. C\+O\+N\+T\+R\+O\+L\+\_\+\+S\+T\+A\+T\+US instructs the fuel gauge to return status information to Control() addresses 0x00 and 0x01. The read-\/only status word contains status bits that are set or cleared either automatically as conditions warrant or through using specified subcommands. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga530e9193331034bbff455b36ba9a62a9}\label{group___f_u_e_l___g_a_u_g_e_ga530e9193331034bbff455b36ba9a62a9}} 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+W\+D\+R\+E\+S\+ET}~(1$<$$<$14)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga688053407bbe27211371755ffce2bfde}\label{group___f_u_e_l___g_a_u_g_e_ga688053407bbe27211371755ffce2bfde}} 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+SS}~(1$<$$<$13)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga772d13bf626695b037f729c6a2479e5e}\label{group___f_u_e_l___g_a_u_g_e_ga772d13bf626695b037f729c6a2479e5e}} 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+C\+A\+L\+M\+O\+DE}~(1$<$$<$12)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaa0925c2e18550ac30d954bb91c1ead9a}\label{group___f_u_e_l___g_a_u_g_e_gaa0925c2e18550ac30d954bb91c1ead9a}} 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+C\+CA}~(1$<$$<$11)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gadcb8cfc33f5b57be7ac7ebb8c103bd27}\label{group___f_u_e_l___g_a_u_g_e_gadcb8cfc33f5b57be7ac7ebb8c103bd27}} 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+B\+CA}~(1$<$$<$10)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga35de82aad49b8b8f343440989ce768c2}\label{group___f_u_e_l___g_a_u_g_e_ga35de82aad49b8b8f343440989ce768c2}} 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+Q\+M\+A\+X\+\_\+\+UP}~(1$<$$<$9)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga2239b06cf5d62af7f812cd6156289456}\label{group___f_u_e_l___g_a_u_g_e_ga2239b06cf5d62af7f812cd6156289456}} 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+R\+E\+S\+\_\+\+UP}~(1$<$$<$8)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaf0e71094b20e4e4f476f73e2dd8a02c3}\label{group___f_u_e_l___g_a_u_g_e_gaf0e71094b20e4e4f476f73e2dd8a02c3}} 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+I\+N\+I\+T\+C\+O\+MP}~(1$<$$<$7)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga2fc4ba04f137ab4f54af628e748e3f53}\label{group___f_u_e_l___g_a_u_g_e_ga2fc4ba04f137ab4f54af628e748e3f53}} 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+H\+I\+B\+E\+R\+N\+A\+TE}~(1$<$$<$6)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga62245aa0d14a98395a7746c825bc828b}\label{group___f_u_e_l___g_a_u_g_e_ga62245aa0d14a98395a7746c825bc828b}} 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+S\+L\+E\+EP}~(1$<$$<$4)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga8697b7f619365d6cedb1f6c0ef4b3012}\label{group___f_u_e_l___g_a_u_g_e_ga8697b7f619365d6cedb1f6c0ef4b3012}} 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+L\+D\+MD}~(1$<$$<$3)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gadcdc40346d75f85468bbc8c19f30bc3d}\label{group___f_u_e_l___g_a_u_g_e_gadcdc40346d75f85468bbc8c19f30bc3d}} 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+R\+U\+P\+\_\+\+D\+IS}~(1$<$$<$2)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga5300aa95c4fe0cbe11be3c913a648712}\label{group___f_u_e_l___g_a_u_g_e_ga5300aa95c4fe0cbe11be3c913a648712}} 
+\#define {\bfseries B\+Q27441\+\_\+\+S\+T\+A\+T\+U\+S\+\_\+\+V\+OK}~(1$<$$<$1)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga4d2d75c15c694a70adc6bf7351bdf442}\label{group___f_u_e_l___g_a_u_g_e_ga4d2d75c15c694a70adc6bf7351bdf442}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga4d2d75c15c694a70adc6bf7351bdf442}{B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+OT}}~(1$<$$<$15)
+\begin{DoxyCompactList}\small\item\em Bit positions for the 16-\/bit data of Flags() This read-\/word function returns the contents of the fuel gauging status register, depicting the current operating status. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gadd79eefe75a7a335b225908056b9adf8}\label{group___f_u_e_l___g_a_u_g_e_gadd79eefe75a7a335b225908056b9adf8}} 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+UT}~(1$<$$<$14)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gacd8a0cd61a0a9c2a271b2c6ef79d0b16}\label{group___f_u_e_l___g_a_u_g_e_gacd8a0cd61a0a9c2a271b2c6ef79d0b16}} 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+FC}~(1$<$$<$9)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga84772d82aad97fd782da581a4029c7b9}\label{group___f_u_e_l___g_a_u_g_e_ga84772d82aad97fd782da581a4029c7b9}} 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+C\+HG}~(1$<$$<$8)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga8d456f07f0d0a750ac3d4ac2164c0f7c}\label{group___f_u_e_l___g_a_u_g_e_ga8d456f07f0d0a750ac3d4ac2164c0f7c}} 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+O\+C\+V\+T\+A\+K\+EN}~(1$<$$<$7)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga72458325f532b5456476ff0a80ed7164}\label{group___f_u_e_l___g_a_u_g_e_ga72458325f532b5456476ff0a80ed7164}} 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+I\+T\+P\+OR}~(1$<$$<$5)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gabcc717d91197519397ff98403cadde98}\label{group___f_u_e_l___g_a_u_g_e_gabcc717d91197519397ff98403cadde98}} 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+C\+F\+G\+U\+P\+M\+O\+DE}~(1$<$$<$4)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga3d15ba8992ebf067d95ff4bca83fe9b7}\label{group___f_u_e_l___g_a_u_g_e_ga3d15ba8992ebf067d95ff4bca83fe9b7}} 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+B\+A\+T\+\_\+\+D\+ET}~(1$<$$<$3)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga753d3c0201f75ae3e6ebc536f3e99b77}\label{group___f_u_e_l___g_a_u_g_e_ga753d3c0201f75ae3e6ebc536f3e99b77}} 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+S\+O\+C1}~(1$<$$<$2)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gafde059506daeddca838f7bc4ee91d029}\label{group___f_u_e_l___g_a_u_g_e_gafde059506daeddca838f7bc4ee91d029}} 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+S\+O\+CF}~(1$<$$<$1)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga8e86ed56eaa6158821d96bd852253c17}\label{group___f_u_e_l___g_a_u_g_e_ga8e86ed56eaa6158821d96bd852253c17}} 
+\#define {\bfseries B\+Q27441\+\_\+\+F\+L\+A\+G\+\_\+\+D\+SG}~(1$<$$<$0)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga5c726a8382e03766d2765a0a403d5ac6}\label{group___f_u_e_l___g_a_u_g_e_ga5c726a8382e03766d2765a0a403d5ac6}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga5c726a8382e03766d2765a0a403d5ac6}{B\+Q27441\+\_\+\+E\+X\+T\+E\+N\+D\+E\+D\+\_\+\+O\+P\+C\+O\+N\+F\+IG}}~0x3A
+\begin{DoxyCompactList}\small\item\em Extended data commands offer additional functionality beyond the standard set of commands. They are used in the same manner; however, unlike standard commands, extended commands are not limited to 2-\/byte words. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gadd2b9bc0b7e1354d6ae67cd5d553dffe}\label{group___f_u_e_l___g_a_u_g_e_gadd2b9bc0b7e1354d6ae67cd5d553dffe}} 
+\#define {\bfseries B\+Q27441\+\_\+\+E\+X\+T\+E\+N\+D\+E\+D\+\_\+\+C\+A\+P\+A\+C\+I\+TY}~0x3C
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaa7f518ea171423646483d7bd0b8a56aa}\label{group___f_u_e_l___g_a_u_g_e_gaa7f518ea171423646483d7bd0b8a56aa}} 
+\#define {\bfseries B\+Q27441\+\_\+\+E\+X\+T\+E\+N\+D\+E\+D\+\_\+\+D\+A\+T\+A\+C\+L\+A\+SS}~0x3E
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga423f1dabe432a22a80631d0e464a4b20}\label{group___f_u_e_l___g_a_u_g_e_ga423f1dabe432a22a80631d0e464a4b20}} 
+\#define {\bfseries B\+Q27441\+\_\+\+E\+X\+T\+E\+N\+D\+E\+D\+\_\+\+D\+A\+T\+A\+B\+L\+O\+CK}~0x3F
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gab13c61daa1aa562131d1936f65572ce8}\label{group___f_u_e_l___g_a_u_g_e_gab13c61daa1aa562131d1936f65572ce8}} 
+\#define {\bfseries B\+Q27441\+\_\+\+E\+X\+T\+E\+N\+D\+E\+D\+\_\+\+B\+L\+O\+C\+K\+D\+A\+TA}~0x40
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga04174cd7b1cfb756abe09ed7892b5381}\label{group___f_u_e_l___g_a_u_g_e_ga04174cd7b1cfb756abe09ed7892b5381}} 
+\#define {\bfseries B\+Q27441\+\_\+\+E\+X\+T\+E\+N\+D\+E\+D\+\_\+\+C\+H\+E\+C\+K\+S\+UM}~0x60
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gab5d324919437c1878089436363e9a7d3}\label{group___f_u_e_l___g_a_u_g_e_gab5d324919437c1878089436363e9a7d3}} 
+\#define {\bfseries B\+Q27441\+\_\+\+E\+X\+T\+E\+N\+D\+E\+D\+\_\+\+C\+O\+N\+T\+R\+OL}~0x61
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaf2181ae708bf14a8b820c780effecca8}\label{group___f_u_e_l___g_a_u_g_e_gaf2181ae708bf14a8b820c780effecca8}} 
+\#define \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gaf2181ae708bf14a8b820c780effecca8}{B\+Q27441\+\_\+\+I\+D\+\_\+\+S\+A\+F\+E\+TY}}~2
+\begin{DoxyCompactList}\small\item\em To access a subclass of the extended data, set the Data\+Class() function with one of these values. Configuration Classes. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga70442c104ae9bcf11a5727d4b72aebca}\label{group___f_u_e_l___g_a_u_g_e_ga70442c104ae9bcf11a5727d4b72aebca}} 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+C\+H\+G\+\_\+\+T\+E\+R\+M\+I\+N\+A\+T\+I\+ON}~36
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga76483884112d81e3d729c636579b0117}\label{group___f_u_e_l___g_a_u_g_e_ga76483884112d81e3d729c636579b0117}} 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+C\+O\+N\+F\+I\+G\+\_\+\+D\+A\+TA}~48
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaf210b983d52488eaf40858211a7ca6cc}\label{group___f_u_e_l___g_a_u_g_e_gaf210b983d52488eaf40858211a7ca6cc}} 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+D\+I\+S\+C\+H\+A\+R\+GE}~49
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gad9f88c068e74b057d0be41aae7b4a689}\label{group___f_u_e_l___g_a_u_g_e_gad9f88c068e74b057d0be41aae7b4a689}} 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+R\+E\+G\+I\+S\+T\+E\+RS}~64
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gad1a7596cc50ed704bd6aec7809ffd4f4}\label{group___f_u_e_l___g_a_u_g_e_gad1a7596cc50ed704bd6aec7809ffd4f4}} 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+P\+O\+W\+ER}~68
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaa6c7ec9dd0628aee835ee4ed24798e15}\label{group___f_u_e_l___g_a_u_g_e_gaa6c7ec9dd0628aee835ee4ed24798e15}} 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+I\+T\+\_\+\+C\+FG}~80
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gae7dbeaaa5fa9c7be562eded143d95558}\label{group___f_u_e_l___g_a_u_g_e_gae7dbeaaa5fa9c7be562eded143d95558}} 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+C\+U\+R\+R\+E\+N\+T\+\_\+\+T\+H\+R\+E\+SH}~81
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga3683efe7ce167c05d2f88493db678ca0}\label{group___f_u_e_l___g_a_u_g_e_ga3683efe7ce167c05d2f88493db678ca0}} 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+S\+T\+A\+TE}~82
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaccf3b016d3bd03a733b6767b9cd22f57}\label{group___f_u_e_l___g_a_u_g_e_gaccf3b016d3bd03a733b6767b9cd22f57}} 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+R\+\_\+\+A\+\_\+\+R\+AM}~89
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga3b4a9a86c8e0110b3497a3b81d2d88ee}\label{group___f_u_e_l___g_a_u_g_e_ga3b4a9a86c8e0110b3497a3b81d2d88ee}} 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+C\+A\+L\+I\+B\+\_\+\+D\+A\+TA}~104
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga7b7fff9a7adee6869d7f1783694bd463}\label{group___f_u_e_l___g_a_u_g_e_ga7b7fff9a7adee6869d7f1783694bd463}} 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+C\+C\+\_\+\+C\+AL}~105
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga2532f0a4708ad18f0fae2994f6e68aea}\label{group___f_u_e_l___g_a_u_g_e_ga2532f0a4708ad18f0fae2994f6e68aea}} 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+C\+U\+R\+R\+E\+NT}~107
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga313c0d228b744d552eb02a28aefe8786}\label{group___f_u_e_l___g_a_u_g_e_ga313c0d228b744d552eb02a28aefe8786}} 
+\#define {\bfseries B\+Q27441\+\_\+\+I\+D\+\_\+\+C\+O\+D\+ES}~112
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gac2f459c75afaf2f3d4d11704d57df3e7}\label{group___f_u_e_l___g_a_u_g_e_gac2f459c75afaf2f3d4d11704d57df3e7}} 
+\#define {\bfseries B\+Q27441\+\_\+\+O\+P\+C\+O\+N\+F\+I\+G\+\_\+\+B\+IE}~(1$<$$<$13)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga5dbd37986d13009d37bdccf31e6a91a3}\label{group___f_u_e_l___g_a_u_g_e_ga5dbd37986d13009d37bdccf31e6a91a3}} 
+\#define {\bfseries B\+Q27441\+\_\+\+O\+P\+C\+O\+N\+F\+I\+G\+\_\+\+B\+I\+\_\+\+P\+U\+\_\+\+EN}~(1$<$$<$12)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga96c24b8b24a64fb29982d7338408c379}\label{group___f_u_e_l___g_a_u_g_e_ga96c24b8b24a64fb29982d7338408c379}} 
+\#define {\bfseries B\+Q27441\+\_\+\+O\+P\+C\+O\+N\+F\+I\+G\+\_\+\+G\+P\+I\+O\+P\+OL}~(1$<$$<$11)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga81da0c7da9924ffd4bc48a1d8dc1642e}\label{group___f_u_e_l___g_a_u_g_e_ga81da0c7da9924ffd4bc48a1d8dc1642e}} 
+\#define {\bfseries B\+Q27441\+\_\+\+O\+P\+C\+O\+N\+F\+I\+G\+\_\+\+S\+L\+E\+EP}~(1$<$$<$5)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga74dc665fd4d52f190a5801e84c4897d9}\label{group___f_u_e_l___g_a_u_g_e_ga74dc665fd4d52f190a5801e84c4897d9}} 
+\#define {\bfseries B\+Q27441\+\_\+\+O\+P\+C\+O\+N\+F\+I\+G\+\_\+\+R\+M\+F\+CC}~(1$<$$<$4)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga3073d5cae61b2a23261f969b47c33bed}\label{group___f_u_e_l___g_a_u_g_e_ga3073d5cae61b2a23261f969b47c33bed}} 
+\#define {\bfseries B\+Q27441\+\_\+\+O\+P\+C\+O\+N\+F\+I\+G\+\_\+\+B\+A\+T\+L\+O\+W\+EN}~(1$<$$<$2)
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga7457dadbf1186626b48396a71883dc9e}\label{group___f_u_e_l___g_a_u_g_e_ga7457dadbf1186626b48396a71883dc9e}} 
+\#define {\bfseries B\+Q27441\+\_\+\+O\+P\+C\+O\+N\+F\+I\+G\+\_\+\+T\+E\+M\+PS}~(1$<$$<$0)
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga4a3045c4f8fa36493b2bdd5515583c33}{current\+\_\+measure}} \{ \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gga4a3045c4f8fa36493b2bdd5515583c33ac5fc183b66f3ffdfb243c13f4aa5804d}{A\+VG}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gga4a3045c4f8fa36493b2bdd5515583c33afa030687230b171d0c8e5d2d01b53125}{S\+T\+BY}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gga4a3045c4f8fa36493b2bdd5515583c33ad7e097bda6d981de2520f49fe74c25b7}{M\+AX}}
+ \}
+\begin{DoxyCompactList}\small\item\em Parameters for the current() function, to specify which current to read. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gac13050dc6d06b0eb3ef60c25f0b97fb3}{capacity\+\_\+measure}} \{ \newline
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a9d0f77e212f09b235a4836963971acb8}{R\+E\+M\+A\+IN}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3ad08f8ac0aa8dfb59589824359772459e}{F\+U\+LL}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a5ae828a29265ba41a48a2f5af7c80267}{A\+V\+A\+IL}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a8f6e3d11fd3467605206259bcb3000c4}{A\+V\+A\+I\+L\+\_\+\+F\+U\+LL}}, 
+\newline
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a5c052d9121cd9b9873485763e4e19c14}{R\+E\+M\+A\+I\+N\+\_\+F}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a8e7fed8549d61c03d2f3cef60c156dea}{R\+E\+M\+A\+I\+N\+\_\+\+UF}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a2e4a702bf647b7d09a78d6a32fcce2c4}{F\+U\+L\+L\+\_\+F}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a8de4dd0793db7ed559bddfb05c8765a0}{F\+U\+L\+L\+\_\+\+UF}}, 
+\newline
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a058ddfdfb3dd989380a646a626964dff}{D\+E\+S\+I\+GN}}
+ \}
+\begin{DoxyCompactList}\small\item\em Parameters for the capacity() function, to specify which capacity to read. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga5f9d2345468cfba4790747a48dca56a4}{soc\+\_\+measure}} \{ \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gga5f9d2345468cfba4790747a48dca56a4ab0f4e80b9200bdfca611883a5bb2cecb}{F\+I\+L\+T\+E\+R\+ED}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gga5f9d2345468cfba4790747a48dca56a4add168049b0395007bbd12df482d2b324}{U\+N\+F\+I\+L\+T\+E\+R\+ED}}
+ \}
+\begin{DoxyCompactList}\small\item\em Parameters for the soc() function. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gaa25a8d7c0af5a99de0032a23951eb8ef}{soh\+\_\+measure}} \{ \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggaa25a8d7c0af5a99de0032a23951eb8efa322ad1169a1de4a422a8447783954022}{P\+E\+R\+C\+E\+NT}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggaa25a8d7c0af5a99de0032a23951eb8efa500cbd627d6c1197e4840aebc709786b}{S\+O\+H\+\_\+\+S\+T\+AT}}
+ \}
+\begin{DoxyCompactList}\small\item\em Parameters for the soh() function. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gabc57e50577a11022929a32a2d9061ecf}{temp\+\_\+measure}} \{ \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggabc57e50577a11022929a32a2d9061ecfabed030efadd25858cf02b8abd31905bb}{B\+A\+T\+T\+E\+RY}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ggabc57e50577a11022929a32a2d9061ecfaa3f160deafaa5d57c0a81071a97e5cb7}{I\+N\+T\+E\+R\+N\+A\+L\+\_\+\+T\+E\+MP}}
+ \}
+\begin{DoxyCompactList}\small\item\em Parameters for the temperature() function. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga44912811ea7b78f6bfd3162117b47e79}{gpout\+\_\+function}} \{ \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gga44912811ea7b78f6bfd3162117b47e79aacdc1b5bfbc6301a4528f0b5df3213ff}{S\+O\+C\+\_\+\+I\+NT}}, 
+\mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gga44912811ea7b78f6bfd3162117b47e79a9ccc5db26756ac5efd9d9cee4fdef074}{B\+A\+T\+\_\+\+L\+OW}}
+ \}
+\begin{DoxyCompactList}\small\item\em Parameters for the set\+G\+P\+O\+U\+T\+Function() funciton. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static uint8\+\_\+t \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga5b86382dbdf8e6036a1cb9bd52987099}{fuel\+\_\+read\+\_\+register}} (uint8\+\_\+t command, int8\+\_\+t $\ast$buf, uint8\+\_\+t num)
+\begin{DoxyCompactList}\small\item\em Low-\/level I2C register read A\+PI. \end{DoxyCompactList}\item 
+static uint8\+\_\+t \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gaa668e52b7b7e59881fd8662b3fc4ddd9}{fuel\+\_\+get\+\_\+parameter}} (uint8\+\_\+t param, int16\+\_\+t $\ast$buffer)
+\begin{DoxyCompactList}\small\item\em Read parameter from fuel gauge IC. \end{DoxyCompactList}\item 
+static int8\+\_\+t \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga462641797f4e84a381cff10308190c7f}{fuel\+\_\+print\+\_\+info}} (\mbox{\hyperlink{structfuel__t}{fuel\+\_\+t}} $\ast$fuel)
+\begin{DoxyCompactList}\small\item\em Print battery info to shell. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga9c690f89df1e9563bc595b89344ec549}\label{group___f_u_e_l___g_a_u_g_e_ga9c690f89df1e9563bc595b89344ec549}} 
+static \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga9c690f89df1e9563bc595b89344ec549}{T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA}} (fuel\+\_\+thread\+\_\+wa, 256)
+\begin{DoxyCompactList}\small\item\em Fuel thread working area definition. \end{DoxyCompactList}\item 
+static \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga5965af7429c8c4fa69cb7d7f3a29538e}{T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON}} (fuel\+\_\+thread, p)
+\begin{DoxyCompactList}\small\item\em Main fuel thread. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gae01cc19653b278defef364afc6ac3b7c}\label{group___f_u_e_l___g_a_u_g_e_gae01cc19653b278defef364afc6ac3b7c}} 
+void \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gae01cc19653b278defef364afc6ac3b7c}{start\+\_\+fuel\+\_\+gauge\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Start fuel gauge threads. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaaae2f51df07c0d637c2046522688decd}\label{group___f_u_e_l___g_a_u_g_e_gaaae2f51df07c0d637c2046522688decd}} 
+\mbox{\hyperlink{structfuel__t}{fuel\+\_\+t}} $\ast$ {\bfseries fuel}
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga967ea156994a35bf77b2c4ae7ccaf273}\label{group___f_u_e_l___g_a_u_g_e_ga967ea156994a35bf77b2c4ae7ccaf273}} 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga8e84682150888ae78b9a41959ca02c7b}\label{group___f_u_e_l___g_a_u_g_e_ga8e84682150888ae78b9a41959ca02c7b}} 
+uint16\+\_\+t {\bfseries voltage}
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga4af92569ea830250443045233c9bf5fb}\label{group___f_u_e_l___g_a_u_g_e_ga4af92569ea830250443045233c9bf5fb}} 
+int16\+\_\+t {\bfseries temperature}
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gab36a26435eb73581b32a1f1bda1f1344}\label{group___f_u_e_l___g_a_u_g_e_gab36a26435eb73581b32a1f1bda1f1344}} 
+uint16\+\_\+t {\bfseries nominal\+\_\+capacity}
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga8a533bd85cefe847389ad202f1ef0ce5}\label{group___f_u_e_l___g_a_u_g_e_ga8a533bd85cefe847389ad202f1ef0ce5}} 
+uint16\+\_\+t {\bfseries full\+\_\+capacity}
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga2e847df29895f22eda916bbeb71b73a9}\label{group___f_u_e_l___g_a_u_g_e_ga2e847df29895f22eda916bbeb71b73a9}} 
+uint16\+\_\+t {\bfseries remaining\+\_\+capacity}
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga0d2a7277da7b2f193ea5f24543952a48}\label{group___f_u_e_l___g_a_u_g_e_ga0d2a7277da7b2f193ea5f24543952a48}} 
+uint16\+\_\+t {\bfseries full\+\_\+charge\+\_\+capacity}
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaf8d0e9b917555d0bf9030ebb4c8c9af4}\label{group___f_u_e_l___g_a_u_g_e_gaf8d0e9b917555d0bf9030ebb4c8c9af4}} 
+int16\+\_\+t {\bfseries average\+\_\+current}
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaf09f7e0839f9c5c1673beecc79fd4453}\label{group___f_u_e_l___g_a_u_g_e_gaf09f7e0839f9c5c1673beecc79fd4453}} 
+int16\+\_\+t {\bfseries standby\+\_\+current}
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga0c8355ea38f9db7b5415fb61e049b7ed}\label{group___f_u_e_l___g_a_u_g_e_ga0c8355ea38f9db7b5415fb61e049b7ed}} 
+int16\+\_\+t {\bfseries max\+\_\+load\+\_\+current}
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga26806e9a3768b9809b7d401d688a3037}\label{group___f_u_e_l___g_a_u_g_e_ga26806e9a3768b9809b7d401d688a3037}} 
+uint16\+\_\+t {\bfseries soc}
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaaa4b167d7716a2ab8fdf075c561d27df}\label{group___f_u_e_l___g_a_u_g_e_gaaa4b167d7716a2ab8fdf075c561d27df}} 
+uint16\+\_\+t {\bfseries soh}
+\item 
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga1e87af3c18a2fd36c61faf89949bdc3f}\label{group___f_u_e_l___g_a_u_g_e_ga1e87af3c18a2fd36c61faf89949bdc3f}} 
+uint16\+\_\+t {\bfseries flags}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+TI B\+Q27441 fuel gauge driver. 
+
+Detail will be writen soon \begin{DoxyPrecond}{Precondition}
+In order to use the A\+DC driver the {\ttfamily U\+S\+E\+\_\+\+F\+U\+E\+L\+\_\+\+G\+A\+U\+G\+E\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___f_u_e_l___g_a_u_g_e_fuel_1}{}\doxysubsection{Stateflow}\label{group___f_u_e_l___g_a_u_g_e_fuel_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_4}}
+\end{DoxyImageNoCaption}
+\hypertarget{group___f_u_e_l___g_a_u_g_e_fuel_2}{}\doxysubsection{Fuel gauge operations}\label{group___f_u_e_l___g_a_u_g_e_fuel_2}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga1820791fdba16289b23905c2b5da7188}\label{group___f_u_e_l___g_a_u_g_e_ga1820791fdba16289b23905c2b5da7188}} 
+\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!BQ27441\_COMMAND\_CONTROL@{BQ27441\_COMMAND\_CONTROL}}
+\index{BQ27441\_COMMAND\_CONTROL@{BQ27441\_COMMAND\_CONTROL}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}
+\doxysubsubsection{\texorpdfstring{BQ27441\_COMMAND\_CONTROL}{BQ27441\_COMMAND\_CONTROL}}
+{\footnotesize\ttfamily \#define B\+Q27441\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+C\+O\+N\+T\+R\+OL~0x00}
+
+
+
+Control() 
+
+@brief\+The fuel gauge uses a series of 2-\/byte standard commands to enable system reading and writing of battery information. Each command has an associated sequential command-\/code pair. 
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gac13050dc6d06b0eb3ef60c25f0b97fb3}\label{group___f_u_e_l___g_a_u_g_e_gac13050dc6d06b0eb3ef60c25f0b97fb3}} 
+\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!capacity\_measure@{capacity\_measure}}
+\index{capacity\_measure@{capacity\_measure}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}
+\doxysubsubsection{\texorpdfstring{capacity\_measure}{capacity\_measure}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gac13050dc6d06b0eb3ef60c25f0b97fb3}{capacity\+\_\+measure}}}
+
+
+
+Parameters for the capacity() function, to specify which capacity to read. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{REMAIN@{REMAIN}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!REMAIN@{REMAIN}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a9d0f77e212f09b235a4836963971acb8}\label{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a9d0f77e212f09b235a4836963971acb8}} 
+R\+E\+M\+A\+IN&Remaining Capacity (D\+E\+F\+A\+U\+LT) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FULL@{FULL}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!FULL@{FULL}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3ad08f8ac0aa8dfb59589824359772459e}\label{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3ad08f8ac0aa8dfb59589824359772459e}} 
+F\+U\+LL&Full Capacity. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{AVAIL@{AVAIL}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!AVAIL@{AVAIL}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a5ae828a29265ba41a48a2f5af7c80267}\label{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a5ae828a29265ba41a48a2f5af7c80267}} 
+A\+V\+A\+IL&Available Capacity. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{AVAIL\_FULL@{AVAIL\_FULL}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!AVAIL\_FULL@{AVAIL\_FULL}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a8f6e3d11fd3467605206259bcb3000c4}\label{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a8f6e3d11fd3467605206259bcb3000c4}} 
+A\+V\+A\+I\+L\+\_\+\+F\+U\+LL&Full Available Capacity. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{REMAIN\_F@{REMAIN\_F}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!REMAIN\_F@{REMAIN\_F}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a5c052d9121cd9b9873485763e4e19c14}\label{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a5c052d9121cd9b9873485763e4e19c14}} 
+R\+E\+M\+A\+I\+N\+\_\+F&Remaining Capacity Filtered. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{REMAIN\_UF@{REMAIN\_UF}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!REMAIN\_UF@{REMAIN\_UF}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a8e7fed8549d61c03d2f3cef60c156dea}\label{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a8e7fed8549d61c03d2f3cef60c156dea}} 
+R\+E\+M\+A\+I\+N\+\_\+\+UF&Remaining Capacity Unfiltered. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FULL\_F@{FULL\_F}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!FULL\_F@{FULL\_F}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a2e4a702bf647b7d09a78d6a32fcce2c4}\label{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a2e4a702bf647b7d09a78d6a32fcce2c4}} 
+F\+U\+L\+L\+\_\+F&Full Capacity Filtered. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FULL\_UF@{FULL\_UF}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!FULL\_UF@{FULL\_UF}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a8de4dd0793db7ed559bddfb05c8765a0}\label{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a8de4dd0793db7ed559bddfb05c8765a0}} 
+F\+U\+L\+L\+\_\+\+UF&Full Capacity Unfiltered. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DESIGN@{DESIGN}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!DESIGN@{DESIGN}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a058ddfdfb3dd989380a646a626964dff}\label{group___f_u_e_l___g_a_u_g_e_ggac13050dc6d06b0eb3ef60c25f0b97fb3a058ddfdfb3dd989380a646a626964dff}} 
+D\+E\+S\+I\+GN&Design Capacity. \\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga4a3045c4f8fa36493b2bdd5515583c33}\label{group___f_u_e_l___g_a_u_g_e_ga4a3045c4f8fa36493b2bdd5515583c33}} 
+\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!current\_measure@{current\_measure}}
+\index{current\_measure@{current\_measure}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}
+\doxysubsubsection{\texorpdfstring{current\_measure}{current\_measure}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga4a3045c4f8fa36493b2bdd5515583c33}{current\+\_\+measure}}}
+
+
+
+Parameters for the current() function, to specify which current to read. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{AVG@{AVG}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!AVG@{AVG}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gga4a3045c4f8fa36493b2bdd5515583c33ac5fc183b66f3ffdfb243c13f4aa5804d}\label{group___f_u_e_l___g_a_u_g_e_gga4a3045c4f8fa36493b2bdd5515583c33ac5fc183b66f3ffdfb243c13f4aa5804d}} 
+A\+VG&Average Current (D\+E\+F\+A\+U\+LT) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{STBY@{STBY}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!STBY@{STBY}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gga4a3045c4f8fa36493b2bdd5515583c33afa030687230b171d0c8e5d2d01b53125}\label{group___f_u_e_l___g_a_u_g_e_gga4a3045c4f8fa36493b2bdd5515583c33afa030687230b171d0c8e5d2d01b53125}} 
+S\+T\+BY&Standby Current. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{MAX@{MAX}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!MAX@{MAX}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gga4a3045c4f8fa36493b2bdd5515583c33ad7e097bda6d981de2520f49fe74c25b7}\label{group___f_u_e_l___g_a_u_g_e_gga4a3045c4f8fa36493b2bdd5515583c33ad7e097bda6d981de2520f49fe74c25b7}} 
+M\+AX&Max Current. \\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga44912811ea7b78f6bfd3162117b47e79}\label{group___f_u_e_l___g_a_u_g_e_ga44912811ea7b78f6bfd3162117b47e79}} 
+\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!gpout\_function@{gpout\_function}}
+\index{gpout\_function@{gpout\_function}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}
+\doxysubsubsection{\texorpdfstring{gpout\_function}{gpout\_function}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga44912811ea7b78f6bfd3162117b47e79}{gpout\+\_\+function}}}
+
+
+
+Parameters for the set\+G\+P\+O\+U\+T\+Function() funciton. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SOC\_INT@{SOC\_INT}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!SOC\_INT@{SOC\_INT}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gga44912811ea7b78f6bfd3162117b47e79aacdc1b5bfbc6301a4528f0b5df3213ff}\label{group___f_u_e_l___g_a_u_g_e_gga44912811ea7b78f6bfd3162117b47e79aacdc1b5bfbc6301a4528f0b5df3213ff}} 
+S\+O\+C\+\_\+\+I\+NT&Set G\+P\+O\+UT to S\+O\+C\+\_\+\+I\+NT functionality. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{BAT\_LOW@{BAT\_LOW}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!BAT\_LOW@{BAT\_LOW}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gga44912811ea7b78f6bfd3162117b47e79a9ccc5db26756ac5efd9d9cee4fdef074}\label{group___f_u_e_l___g_a_u_g_e_gga44912811ea7b78f6bfd3162117b47e79a9ccc5db26756ac5efd9d9cee4fdef074}} 
+B\+A\+T\+\_\+\+L\+OW&Set G\+P\+O\+UT to B\+A\+T\+\_\+\+L\+OW functionality. \\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga5f9d2345468cfba4790747a48dca56a4}\label{group___f_u_e_l___g_a_u_g_e_ga5f9d2345468cfba4790747a48dca56a4}} 
+\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!soc\_measure@{soc\_measure}}
+\index{soc\_measure@{soc\_measure}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}
+\doxysubsubsection{\texorpdfstring{soc\_measure}{soc\_measure}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_ga5f9d2345468cfba4790747a48dca56a4}{soc\+\_\+measure}}}
+
+
+
+Parameters for the soc() function. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTERED@{FILTERED}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!FILTERED@{FILTERED}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gga5f9d2345468cfba4790747a48dca56a4ab0f4e80b9200bdfca611883a5bb2cecb}\label{group___f_u_e_l___g_a_u_g_e_gga5f9d2345468cfba4790747a48dca56a4ab0f4e80b9200bdfca611883a5bb2cecb}} 
+F\+I\+L\+T\+E\+R\+ED&State of Charge Filtered (D\+E\+F\+A\+U\+LT) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNFILTERED@{UNFILTERED}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!UNFILTERED@{UNFILTERED}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gga5f9d2345468cfba4790747a48dca56a4add168049b0395007bbd12df482d2b324}\label{group___f_u_e_l___g_a_u_g_e_gga5f9d2345468cfba4790747a48dca56a4add168049b0395007bbd12df482d2b324}} 
+U\+N\+F\+I\+L\+T\+E\+R\+ED&State of Charge Unfiltered. \\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaa25a8d7c0af5a99de0032a23951eb8ef}\label{group___f_u_e_l___g_a_u_g_e_gaa25a8d7c0af5a99de0032a23951eb8ef}} 
+\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!soh\_measure@{soh\_measure}}
+\index{soh\_measure@{soh\_measure}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}
+\doxysubsubsection{\texorpdfstring{soh\_measure}{soh\_measure}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gaa25a8d7c0af5a99de0032a23951eb8ef}{soh\+\_\+measure}}}
+
+
+
+Parameters for the soh() function. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PERCENT@{PERCENT}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!PERCENT@{PERCENT}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ggaa25a8d7c0af5a99de0032a23951eb8efa322ad1169a1de4a422a8447783954022}\label{group___f_u_e_l___g_a_u_g_e_ggaa25a8d7c0af5a99de0032a23951eb8efa322ad1169a1de4a422a8447783954022}} 
+P\+E\+R\+C\+E\+NT&State of Health Percentage (D\+E\+F\+A\+U\+LT) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SOH\_STAT@{SOH\_STAT}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!SOH\_STAT@{SOH\_STAT}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ggaa25a8d7c0af5a99de0032a23951eb8efa500cbd627d6c1197e4840aebc709786b}\label{group___f_u_e_l___g_a_u_g_e_ggaa25a8d7c0af5a99de0032a23951eb8efa500cbd627d6c1197e4840aebc709786b}} 
+S\+O\+H\+\_\+\+S\+T\+AT&State of Health Status Bits. \\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gabc57e50577a11022929a32a2d9061ecf}\label{group___f_u_e_l___g_a_u_g_e_gabc57e50577a11022929a32a2d9061ecf}} 
+\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!temp\_measure@{temp\_measure}}
+\index{temp\_measure@{temp\_measure}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}
+\doxysubsubsection{\texorpdfstring{temp\_measure}{temp\_measure}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{group___f_u_e_l___g_a_u_g_e_gabc57e50577a11022929a32a2d9061ecf}{temp\+\_\+measure}}}
+
+
+
+Parameters for the temperature() function. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{BATTERY@{BATTERY}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!BATTERY@{BATTERY}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ggabc57e50577a11022929a32a2d9061ecfabed030efadd25858cf02b8abd31905bb}\label{group___f_u_e_l___g_a_u_g_e_ggabc57e50577a11022929a32a2d9061ecfabed030efadd25858cf02b8abd31905bb}} 
+B\+A\+T\+T\+E\+RY&Battery Temperature (D\+E\+F\+A\+U\+LT) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{INTERNAL\_TEMP@{INTERNAL\_TEMP}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!INTERNAL\_TEMP@{INTERNAL\_TEMP}}}\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ggabc57e50577a11022929a32a2d9061ecfaa3f160deafaa5d57c0a81071a97e5cb7}\label{group___f_u_e_l___g_a_u_g_e_ggabc57e50577a11022929a32a2d9061ecfaa3f160deafaa5d57c0a81071a97e5cb7}} 
+I\+N\+T\+E\+R\+N\+A\+L\+\_\+\+T\+E\+MP&Internal IC Temperature. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_gaa668e52b7b7e59881fd8662b3fc4ddd9}\label{group___f_u_e_l___g_a_u_g_e_gaa668e52b7b7e59881fd8662b3fc4ddd9}} 
+\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!fuel\_get\_parameter@{fuel\_get\_parameter}}
+\index{fuel\_get\_parameter@{fuel\_get\_parameter}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}
+\doxysubsubsection{\texorpdfstring{fuel\_get\_parameter()}{fuel\_get\_parameter()}}
+{\footnotesize\ttfamily static uint8\+\_\+t fuel\+\_\+get\+\_\+parameter (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{param,  }\item[{int16\+\_\+t $\ast$}]{buffer }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Read parameter from fuel gauge IC. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em param} & Parameter \\
+\hline
+{\em buffer} & Reading buffer pointer \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reading result 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em -\/1} & in case of error \\
+\hline
+{\em 0} & in case of success \\
+\hline
+\end{DoxyRetVals}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=311pt]{group___f_u_e_l___g_a_u_g_e_gaa668e52b7b7e59881fd8662b3fc4ddd9_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga462641797f4e84a381cff10308190c7f}\label{group___f_u_e_l___g_a_u_g_e_ga462641797f4e84a381cff10308190c7f}} 
+\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!fuel\_print\_info@{fuel\_print\_info}}
+\index{fuel\_print\_info@{fuel\_print\_info}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}
+\doxysubsubsection{\texorpdfstring{fuel\_print\_info()}{fuel\_print\_info()}}
+{\footnotesize\ttfamily static int8\+\_\+t fuel\+\_\+print\+\_\+info (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structfuel__t}{fuel\+\_\+t}} $\ast$}]{fuel }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Print battery info to shell. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em fuel} & Fuel gauge struct pointer \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga5b86382dbdf8e6036a1cb9bd52987099}\label{group___f_u_e_l___g_a_u_g_e_ga5b86382dbdf8e6036a1cb9bd52987099}} 
+\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!fuel\_read\_register@{fuel\_read\_register}}
+\index{fuel\_read\_register@{fuel\_read\_register}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}
+\doxysubsubsection{\texorpdfstring{fuel\_read\_register()}{fuel\_read\_register()}}
+{\footnotesize\ttfamily static uint8\+\_\+t fuel\+\_\+read\+\_\+register (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{command,  }\item[{int8\+\_\+t $\ast$}]{buf,  }\item[{uint8\+\_\+t}]{num }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Low-\/level I2C register read A\+PI. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em command} & \\
+\hline
+{\em buf} & Reading buffer pointer \\
+\hline
+{\em num} & Num of bytes to read \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reading result 
+\end{DoxyReturn}
+
+\begin{DoxyRetVals}{Return values}
+{\em -\/1} & in case of error \\
+\hline
+{\em 0} & in case of success \\
+\hline
+\end{DoxyRetVals}
+\mbox{\Hypertarget{group___f_u_e_l___g_a_u_g_e_ga5965af7429c8c4fa69cb7d7f3a29538e}\label{group___f_u_e_l___g_a_u_g_e_ga5965af7429c8c4fa69cb7d7f3a29538e}} 
+\index{Fuel\_gauge Driver@{Fuel\_gauge Driver}!THD\_FUNCTION@{THD\_FUNCTION}}
+\index{THD\_FUNCTION@{THD\_FUNCTION}!Fuel\_gauge Driver@{Fuel\_gauge Driver}}
+\doxysubsubsection{\texorpdfstring{THD\_FUNCTION()}{THD\_FUNCTION()}}
+{\footnotesize\ttfamily static T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON (\begin{DoxyParamCaption}\item[{fuel\+\_\+thread}]{,  }\item[{p}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Main fuel thread. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+O\+N(fuel\+\_\+thread,p)} & \\
+\hline
+\end{DoxyParams}
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=311pt]{group___f_u_e_l___g_a_u_g_e_ga5965af7429c8c4fa69cb7d7f3a29538e_cgraph}
+\end{center}
+\end{figure}

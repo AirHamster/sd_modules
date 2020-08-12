@@ -4,6 +4,15 @@
  *  Created on: Jan 30, 2020
  *      Author: a-h
  */
+
+/**
+ * @file    tenso.c
+ * @brief   Tenso driver funcs.
+ *
+ * @addtogroup TENSO
+ * @{
+ */
+
 #include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -21,6 +30,10 @@
 #endif
 
 tenso_data_t *tenso;
+
+/**
+ * @brief Main tenso thread
+ */
 
 static THD_WORKING_AREA(tenso_thread_wa, 256);
 static THD_FUNCTION( tenso_thread, p) {
@@ -50,6 +63,9 @@ void tenso_print_info(tenso_data_t *tenso_data) {
 			tenso_data->newtons);
 }
 
+/**
+ * @brief Start tenso thread
+ */
 void start_tenso_module(void){
 	//adcStart(&ADCD1, NULL);
 	//adcSTM32EnableVREF(&ADCD1);
@@ -116,6 +132,13 @@ float tenso_calculate_newtons(tenso_data_t *tenso_data){
 	return nwts;
 }
 
+/**
+ * @brief Calibration routine
+ * @param chp
+ * @param argc
+ * @param argv
+ * @return
+ */
 int8_t cmd_tenso_calibrate(BaseSequentialStream* chp, int argc, char* argv[]) {
 	if (argc != 0) {
 		if (strcmp(argv[0], "point_one") == 0) {
@@ -152,6 +175,11 @@ int8_t cmd_tenso_calibrate(BaseSequentialStream* chp, int argc, char* argv[]) {
 	return -1;
 }
 
+/**
+ * @brief ax+b coefs calculations
+ * @param tenso_data
+ * @return
+ */
 int8_t tenso_calculate_coefs(tenso_data_t *tenso_data) {
 
 	float k, b;

@@ -4,7 +4,13 @@
  *  Created on: Aug 10, 2019
  *      Author: a-h
  */
-
+/**
+ * @file    windsensor.h
+ * @brief   Windsensor driver macros and structures.
+ *
+ * @addtogroup WIND
+ * @{
+ */
 #include <stdint.h>
 #include "ch.h"
 #include "hal.h"

@@ -1,0 +1,480 @@
+\hypertarget{group___e_e_p_r_o_m}{}\doxysection{E\+E\+P\+R\+OM Driver}
+\label{group___e_e_p_r_o_m}\index{EEPROM Driver@{EEPROM Driver}}
+
+
+Generic E\+E\+P\+R\+OM driver.  
+
+
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structeeprom__info__memory__t}{eeprom\+\_\+info\+\_\+memory\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em FW and HW versions varables. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structeeprom__flags__memory__t}{eeprom\+\_\+flags\+\_\+memory\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Flags. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structeeprom__magn__calib__memory__t}{eeprom\+\_\+magn\+\_\+calib\+\_\+memory\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Magnetometer offset memory part. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structeeprom__math__corrections__t}{eeprom\+\_\+math\+\_\+corrections\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Math corrections memory part. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structeeprom__lag__calib__memory__t}{eeprom\+\_\+lag\+\_\+calib\+\_\+memory\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Log calibration values. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structeeprom__rudder__calib__memory__t}{eeprom\+\_\+rudder\+\_\+calib\+\_\+memory\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structeeprom__tenso__calib__memory__t}{eeprom\+\_\+tenso\+\_\+calib\+\_\+memory\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structeeprom__xbee__addresses__t}{eeprom\+\_\+xbee\+\_\+addresses\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structeeprom__ble__addresses__t}{eeprom\+\_\+ble\+\_\+addresses\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structeeprom__map__t}{eeprom\+\_\+map\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga9743d8186bab3997335df50ab0d10976}\label{group___e_e_p_r_o_m_ga9743d8186bab3997335df50ab0d10976}} 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+I\+N\+F\+O\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~32
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga909423d52178b9e517659195d474d278}\label{group___e_e_p_r_o_m_ga909423d52178b9e517659195d474d278}} 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+F\+L\+A\+G\+S\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~32
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gade07153b7cd93f5a0ca893a9f18e7bf0}\label{group___e_e_p_r_o_m_gade07153b7cd93f5a0ca893a9f18e7bf0}} 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+M\+A\+G\+N\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~64
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gae8292a06336027610872505adab7e440}\label{group___e_e_p_r_o_m_gae8292a06336027610872505adab7e440}} 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+M\+A\+T\+H\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~64
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga72a046467c07d795764f4a08821b0e26}\label{group___e_e_p_r_o_m_ga72a046467c07d795764f4a08821b0e26}} 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+L\+A\+G\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~64
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gaed874927c3651da2d9cbf90b11f7da75}\label{group___e_e_p_r_o_m_gaed874927c3651da2d9cbf90b11f7da75}} 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+R\+U\+D\+D\+E\+R\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~64
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gacb7794c1d6fbe7de18da8dfae6412845}\label{group___e_e_p_r_o_m_gacb7794c1d6fbe7de18da8dfae6412845}} 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+T\+E\+N\+S\+O\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~64
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga2b4fcc20342bd734c17a1a0fd48a3d1c}\label{group___e_e_p_r_o_m_ga2b4fcc20342bd734c17a1a0fd48a3d1c}} 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+X\+B\+E\+E\+\_\+\+A\+D\+D\+R\+E\+S\+E\+S\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~128
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga9bfc87a62f6a7b0c32a729ffd9889892}\label{group___e_e_p_r_o_m_ga9bfc87a62f6a7b0c32a729ffd9889892}} 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+B\+L\+E\+\_\+\+A\+D\+D\+R\+E\+S\+E\+S\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~128
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga386b9878b61ac78d75742548e87f2d5c}\label{group___e_e_p_r_o_m_ga386b9878b61ac78d75742548e87f2d5c}} 
+\#define {\bfseries I\+N\+F\+O\+\_\+\+S\+T\+R\+U\+C\+T\+\_\+\+S\+I\+ZE}~sizeof(\mbox{\hyperlink{structeeprom__info__memory__t}{eeprom\+\_\+info\+\_\+memory\+\_\+t}})
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gada5b963e3bf877977e8f6cb8a9a913e2}\label{group___e_e_p_r_o_m_gada5b963e3bf877977e8f6cb8a9a913e2}} 
+\#define {\bfseries B\+N\+O055\+\_\+\+A\+D\+D\+R\+E\+SS}~0x28
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga49e3d563cc690e9b174a0f9d74659cb4}\label{group___e_e_p_r_o_m_ga49e3d563cc690e9b174a0f9d74659cb4}} 
+\#define {\bfseries S\+I\+Z\+E\+OF}(s,  m)~((size\+\_\+t) sizeof(((s $\ast$)0)-\/$>$m))
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga5bfe1ebaa353a0b4fa49cbbb24dca6cc}\label{group___e_e_p_r_o_m_ga5bfe1ebaa353a0b4fa49cbbb24dca6cc}} 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+R\+E\+AD}(var,  buff)~\mbox{\hyperlink{group___e_e_p_r_o_m_gad2e6d3e940139a145b31fbca836749dc}{eeprom\+\_\+read}}(offsetof(\mbox{\hyperlink{structeeprom__map__t}{eeprom\+\_\+map\+\_\+t}},var), buff, S\+I\+Z\+E\+OF(\mbox{\hyperlink{structeeprom__map__t}{eeprom\+\_\+map\+\_\+t}},var))
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gaa648dcc036a3b92b9d949cd9ff15fe26}\label{group___e_e_p_r_o_m_gaa648dcc036a3b92b9d949cd9ff15fe26}} 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+W\+R\+I\+TE}(var,  buff)~\mbox{\hyperlink{group___e_e_p_r_o_m_ga2b9a65fc523f9fb8921433e1c185774c}{eeprom\+\_\+write}}(offsetof(\mbox{\hyperlink{structeeprom__map__t}{eeprom\+\_\+map\+\_\+t}},var), buff, S\+I\+Z\+E\+OF(\mbox{\hyperlink{structeeprom__map__t}{eeprom\+\_\+map\+\_\+t}},var))
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___e_e_p_r_o_m_ga2b9a65fc523f9fb8921433e1c185774c}{eeprom\+\_\+write}} (uint16\+\_\+t byte\+\_\+addr, const uint8\+\_\+t $\ast$txbuf, uint8\+\_\+t txbytes)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___e_e_p_r_o_m_gad2e6d3e940139a145b31fbca836749dc}{eeprom\+\_\+read}} (uint16\+\_\+t byte\+\_\+addr, uint8\+\_\+t $\ast$rxbuf, uint8\+\_\+t rxbytes)
+\item 
+void \mbox{\hyperlink{group___e_e_p_r_o_m_ga4c7d24e41a412567c2660b6861f47a0f}{start\+\_\+eeprom\+\_\+module}} (void)
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gae5373754f2ed66f73f04861d104561bf}\label{group___e_e_p_r_o_m_gae5373754f2ed66f73f04861d104561bf}} 
+void {\bfseries eeprom\+\_\+check\+\_\+i2c\+\_\+bus} (void)
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gac84f1f22d1b4166c294c87042ffd375a}\label{group___e_e_p_r_o_m_gac84f1f22d1b4166c294c87042ffd375a}} 
+void {\bfseries eeprom\+\_\+read\+\_\+hw\+\_\+version} (void)
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga746268aa7bdc986ef0645e98887dd1bf}\label{group___e_e_p_r_o_m_ga746268aa7bdc986ef0645e98887dd1bf}} 
+void {\bfseries eeprom\+\_\+write\+\_\+hw\+\_\+version} (void)
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gaa40bd05be64c4cbce84399e0ac1ba59a}\label{group___e_e_p_r_o_m_gaa40bd05be64c4cbce84399e0ac1ba59a}} 
+void {\bfseries bno055\+\_\+read\+\_\+id} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga967ea156994a35bf77b2c4ae7ccaf273}\label{group___e_e_p_r_o_m_ga967ea156994a35bf77b2c4ae7ccaf273}} 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga2347a8c247af6762666e903e56dd2a8d}\label{group___e_e_p_r_o_m_ga2347a8c247af6762666e903e56dd2a8d}} 
+uint8\+\_\+t {\bfseries eeprom\+\_\+buff} \mbox{[}32\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga06c9b4942738b1fb3336930ed0288446}\label{group___e_e_p_r_o_m_ga06c9b4942738b1fb3336930ed0288446}} 
+uint8\+\_\+t {\bfseries eeprom\+\_\+buff\+\_\+rx} \mbox{[}32\mbox{]}
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___e_e_p_r_o_m_ga4d503efecd34669e2cbf0933df473f8b}{H\+W\+\_\+\+V\+ER}}
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___e_e_p_r_o_m_ga89af9a9b0004fa628f2b9c23da152105}{F\+W\+\_\+\+V\+ER}}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___e_e_p_r_o_m_gab357a6ad8c7b355dbcb60bf82cf87368}{S\+T\+A\+T\+I\+C\+\_\+\+M\+A\+G\+N\+\_\+\+C\+A\+L\+I\+B\+\_\+\+F\+L\+AG}}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___e_e_p_r_o_m_gac2dcb2db6994211851008190d0d3f238}{R\+U\+D\+D\+E\+R\+\_\+\+C\+A\+L\+I\+B\+\_\+\+F\+L\+AG}}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga1cbcbc8f0dadf281a3d2de907eedb41d}\label{group___e_e_p_r_o_m_ga1cbcbc8f0dadf281a3d2de907eedb41d}} 
+int16\+\_\+t {\bfseries M\+A\+G\+N\+\_\+\+X\+\_\+\+O\+F\+F\+S\+ET}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga87c9060fa830c5a0c06fd27c805a16af}\label{group___e_e_p_r_o_m_ga87c9060fa830c5a0c06fd27c805a16af}} 
+int16\+\_\+t {\bfseries M\+A\+G\+N\+\_\+\+Y\+\_\+\+O\+F\+F\+S\+ET}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga074bd903a8f09e1fc70e4b521f06299f}\label{group___e_e_p_r_o_m_ga074bd903a8f09e1fc70e4b521f06299f}} 
+int16\+\_\+t {\bfseries M\+A\+G\+N\+\_\+\+Z\+\_\+\+O\+F\+F\+S\+ET}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga9920d4bc63cf39ba2a2dad4457ce642d}\label{group___e_e_p_r_o_m_ga9920d4bc63cf39ba2a2dad4457ce642d}} 
+int16\+\_\+t {\bfseries M\+A\+G\+N\+\_\+\+R\+A\+D\+I\+US}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gac925d98765919f3f1d611a2c090eb3c8}\label{group___e_e_p_r_o_m_gac925d98765919f3f1d611a2c090eb3c8}} 
+float {\bfseries M\+A\+T\+H\+\_\+\+C\+O\+M\+P\+A\+S\+S\+\_\+\+C\+O\+R\+R\+E\+C\+T\+I\+ON}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga4e891e24b65b59bae2b67fd382cc6611}\label{group___e_e_p_r_o_m_ga4e891e24b65b59bae2b67fd382cc6611}} 
+float {\bfseries M\+A\+T\+H\+\_\+\+H\+S\+P\+\_\+\+C\+O\+R\+R\+E\+C\+T\+I\+ON}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga0c94cf7285ecdfa7bf7521c8b5fb3bc1}\label{group___e_e_p_r_o_m_ga0c94cf7285ecdfa7bf7521c8b5fb3bc1}} 
+float {\bfseries M\+A\+T\+H\+\_\+\+H\+E\+E\+L\+\_\+\+C\+O\+R\+R\+E\+C\+T\+I\+ON}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gae017f9fef8a6415c42c66d3d84307fc8}\label{group___e_e_p_r_o_m_gae017f9fef8a6415c42c66d3d84307fc8}} 
+float {\bfseries M\+A\+T\+H\+\_\+\+D\+E\+C\+L\+A\+N\+A\+T\+I\+O\+N\+\_\+\+C\+O\+R\+R\+E\+C\+T\+I\+ON}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gabeaf604b2204f895360f27468109dba5}\label{group___e_e_p_r_o_m_gabeaf604b2204f895360f27468109dba5}} 
+float {\bfseries M\+A\+T\+H\+\_\+\+P\+I\+T\+C\+H\+\_\+\+C\+O\+R\+R\+E\+C\+T\+I\+ON}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gabe0c0df0e5da0d3aa3aceb59945a9288}\label{group___e_e_p_r_o_m_gabe0c0df0e5da0d3aa3aceb59945a9288}} 
+float {\bfseries M\+A\+T\+H\+\_\+\+R\+U\+D\+D\+E\+R\+\_\+\+C\+O\+R\+R\+E\+C\+T\+I\+ON}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gac3bcf6a0ce6d70e67b8cdc697863eb01}\label{group___e_e_p_r_o_m_gac3bcf6a0ce6d70e67b8cdc697863eb01}} 
+float {\bfseries M\+A\+T\+H\+\_\+\+W\+I\+N\+D\+\_\+\+C\+O\+R\+R\+E\+C\+T\+I\+ON}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga67452212f1ae90e8119f60bf98f13cbd}\label{group___e_e_p_r_o_m_ga67452212f1ae90e8119f60bf98f13cbd}} 
+uint8\+\_\+t {\bfseries M\+A\+T\+H\+\_\+\+W\+I\+N\+S\+I\+Z\+E1\+\_\+\+C\+O\+R\+R\+E\+C\+T\+I\+ON}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga0469d02781ccc1630037b526d54e1103}\label{group___e_e_p_r_o_m_ga0469d02781ccc1630037b526d54e1103}} 
+uint8\+\_\+t {\bfseries M\+A\+T\+H\+\_\+\+W\+I\+N\+S\+I\+Z\+E2\+\_\+\+C\+O\+R\+R\+E\+C\+T\+I\+ON}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gaa6427284d90884b7a53c1f643df42c59}\label{group___e_e_p_r_o_m_gaa6427284d90884b7a53c1f643df42c59}} 
+uint8\+\_\+t {\bfseries M\+A\+T\+H\+\_\+\+W\+I\+N\+S\+I\+Z\+E3\+\_\+\+C\+O\+R\+R\+E\+C\+T\+I\+ON}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gacad26877ec1f0982b524340861fc1ede}\label{group___e_e_p_r_o_m_gacad26877ec1f0982b524340861fc1ede}} 
+float {\bfseries L\+A\+G\+\_\+\+C\+A\+L\+IB}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gabc220aba308b0168e1a8680587731cc2}\label{group___e_e_p_r_o_m_gabc220aba308b0168e1a8680587731cc2}} 
+float {\bfseries R\+U\+D\+D\+E\+R\+\_\+\+C\+A\+L\+I\+B\+\_\+\+N\+A\+T\+I\+V\+E\+\_\+\+L\+E\+FT}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gac5a98db5c1769d708e00935a3c48d79a}\label{group___e_e_p_r_o_m_gac5a98db5c1769d708e00935a3c48d79a}} 
+float {\bfseries R\+U\+D\+D\+E\+R\+\_\+\+C\+A\+L\+I\+B\+\_\+\+N\+A\+T\+I\+V\+E\+\_\+\+R\+I\+G\+HT}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga1dd0fce6f779292ed24a82ef2f11f2a0}\label{group___e_e_p_r_o_m_ga1dd0fce6f779292ed24a82ef2f11f2a0}} 
+float {\bfseries R\+U\+D\+D\+E\+R\+\_\+\+C\+A\+L\+I\+B\+\_\+\+N\+A\+T\+I\+V\+E\+\_\+\+C\+E\+N\+T\+ER}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga79738061ce9b3a552a50399811867639}\label{group___e_e_p_r_o_m_ga79738061ce9b3a552a50399811867639}} 
+float {\bfseries R\+U\+D\+D\+E\+R\+\_\+\+C\+A\+L\+I\+B\+\_\+\+D\+E\+G\+R\+E\+E\+S\+\_\+\+L\+E\+FT}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gae32d41b64cac549e8b23d4afb6034dfc}\label{group___e_e_p_r_o_m_gae32d41b64cac549e8b23d4afb6034dfc}} 
+float {\bfseries R\+U\+D\+D\+E\+R\+\_\+\+C\+A\+L\+I\+B\+\_\+\+D\+E\+G\+R\+E\+E\+S\+\_\+\+R\+I\+G\+HT}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga29f0ad61352e6d05373b8ba89d38d204}\label{group___e_e_p_r_o_m_ga29f0ad61352e6d05373b8ba89d38d204}} 
+float {\bfseries R\+U\+D\+D\+E\+R\+\_\+\+C\+A\+L\+I\+B\+\_\+\+D\+E\+G\+R\+E\+E\+S\+\_\+\+C\+E\+N\+T\+ER}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gaebbe6b83cf7c48119f7def616a7931a7}\label{group___e_e_p_r_o_m_gaebbe6b83cf7c48119f7def616a7931a7}} 
+uint16\+\_\+t {\bfseries T\+E\+N\+S\+O\+\_\+\+P\+O\+I\+N\+T\+\_\+\+O\+N\+E\+\_\+\+N\+A\+T\+I\+VE}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga1d92462e383b21a045f0680ad48ea4d6}\label{group___e_e_p_r_o_m_ga1d92462e383b21a045f0680ad48ea4d6}} 
+uint16\+\_\+t {\bfseries T\+E\+N\+S\+O\+\_\+\+P\+O\+I\+N\+T\+\_\+\+T\+W\+O\+\_\+\+N\+A\+T\+I\+VE}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga13a737b98ef98134d096f9ad1e2eb5dd}\label{group___e_e_p_r_o_m_ga13a737b98ef98134d096f9ad1e2eb5dd}} 
+float {\bfseries T\+E\+N\+S\+O\+\_\+\+P\+O\+I\+N\+T\+\_\+\+O\+N\+E\+\_\+\+K\+I\+L\+O\+G\+R\+A\+MS}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga884bed8293b26d4041f2d2965171eb49}\label{group___e_e_p_r_o_m_ga884bed8293b26d4041f2d2965171eb49}} 
+float {\bfseries T\+E\+N\+S\+O\+\_\+\+P\+O\+I\+N\+T\+\_\+\+T\+W\+O\+\_\+\+K\+I\+L\+O\+G\+R\+A\+MS}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gae3abad878acbc00bae89d1f1f7b4f463}\label{group___e_e_p_r_o_m_gae3abad878acbc00bae89d1f1f7b4f463}} 
+float {\bfseries T\+E\+N\+S\+O\+\_\+\+C\+O\+E\+F\+\_\+\+K\+I\+L\+O\+G\+R\+A\+MS}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga1bf5f0cb9e5590ad7d18d3d45328b933}\label{group___e_e_p_r_o_m_ga1bf5f0cb9e5590ad7d18d3d45328b933}} 
+float {\bfseries T\+E\+N\+S\+O\+\_\+\+C\+O\+E\+F\+\_\+\+N\+E\+W\+T\+O\+NS}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga3f2e5d78660b58a801f53d6622384bd7}\label{group___e_e_p_r_o_m_ga3f2e5d78660b58a801f53d6622384bd7}} 
+float {\bfseries T\+E\+N\+S\+O\+\_\+\+O\+F\+F\+S\+ET}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gacd82e309cb6c776f8fb9969efe51a460}\label{group___e_e_p_r_o_m_gacd82e309cb6c776f8fb9969efe51a460}} 
+uint8\+\_\+t {\bfseries X\+B\+E\+E\+\_\+\+T\+R\+A\+I\+N\+E\+R\+\_\+\+A\+D\+DR} \mbox{[}8\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gae690a283565d550326907de35405d58e}\label{group___e_e_p_r_o_m_gae690a283565d550326907de35405d58e}} 
+uint8\+\_\+t {\bfseries X\+B\+E\+E\+\_\+\+S\+P\+O\+R\+T\+S\+M\+A\+N\+\_\+1\+\_\+\+A\+D\+DR} \mbox{[}8\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga62d4f7d4df5a1763823e1c2ac31097e2}\label{group___e_e_p_r_o_m_ga62d4f7d4df5a1763823e1c2ac31097e2}} 
+uint8\+\_\+t {\bfseries X\+B\+E\+E\+\_\+\+S\+P\+O\+R\+T\+S\+M\+A\+N\+\_\+2\+\_\+\+A\+D\+DR} \mbox{[}8\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga921c6a6e497c3a3dad0b341cf74ba01c}\label{group___e_e_p_r_o_m_ga921c6a6e497c3a3dad0b341cf74ba01c}} 
+uint8\+\_\+t {\bfseries X\+B\+E\+E\+\_\+\+S\+P\+O\+R\+T\+S\+M\+A\+N\+\_\+3\+\_\+\+A\+D\+DR} \mbox{[}8\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga237c59e3a6a5956fa42b48773b245c1b}\label{group___e_e_p_r_o_m_ga237c59e3a6a5956fa42b48773b245c1b}} 
+uint8\+\_\+t {\bfseries X\+B\+E\+E\+\_\+\+S\+P\+O\+R\+T\+S\+M\+A\+N\+\_\+4\+\_\+\+A\+D\+DR} \mbox{[}8\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga528818914b9da0e2356d869d69bb2f9f}\label{group___e_e_p_r_o_m_ga528818914b9da0e2356d869d69bb2f9f}} 
+uint8\+\_\+t {\bfseries X\+B\+E\+E\+\_\+\+S\+P\+O\+R\+T\+S\+M\+A\+N\+\_\+5\+\_\+\+A\+D\+DR} \mbox{[}8\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga628531cf04d4a3b054d93d777585607a}\label{group___e_e_p_r_o_m_ga628531cf04d4a3b054d93d777585607a}} 
+uint8\+\_\+t {\bfseries X\+B\+E\+E\+\_\+\+S\+P\+O\+R\+T\+S\+M\+A\+N\+\_\+6\+\_\+\+A\+D\+DR} \mbox{[}8\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga212a0ea558f18436e8869ece5bd1cd88}\label{group___e_e_p_r_o_m_ga212a0ea558f18436e8869ece5bd1cd88}} 
+uint8\+\_\+t {\bfseries X\+B\+E\+E\+\_\+\+S\+P\+O\+R\+T\+S\+M\+A\+N\+\_\+7\+\_\+\+A\+D\+DR} \mbox{[}8\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gac6ddcd5f02f934e560b5a96d0ec59e26}\label{group___e_e_p_r_o_m_gac6ddcd5f02f934e560b5a96d0ec59e26}} 
+uint8\+\_\+t {\bfseries X\+B\+E\+E\+\_\+\+S\+P\+O\+R\+T\+S\+M\+A\+N\+\_\+8\+\_\+\+A\+D\+DR} \mbox{[}8\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga0af442ce68bee10c5df2537c2596bcbf}\label{group___e_e_p_r_o_m_ga0af442ce68bee10c5df2537c2596bcbf}} 
+uint8\+\_\+t {\bfseries X\+B\+E\+E\+\_\+\+S\+P\+O\+R\+T\+S\+M\+A\+N\+\_\+9\+\_\+\+A\+D\+DR} \mbox{[}8\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gacdb580d1f8aed108cd4b7b9396e82f6a}\label{group___e_e_p_r_o_m_gacdb580d1f8aed108cd4b7b9396e82f6a}} 
+uint8\+\_\+t {\bfseries X\+B\+E\+E\+\_\+\+S\+P\+O\+R\+T\+S\+M\+A\+N\+\_\+10\+\_\+\+A\+D\+DR} \mbox{[}8\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga5d3aa16ac67bc4920bc8b67f9b2e5736}\label{group___e_e_p_r_o_m_ga5d3aa16ac67bc4920bc8b67f9b2e5736}} 
+uint8\+\_\+t {\bfseries X\+B\+E\+E\+\_\+\+B\+O\+U\+Y\+\_\+1\+\_\+\+A\+D\+DR} \mbox{[}8\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga047096725b8f4e7c26e4930956ad02b2}\label{group___e_e_p_r_o_m_ga047096725b8f4e7c26e4930956ad02b2}} 
+uint8\+\_\+t {\bfseries X\+B\+E\+E\+\_\+\+B\+O\+U\+Y\+\_\+2\+\_\+\+A\+D\+DR} \mbox{[}8\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga1f681117a486f51efd14136807deacaa}\label{group___e_e_p_r_o_m_ga1f681117a486f51efd14136807deacaa}} 
+uint8\+\_\+t {\bfseries X\+B\+E\+E\+\_\+\+B\+O\+U\+Y\+\_\+3\+\_\+\+A\+D\+DR} \mbox{[}8\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga1f364b881cf14a0a40ce7ddd02dab356}\label{group___e_e_p_r_o_m_ga1f364b881cf14a0a40ce7ddd02dab356}} 
+uint8\+\_\+t {\bfseries X\+B\+E\+E\+\_\+\+B\+O\+U\+Y\+\_\+4\+\_\+\+A\+D\+DR} \mbox{[}8\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga17754bfbc66477bad92d39b488e99c9a}\label{group___e_e_p_r_o_m_ga17754bfbc66477bad92d39b488e99c9a}} 
+uint8\+\_\+t {\bfseries B\+L\+E\+\_\+\+D\+E\+V\+\_\+1\+\_\+\+A\+D\+DR} \mbox{[}12\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gadcda78497cf179d6c6e9be5f006c0cb7}\label{group___e_e_p_r_o_m_gadcda78497cf179d6c6e9be5f006c0cb7}} 
+uint8\+\_\+t {\bfseries B\+L\+E\+\_\+\+D\+E\+V\+\_\+2\+\_\+\+A\+D\+DR} \mbox{[}12\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga1f9bfec67c7dc2ed564791be61e22b86}\label{group___e_e_p_r_o_m_ga1f9bfec67c7dc2ed564791be61e22b86}} 
+uint8\+\_\+t {\bfseries B\+L\+E\+\_\+\+D\+E\+V\+\_\+3\+\_\+\+A\+D\+DR} \mbox{[}12\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga872152eb9acb12548b836f4d081fc6b0}\label{group___e_e_p_r_o_m_ga872152eb9acb12548b836f4d081fc6b0}} 
+uint8\+\_\+t {\bfseries B\+L\+E\+\_\+\+D\+E\+V\+\_\+4\+\_\+\+A\+D\+DR} \mbox{[}12\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga24b1e4343150ee4b0885495189176bae}\label{group___e_e_p_r_o_m_ga24b1e4343150ee4b0885495189176bae}} 
+uint8\+\_\+t {\bfseries B\+L\+E\+\_\+\+D\+E\+V\+\_\+5\+\_\+\+A\+D\+DR} \mbox{[}12\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga3926d1ea9544f4c10610b6ed28bc3de4}\label{group___e_e_p_r_o_m_ga3926d1ea9544f4c10610b6ed28bc3de4}} 
+uint8\+\_\+t {\bfseries B\+L\+E\+\_\+\+D\+E\+V\+\_\+6\+\_\+\+A\+D\+DR} \mbox{[}12\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga7c3d0b1952b5499e19ac31858baf0ef2}\label{group___e_e_p_r_o_m_ga7c3d0b1952b5499e19ac31858baf0ef2}} 
+uint8\+\_\+t {\bfseries B\+L\+E\+\_\+\+D\+E\+V\+\_\+7\+\_\+\+A\+D\+DR} \mbox{[}12\mbox{]}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga161abc0b8ae9afdc819a8ac3ef2f9db0}\label{group___e_e_p_r_o_m_ga161abc0b8ae9afdc819a8ac3ef2f9db0}} 
+uint8\+\_\+t {\bfseries B\+L\+E\+\_\+\+D\+E\+V\+\_\+8\+\_\+\+A\+D\+DR} \mbox{[}12\mbox{]}
+\item 
+uint8\+\_\+t {\bfseries info\+\_\+allocator} \mbox{[}E\+E\+P\+R\+O\+M\+\_\+\+I\+N\+F\+O\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE\mbox{]}
+\item 
+\mbox{\hyperlink{structeeprom__info__memory__t}{eeprom\+\_\+info\+\_\+memory\+\_\+t}} {\bfseries I\+N\+F\+O\+\_\+\+M\+E\+M\+O\+RY}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga3c6362531b4e8fb96ccc8c1d9e713ab8}\label{group___e_e_p_r_o_m_ga3c6362531b4e8fb96ccc8c1d9e713ab8}} 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>uint8\_t {\bfseries info\_allocator} \mbox{[}EEPROM\_INFO\_MEMORY\_SIZE\mbox{]}\\
+\>\mbox{\hyperlink{structeeprom__info__memory__t}{eeprom\_info\_memory\_t}} {\bfseries INFO\_MEMORY}\\
+\}; \\
+
+\end{tabbing}\item 
+uint8\+\_\+t {\bfseries flags\+\_\+allocator} \mbox{[}E\+E\+P\+R\+O\+M\+\_\+\+F\+L\+A\+G\+S\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE\mbox{]}
+\item 
+\mbox{\hyperlink{structeeprom__flags__memory__t}{eeprom\+\_\+flags\+\_\+memory\+\_\+t}} {\bfseries F\+L\+A\+G\+S\+\_\+\+M\+E\+M\+O\+RY}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga666f0f895b2e76ef49352cc5bf7c66ee}\label{group___e_e_p_r_o_m_ga666f0f895b2e76ef49352cc5bf7c66ee}} 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>uint8\_t {\bfseries flags\_allocator} \mbox{[}EEPROM\_FLAGS\_MEMORY\_SIZE\mbox{]}\\
+\>\mbox{\hyperlink{structeeprom__flags__memory__t}{eeprom\_flags\_memory\_t}} {\bfseries FLAGS\_MEMORY}\\
+\}; \\
+
+\end{tabbing}\item 
+uint8\+\_\+t {\bfseries magn\+\_\+allocator} \mbox{[}E\+E\+P\+R\+O\+M\+\_\+\+M\+A\+G\+N\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE\mbox{]}
+\item 
+\mbox{\hyperlink{structeeprom__magn__calib__memory__t}{eeprom\+\_\+magn\+\_\+calib\+\_\+memory\+\_\+t}} {\bfseries M\+A\+G\+N\+\_\+\+M\+E\+M\+O\+RY}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gab521bed20ec9bceec7f2c6b2d420bfa3}\label{group___e_e_p_r_o_m_gab521bed20ec9bceec7f2c6b2d420bfa3}} 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>uint8\_t {\bfseries magn\_allocator} \mbox{[}EEPROM\_MAGN\_MEMORY\_SIZE\mbox{]}\\
+\>\mbox{\hyperlink{structeeprom__magn__calib__memory__t}{eeprom\_magn\_calib\_memory\_t}} {\bfseries MAGN\_MEMORY}\\
+\}; \\
+
+\end{tabbing}\item 
+uint8\+\_\+t {\bfseries math\+\_\+allocator} \mbox{[}E\+E\+P\+R\+O\+M\+\_\+\+M\+A\+T\+H\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE\mbox{]}
+\item 
+\mbox{\hyperlink{structeeprom__math__corrections__t}{eeprom\+\_\+math\+\_\+corrections\+\_\+t}} {\bfseries M\+A\+T\+H\+\_\+\+M\+E\+M\+O\+RY}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga88f79fd82f1c3b65410b2a384aef7611}\label{group___e_e_p_r_o_m_ga88f79fd82f1c3b65410b2a384aef7611}} 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>uint8\_t {\bfseries math\_allocator} \mbox{[}EEPROM\_MATH\_MEMORY\_SIZE\mbox{]}\\
+\>\mbox{\hyperlink{structeeprom__math__corrections__t}{eeprom\_math\_corrections\_t}} {\bfseries MATH\_MEMORY}\\
+\}; \\
+
+\end{tabbing}\item 
+uint8\+\_\+t {\bfseries lag\+\_\+allocator} \mbox{[}E\+E\+P\+R\+O\+M\+\_\+\+L\+A\+G\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE\mbox{]}
+\item 
+\mbox{\hyperlink{structeeprom__lag__calib__memory__t}{eeprom\+\_\+lag\+\_\+calib\+\_\+memory\+\_\+t}} {\bfseries L\+A\+G\+\_\+\+M\+E\+M\+O\+RY}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga920f83eaa2ef90c2155dea5b98aa622a}\label{group___e_e_p_r_o_m_ga920f83eaa2ef90c2155dea5b98aa622a}} 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>uint8\_t {\bfseries lag\_allocator} \mbox{[}EEPROM\_LAG\_MEMORY\_SIZE\mbox{]}\\
+\>\mbox{\hyperlink{structeeprom__lag__calib__memory__t}{eeprom\_lag\_calib\_memory\_t}} {\bfseries LAG\_MEMORY}\\
+\}; \\
+
+\end{tabbing}\item 
+uint8\+\_\+t {\bfseries rdr\+\_\+allocator} \mbox{[}E\+E\+P\+R\+O\+M\+\_\+\+R\+U\+D\+D\+E\+R\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE\mbox{]}
+\item 
+\mbox{\hyperlink{structeeprom__rudder__calib__memory__t}{eeprom\+\_\+rudder\+\_\+calib\+\_\+memory\+\_\+t}} {\bfseries R\+U\+D\+D\+E\+R\+\_\+\+M\+E\+M\+O\+RY}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga1a81d3a7bc0ead442f265e9ddc3d18c9}\label{group___e_e_p_r_o_m_ga1a81d3a7bc0ead442f265e9ddc3d18c9}} 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>uint8\_t {\bfseries rdr\_allocator} \mbox{[}EEPROM\_RUDDER\_MEMORY\_SIZE\mbox{]}\\
+\>\mbox{\hyperlink{structeeprom__rudder__calib__memory__t}{eeprom\_rudder\_calib\_memory\_t}} {\bfseries RUDDER\_MEMORY}\\
+\}; \\
+
+\end{tabbing}\item 
+uint8\+\_\+t {\bfseries tenso\+\_\+allocator} \mbox{[}E\+E\+P\+R\+O\+M\+\_\+\+T\+E\+N\+S\+O\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE\mbox{]}
+\item 
+\mbox{\hyperlink{structeeprom__tenso__calib__memory__t}{eeprom\+\_\+tenso\+\_\+calib\+\_\+memory\+\_\+t}} {\bfseries T\+E\+N\+S\+O\+\_\+\+M\+E\+M\+O\+RY}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga70dc892c13bd07f7db809384959a3ff5}\label{group___e_e_p_r_o_m_ga70dc892c13bd07f7db809384959a3ff5}} 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>uint8\_t {\bfseries tenso\_allocator} \mbox{[}EEPROM\_TENSO\_MEMORY\_SIZE\mbox{]}\\
+\>\mbox{\hyperlink{structeeprom__tenso__calib__memory__t}{eeprom\_tenso\_calib\_memory\_t}} {\bfseries TENSO\_MEMORY}\\
+\}; \\
+
+\end{tabbing}\item 
+uint8\+\_\+t {\bfseries xbee\+\_\+allocator} \mbox{[}E\+E\+P\+R\+O\+M\+\_\+\+X\+B\+E\+E\+\_\+\+A\+D\+D\+R\+E\+S\+E\+S\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE\mbox{]}
+\item 
+\mbox{\hyperlink{structeeprom__xbee__addresses__t}{eeprom\+\_\+xbee\+\_\+addresses\+\_\+t}} {\bfseries X\+B\+E\+E\+\_\+\+M\+E\+M\+O\+RY}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gaadfb4b1480aaedd99eb882463306fa25}\label{group___e_e_p_r_o_m_gaadfb4b1480aaedd99eb882463306fa25}} 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>uint8\_t {\bfseries xbee\_allocator} \mbox{[}EEPROM\_XBEE\_ADDRESES\_MEMORY\_SIZE\mbox{]}\\
+\>\mbox{\hyperlink{structeeprom__xbee__addresses__t}{eeprom\_xbee\_addresses\_t}} {\bfseries XBEE\_MEMORY}\\
+\}; \\
+
+\end{tabbing}\item 
+uint8\+\_\+t {\bfseries ble\+\_\+allocator} \mbox{[}E\+E\+P\+R\+O\+M\+\_\+\+B\+L\+E\+\_\+\+A\+D\+D\+R\+E\+S\+E\+S\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE\mbox{]}
+\item 
+\mbox{\hyperlink{structeeprom__ble__addresses__t}{eeprom\+\_\+ble\+\_\+addresses\+\_\+t}} {\bfseries B\+L\+E\+\_\+\+M\+E\+M\+O\+RY}
+\item 
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga5e7d0699a7e91cb117a4f94910c8b00e}\label{group___e_e_p_r_o_m_ga5e7d0699a7e91cb117a4f94910c8b00e}} 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>uint8\_t {\bfseries ble\_allocator} \mbox{[}EEPROM\_BLE\_ADDRESES\_MEMORY\_SIZE\mbox{]}\\
+\>\mbox{\hyperlink{structeeprom__ble__addresses__t}{eeprom\_ble\_addresses\_t}} {\bfseries BLE\_MEMORY}\\
+\}; \\
+
+\end{tabbing}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Generic E\+E\+P\+R\+OM driver. 
+
+Detail will be writen soon \begin{DoxyPrecond}{Precondition}
+In order to use the A\+DC driver the {\ttfamily U\+S\+E\+\_\+\+E\+E\+P\+R\+O\+M\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___e_e_p_r_o_m_eeprom_1}{}\doxysubsection{Stateflow}\label{group___e_e_p_r_o_m_eeprom_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_5}}
+\end{DoxyImageNoCaption}
+\hypertarget{group___e_e_p_r_o_m_eeprom_2}{}\doxysubsection{A\+D\+C Operations}\label{group___e_e_p_r_o_m_eeprom_2}
+The A\+DC driver is quite complex, an explanation of the terminology and of the operational details follows. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group___e_e_p_r_o_m_gad2e6d3e940139a145b31fbca836749dc}\label{group___e_e_p_r_o_m_gad2e6d3e940139a145b31fbca836749dc}} 
+\index{EEPROM Driver@{EEPROM Driver}!eeprom\_read@{eeprom\_read}}
+\index{eeprom\_read@{eeprom\_read}!EEPROM Driver@{EEPROM Driver}}
+\doxysubsubsection{\texorpdfstring{eeprom\_read()}{eeprom\_read()}}
+{\footnotesize\ttfamily int8\+\_\+t eeprom\+\_\+read (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{byte\+\_\+addr,  }\item[{uint8\+\_\+t $\ast$}]{rxbuf,  }\item[{uint8\+\_\+t}]{rxbytes }\end{DoxyParamCaption})}
+
+Low-\/level I2C writing A\+PI 
+\begin{DoxyParams}{Parameters}
+{\em byte\+\_\+addr} & \\
+\hline
+{\em rxbuf} & \\
+\hline
+{\em rxbytes} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{group___e_e_p_r_o_m_gad2e6d3e940139a145b31fbca836749dc_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga2b9a65fc523f9fb8921433e1c185774c}\label{group___e_e_p_r_o_m_ga2b9a65fc523f9fb8921433e1c185774c}} 
+\index{EEPROM Driver@{EEPROM Driver}!eeprom\_write@{eeprom\_write}}
+\index{eeprom\_write@{eeprom\_write}!EEPROM Driver@{EEPROM Driver}}
+\doxysubsubsection{\texorpdfstring{eeprom\_write()}{eeprom\_write()}}
+{\footnotesize\ttfamily int8\+\_\+t eeprom\+\_\+write (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{byte\+\_\+addr,  }\item[{const uint8\+\_\+t $\ast$}]{txbuf,  }\item[{uint8\+\_\+t}]{txbytes }\end{DoxyParamCaption})}
+
+Low-\/level I2C writing A\+PI 
+\begin{DoxyParams}{Parameters}
+{\em byte\+\_\+addr} & \\
+\hline
+{\em txbuf} & \\
+\hline
+{\em txbytes} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga4c7d24e41a412567c2660b6861f47a0f}\label{group___e_e_p_r_o_m_ga4c7d24e41a412567c2660b6861f47a0f}} 
+\index{EEPROM Driver@{EEPROM Driver}!start\_eeprom\_module@{start\_eeprom\_module}}
+\index{start\_eeprom\_module@{start\_eeprom\_module}!EEPROM Driver@{EEPROM Driver}}
+\doxysubsubsection{\texorpdfstring{start\_eeprom\_module()}{start\_eeprom\_module()}}
+{\footnotesize\ttfamily void start\+\_\+eeprom\+\_\+module (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Initialization I2C interface 
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{group___e_e_p_r_o_m_ga89af9a9b0004fa628f2b9c23da152105}\label{group___e_e_p_r_o_m_ga89af9a9b0004fa628f2b9c23da152105}} 
+\index{EEPROM Driver@{EEPROM Driver}!FW\_VER@{FW\_VER}}
+\index{FW\_VER@{FW\_VER}!EEPROM Driver@{EEPROM Driver}}
+\doxysubsubsection{\texorpdfstring{FW\_VER}{FW\_VER}}
+{\footnotesize\ttfamily F\+W\+\_\+\+V\+ER}
+
+Firmware version. \mbox{\Hypertarget{group___e_e_p_r_o_m_ga4d503efecd34669e2cbf0933df473f8b}\label{group___e_e_p_r_o_m_ga4d503efecd34669e2cbf0933df473f8b}} 
+\index{EEPROM Driver@{EEPROM Driver}!HW\_VER@{HW\_VER}}
+\index{HW\_VER@{HW\_VER}!EEPROM Driver@{EEPROM Driver}}
+\doxysubsubsection{\texorpdfstring{HW\_VER}{HW\_VER}}
+{\footnotesize\ttfamily H\+W\+\_\+\+V\+ER}
+
+Hardware version. \mbox{\Hypertarget{group___e_e_p_r_o_m_gac2dcb2db6994211851008190d0d3f238}\label{group___e_e_p_r_o_m_gac2dcb2db6994211851008190d0d3f238}} 
+\index{EEPROM Driver@{EEPROM Driver}!RUDDER\_CALIB\_FLAG@{RUDDER\_CALIB\_FLAG}}
+\index{RUDDER\_CALIB\_FLAG@{RUDDER\_CALIB\_FLAG}!EEPROM Driver@{EEPROM Driver}}
+\doxysubsubsection{\texorpdfstring{RUDDER\_CALIB\_FLAG}{RUDDER\_CALIB\_FLAG}}
+{\footnotesize\ttfamily R\+U\+D\+D\+E\+R\+\_\+\+C\+A\+L\+I\+B\+\_\+\+F\+L\+AG}
+
+Indicates that rudder calibration wasn\textquotesingle{}t. \mbox{\Hypertarget{group___e_e_p_r_o_m_gab357a6ad8c7b355dbcb60bf82cf87368}\label{group___e_e_p_r_o_m_gab357a6ad8c7b355dbcb60bf82cf87368}} 
+\index{EEPROM Driver@{EEPROM Driver}!STATIC\_MAGN\_CALIB\_FLAG@{STATIC\_MAGN\_CALIB\_FLAG}}
+\index{STATIC\_MAGN\_CALIB\_FLAG@{STATIC\_MAGN\_CALIB\_FLAG}!EEPROM Driver@{EEPROM Driver}}
+\doxysubsubsection{\texorpdfstring{STATIC\_MAGN\_CALIB\_FLAG}{STATIC\_MAGN\_CALIB\_FLAG}}
+{\footnotesize\ttfamily S\+T\+A\+T\+I\+C\+\_\+\+M\+A\+G\+N\+\_\+\+C\+A\+L\+I\+B\+\_\+\+F\+L\+AG}
+
+Flag indicates that B\+N\+O055 use static calibration mode. 

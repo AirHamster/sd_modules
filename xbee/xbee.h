@@ -5,6 +5,14 @@
  *      Author: a-h
  */
 
+/**
+ * @file    xbee.h
+ * @brief   Xbee driver macros and structures.
+ *
+ * @addtogroup XBEE
+ * @{
+ */
+
 #ifndef SD_MODULES_XBEE_XBEE_H_
 #define SD_MODULES_XBEE_XBEE_H_
 

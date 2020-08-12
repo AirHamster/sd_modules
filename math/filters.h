@@ -1,3 +1,11 @@
+/**
+ * @file    filter.h
+ * @brief   Filters funcs.
+ *
+ * @addtogroup MATH
+ * @{
+ */
+
 #ifndef FILTERS_H
 #define FILTERS_H
 

@@ -1,0 +1,91 @@
+\hypertarget{bno055__i2c_8c}{}\doxysection{bno055/bno055\+\_\+i2c.c File Reference}
+\label{bno055__i2c_8c}\index{bno055/bno055\_i2c.c@{bno055/bno055\_i2c.c}}
+
+
+B\+N\+O055 Driver funcs.  
+
+
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}stdint.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}math.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}ch.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}hal.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}shell.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}chprintf.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}bno055.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}bno055\+\_\+i2c.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}sd\+\_\+shell\+\_\+cmds.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}eeprom.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}bmx160\+\_\+i2c.\+h\char`\"{}}\newline
+Include dependency graph for bno055\+\_\+i2c.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{bno055__i2c_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static {\bfseries T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA} (bno055\+\_\+thread\+\_\+wa, 4096 $\ast$2)
+\item 
+static {\bfseries T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON} (bno055\+\_\+thread, arg)
+\item 
+void \mbox{\hyperlink{group___b_n_o055_ga79f76b1f8471d2a31bbebbce0b45866f}{start\+\_\+bno055\+\_\+module}} (void)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_gaba0cea545392dbe2337e040fb80614e9}{bno055\+\_\+full\+\_\+init}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_gacaacde11665e160ff8df01f730786077}{bno055\+\_\+save\+\_\+calib\+\_\+to\+\_\+eeprom}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga3a5ae7cf696fc2b063d78fffc479c9ad}{bno055\+\_\+read\+\_\+calib\+\_\+from\+\_\+eeprom}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_gaa5fec38d6349f5d6baad80921a68ee09}{bno955\+\_\+read\+\_\+static\+\_\+flag\+\_\+from\+\_\+eeprom}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga162350b307cf43cec67352832daf75ab}{bno055\+\_\+set\+\_\+static\+\_\+calib}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga417127b9624947158b35cea61a325fbd}{bno055\+\_\+set\+\_\+dynamic\+\_\+calib}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga0e70be560d33aad003518cef1a178894}{bno055\+\_\+apply\+\_\+calib\+\_\+to\+\_\+chip}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga927cc0067bb748306b8ce4b846759f78}{bno055\+\_\+start\+\_\+calibration}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga36ed631a75005e3ba86b975b58eaf7e0}{bno055\+\_\+read\+\_\+euler}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga32faf589b04f1b70bb0e2dfd8faed3ab}{bno055\+\_\+read\+\_\+status}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga83b90388f34353563f12a53ed00517c7}{bno055\+\_\+check\+\_\+calib\+\_\+coefs}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_gac762bf4f77376dc35799b853d00a95c7}{bno055\+\_\+i2c\+\_\+routine}} (\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$bno055)
+\item 
+void \mbox{\hyperlink{group___b_n_o055_gabba4dd15173a18edbbafe674bb2aad58}{bno055\+\_\+delay\+\_\+ms}} (uint16\+\_\+t msec)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_gace7496b19e1ddbbe483df67155b21b46}{bno055\+\_\+read}} (uint8\+\_\+t dev\+\_\+addr, uint8\+\_\+t $\ast$reg\+\_\+data, uint8\+\_\+t r\+\_\+len)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___b_n_o055_ga8580976177afa8089fd8262e5e59a257}{bno055\+\_\+write}} (uint8\+\_\+t dev\+\_\+addr, uint8\+\_\+t $\ast$reg\+\_\+data, uint8\+\_\+t wr\+\_\+len)
+\item 
+\mbox{\hyperlink{bno055_8h_a151f780fb455885061d3b77ec1c90c03}{s8}} \mbox{\hyperlink{group___b_n_o055_ga6a1eeefef56eda6f0c963e317706f617}{B\+N\+O055\+\_\+\+I2\+C\+\_\+bus\+\_\+write}} (\mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} dev\+\_\+addr, \mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} reg\+\_\+addr, \mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} $\ast$reg\+\_\+data, \mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} cnt)
+\item 
+\mbox{\hyperlink{bno055_8h_a151f780fb455885061d3b77ec1c90c03}{s8}} \mbox{\hyperlink{group___b_n_o055_ga0d3c7c3e0c8b54e34752989b5bdc36d1}{B\+N\+O055\+\_\+\+I2\+C\+\_\+bus\+\_\+read}} (\mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} dev\+\_\+addr, \mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} reg\+\_\+addr, \mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} $\ast$reg\+\_\+data, \mbox{\hyperlink{bno055_8h_aed742c436da53c1080638ce6ef7d13de}{u8}} cnt)
+\item 
+void \mbox{\hyperlink{group___b_n_o055_ga2bcb21315e7745d07d64fb64d2c0cfd7}{i2c\+\_\+restart}} (I2\+C\+Driver $\ast$i2cp)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structbmx160__t}{bmx160\+\_\+t}} {\bfseries bmx160}
+\item 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+struct ch\+\_\+semaphore {\bfseries i2c1\+\_\+semaph}
+\item 
+\mbox{\hyperlink{structbno055__t}{bno055\+\_\+t}} $\ast$ {\bfseries bno055}
+\item 
+const I2\+C\+Config {\bfseries bno055\+\_\+i2c\+\_\+cfg}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+B\+N\+O055 Driver funcs. 
+

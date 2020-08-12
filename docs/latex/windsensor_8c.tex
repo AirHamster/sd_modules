@@ -1,0 +1,50 @@
+\hypertarget{windsensor_8c}{}\doxysection{windsensor/windsensor.c File Reference}
+\label{windsensor_8c}\index{windsensor/windsensor.c@{windsensor/windsensor.c}}
+
+
+Windsensor driver funcs.  
+
+
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}windsensor.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}ch.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}hal.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}shell.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}chprintf.\+h\char`\"{}}\newline
+Include dependency graph for windsensor.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{windsensor_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{group___w_i_n_d_ga2a84be71a45be32373f14e7e4eac9d99}{T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA}} (wind\+\_\+thread\+\_\+wa, 2048)
+\begin{DoxyCompactList}\small\item\em Windsensor parsing thread. \end{DoxyCompactList}\item 
+static {\bfseries T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON} (wind\+\_\+thread, p)
+\item 
+void \mbox{\hyperlink{group___w_i_n_d_ga0ac43f93f16184775fb171aa76f52025}{start\+\_\+windsensor\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Start windsensor thread. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+static uint16\+\_\+t {\bfseries uart\+\_\+temp}
+\item 
+\mbox{\hyperlink{structwindsensor__t}{windsensor\+\_\+t}} $\ast$ {\bfseries wind}
+\item 
+static const Serial\+Config \mbox{\hyperlink{group___w_i_n_d_ga72afd3727c9e2f94ea9fa00c696b7b65}{wind\+\_\+uart\+\_\+cfg}}
+\begin{DoxyCompactList}\small\item\em U\+S\+A\+RT driver default configuration. \end{DoxyCompactList}\item 
+thread\+\_\+reference\+\_\+t {\bfseries wind\+\_\+trp} = N\+U\+LL
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Windsensor driver funcs. 
+

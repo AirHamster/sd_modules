@@ -1,0 +1,106 @@
+\hypertarget{eeprom_8h}{}\doxysection{eeprom/eeprom.h File Reference}
+\label{eeprom_8h}\index{eeprom/eeprom.h@{eeprom/eeprom.h}}
+
+
+E\+E\+P\+R\+OM Driver structs.  
+
+
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stddef.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}stdint.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}math.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}ch.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}hal.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}shell.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}chprintf.\+h\char`\"{}}\newline
+Include dependency graph for eeprom.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{eeprom_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{eeprom_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structeeprom__info__memory__t}{eeprom\+\_\+info\+\_\+memory\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em FW and HW versions varables. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structeeprom__flags__memory__t}{eeprom\+\_\+flags\+\_\+memory\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Flags. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structeeprom__magn__calib__memory__t}{eeprom\+\_\+magn\+\_\+calib\+\_\+memory\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Magnetometer offset memory part. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structeeprom__math__corrections__t}{eeprom\+\_\+math\+\_\+corrections\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Math corrections memory part. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structeeprom__lag__calib__memory__t}{eeprom\+\_\+lag\+\_\+calib\+\_\+memory\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Log calibration values. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structeeprom__rudder__calib__memory__t}{eeprom\+\_\+rudder\+\_\+calib\+\_\+memory\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structeeprom__tenso__calib__memory__t}{eeprom\+\_\+tenso\+\_\+calib\+\_\+memory\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structeeprom__xbee__addresses__t}{eeprom\+\_\+xbee\+\_\+addresses\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structeeprom__ble__addresses__t}{eeprom\+\_\+ble\+\_\+addresses\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structeeprom__map__t}{eeprom\+\_\+map\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+I\+N\+F\+O\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~32
+\item 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+F\+L\+A\+G\+S\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~32
+\item 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+M\+A\+G\+N\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~64
+\item 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+M\+A\+T\+H\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~64
+\item 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+L\+A\+G\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~64
+\item 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+R\+U\+D\+D\+E\+R\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~64
+\item 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+T\+E\+N\+S\+O\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~64
+\item 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+X\+B\+E\+E\+\_\+\+A\+D\+D\+R\+E\+S\+E\+S\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~128
+\item 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+B\+L\+E\+\_\+\+A\+D\+D\+R\+E\+S\+E\+S\+\_\+\+M\+E\+M\+O\+R\+Y\+\_\+\+S\+I\+ZE}~128
+\item 
+\#define {\bfseries I\+N\+F\+O\+\_\+\+S\+T\+R\+U\+C\+T\+\_\+\+S\+I\+ZE}~sizeof(\mbox{\hyperlink{structeeprom__info__memory__t}{eeprom\+\_\+info\+\_\+memory\+\_\+t}})
+\item 
+\#define {\bfseries B\+N\+O055\+\_\+\+A\+D\+D\+R\+E\+SS}~0x28
+\item 
+\#define {\bfseries S\+I\+Z\+E\+OF}(s,  m)~((size\+\_\+t) sizeof(((s $\ast$)0)-\/$>$m))
+\item 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+R\+E\+AD}(var,  buff)~\mbox{\hyperlink{group___e_e_p_r_o_m_gad2e6d3e940139a145b31fbca836749dc}{eeprom\+\_\+read}}(offsetof(\mbox{\hyperlink{structeeprom__map__t}{eeprom\+\_\+map\+\_\+t}},var), buff, S\+I\+Z\+E\+OF(\mbox{\hyperlink{structeeprom__map__t}{eeprom\+\_\+map\+\_\+t}},var))
+\item 
+\#define {\bfseries E\+E\+P\+R\+O\+M\+\_\+\+W\+R\+I\+TE}(var,  buff)~\mbox{\hyperlink{group___e_e_p_r_o_m_ga2b9a65fc523f9fb8921433e1c185774c}{eeprom\+\_\+write}}(offsetof(\mbox{\hyperlink{structeeprom__map__t}{eeprom\+\_\+map\+\_\+t}},var), buff, S\+I\+Z\+E\+OF(\mbox{\hyperlink{structeeprom__map__t}{eeprom\+\_\+map\+\_\+t}},var))
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___e_e_p_r_o_m_ga2b9a65fc523f9fb8921433e1c185774c}{eeprom\+\_\+write}} (uint16\+\_\+t byte\+\_\+addr, const uint8\+\_\+t $\ast$txbuf, uint8\+\_\+t txbytes)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___e_e_p_r_o_m_gad2e6d3e940139a145b31fbca836749dc}{eeprom\+\_\+read}} (uint16\+\_\+t byte\+\_\+addr, uint8\+\_\+t $\ast$rxbuf, uint8\+\_\+t rxbytes)
+\item 
+void {\bfseries eeprom\+\_\+check\+\_\+i2c\+\_\+bus} (void)
+\item 
+void {\bfseries eeprom\+\_\+read\+\_\+hw\+\_\+version} (void)
+\item 
+void {\bfseries eeprom\+\_\+write\+\_\+hw\+\_\+version} (void)
+\item 
+void {\bfseries bno055\+\_\+read\+\_\+id} (void)
+\item 
+void \mbox{\hyperlink{group___e_e_p_r_o_m_ga4c7d24e41a412567c2660b6861f47a0f}{start\+\_\+eeprom\+\_\+module}} (void)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+E\+E\+P\+R\+OM Driver structs. 
+

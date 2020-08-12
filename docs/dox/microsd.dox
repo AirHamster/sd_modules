@@ -1,0 +1,100 @@
+/*
+    ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
+/**
+ * @defgroup MICROSD MicroSD Driver
+ * @brief SPI MicroSD driver with FatFS support.
+ * @details Detail will be writen soon
+ * @pre     In order to use the ADC driver the @p USE_MICROSD_MODULE option
+ *          must be enabled in @p config.h.
+ *
+ * @section microsd_1 Stateflow
+ * The driver implements a state machine internally, not all the driver
+ * functionalities can be used in any moment, any transition not explicitly
+ * shown in the following diagram has to be considered an error and shall
+ * be captured by an assertion (if enabled).
+ * @if LATEX_PDF
+ * @dot
+digraph example {
+    rankdir="LR";
+    size="5, 7";
+
+    node [shape=circle, fontname=Helvetica, fontsize=8, fixedsize="true", width="0.9", height="0.9"];
+    edge [fontname=Helvetica, fontsize=8];
+
+    init [label="SD_INIT", style="bold"];
+    ready [label="SD_READY\n"];
+    cat [label="SD_CAT"]
+    tree [label="SD_TREE"]
+    mount [label="SD_MOUNT"]
+    write [label="SD_WRITE\n10Hz"]
+    free [label="SD_FREE"]
+    remove [label="SD_REMOVE"]
+  
+    
+    init -> mount [label="\n start_microsd_module()", constraint=false];
+    mount -> ready [label="fsm_new_state(MICROSD_MOUNT)"]
+    ready -> write [label="fsm_new_state(MICROSD_WRITE_LOG)"]
+    write -> ready [label="\n"]
+    ready -> free [label="cmd_free()\n"]
+    free -> ready [label="\n"]
+    ready -> cat [label="cmd_cat()\n"]
+    cat -> ready [label="\n"]
+    ready -> remove [label="cmd_remove()\n"]
+    remove -> ready [label="\n"]
+    ready -> tree [label="cmd_tree()\n"]
+    tree -> ready [label="\n"]
+}
+ * @enddot
+ * @else
+ * @dot
+digraph example {
+    rankdir="LR";
+
+    node [shape=circle, fontname=Helvetica, fontsize=8, fixedsize="true", width="0.9", height="0.9"];
+    edge [fontname=Helvetica, fontsize=8];
+
+    init [label="SD_INIT", style="bold"];
+    ready [label="SD_READY\n"];
+    cat [label="SD_CAT"]
+    tree [label="SD_TREE"]
+    mount [label="SD_MOUNT"]
+    write [label="SD_WRITE\n10Hz"]
+    free [label="SD_FREE"]
+    remove [label="SD_REMOVE"]
+  
+    
+    init -> mount [label="\n start_microsd_module()", constraint=false];
+    mount -> ready [label="fsm_new_state(MICROSD_MOUNT)"]
+    ready -> write [label="fsm_new_state(MICROSD_WRITE_LOG)"]
+    write -> ready [label="\n"]
+    ready -> free [label="cmd_free()\n"]
+    free -> ready [label="\n"]
+    ready -> cat [label="cmd_cat()\n"]
+    cat -> ready [label="\n"]
+    ready -> remove [label="cmd_remove()\n"]
+    remove -> ready [label="\n"]
+    ready -> tree [label="cmd_tree()\n"]
+    tree -> ready [label="\n"]
+}
+ * @enddot
+ * @endif
+ *
+ * @section microsd_2 FatFS operations
+ * The ADC driver is quite complex, an explanation of the terminology and of
+ * the operational details follows.
+ *
+ */

@@ -5,6 +5,14 @@
  *      Author: a-h
  */
 
+/**
+ * @file    eeprom.c
+ * @brief   EEPROM Driver funcs.
+ *
+ * @addtogroup EEPROM
+ * @{
+ */
+
 #include "eeprom.h"
 #include "config.h"
 #include <stdlib.h>

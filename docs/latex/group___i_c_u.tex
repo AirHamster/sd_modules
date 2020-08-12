@@ -1,0 +1,39 @@
+\hypertarget{group___i_c_u}{}\doxysection{I\+CU Driver}
+\label{group___i_c_u}\index{ICU Driver@{ICU Driver}}
+
+
+Generic I\+CU Driver.  
+
+
+Collaboration diagram for I\+CU Driver\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=263pt]{group___i_c_u}
+\end{center}
+\end{figure}
+Generic I\+CU Driver. 
+
+This module implements a generic I\+CU (Input Capture Unit) driver. The purpose of the driver is to measure period and duty cycle of an input digital signal (P\+WM input). \begin{DoxyPrecond}{Precondition}
+In order to use the I\+CU driver the {\ttfamily H\+A\+L\+\_\+\+U\+S\+E\+\_\+\+I\+CU} option must be enabled in {\ttfamily halconf.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___i_c_u_icu_1}{}\doxysubsection{Driver State Machine}\label{group___i_c_u_icu_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_22}}
+\end{DoxyImageNoCaption}
+\hypertarget{group___i_c_u_icu_2}{}\doxysubsection{I\+C\+U Operations.}\label{group___i_c_u_icu_2}
+This driver abstracts a generic Input Capture Unit composed of\+:
+\begin{DoxyItemize}
+\item A clock prescaler.
+\item A main up counter.
+\item Two capture registers triggered by the rising and falling edges on the sampled input.
+\end{DoxyItemize}The I\+CU unit can be programmed to synchronize on the rising or falling edge of the sample input\+:
+\begin{DoxyItemize}
+\item {\bfseries{I\+C\+U\+\_\+\+I\+N\+P\+U\+T\+\_\+\+A\+C\+T\+I\+V\+E\+\_\+\+H\+I\+GH}}, a rising edge is the start signal.
+\item {\bfseries{I\+C\+U\+\_\+\+I\+N\+P\+U\+T\+\_\+\+A\+C\+T\+I\+V\+E\+\_\+\+L\+OW}}, a falling edge is the start signal.
+\end{DoxyItemize}Callbacks are optionally invoked when\+:
+\begin{DoxyItemize}
+\item On the P\+WM de-\/activation edge.
+\item On the P\+WM activation edge, measurements for the previous cycle are available from this callback and can be retrieved using {\ttfamily icu\+Get\+Period\+X()} and {\ttfamily icu\+Get\+Width\+X()}.
+\end{DoxyItemize}

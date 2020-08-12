@@ -1,0 +1,15 @@
+\hypertarget{group___i_o___b_l_o_c_k}{}\doxysection{Abstract I/O Block Device}
+\label{group___i_o___b_l_o_c_k}\index{Abstract I/O Block Device@{Abstract I/O Block Device}}
+Collaboration diagram for Abstract I/O Block Device\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=261pt]{group___i_o___b_l_o_c_k}
+\end{center}
+\end{figure}
+\hypertarget{group___i_o___b_l_o_c_k_io_block_1}{}\doxysubsection{Driver State Machine}\label{group___i_o___b_l_o_c_k_io_block_1}
+The drivers implementing this interface shall implement the following state machine internally. Not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_23}}
+\end{DoxyImageNoCaption}
+ 

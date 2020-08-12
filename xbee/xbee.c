@@ -4,6 +4,15 @@
  *  Created on: Mar 23, 2019
  *      Author: a-h
  */
+
+/**
+ * @file    xbee.c
+ * @brief   Xbee driver funcs.
+ *
+ * @addtogroup XBEE
+ * @{
+ */
+
 #include "xbee.h"
 #include "config.h"
 #include <string.h>
@@ -52,10 +61,35 @@ static const SPIConfig xbee_spi_cfg = {
 		0
 };
 
+
+/**
+ * @brief Xbee attention pin interrupt handler
+ * @param arg
+ */
+
+static void xbee_attn_cb(void *arg){
+	(void) arg;
+
+	if (palReadLine(LINE_SUSART1_RX) == PAL_LOW){
+		chSysLockFromISR();
+
+		//palDisableLineEventI(LINE_SUSART1_RX);
+		//set_timer_interrupt();
+		chSysUnlockFromISR();
+	}
+
+}
+
+/**
+ * @brief Initialization of remote devices structs
+ * @param dev Xbee device common struct pointer
+ * @return 0
+ */
+
 int8_t xbee_init_data_structs(xbee_remote_dev_t *dev) {
 
 	int i = 0;
-	//Assign devise data struct to each remote dev object
+	//Assign device data struct to each remote dev object
 
 	for (i = 0; i < NUM_OF_SPORTSMAN_DEVICES; i++) {
 		dev[i].rf_data = &sportsman_data[i];
@@ -146,20 +180,12 @@ static THD_FUNCTION(xbee_thread, p) {
 		if (!palReadLine(LINE_RF_868_SPI_ATTN)) {
 				xbee_polling();
 			}
-
-		/*
-		while (!palReadLine(LINE_RF_868_SPI_ATTN)) {
-			xbee_polling();
-		}
-
-
-
-
-
-
-*/
-	}
+	
 }
+
+/**
+ * @brief Starting xbee module
+ */
 
 void start_xbee_module(void){
 	chThdCreateStatic(xbee_thread_wa, sizeof(xbee_thread_wa), NORMALPRIO + 6,
@@ -171,6 +197,13 @@ void start_xbee_module(void){
 #endif
 }
 
+/**
+ * @brief
+ * @param SPID
+ * @param rxlen
+ * @param at_msg
+ * @param rxbuff
+ */
 void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff){
 		uint8_t len;
 		uint8_t txbuff[20];
@@ -190,7 +223,12 @@ void xbee_read(SPIDriver *SPID, uint8_t rxlen, uint8_t *at_msg, uint8_t *rxbuff)
 		spiReleaseBus(SPID); // Ownership release.
 }
 
-
+/**
+ * @brief Manual writting AT command from shell (debug)
+ * @param chp
+ * @param argc
+ * @param argv
+ */
 void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]){
 	if (argc == 3){
 		uint8_t len;
@@ -206,6 +244,12 @@ void xbee_write(BaseSequentialStream* chp, int argc, char* argv[]){
 	}
 }
 
+/**
+ * @brief Manual reading ATTN pint status (debug)
+ * @param chp
+ * @param argc
+ * @param argv
+ */
 void xbee_attn(BaseSequentialStream* chp, int argc, char* argv[]){
 	(void)argv;
 	if (argc == 1){
@@ -216,6 +260,12 @@ void xbee_attn(BaseSequentialStream* chp, int argc, char* argv[]){
 	}
 }
 
+/**
+ * @brief Form SPI AT read message packet
+ * @param at AT command
+ * @param buffer Buffer for data
+ * @return
+ */
 uint8_t xbee_create_at_read_message(uint8_t *at, uint8_t *buffer){
 	buffer[0] = 0x7E;	// Start delimiter
 	buffer[1] = 0x00;	// Length MSB
@@ -228,6 +278,14 @@ uint8_t xbee_create_at_read_message(uint8_t *at, uint8_t *buffer){
 	return 8;	// Return length of packet
 }
 
+/**
+ * @Form SPI AT write message packet
+ * @param at AT command
+ * @param buffer Writing buffer
+ * @param data Data to write
+ * @param num Lenth of data
+ * @return Length of packet
+ */
 uint8_t xbee_create_at_write_message(char *at, uint8_t *buffer, uint8_t *data, uint8_t num){
 	uint8_t i = 0;
 	buffer[0] = 0x7E;	// Start delimiter
@@ -244,6 +302,12 @@ uint8_t xbee_create_at_write_message(char *at, uint8_t *buffer, uint8_t *data, u
 	return 8 + num;		// Return length of packet
 }
 
+/**
+ * @brief Reads incoming data
+ * @param at
+ * @param buffer
+ * @return
+ */
 uint8_t xbee_create_data_read_message(uint8_t *at, uint8_t *buffer){
 	buffer[0] = 0x7E;	// Start delimiter
 	buffer[1] = 0x00;	// Length MSB
@@ -256,7 +320,14 @@ uint8_t xbee_create_data_read_message(uint8_t *at, uint8_t *buffer){
 	return 8;	// Return length of packet
 }
 
-uint8_t xbee_create_data_write_message(uint8_t *buffer, void *data, xbee_addr_t *addr, uint8_t packet_type){
+/**
+ * @brief Sending telemetry data over air
+ * @param buffer Sending buffer
+ * @param data Data, type can vary
+ * @param packet_type Sportsman or bouy
+ * @return Leght of packet
+ */
+uint8_t xbee_create_data_write_message(uint8_t *buffer, void *data, uint8_t packet_type){
 	uint8_t i = 0;
 	uint16_t num;
 
@@ -332,8 +403,13 @@ void xbee_receive(SPIDriver *SPID, uint8_t len, uint8_t *rxbuf){
 	//chThdSleepMilliseconds(1);
 }
 
+/**
+ *
+ * @param SPID
+ * @param txbuf
+ * @param len
+ */
 void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len){
-	//palSetLine(LINE_RED_LED);
 	spiAcquireBus(SPID);              	/* Acquire ownership of the bus.    */
 	palClearLine(LINE_RF_868_CS);
 	chThdSleepMicroseconds(50);
@@ -342,10 +418,15 @@ void xbee_send(SPIDriver *SPID, uint8_t *txbuf, uint8_t len){
 	spiReleaseBus(SPID); 				/* Ownership release.               */
 	//chThdSleepMilliseconds(1);
 	palSetLine(LINE_RF_868_CS);
-	//chThdSleepMilliseconds(1);
-	//palClearLine(LINE_RED_LED);
+
 }
 
+/**
+ * @brief Reading @len of data from spi, don not release CS
+ * @param SPID SPI driver pointer
+ * @param len Num of bytes to read
+ * @param rxbuff RX buffer
+ */
 void xbee_read_no_cs(SPIDriver *SPID, uint8_t len, uint8_t *rxbuff){
 	uint8_t txbuff[len];
 	memset(txbuff, 0xFF, len);
@@ -358,40 +439,38 @@ void xbee_read_no_cs(SPIDriver *SPID, uint8_t len, uint8_t *rxbuff){
 	}else{
 		palClearLine(LINE_RF_868_CS);
 	}
-
-	//chThdSleepMilliseconds(1);
-	//spiSend(SPID, len, txbuf);
 	spiExchange(SPID, len, txbuff, rxbuff); 			/* Atomic transfer operations.      */
 	spiReleaseBus(SPID); 				/* Ownership release.               */
 
-/*	chSemWait(&usart1_semaph);
-	chprintf((BaseSequentialStream*)&SD1, "polled1: %x\r\n", rxbuff[0]);
-	chSemSignal(&usart1_semaph);
-*/
-	//palSetLine(LINE_RF_868_CS);
-	//chThdSleepMilliseconds(1);
 }
 
+/**
+ * @brief Reading data from SPI with releasing CS in the end
+ * @param SPID SPI pointer
+ * @param len Num of bytes to read
+ * @param rxbuff RX buffer
+ */
 void xbee_read_release_cs(SPIDriver *SPID, uint8_t len, uint8_t *rxbuff){
 	uint8_t txbuff[len];
 	memset(txbuff, 0xFF, len);
 	spiAcquireBus(SPID);              	/* Acquire ownership of the bus.    */
 	palClearLine(LINE_RF_868_CS);
-	//chThdSleepMilliseconds(1);
-	//spiSend(SPID, len, txbuf);
 	spiExchange(SPID, len, txbuff, rxbuff); 			/* Atomic transfer operations.      */
 	spiReleaseBus(SPID); 				/* Ownership release.               */
 	palSetLine(LINE_RF_868_CS);
 	//chThdSleepMilliseconds(1);
 }
 
+/**
+ * @brief Checking ATTN pin
+ * @return
+ */
 uint8_t xbee_check_attn(void){
 	uint8_t i = 0;
 	uint8_t rxbuff[50];
 	uint8_t txbuf[50];
 	txbuf[0] = 0xFF;
 	if (!palReadLine(LINE_RF_868_SPI_ATTN)){
-				//palSetLine(LINE_GREEN_LED); // LED ON.
 				spiAcquireBus(&SPID1);              // Acquire ownership of the bus.
 				palClearLine(LINE_RF_868_CS);
 				chThdSleepMilliseconds(1);
@@ -399,7 +478,6 @@ uint8_t xbee_check_attn(void){
 					spiExchange(&SPID1, 1, txbuf, &rxbuff[i++]); // Atomic transfer operations.
 					spiReleaseBus(&SPID1); // Ownership release.
 					chThdSleepMilliseconds(1);
-					//palClearLine(LINE_GREEN_LED); // LED OFF
 				}
 				palSetLine(LINE_RF_868_CS);
 				chThdSleepMilliseconds(1);
@@ -410,6 +488,12 @@ uint8_t xbee_check_attn(void){
 			}
 }
 
+/**
+ * @brief Calculate Xbee CRC
+ * @param buffer Data pointer
+ * @param num Data size in bytes
+ * @return
+ */
 uint8_t xbee_calc_CRC(uint8_t *buffer, uint8_t num){
 	uint8_t i;
 	uint16_t sum = 0;
@@ -708,7 +792,6 @@ void xbee_send_rf_message(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len
 */
 
 void xbee_send_rf_message(uint8_t *address, void *packet, uint8_t packet_type){
-	//uint8_t txbuff[256];
 	uint8_t pack_len;
 	xbee_addr_t addr;
 	msg_t err;
@@ -733,6 +816,12 @@ void xbee_send_rf_message(uint8_t *address, void *packet, uint8_t packet_type){
 	}
 }
 
+/**
+ * @brief Debug - return data back
+ * @param xbee_strc
+ * @param buffer
+ * @param len
+ */
 void xbee_send_rf_message_back(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_t len){
 	uint8_t txbuff[128];
 	uint8_t pack_len;
@@ -766,35 +855,29 @@ void xbee_send_rf_message_back(xbee_struct_t *xbee_strc, uint8_t *buffer, uint8_
 
 }
 
+/**
+ * @brief ATTN pin interrupt handler
+ */
 void xbee_attn_event(void){
 	chSysLockFromISR();
 	chEvtBroadcastI(&xbee_attn_pin);
 	chSysUnlockFromISR();
-	//palToggleLine(LINE_RED_LED);
 }
 
 
+/**
+ * @brief Poll and parse data from spi
+ */
 void xbee_polling(void){
-	//const uint16_t pack_len = 4;
 	uint8_t message[4];
 	uint8_t i = 0;
-	//chSemWait(&spi2_semaph);
-	//chSemWait(&usart1_semaph);
-	//	chprintf((BaseSequentialStream*)&SD1, "Xbee polling\r\n");
-	//	chSemSignal(&usart1_semaph);
 	while (i < 50){
 		if(!palReadLine(LINE_RF_868_SPI_ATTN))
 		{
 			xbee_read_no_cs(&SPID1, 1, &message[0]);
-			//chSemWait(&usart1_semaph);
-			//chprintf((BaseSequentialStream*)&SD1, "polled1: %x\r\n", message[0]);
-			//	chSemSignal(&usart1_semaph);
 			if ((message[0] == 0x7E)){
 				xbee_read_no_cs(&SPID1, 3, &message[1]);
 				i = 50;
-				/*chSemWait(&usart1_semaph);
-				chprintf((BaseSequentialStream*)&SD1, "polled: %x %x %x %x\r\n", message[0], message[1], message[2], message[3]);
-				chSemSignal(&usart1_semaph);*/
 				switch(message[3]){
 				case XBEE_AT_FRAME:
 					xbee_process_at_frame(message);
@@ -855,9 +938,12 @@ void xbee_polling(void){
 			xbee->tx_ready = 1;
 		}
 	}
-	//chSemSignal(&spi2_semaph);
 }
 
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_at_frame(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[payload_len + 1];
@@ -871,6 +957,10 @@ void xbee_process_at_frame(uint8_t* buffer){
 							    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
 			chSemSignal(&usart1_semaph);
 }
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_at_queue_frame(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[payload_len + 1];
@@ -885,6 +975,10 @@ void xbee_process_at_queue_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_tx_req_frame(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[payload_len + 1];
@@ -899,6 +993,10 @@ void xbee_process_tx_req_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_explicit_frame(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[payload_len + 1];
@@ -913,6 +1011,10 @@ void xbee_process_explicit_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_remote_at_frame(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[payload_len + 1];
@@ -927,6 +1029,10 @@ void xbee_process_remote_at_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_at_response(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[payload_len + 1];
@@ -945,6 +1051,10 @@ void xbee_process_at_response(uint8_t* buffer){
 			}
 }
 
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_modem_stat_frame(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[payload_len + 1];
@@ -959,6 +1069,10 @@ void xbee_process_modem_stat_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
+/**
+ *
+ * @param buffer
+ */
 void xbee_process_tx_stat(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 			uint8_t rxbuff[32];
@@ -1004,6 +1118,9 @@ void xbee_process_aggregade_addr_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
+/**
+ * @brief Reads all data from Xbee via SPI
+ *  */
 void xbee_process_receive_packet_frame(uint8_t* buffer){
 
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
@@ -1018,11 +1135,12 @@ void xbee_process_receive_packet_frame(uint8_t* buffer){
 		//xbee_send_payoad
 	}
 	xbee_read_last_rssi();
-	//chSemWait(&usart1_semaph);
-	//chprintf((BaseSequentialStream*)&SD1, "RSSI: %d\r\n", xbee->rssi);
-	//chSemSignal(&usart1_semaph);
 }
 
+/**
+ * @brief Parse incoming message
+ * @param rxbuff Pointer to received data buffer
+ */
 void xbee_parse_rf_packet(uint8_t *rxbuff){
 	uint8_t packet_type;
 	packet_type = rxbuff[11];
@@ -1159,7 +1277,11 @@ void xbee_parse_gps_packet(uint8_t *rxbuff){
 	chSemSignal(&usart1_semaph);
 }
 
-void xbee_parse_bouy_packet(uint8_t *rxbuff) {
+/**
+ * @brief Copy data from received packet to bouy struct
+ * @param rxbuff Pointer to received data buffer
+ */
+void xbee_parse_bouy_packet(uint8_t *rxbuff){
 	int8_t i;
 	int32_t lat, lon;
 	float flat, flon, headMot, headVeh;
@@ -1178,6 +1300,10 @@ void xbee_parse_bouy_packet(uint8_t *rxbuff) {
 	chSemSignal(&usart1_semaph);
 }
 
+/**
+* @brief Copy data from received packet to sportsman struct
+ * @param rxbuff Pointer to received data buffer
+ */
 void xbee_parse_sportsman_packet(uint8_t *rxbuff) {
 
 	int8_t i;
@@ -1298,7 +1424,10 @@ void xbee_process_data_sample_frame(uint8_t* buffer){
 			chSemSignal(&usart1_semaph);
 }
 
-
+/**
+ * @brief Indication if broadcast message
+ * @param buffer Pointer to received data buffer
+ */
 void xbee_process_node_id_frame(uint8_t* buffer){
 	uint16_t payload_len = (buffer[1] << 8) | buffer[2];
 		uint8_t rxbuff[payload_len + 1];
@@ -1350,14 +1479,7 @@ void xbee_set_10kbs_rate(void){
 	uint8_t txbuffer[20];
 	uint8_t i;
 	uint8_t zero_byte = 0;
-		len = xbee_create_at_write_message("BR", &txbuffer[0], &zero_byte, 1);
-		/*chSemWait(&usart1_semaph);
-						chprintf((BaseSequentialStream*)&SD1, "Write BD %d command \n\r", zero_byte);
-									    for (i = 0; i < len; i++){
-									    	chprintf((BaseSequentialStream*)&SD1, "%x ", txbuffer[i]);
-									    }
-									    chprintf((BaseSequentialStream*)&SD1, "\n\r\n\r");
-					chSemSignal(&usart1_semaph);*/
+	len = xbee_create_at_write_message("BR", &txbuffer[0], &zero_byte, 1);
 	xbee_send(&SPID1, &txbuffer[0], len);
 }
 
@@ -1386,12 +1508,16 @@ void xbee_restore(void){
 	xbee_send(&SPID1, &txbuffer[0], len);
 }
 
+=======
+/**
+ * @brief Setup high speed - less distance
+ */
 void xbee_set_80kbs_rate(void){
 	uint8_t len;
 	uint8_t txbuffer[20];
 	uint8_t true_byte = 1;
 	chprintf((BaseSequentialStream*)&SD1, "Write BD %d command \n\r", true_byte);
-		len = xbee_create_at_write_message("BR", &txbuffer[0], &true_byte, 1);
+	len = xbee_create_at_write_message("BR", &txbuffer[0], &true_byte, 1);
 	xbee_send(&SPID1, &txbuffer[0], len);
 }
 

@@ -4,6 +4,7 @@
  *  Created on: Aug 31, 2019
  *      Author: a-h
  */
+
 #include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -37,7 +38,6 @@ extern bno055_t *bno055;
 #ifdef USE_BLE_MODULE
 #include "nina-b3.h"
 #include "adc.h"
-extern ble_t *ble;
 //extern lag_t *r_lag;
 extern rudder_t *r_rudder;
 extern coefs_t *coefs;

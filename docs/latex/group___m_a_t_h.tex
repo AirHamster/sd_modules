@@ -1,0 +1,67 @@
+\hypertarget{group___m_a_t_h}{}\doxysection{Math Driver}
+\label{group___m_a_t_h}\index{Math Driver@{Math Driver}}
+
+
+Math parameters calculating.  
+
+
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}}~float
+\item 
+\mbox{\Hypertarget{group___m_a_t_h_ga2eb6f9e0395b47b8d5e3eeae4fe0c116}\label{group___m_a_t_h_ga2eb6f9e0395b47b8d5e3eeae4fe0c116}} 
+\#define {\bfseries I\+N\+L\+I\+NE}~static inline
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___m_a_t_h_ga5ca4cf7d126d1b70e95de936dbf5079d}\label{group___m_a_t_h_ga5ca4cf7d126d1b70e95de936dbf5079d}} 
+static int \mbox{\hyperlink{group___m_a_t_h_ga5ca4cf7d126d1b70e95de936dbf5079d}{compare}} (const void $\ast$a, const void $\ast$b)
+\begin{DoxyCompactList}\small\item\em A comparator function used by qsort. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___m_a_t_h_gab7f4e3301730b3f140b2f232c74903d5}\label{group___m_a_t_h_gab7f4e3301730b3f140b2f232c74903d5}} 
+I\+N\+L\+I\+NE \mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}} {\bfseries get\+Mean} (\mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}} $\ast$data, int length)
+\item 
+\mbox{\Hypertarget{group___m_a_t_h_ga112e74cbd20b1f51e6dda0f4bef6f9d0}\label{group___m_a_t_h_ga112e74cbd20b1f51e6dda0f4bef6f9d0}} 
+I\+N\+L\+I\+NE \mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}} {\bfseries get\+Trimmed\+Mean} (\mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}} $\ast$data, int length, \mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}} accuracy)
+\item 
+I\+N\+L\+I\+NE \mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}} \mbox{\hyperlink{group___m_a_t_h_gaafd23c2556a2e90814b6f999c3edecb1}{get\+MedianM}} (\mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}} $\ast$data, int length)
+\item 
+\mbox{\Hypertarget{group___m_a_t_h_ga8000d0dca1364d996025fb23cbcbb940}\label{group___m_a_t_h_ga8000d0dca1364d996025fb23cbcbb940}} 
+I\+N\+L\+I\+NE void {\bfseries trimmed\+Mean\+Filter} (\mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}} $\ast$original\+Data, \mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}} $\ast$filtered\+Data, int length, int half\+Window\+Size, \mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}} accuracy)
+\item 
+\mbox{\Hypertarget{group___m_a_t_h_gade75843f2059b5015ba30bf1b3b833cd}\label{group___m_a_t_h_gade75843f2059b5015ba30bf1b3b833cd}} 
+I\+N\+L\+I\+NE void {\bfseries median\+Filter} (\mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}} $\ast$original\+Data, \mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}} $\ast$filtered\+Data, int length, int half\+Window\+Size, \mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}} accuracy)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Math parameters calculating. 
+
+Detail will be writen soon \begin{DoxyPrecond}{Precondition}
+In order to use the I2C driver the {\ttfamily U\+S\+E\+\_\+\+M\+A\+T\+H\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___m_a_t_h_math_1}{}\doxysubsection{Stateflow}\label{group___m_a_t_h_math_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_7}}
+\end{DoxyImageNoCaption}
+ The driver is not thread safe for performance reasons, if you need to access the I2C bus from multiple threads then use the {\ttfamily i2c\+Acquire\+Bus()} and {\ttfamily i2c\+Release\+Bus()} A\+P\+Is in order to gain exclusive access. 
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}\label{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}} 
+\index{Math Driver@{Math Driver}!floble@{floble}}
+\index{floble@{floble}!Math Driver@{Math Driver}}
+\doxysubsubsection{\texorpdfstring{floble}{floble}}
+{\footnotesize\ttfamily \#define floble~float}
+
+floble = floating-\/point arithmetic type float or double 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group___m_a_t_h_gaafd23c2556a2e90814b6f999c3edecb1}\label{group___m_a_t_h_gaafd23c2556a2e90814b6f999c3edecb1}} 
+\index{Math Driver@{Math Driver}!getMedianM@{getMedianM}}
+\index{getMedianM@{getMedianM}!Math Driver@{Math Driver}}
+\doxysubsubsection{\texorpdfstring{getMedianM()}{getMedianM()}}
+{\footnotesize\ttfamily I\+N\+L\+I\+NE \mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}} get\+MedianM (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group___m_a_t_h_ga79feb39e26a676c0ec169b9d8cf7708b}{floble}} $\ast$}]{data,  }\item[{int}]{length }\end{DoxyParamCaption})}
+
+Better to implement partial sort or use the C++ implementation Be careful\+: array is modified 

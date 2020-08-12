@@ -5,6 +5,14 @@
  *      Author: a-h
  */
 
+/**
+ * @file    microsd.h
+ * @brief   Microsd enums and structs.
+ *
+ * @addtogroup MICROSD
+ * @{
+ */
+
 #ifndef SD_MODULES_MICROSD_MICROSD_H_
 #define SD_MODULES_MICROSD_MICROSD_H_
 
@@ -22,6 +30,10 @@
 #define MICROSD_SHOW_FREE		7
 #define MICROSD_WRITE_SENSOR_LOG_LINE 8
 
+/**
+ * @enum microsd_commands
+ * @brief States for FSM
+ */
 enum microsd_commands{
 	MICROSD_NONE = 0,
 	MICROSD_MKFS,
@@ -36,13 +48,28 @@ enum microsd_commands{
 	MICROSD_CLOSE_LOG
 };
 
+/**
+ * Default FSm state
+ */
 #define MICROSD_DEFAULT_STATE MICROSD_WRITE_LOG
 
+/**
+ * @struct microsd_t
+ * @brief Struct with common file info
+ * @var path_to_file
+ * Full path to file
+ * @var file_created
+ * Flag indicates that file was successfully created
+ */
 typedef struct{
 	uint8_t path_to_file[128];
 	uint8_t file_created;
 }microsd_t;
 
+/**
+ * @struct microsd_fsm_t
+ * @brief FSM struct
+ */
 typedef struct{
 	uint8_t change_req;
 	uint8_t state_curr;
@@ -54,71 +81,31 @@ void cmd_open(BaseSequentialStream *chp, int argc, char *argv[]);
 //void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]);
 void microsd_update_calibfile(void);
 
-/**
- * Print file tree
- * @param chp Print output stream
- * @param argc Num of input arguments
- * @param argv Arguments vector
- */
+
 void cmd_tree(BaseSequentialStream *chp, int argc, char *argv[]);
-/**
- *
- * @param chp
- */
+
 void microsd_show_tree(BaseSequentialStream *chp);
 
-/**
- * Manual mount SD card
- * @param chp Print output stream
- * @param argc Num of input arguments
- * @param argv Arguments vector
- */
+
 void cmd_mount(BaseSequentialStream *chp, int argc, char *argv[]);
 
-/**
- * Deleting file from SD card
- * @param chp Print output stream
- * @param argc Num of input arguments
- * @param argv Arguments vector
- */
+
 void cmd_remove(BaseSequentialStream *chp, int argc, char *argv[]);
 
-/**
- * Print available space
- * @param chp Print output stream
- * @param argc Num of input arguments
- * @param argv Arguments vector
- */
+
 void cmd_free(BaseSequentialStream *chp, int argc, char *argv[]);
 
-/**
- *
- * @param chp Print output stream
- * @param argc Num of input arguments
- * @param argv Arguments vector
- */
+
 void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]);
 
-/**
- * Format SD card
- * @param chp Print output stream
- * @param argc Num of input arguments
- * @param argv Arguments vector
- */
+
 void cmd_mkfs(BaseSequentialStream *chp, int argc, char *argv[]);
 
-/**
- * Same as tree
- * @param chp Print output stream
- * @param argc Num of input arguments
- * @param argv Arguments vector
- */
+
 void cmd_cat(BaseSequentialStream *chp, int argc, char *argv[]);
 //DWORD get_fattime (void);
 
-/**
- * Start MicroSD threads
- */
+
 void start_microsd_module(void);
 /**
  *
@@ -136,37 +123,37 @@ void fsm_from_cat(uint8_t new_state);
 void fsm_from_mkfs(uint8_t new_state);
 
 /**
- * Creates new logfile
+ * @brief Creates new logfile
  * @return
  */
 uint8_t fs_create_new_log(void);
 
 /**
- * Writes csv header to file
+ * @brief Writes csv header to file
  * @return
  */
 uint8_t fs_write_file_header(void);
 
 /**
- * Writes sensors data to file
+ * @brief Writes sensors data to file
  * @return
  */
 uint8_t fs_write_line(void);
 
 /**
- * Check and print available space on SD card
+ * @brief Check and print available space on SD card
  * @return
  */
 uint8_t fs_check_space(void);
 
 /**
- * Close the logfile
+ * @brief Close the logfile
  * @return
  */
 uint8_t fs_close_log(void);
 
 /**
- * Open logfile without writing header line
+ * @brief Open logfile without writing header line
  * @return
  */
 uint8_t fs_continue_log(void);

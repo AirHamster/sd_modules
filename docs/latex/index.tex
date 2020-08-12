@@ -1,0 +1,31 @@
+\href{https://travis-ci.com/AirHamster/sd_modules}{\texttt{ }}\hypertarget{index_autotoc_md6}{}\doxyparagraph{S\+D\+\_\+\+Modules is a repository with code base for all sensors and devices used in Sail\+Data project.}\label{index_autotoc_md6}
+\hypertarget{index_autotoc_md7}{}\doxyparagraph{Current modules\+:}\label{index_autotoc_md7}
+
+\begin{DoxyItemize}
+\item Bosch 9-\/axis sensor driver
+\item Bosch 9-\/axis sensor with build-\/in fusion algorith driver
+\item TI B\+Q2560x battery charge IC driver
+\item TI B\+Q27441 fuel gauge driver
+\item Generic E\+E\+P\+R\+OM driver
+\item Log sensor driver
+\item Documentation from chips manufactures
+\item Math parameters calculating
+\item Multi M\+CU communication driver
+\item S\+PI Micro\+SD driver with Fat\+FS support
+\item Ublox G\+N\+SS module driver
+\item Ublox B\+LE module driver
+\item L4 power management with deep sleep mode driver
+\item Shell commands and output driver
+\item Tenso sensor driver
+\item Windsensor with S\+D-\/12 interface driver
+\item X\+B\+P9\+X-\/900 Digi module driver
+\end{DoxyItemize}\hypertarget{index_autotoc_md8}{}\doxysection{H\+O\+W\+TO}\label{index_autotoc_md8}
+Every module works as separete thread. After call start\+\_\+$\ast$name$\ast$\+\_\+module from main.\+c file modules initializes needed varables in memory and from E\+E\+P\+R\+OM.
+
+Modules includes by defines in config.\+h in main firmware projects.
+
+Firmware repositories\+:
+
+Main device\+: (\href{https://github.com/AirHamster/sd_fw_main_board}{\texttt{ https\+://github.\+com/\+Air\+Hamster/sd\+\_\+fw\+\_\+main\+\_\+board}})\mbox{[}\href{https://github.com/AirHamster/sd_fw_main_board}{\texttt{ https\+://github.\+com/\+Air\+Hamster/sd\+\_\+fw\+\_\+main\+\_\+board}}\mbox{]}
+
+B\+LE sensor device\+: (\href{https://github.com/AirHamster/sd_sensor_box_fw}{\texttt{ https\+://github.\+com/\+Air\+Hamster/sd\+\_\+sensor\+\_\+box\+\_\+fw}})\mbox{[}\href{https://github.com/AirHamster/sd_sensor_box_fw}{\texttt{ https\+://github.\+com/\+Air\+Hamster/sd\+\_\+sensor\+\_\+box\+\_\+fw}}\mbox{]} 

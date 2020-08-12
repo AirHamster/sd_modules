@@ -1,0 +1,150 @@
+\hypertarget{nina-b3_8c}{}\doxysection{nina-\/b3/nina-\/b3.c File Reference}
+\label{nina-b3_8c}\index{nina-\/b3/nina-\/b3.c@{nina-\/b3/nina-\/b3.c}}
+
+
+B\+LE Driver funcs.  
+
+
+{\ttfamily \#include \char`\"{}nina-\/b3.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}stdint.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}math.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}ch.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}hal.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}shell.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}chprintf.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}sd\+\_\+shell\+\_\+cmds.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}lag.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}adc.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}fsm.\+h\char`\"{}}\newline
+Include dependency graph for nina-\/b3.c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{nina-b3_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga131489af61fdf9728c14074c9701e1ba}\label{group___n_i_n_a-_b3_ga131489af61fdf9728c14074c9701e1ba}} 
+enum {\bfseries ble\+\_\+states} \{ \newline
+{\bfseries S\+T\+\_\+\+I\+D\+LE}, 
+{\bfseries S\+T\+\_\+\+O\+B\+S\+E\+R\+VE}, 
+{\bfseries S\+T\+\_\+\+D\+A\+T\+A\+\_\+\+RX}, 
+{\bfseries S\+T\+\_\+\+D\+A\+T\+A\+\_\+\+TX}, 
+\newline
+{\bfseries S\+T\+\_\+\+P\+A\+I\+R\+I\+NG}, 
+{\bfseries S\+T\+\_\+\+R\+E\+M\+O\+T\+E\+\_\+\+C\+FG}, 
+{\bfseries S\+T\+\_\+\+W\+A\+I\+T\+\_\+\+F\+O\+R\+\_\+\+R\+E\+S\+P\+O\+N\+SE}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries E\+V\+E\+N\+T\+\_\+\+D\+E\+F\+I\+NE} (B\+L\+E\+\_\+\+Data\+\_\+rx, No\+Event\+Data)
+\item 
+{\bfseries E\+V\+E\+N\+T\+\_\+\+D\+E\+F\+I\+NE} (B\+L\+E\+\_\+\+Data\+\_\+tx, No\+Event\+Data)
+\item 
+{\bfseries E\+V\+E\+N\+T\+\_\+\+D\+E\+F\+I\+NE} (B\+L\+E\+\_\+\+Observe, \mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}})
+\item 
+{\bfseries E\+V\+E\+N\+T\+\_\+\+D\+E\+F\+I\+NE} (B\+L\+E\+\_\+\+Remote\+\_\+cfg, No\+Event\+Data)
+\item 
+{\bfseries E\+V\+E\+N\+T\+\_\+\+D\+E\+F\+I\+NE} (B\+L\+E\+\_\+\+Go\+\_\+idle, No\+Event\+Data)
+\item 
+static {\bfseries T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA} (ble\+\_\+parsing\+\_\+thread\+\_\+wa, 4096)
+\item 
+static \mbox{\hyperlink{group___n_i_n_a-_b3_ga246b089ca80203947cd302bd9b61947f}{T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON}} (ble\+\_\+parsing\+\_\+thread, arg)
+\begin{DoxyCompactList}\small\item\em Thread with parsing data from nina and AT commands responses. \end{DoxyCompactList}\item 
+static {\bfseries T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA} (ble\+\_\+thread\+\_\+wa, 4096)
+\item 
+static \mbox{\hyperlink{group___n_i_n_a-_b3_gad52af452b149d6bb8287bf400931af28}{T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON}} (ble\+\_\+thread, arg)
+\begin{DoxyCompactList}\small\item\em Thread with nina and state machine initialisation. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga192383caa2b3b61fa0d348083a6d655a}{start\+\_\+ble\+\_\+module}} (void)
+\item 
+static void \mbox{\hyperlink{group___n_i_n_a-_b3_ga353b8e224b9e6631db9a61f39aa6c25f}{ble\+\_\+observe\+\_\+tim\+\_\+cb}} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em B\+LE observe virtual timer callback. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{group___n_i_n_a-_b3_ga5b935f15817987ac93f0c94f698a762f}{ble\+\_\+data\+\_\+tx\+\_\+tim\+\_\+cb}} (\mbox{\hyperlink{structble__peer__t}{ble\+\_\+peer\+\_\+t}} $\ast$peer\+\_\+1)
+\begin{DoxyCompactList}\small\item\em B\+LE data sending virtual timer callback. \end{DoxyCompactList}\item 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+E\+F\+I\+NE} (Idle, No\+Event\+Data)
+\item 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+E\+F\+I\+NE} (Observe, \mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}})
+\item 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+E\+F\+I\+NE} (Pairing, \mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}})
+\item 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+E\+F\+I\+NE} (Data\+\_\+tx, No\+Event\+Data)
+\item 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+E\+F\+I\+NE} (Remote\+\_\+cfg, No\+Event\+Data)
+\item 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+E\+F\+I\+NE} (Wait\+\_\+for\+\_\+response, No\+Event\+Data)
+\item 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+E\+F\+I\+NE} (Data\+\_\+rx, No\+Event\+Data)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___n_i_n_a-_b3_ga0bda1f1b07299b3a12d87329519f3bc2}{nina\+\_\+parse\+\_\+command}} (int8\+\_\+t $\ast$strp)
+\begin{DoxyCompactList}\small\item\em Parsing strings from Nina\textquotesingle{}s U\+S\+A\+RT iface. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga7277e1cf415320f033a8a5bed82f0a2f}{nina\+\_\+parse\+\_\+notification}} (uint8\+\_\+t conn\+\_\+handle, uint8\+\_\+t val\+\_\+handle, uint32\+\_\+t value)
+\begin{DoxyCompactList}\small\item\em Parsing notification. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga5cbdc2b1d4bc417426ad9cf2c34516f6}{nina\+\_\+connect}} (uint8\+\_\+t $\ast$addr, uint8\+\_\+t type)
+\begin{DoxyCompactList}\small\item\em Connecting request to remote device. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga2bdddcb86a068bf37dbb17563f551fac}{nina\+\_\+register\+\_\+peer}} (uint8\+\_\+t conn\+\_\+handle, uint8\+\_\+t type, int8\+\_\+t $\ast$addr)
+\begin{DoxyCompactList}\small\item\em Register new peer connection. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_gacf5434f105b931b30ceb0895abccf5a4}{nina\+\_\+unregister\+\_\+peer}} (\mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} $\ast$devlist, uint8\+\_\+t conn\+\_\+handle)
+\begin{DoxyCompactList}\small\item\em Process peer disconnection event. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_gad06cb57ca45f03352a21883de42fa2a3}{nina\+\_\+register\+\_\+remote\+\_\+dev}} (\mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} $\ast$devlist, uint8\+\_\+t conn\+\_\+handle, uint8\+\_\+t type, int8\+\_\+t $\ast$addr)
+\begin{DoxyCompactList}\small\item\em Register new connection. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_gacb0ec93387bb4c605d7fb0bce3f4e894}{nina\+\_\+get\+\_\+remote\+\_\+characs}} (uint16\+\_\+t handle, uint16\+\_\+t uuid)
+\begin{DoxyCompactList}\small\item\em Request remote device characteristics. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga5a2ebc11db1ec63e9001baa15a9b9a74}{nina\+\_\+fill\+\_\+memory}} (void)
+\begin{DoxyCompactList}\small\item\em Allocate memory for B\+LE structs. \end{DoxyCompactList}\item 
+void {\bfseries nina\+\_\+send\+\_\+at} (void)
+\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga1f16f27f701f5594ec60ea9569512fea}{nina\+\_\+init\+\_\+module}} (void)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___n_i_n_a-_b3_gad7a5cfeff7bbe72aba0e7b4a21c0d574}{nina\+\_\+wait\+\_\+response}} (int8\+\_\+t $\ast$at\+\_\+command)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___n_i_n_a-_b3_ga2d62b1825af7b60c2bdb7dcbc1a4fc3e}{nina\+\_\+add\+\_\+charac}} (\mbox{\hyperlink{structble__charac__t}{ble\+\_\+charac\+\_\+t}} $\ast$charac, uint16\+\_\+t uuid, uint8\+\_\+t properties, uint8\+\_\+t sec\+\_\+read, uint8\+\_\+t sec\+\_\+write, uint32\+\_\+t def\+\_\+val, uint8\+\_\+t read\+\_\+auth, uint8\+\_\+t max\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Create characteristic for device in server mode. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga9977a7c0f6e1804f237f5e7a182a2055}{nina\+\_\+notify}} (\mbox{\hyperlink{structble__charac__t}{ble\+\_\+charac\+\_\+t}} $\ast$ble\+\_\+rudder, int32\+\_\+t val)
+\begin{DoxyCompactList}\small\item\em Send notification to client device. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga7eb0abc29b3ab97ed10ea0b79239421b}{nina\+\_\+wait\+\_\+charac\+\_\+handlers}} (\mbox{\hyperlink{structble__charac__t}{ble\+\_\+charac\+\_\+t}} $\ast$charac)
+\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga029f182f3676638abcccbc9b8a126082}{nina\+\_\+send\+\_\+all}} (\mbox{\hyperlink{structble__peer__t}{ble\+\_\+peer\+\_\+t}} $\ast$peer)
+\begin{DoxyCompactList}\small\item\em Sends all data to peer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+static virtual\+\_\+timer\+\_\+t {\bfseries ble\+\_\+observe\+\_\+tim}
+\item 
+static virtual\+\_\+timer\+\_\+t {\bfseries ble\+\_\+data\+\_\+tx\+\_\+tim}
+\item 
+static \mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} {\bfseries ble\+\_\+remote\+\_\+dev\+\_\+list} \mbox{[}N\+U\+M\+\_\+\+O\+F\+\_\+\+R\+E\+M\+O\+T\+E\+\_\+\+D\+EV\mbox{]}
+\item 
+static event\+\_\+source\+\_\+t {\bfseries ble\+\_\+observe\+\_\+request\+\_\+event}
+\item 
+static event\+\_\+source\+\_\+t {\bfseries ble\+\_\+data\+\_\+tx\+\_\+request\+\_\+event}
+\item 
+static event\+\_\+source\+\_\+t {\bfseries ble\+\_\+remote\+\_\+dev\+\_\+cfg\+\_\+request\+\_\+event}
+\item 
+struct ch\+\_\+semaphore {\bfseries usart\+\_\+nina}
+\item 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+\mbox{\hyperlink{structoutput__t}{output\+\_\+t}} $\ast$ {\bfseries output}
+\item 
+\mbox{\hyperlink{structlag__t}{lag\+\_\+t}} $\ast$ {\bfseries r\+\_\+lag}
+\item 
+\mbox{\hyperlink{structrudder__t}{rudder\+\_\+t}} $\ast$ {\bfseries r\+\_\+rudder}
+\item 
+\mbox{\hyperlink{structble__temp__charac__t}{ble\+\_\+temp\+\_\+charac\+\_\+t}} $\ast$ {\bfseries charac\+\_\+temporary}
+\item 
+\mbox{\hyperlink{structble__peer__t}{ble\+\_\+peer\+\_\+t}} $\ast$ {\bfseries peer}
+\item 
+static const Serial\+Config {\bfseries nina\+\_\+config} = \{ 115200, 0, U\+S\+A\+R\+T\+\_\+\+C\+R2\+\_\+\+S\+T\+O\+P1\+\_\+\+B\+I\+TS, 0 \}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+B\+LE Driver funcs. 
+

@@ -1,0 +1,22 @@
+\hypertarget{group___s_d_c}{}\doxysection{S\+DC Driver}
+\label{group___s_d_c}\index{SDC Driver@{SDC Driver}}
+
+
+Generic SD Card Driver.  
+
+
+Collaboration diagram for S\+DC Driver\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=267pt]{group___s_d_c}
+\end{center}
+\end{figure}
+Generic SD Card Driver. 
+
+This module implements a generic S\+DC (Secure Digital Card) driver. \begin{DoxyPrecond}{Precondition}
+In order to use the S\+DC driver the {\ttfamily H\+A\+L\+\_\+\+U\+S\+E\+\_\+\+S\+DC} option must be enabled in {\ttfamily halconf.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___s_d_c_sdc_1}{}\doxysubsection{Driver State Machine}\label{group___s_d_c_sdc_1}
+This driver implements a state machine internally, see the I\+O\+\_\+\+B\+L\+O\+CK module documentation for details.\hypertarget{group___s_d_c_sdc_2}{}\doxysubsection{Driver Operations}\label{group___s_d_c_sdc_2}
+This driver allows to read or write single or multiple 512 bytes blocks on a SD Card. 

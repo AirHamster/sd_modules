@@ -1,0 +1,164 @@
+\hypertarget{group___m_c_u-_m_c_u}{}\doxysection{M\+C\+U-\/\+M\+CU Communication Driver}
+\label{group___m_c_u-_m_c_u}\index{MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}}
+
+
+Multi M\+CU communication driver.  
+
+
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structmcu__mcu__data__t}{mcu\+\_\+mcu\+\_\+data\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Battery data. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structpower__data__t}{power\+\_\+data\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Power data. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_gac20ddaf5e602274798df8c0e82949c9c}\label{group___m_c_u-_m_c_u_gac20ddaf5e602274798df8c0e82949c9c}} 
+\#define {\bfseries S\+D\+\_\+\+M\+O\+D\+U\+L\+E\+S\+\_\+\+M\+CU}~-\/M\+C\+U\+\_\+\+H\+\_\+
+\item 
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_ga6b3f5112ea765e9ae56b0df53849f153}\label{group___m_c_u-_m_c_u_ga6b3f5112ea765e9ae56b0df53849f153}} 
+\#define {\bfseries M\+C\+U\+\_\+\+M\+C\+U\+\_\+\+S\+L\+A\+V\+E\+\_\+\+A\+D\+DR}~0x10
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{group___m_c_u-_m_c_u_gae98cbecd8a7f828dfebe8aa70c40e4fc}{msg\+\_\+reason\+\_\+enum}} \{ \newline
+\mbox{\hyperlink{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fca29881aa2e4e66f1bd5c114f9eaf66e1e}{S\+T\+A\+R\+T\+U\+P\+\_\+\+N\+O\+R\+M\+AL}} = 0, 
+\mbox{\hyperlink{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fcad0d0a3fb3e195e6ce678788735056f2a}{S\+T\+A\+R\+T\+U\+P\+\_\+\+C\+H\+A\+R\+GE}}, 
+\mbox{\hyperlink{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fca89f464d9f8b686f5cb9af663c6bcf83e}{S\+T\+A\+R\+T\+U\+P\+\_\+\+B\+A\+T\+\_\+\+L\+OW}}, 
+\mbox{\hyperlink{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fca7690b021f467450541d8d89123429d40}{S\+H\+U\+T\+D\+O\+WN}}, 
+\newline
+\mbox{\hyperlink{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fca9d7d6f31868d66330397c967c4afd2d2}{D\+A\+TA}}, 
+\mbox{\hyperlink{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fca2da84e4fb999951754c859d16c69b145}{K\+E\+Y\+\_\+\+P\+R\+E\+SS}}
+ \}
+\begin{DoxyCompactList}\small\item\em Messages to slave M\+CU. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{group___m_c_u-_m_c_u_gae5e6b0bada4970a59425be1d2723f518}{T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA}} (mcu\+\_\+mcu\+\_\+thread\+\_\+wa, 256)
+\item 
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_gaa87ad5fa78aa8004f9b23777ff56bf21}\label{group___m_c_u-_m_c_u_gaa87ad5fa78aa8004f9b23777ff56bf21}} 
+static {\bfseries T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON} (mcu\+\_\+mcu\+\_\+thread, p)
+\item 
+void \mbox{\hyperlink{group___m_c_u-_m_c_u_ga2348fa0c23cb3be4328f84f75f4f80aa}{start\+\_\+mcu\+\_\+mcu\+\_\+module}} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_ga42b262329a1037a58d4e9ecd38c46eb0}\label{group___m_c_u-_m_c_u_ga42b262329a1037a58d4e9ecd38c46eb0}} 
+volatile int8\+\_\+t {\bfseries buffer} \mbox{[}32\mbox{]} = \{0\}
+\item 
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_ga80d6ac737d28f19d8324e5689651f793}\label{group___m_c_u-_m_c_u_ga80d6ac737d28f19d8324e5689651f793}} 
+\mbox{\hyperlink{structmcu__mcu__data__t}{mcu\+\_\+mcu\+\_\+data\+\_\+t}} $\ast$ {\bfseries mcu\+\_\+mcu\+\_\+data}
+\item 
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_ga4537bef23336cbd662e2749dc789c371}\label{group___m_c_u-_m_c_u_ga4537bef23336cbd662e2749dc789c371}} 
+\mbox{\hyperlink{structpower__data__t}{power\+\_\+data\+\_\+t}} {\bfseries power}
+\item 
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_gabbe1c18a1379e6c117b2b07222397866}\label{group___m_c_u-_m_c_u_gabbe1c18a1379e6c117b2b07222397866}} 
+\mbox{\hyperlink{structpower__data__t}{power\+\_\+data\+\_\+t}} $\ast$ {\bfseries power\+\_\+data} = \&power
+\item 
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_ga384618f0b35f432a3477616ccf570d2f}\label{group___m_c_u-_m_c_u_ga384618f0b35f432a3477616ccf570d2f}} 
+int16\+\_\+t {\bfseries voltage}
+\item 
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_ga28932f292e470c3f98a0a9f4fc43b2b2}\label{group___m_c_u-_m_c_u_ga28932f292e470c3f98a0a9f4fc43b2b2}} 
+int16\+\_\+t {\bfseries current}
+\item 
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_gab4e3dbd3f4368fe16592a0fdd8cb665e}\label{group___m_c_u-_m_c_u_gab4e3dbd3f4368fe16592a0fdd8cb665e}} 
+int16\+\_\+t {\bfseries soc}
+\item 
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_gafb6907d7dc2dc7a6be48c6a8086244be}\label{group___m_c_u-_m_c_u_gafb6907d7dc2dc7a6be48c6a8086244be}} 
+int16\+\_\+t {\bfseries capacity}
+\item 
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_ga28932f292e470c3f98a0a9f4fc43b2b2}\label{group___m_c_u-_m_c_u_ga28932f292e470c3f98a0a9f4fc43b2b2}} 
+int16\+\_\+t {\bfseries current}
+\item 
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_ga384618f0b35f432a3477616ccf570d2f}\label{group___m_c_u-_m_c_u_ga384618f0b35f432a3477616ccf570d2f}} 
+int16\+\_\+t {\bfseries voltage}
+\item 
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_gaaa07c1a9fb17f64dd4bbc5f14a0c48a8}\label{group___m_c_u-_m_c_u_gaaa07c1a9fb17f64dd4bbc5f14a0c48a8}} 
+int8\+\_\+t {\bfseries soc}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Multi M\+CU communication driver. 
+
+Detail will be writen soon \begin{DoxyPrecond}{Precondition}
+In order to use the I\+CU driver the {\ttfamily U\+S\+E\+\_\+\+M\+C\+U\+\_\+\+M\+C\+U\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}.
+\end{DoxyPrecond}
+\hypertarget{group___m_c_u-_m_c_u_mcu_mcu_1}{}\doxysubsection{Driver State Machine}\label{group___m_c_u-_m_c_u_mcu_mcu_1}
+The driver implements a state machine internally, not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_8}}
+\end{DoxyImageNoCaption}
+\hypertarget{group___m_c_u-_m_c_u_mcu_mcu_2}{}\doxysubsection{M\+C\+U\+\_\+\+M\+C\+U operations.}\label{group___m_c_u-_m_c_u_mcu_mcu_2}
+This driver abstracts a generic Input Capture Unit composed of\+:
+\begin{DoxyItemize}
+\item A clock prescaler.
+\item A main up counter.
+\item Two capture registers triggered by the rising and falling edges on the sampled input.
+\end{DoxyItemize}The I\+CU unit can be programmed to synchronize on the rising or falling edge of the sample input\+:
+\begin{DoxyItemize}
+\item {\bfseries{I\+C\+U\+\_\+\+I\+N\+P\+U\+T\+\_\+\+A\+C\+T\+I\+V\+E\+\_\+\+H\+I\+GH}}, a rising edge is the start signal.
+\item {\bfseries{I\+C\+U\+\_\+\+I\+N\+P\+U\+T\+\_\+\+A\+C\+T\+I\+V\+E\+\_\+\+L\+OW}}, a falling edge is the start signal.
+\end{DoxyItemize}Callbacks are optionally invoked when\+:
+\begin{DoxyItemize}
+\item On the P\+WM de-\/activation edge.
+\item On the P\+WM activation edge, measurements for the previous cycle are available from this callback and can be retrieved using {\ttfamily icu\+Get\+Period\+X()} and {\ttfamily icu\+Get\+Width\+X()}.
+\end{DoxyItemize}
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_gae98cbecd8a7f828dfebe8aa70c40e4fc}\label{group___m_c_u-_m_c_u_gae98cbecd8a7f828dfebe8aa70c40e4fc}} 
+\index{MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}!msg\_reason\_enum@{msg\_reason\_enum}}
+\index{msg\_reason\_enum@{msg\_reason\_enum}!MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}}
+\doxysubsubsection{\texorpdfstring{msg\_reason\_enum}{msg\_reason\_enum}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{group___m_c_u-_m_c_u_gae98cbecd8a7f828dfebe8aa70c40e4fc}{msg\+\_\+reason\+\_\+enum}}}
+
+
+
+Messages to slave M\+CU. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{STARTUP\_NORMAL@{STARTUP\_NORMAL}!MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}}\index{MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}!STARTUP\_NORMAL@{STARTUP\_NORMAL}}}\mbox{\Hypertarget{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fca29881aa2e4e66f1bd5c114f9eaf66e1e}\label{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fca29881aa2e4e66f1bd5c114f9eaf66e1e}} 
+S\+T\+A\+R\+T\+U\+P\+\_\+\+N\+O\+R\+M\+AL&S\+T\+A\+R\+T\+U\+P\+\_\+\+N\+O\+R\+M\+AL. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{STARTUP\_CHARGE@{STARTUP\_CHARGE}!MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}}\index{MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}!STARTUP\_CHARGE@{STARTUP\_CHARGE}}}\mbox{\Hypertarget{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fcad0d0a3fb3e195e6ce678788735056f2a}\label{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fcad0d0a3fb3e195e6ce678788735056f2a}} 
+S\+T\+A\+R\+T\+U\+P\+\_\+\+C\+H\+A\+R\+GE&S\+T\+A\+R\+T\+U\+P\+\_\+\+C\+H\+A\+R\+GE. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{STARTUP\_BAT\_LOW@{STARTUP\_BAT\_LOW}!MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}}\index{MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}!STARTUP\_BAT\_LOW@{STARTUP\_BAT\_LOW}}}\mbox{\Hypertarget{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fca89f464d9f8b686f5cb9af663c6bcf83e}\label{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fca89f464d9f8b686f5cb9af663c6bcf83e}} 
+S\+T\+A\+R\+T\+U\+P\+\_\+\+B\+A\+T\+\_\+\+L\+OW&S\+T\+A\+R\+T\+U\+P\+\_\+\+B\+A\+T\+\_\+\+L\+OW. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SHUTDOWN@{SHUTDOWN}!MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}}\index{MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}!SHUTDOWN@{SHUTDOWN}}}\mbox{\Hypertarget{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fca7690b021f467450541d8d89123429d40}\label{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fca7690b021f467450541d8d89123429d40}} 
+S\+H\+U\+T\+D\+O\+WN&S\+H\+U\+T\+D\+O\+WN. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DATA@{DATA}!MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}}\index{MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}!DATA@{DATA}}}\mbox{\Hypertarget{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fca9d7d6f31868d66330397c967c4afd2d2}\label{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fca9d7d6f31868d66330397c967c4afd2d2}} 
+D\+A\+TA&D\+A\+TA. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{KEY\_PRESS@{KEY\_PRESS}!MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}}\index{MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}!KEY\_PRESS@{KEY\_PRESS}}}\mbox{\Hypertarget{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fca2da84e4fb999951754c859d16c69b145}\label{group___m_c_u-_m_c_u_ggae98cbecd8a7f828dfebe8aa70c40e4fca2da84e4fb999951754c859d16c69b145}} 
+K\+E\+Y\+\_\+\+P\+R\+E\+SS&K\+E\+Y\+\_\+\+P\+R\+E\+SS. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group___m_c_u-_m_c_u_ga2348fa0c23cb3be4328f84f75f4f80aa}\label{group___m_c_u-_m_c_u_ga2348fa0c23cb3be4328f84f75f4f80aa}} 
+\index{MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}!start\_mcu\_mcu\_module@{start\_mcu\_mcu\_module}}
+\index{start\_mcu\_mcu\_module@{start\_mcu\_mcu\_module}!MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}}
+\doxysubsubsection{\texorpdfstring{start\_mcu\_mcu\_module()}{start\_mcu\_mcu\_module()}}
+{\footnotesize\ttfamily void start\+\_\+mcu\+\_\+mcu\+\_\+module (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Start communication threads \mbox{\Hypertarget{group___m_c_u-_m_c_u_gae5e6b0bada4970a59425be1d2723f518}\label{group___m_c_u-_m_c_u_gae5e6b0bada4970a59425be1d2723f518}} 
+\index{MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}!THD\_WORKING\_AREA@{THD\_WORKING\_AREA}}
+\index{THD\_WORKING\_AREA@{THD\_WORKING\_AREA}!MCU-\/MCU Communication Driver@{MCU-\/MCU Communication Driver}}
+\doxysubsubsection{\texorpdfstring{THD\_WORKING\_AREA()}{THD\_WORKING\_AREA()}}
+{\footnotesize\ttfamily static T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA (\begin{DoxyParamCaption}\item[{mcu\+\_\+mcu\+\_\+thread\+\_\+wa}]{,  }\item[{256}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Main communication thread 

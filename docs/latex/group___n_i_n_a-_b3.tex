@@ -1,0 +1,798 @@
+\hypertarget{group___n_i_n_a-_b3}{}\doxysection{Ublox N\+I\+N\+A-\/\+B3 Device}
+\label{group___n_i_n_a-_b3}\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+
+
+Ublox B\+LE module driver.  
+
+
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structble__peer__t}{ble\+\_\+peer\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Peer properties. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structble__charac__t}{ble\+\_\+charac\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Internal characteristic properties. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structble__remote__charac__t}{ble\+\_\+remote\+\_\+charac\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Remote device characteristic properties. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structble__remote__t}{ble\+\_\+remote\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Remote device connection properties. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structble__remote__peer__t}{ble\+\_\+remote\+\_\+peer\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Remote peer connection properties. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structble__temp__charac__t}{ble\+\_\+temp\+\_\+charac\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga2b774fe2e7c0dc1d23ec57aa9882afc0}\label{group___n_i_n_a-_b3_ga2b774fe2e7c0dc1d23ec57aa9882afc0}} 
+\#define {\bfseries N\+I\+N\+A\+\_\+\+S\+U\+C\+C\+E\+SS}~1
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gad91b59d055266de17f535cce3c35dabc}\label{group___n_i_n_a-_b3_gad91b59d055266de17f535cce3c35dabc}} 
+\#define {\bfseries B\+L\+E\+\_\+\+O\+B\+S\+E\+R\+V\+E\+\_\+\+EV}~0
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gab58adfd4c343a2fbdb90096d8dbd9d3c}\label{group___n_i_n_a-_b3_gab58adfd4c343a2fbdb90096d8dbd9d3c}} 
+\#define {\bfseries B\+L\+E\+\_\+\+D\+A\+T\+A\+\_\+\+T\+X\+\_\+\+EV}~1
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga550ca937b005f0e43034ebc064b823b3}\label{group___n_i_n_a-_b3_ga550ca937b005f0e43034ebc064b823b3}} 
+\#define {\bfseries B\+L\+E\+\_\+\+R\+E\+M\+O\+T\+E\+\_\+\+C\+F\+G\+\_\+\+EV}~2
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga483f7f5a9de35f7cac412f29482027ee}\label{group___n_i_n_a-_b3_ga483f7f5a9de35f7cac412f29482027ee}} 
+\#define {\bfseries B\+L\+E\+\_\+\+D\+E\+V\+\_\+\+T\+Y\+P\+E\+\_\+\+L\+OG}~1
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga4cc0445b94e3f8526b8ae93ecad9adb1}\label{group___n_i_n_a-_b3_ga4cc0445b94e3f8526b8ae93ecad9adb1}} 
+\#define {\bfseries B\+L\+E\+\_\+\+D\+E\+V\+\_\+\+T\+Y\+P\+E\+\_\+\+R\+DR}~2
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga3e4aeeac0b807a66eaad5c174b68e55d}\label{group___n_i_n_a-_b3_ga3e4aeeac0b807a66eaad5c174b68e55d}} 
+\#define {\bfseries B\+L\+E\+\_\+\+D\+E\+V\+\_\+\+T\+Y\+P\+E\+\_\+\+T\+E\+N\+SO}~3
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga40ea9e99052843234d435c7c9a9c8ff0}\label{group___n_i_n_a-_b3_ga40ea9e99052843234d435c7c9a9c8ff0}} 
+\#define {\bfseries B\+L\+E\+\_\+\+P\+O\+W\+E\+R\+\_\+\+S\+W\+I\+T\+C\+H\+E\+D\+\_\+\+O\+N\+\_\+\+EV}~4
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gacfd3732a633274bf18bc3c5b2370baa9}\label{group___n_i_n_a-_b3_gacfd3732a633274bf18bc3c5b2370baa9}} 
+\#define {\bfseries B\+L\+E\+\_\+\+P\+O\+W\+E\+R\+\_\+\+S\+W\+I\+T\+C\+H\+E\+D\+\_\+\+O\+F\+F\+\_\+\+EV}~5
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gaeb6280d0f1e78a8af613605a0902b853}\label{group___n_i_n_a-_b3_gaeb6280d0f1e78a8af613605a0902b853}} 
+\#define {\bfseries N\+U\+M\+\_\+\+O\+F\+\_\+\+R\+E\+M\+O\+T\+E\+\_\+\+D\+EV}~6
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga37edd9dd0ea861133ac6d90b3daef0b4}\label{group___n_i_n_a-_b3_ga37edd9dd0ea861133ac6d90b3daef0b4}} 
+\#define {\bfseries B\+L\+E\+\_\+\+R\+D\+R\+\_\+\+A\+D\+DR}~\char`\"{}D4\+C\+A6\+E\+B\+A\+F\+D\+A0\char`\"{}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga68c935487d26f166160ffb39ae31993b}\label{group___n_i_n_a-_b3_ga68c935487d26f166160ffb39ae31993b}} 
+\#define {\bfseries B\+L\+E\+\_\+\+L\+O\+G\+\_\+\+A\+D\+DR}~\char`\"{}D4\+C\+A6\+E\+B91\+D\+D3\char`\"{}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga72f9ca043da58c7d9efa062e1c6f67a0}\label{group___n_i_n_a-_b3_ga72f9ca043da58c7d9efa062e1c6f67a0}} 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O1\+\_\+\+A\+D\+DR}~\char`\"{}D4\+C\+A6\+E\+B91\+D01\char`\"{}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gaeeec7c493e9e833fde50fa9fb2371011}\label{group___n_i_n_a-_b3_gaeeec7c493e9e833fde50fa9fb2371011}} 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O2\+\_\+\+A\+D\+DR}~\char`\"{}D4\+C\+A6\+E\+B91\+D02\char`\"{}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga238e7f2ea4723f8bd5f9b8d40b2a95f9}\label{group___n_i_n_a-_b3_ga238e7f2ea4723f8bd5f9b8d40b2a95f9}} 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O3\+\_\+\+A\+D\+DR}~\char`\"{}D4\+C\+A6\+E\+B91\+D03\char`\"{}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga7dc5ea7ab4a98463c00d87b05364ea4b}\label{group___n_i_n_a-_b3_ga7dc5ea7ab4a98463c00d87b05364ea4b}} 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O4\+\_\+\+A\+D\+DR}~\char`\"{}D4\+C\+A6\+E\+B91\+D04\char`\"{}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga2f0cd18ad8824e4a1ddd84d12581531d}\label{group___n_i_n_a-_b3_ga2f0cd18ad8824e4a1ddd84d12581531d}} 
+\#define {\bfseries B\+L\+E\+\_\+\+R\+D\+R\+\_\+\+A\+S\+C\+I\+I\+\_\+\+N\+A\+ME}~\char`\"{}R\+E\+M\+O\+T\+E\+\_\+\+R\+U\+D\+D\+ER\char`\"{}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gae4ec99865b7cd6fbc5b61f09c1349904}\label{group___n_i_n_a-_b3_gae4ec99865b7cd6fbc5b61f09c1349904}} 
+\#define {\bfseries B\+L\+E\+\_\+\+L\+O\+G\+\_\+\+A\+S\+C\+I\+I\+\_\+\+N\+A\+ME}~\char`\"{}R\+E\+M\+O\+T\+E\+\_\+\+L\+OG\char`\"{}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga0bff5b1165491b0e63a83756c22dee19}\label{group___n_i_n_a-_b3_ga0bff5b1165491b0e63a83756c22dee19}} 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O1\+\_\+\+A\+S\+C\+I\+I\+\_\+\+N\+A\+ME}~\char`\"{}R\+E\+M\+O\+T\+E\+\_\+\+T\+E\+N\+S\+O\+\_\+1\char`\"{}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga2f7905fa3ef32dcdfc1f7c58404c19e7}\label{group___n_i_n_a-_b3_ga2f7905fa3ef32dcdfc1f7c58404c19e7}} 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O2\+\_\+\+A\+S\+C\+I\+I\+\_\+\+N\+A\+ME}~\char`\"{}R\+E\+M\+O\+T\+E\+\_\+\+T\+E\+N\+S\+O\+\_\+2\char`\"{}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gad057a8db4d64514fee29d741ce08ac9e}\label{group___n_i_n_a-_b3_gad057a8db4d64514fee29d741ce08ac9e}} 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O3\+\_\+\+A\+S\+C\+I\+I\+\_\+\+N\+A\+ME}~\char`\"{}R\+E\+M\+O\+T\+E\+\_\+\+T\+E\+N\+S\+O\+\_\+3\char`\"{}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga56ffba18b6dff10a07bf7b2f75e371a5}\label{group___n_i_n_a-_b3_ga56ffba18b6dff10a07bf7b2f75e371a5}} 
+\#define {\bfseries B\+L\+E\+\_\+\+T\+E\+N\+S\+O4\+\_\+\+A\+S\+C\+I\+I\+\_\+\+N\+A\+ME}~\char`\"{}R\+E\+M\+O\+T\+E\+\_\+\+T\+E\+N\+S\+O\+\_\+4\char`\"{}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gaef861d1e6fea490f8cd93ef4f1d4ddbe}\label{group___n_i_n_a-_b3_gaef861d1e6fea490f8cd93ef4f1d4ddbe}} 
+\#define {\bfseries N\+U\+M\+\_\+\+O\+F\+\_\+\+C\+H\+A\+R\+A\+C\+TS}~10
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga131489af61fdf9728c14074c9701e1ba}\label{group___n_i_n_a-_b3_ga131489af61fdf9728c14074c9701e1ba}} 
+enum {\bfseries ble\+\_\+states} \{ \newline
+{\bfseries S\+T\+\_\+\+I\+D\+LE}, 
+{\bfseries S\+T\+\_\+\+O\+B\+S\+E\+R\+VE}, 
+{\bfseries S\+T\+\_\+\+D\+A\+T\+A\+\_\+\+RX}, 
+{\bfseries S\+T\+\_\+\+D\+A\+T\+A\+\_\+\+TX}, 
+\newline
+{\bfseries S\+T\+\_\+\+P\+A\+I\+R\+I\+NG}, 
+{\bfseries S\+T\+\_\+\+R\+E\+M\+O\+T\+E\+\_\+\+C\+FG}, 
+{\bfseries S\+T\+\_\+\+W\+A\+I\+T\+\_\+\+F\+O\+R\+\_\+\+R\+E\+S\+P\+O\+N\+SE}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gabe8b6fa993c138e2a95ab6b51ff52e53}\label{group___n_i_n_a-_b3_gabe8b6fa993c138e2a95ab6b51ff52e53}} 
+{\bfseries E\+V\+E\+N\+T\+\_\+\+D\+E\+F\+I\+NE} (B\+L\+E\+\_\+\+Data\+\_\+rx, No\+Event\+Data)
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga518e572ab8e038851731b7aac5e4c6b6}\label{group___n_i_n_a-_b3_ga518e572ab8e038851731b7aac5e4c6b6}} 
+{\bfseries E\+V\+E\+N\+T\+\_\+\+D\+E\+F\+I\+NE} (B\+L\+E\+\_\+\+Data\+\_\+tx, No\+Event\+Data)
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gac66e41369e0183a7b1c5f50c550ab9d9}\label{group___n_i_n_a-_b3_gac66e41369e0183a7b1c5f50c550ab9d9}} 
+{\bfseries E\+V\+E\+N\+T\+\_\+\+D\+E\+F\+I\+NE} (B\+L\+E\+\_\+\+Observe, \mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}})
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gadec2f2898f72be0af18e73813d91ab55}\label{group___n_i_n_a-_b3_gadec2f2898f72be0af18e73813d91ab55}} 
+{\bfseries E\+V\+E\+N\+T\+\_\+\+D\+E\+F\+I\+NE} (B\+L\+E\+\_\+\+Remote\+\_\+cfg, No\+Event\+Data)
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gafca47af5364fd436c5d5f11cc72a0083}\label{group___n_i_n_a-_b3_gafca47af5364fd436c5d5f11cc72a0083}} 
+{\bfseries E\+V\+E\+N\+T\+\_\+\+D\+E\+F\+I\+NE} (B\+L\+E\+\_\+\+Go\+\_\+idle, No\+Event\+Data)
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga1bc8f125d3372647cc14da39ac43367d}\label{group___n_i_n_a-_b3_ga1bc8f125d3372647cc14da39ac43367d}} 
+static {\bfseries T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA} (ble\+\_\+parsing\+\_\+thread\+\_\+wa, 4096)
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga246b089ca80203947cd302bd9b61947f}\label{group___n_i_n_a-_b3_ga246b089ca80203947cd302bd9b61947f}} 
+static \mbox{\hyperlink{group___n_i_n_a-_b3_ga246b089ca80203947cd302bd9b61947f}{T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON}} (ble\+\_\+parsing\+\_\+thread, arg)
+\begin{DoxyCompactList}\small\item\em Thread with parsing data from nina and AT commands responses. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gad569dba3043eec155612e69cf4329cfc}\label{group___n_i_n_a-_b3_gad569dba3043eec155612e69cf4329cfc}} 
+static {\bfseries T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA} (ble\+\_\+thread\+\_\+wa, 4096)
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gad52af452b149d6bb8287bf400931af28}\label{group___n_i_n_a-_b3_gad52af452b149d6bb8287bf400931af28}} 
+static \mbox{\hyperlink{group___n_i_n_a-_b3_gad52af452b149d6bb8287bf400931af28}{T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON}} (ble\+\_\+thread, arg)
+\begin{DoxyCompactList}\small\item\em Thread with nina and state machine initialisation. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga192383caa2b3b61fa0d348083a6d655a}{start\+\_\+ble\+\_\+module}} (void)
+\item 
+static void \mbox{\hyperlink{group___n_i_n_a-_b3_ga353b8e224b9e6631db9a61f39aa6c25f}{ble\+\_\+observe\+\_\+tim\+\_\+cb}} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em B\+LE observe virtual timer callback. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{group___n_i_n_a-_b3_ga5b935f15817987ac93f0c94f698a762f}{ble\+\_\+data\+\_\+tx\+\_\+tim\+\_\+cb}} (\mbox{\hyperlink{structble__peer__t}{ble\+\_\+peer\+\_\+t}} $\ast$peer\+\_\+1)
+\begin{DoxyCompactList}\small\item\em B\+LE data sending virtual timer callback. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga196c4f8c788edbb0a68c681872fc3fda}\label{group___n_i_n_a-_b3_ga196c4f8c788edbb0a68c681872fc3fda}} 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+E\+F\+I\+NE} (Idle, No\+Event\+Data)
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gaf25d537ed11d9fd6f4df5e24cd9dcc48}\label{group___n_i_n_a-_b3_gaf25d537ed11d9fd6f4df5e24cd9dcc48}} 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+E\+F\+I\+NE} (Observe, \mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}})
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga35da6025da4071c179c38a754230e86b}\label{group___n_i_n_a-_b3_ga35da6025da4071c179c38a754230e86b}} 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+E\+F\+I\+NE} (Pairing, \mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}})
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga0edf4ea6e05b54def2191b624af9f838}\label{group___n_i_n_a-_b3_ga0edf4ea6e05b54def2191b624af9f838}} 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+E\+F\+I\+NE} (Data\+\_\+tx, No\+Event\+Data)
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga824f133172bc79e120d41b36a6ec320b}\label{group___n_i_n_a-_b3_ga824f133172bc79e120d41b36a6ec320b}} 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+E\+F\+I\+NE} (Remote\+\_\+cfg, No\+Event\+Data)
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga0bd50d8eb3c5e1e83ece2056a235f88a}\label{group___n_i_n_a-_b3_ga0bd50d8eb3c5e1e83ece2056a235f88a}} 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+E\+F\+I\+NE} (Wait\+\_\+for\+\_\+response, No\+Event\+Data)
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga0b2a21a4269db0671bcfda51a47efe44}\label{group___n_i_n_a-_b3_ga0b2a21a4269db0671bcfda51a47efe44}} 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+E\+F\+I\+NE} (Data\+\_\+rx, No\+Event\+Data)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___n_i_n_a-_b3_ga0bda1f1b07299b3a12d87329519f3bc2}{nina\+\_\+parse\+\_\+command}} (int8\+\_\+t $\ast$strp)
+\begin{DoxyCompactList}\small\item\em Parsing strings from Nina\textquotesingle{}s U\+S\+A\+RT iface. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga7277e1cf415320f033a8a5bed82f0a2f}{nina\+\_\+parse\+\_\+notification}} (uint8\+\_\+t conn\+\_\+handle, uint8\+\_\+t val\+\_\+handle, uint32\+\_\+t value)
+\begin{DoxyCompactList}\small\item\em Parsing notification. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga5cbdc2b1d4bc417426ad9cf2c34516f6}{nina\+\_\+connect}} (uint8\+\_\+t $\ast$addr, uint8\+\_\+t type)
+\begin{DoxyCompactList}\small\item\em Connecting request to remote device. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga2bdddcb86a068bf37dbb17563f551fac}{nina\+\_\+register\+\_\+peer}} (uint8\+\_\+t conn\+\_\+handle, uint8\+\_\+t type, int8\+\_\+t $\ast$addr)
+\begin{DoxyCompactList}\small\item\em Register new peer connection. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_gacf5434f105b931b30ceb0895abccf5a4}{nina\+\_\+unregister\+\_\+peer}} (\mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} $\ast$devlist, uint8\+\_\+t conn\+\_\+handle)
+\begin{DoxyCompactList}\small\item\em Process peer disconnection event. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_gad06cb57ca45f03352a21883de42fa2a3}{nina\+\_\+register\+\_\+remote\+\_\+dev}} (\mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} $\ast$devlist, uint8\+\_\+t conn\+\_\+handle, uint8\+\_\+t type, int8\+\_\+t $\ast$addr)
+\begin{DoxyCompactList}\small\item\em Register new connection. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_gacb0ec93387bb4c605d7fb0bce3f4e894}{nina\+\_\+get\+\_\+remote\+\_\+characs}} (uint16\+\_\+t handle, uint16\+\_\+t uuid)
+\begin{DoxyCompactList}\small\item\em Request remote device characteristics. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga5a2ebc11db1ec63e9001baa15a9b9a74}{nina\+\_\+fill\+\_\+memory}} (void)
+\begin{DoxyCompactList}\small\item\em Allocate memory for B\+LE structs. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gad35a0bf8425ab1935fb3e76c44e71341}\label{group___n_i_n_a-_b3_gad35a0bf8425ab1935fb3e76c44e71341}} 
+void {\bfseries nina\+\_\+send\+\_\+at} (void)
+\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga1f16f27f701f5594ec60ea9569512fea}{nina\+\_\+init\+\_\+module}} (void)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___n_i_n_a-_b3_gad7a5cfeff7bbe72aba0e7b4a21c0d574}{nina\+\_\+wait\+\_\+response}} (int8\+\_\+t $\ast$at\+\_\+command)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___n_i_n_a-_b3_ga2d62b1825af7b60c2bdb7dcbc1a4fc3e}{nina\+\_\+add\+\_\+charac}} (\mbox{\hyperlink{structble__charac__t}{ble\+\_\+charac\+\_\+t}} $\ast$charac, uint16\+\_\+t uuid, uint8\+\_\+t properties, uint8\+\_\+t sec\+\_\+read, uint8\+\_\+t sec\+\_\+write, uint32\+\_\+t def\+\_\+val, uint8\+\_\+t read\+\_\+auth, uint8\+\_\+t max\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Create characteristic for device in server mode. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga9977a7c0f6e1804f237f5e7a182a2055}{nina\+\_\+notify}} (\mbox{\hyperlink{structble__charac__t}{ble\+\_\+charac\+\_\+t}} $\ast$ble\+\_\+rudder, int32\+\_\+t val)
+\begin{DoxyCompactList}\small\item\em Send notification to client device. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga7eb0abc29b3ab97ed10ea0b79239421b}{nina\+\_\+wait\+\_\+charac\+\_\+handlers}} (\mbox{\hyperlink{structble__charac__t}{ble\+\_\+charac\+\_\+t}} $\ast$charac)
+\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga029f182f3676638abcccbc9b8a126082}{nina\+\_\+send\+\_\+all}} (\mbox{\hyperlink{structble__peer__t}{ble\+\_\+peer\+\_\+t}} $\ast$peer)
+\begin{DoxyCompactList}\small\item\em Sends all data to peer. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga751307f2912deb7ca8c5d8281ccf3b26}\label{group___n_i_n_a-_b3_ga751307f2912deb7ca8c5d8281ccf3b26}} 
+void {\bfseries nina\+\_\+send\+\_\+two} (void)
+\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_ga800caba0d2760d163adacdfad82a8ab5}{nina\+\_\+unregister\+\_\+remote\+\_\+dev}} (uint8\+\_\+t conn\+\_\+handle)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{group___n_i_n_a-_b3_ga2185f3750c2428c9362a7754e31fdc52}{nina\+\_\+init\+\_\+services}} (void)
+\item 
+void \mbox{\hyperlink{group___n_i_n_a-_b3_gafb5584863bc39e9e49ada4c14cc457e6}{copy\+\_\+to\+\_\+ble}} (void)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___n_i_n_a-_b3_ga6823bc17be2aa9d10cdb13c9bc89f811}{nina\+\_\+init\+\_\+devices}} (\mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} $\ast$devlist)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___n_i_n_a-_b3_ga6a2104cf103f6dcc564b7c2a0eb7b71e}{nina\+\_\+compare\+\_\+founded\+\_\+dev}} (uint8\+\_\+t $\ast$strp, \mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} $\ast$devlist)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gaa55f36dfdca226c1f7705f325c27b381}\label{group___n_i_n_a-_b3_gaa55f36dfdca226c1f7705f325c27b381}} 
+static virtual\+\_\+timer\+\_\+t {\bfseries ble\+\_\+observe\+\_\+tim}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gadbcf83a096708a93effe0077f5973656}\label{group___n_i_n_a-_b3_gadbcf83a096708a93effe0077f5973656}} 
+static virtual\+\_\+timer\+\_\+t {\bfseries ble\+\_\+data\+\_\+tx\+\_\+tim}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga2041e985a1c95bb64f0e3d20c4311975}\label{group___n_i_n_a-_b3_ga2041e985a1c95bb64f0e3d20c4311975}} 
+static \mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} {\bfseries ble\+\_\+remote\+\_\+dev\+\_\+list} \mbox{[}N\+U\+M\+\_\+\+O\+F\+\_\+\+R\+E\+M\+O\+T\+E\+\_\+\+D\+EV\mbox{]}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga9ffdbdcd9a3cd8830ba659dcddd67fe9}\label{group___n_i_n_a-_b3_ga9ffdbdcd9a3cd8830ba659dcddd67fe9}} 
+static event\+\_\+source\+\_\+t {\bfseries ble\+\_\+observe\+\_\+request\+\_\+event}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga4102163c0be0e1a587ae9d70e27e174c}\label{group___n_i_n_a-_b3_ga4102163c0be0e1a587ae9d70e27e174c}} 
+static event\+\_\+source\+\_\+t {\bfseries ble\+\_\+data\+\_\+tx\+\_\+request\+\_\+event}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gafaa9d6398fc85f1a98cf15eeae9df151}\label{group___n_i_n_a-_b3_gafaa9d6398fc85f1a98cf15eeae9df151}} 
+static event\+\_\+source\+\_\+t {\bfseries ble\+\_\+remote\+\_\+dev\+\_\+cfg\+\_\+request\+\_\+event}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gae8ca61a1c04b586db99580f0213d36c1}\label{group___n_i_n_a-_b3_gae8ca61a1c04b586db99580f0213d36c1}} 
+struct ch\+\_\+semaphore {\bfseries usart\+\_\+nina}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga967ea156994a35bf77b2c4ae7ccaf273}\label{group___n_i_n_a-_b3_ga967ea156994a35bf77b2c4ae7ccaf273}} 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga42611d3954f5e1320a9b83fd19a3eb10}\label{group___n_i_n_a-_b3_ga42611d3954f5e1320a9b83fd19a3eb10}} 
+\mbox{\hyperlink{structoutput__t}{output\+\_\+t}} $\ast$ {\bfseries output}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga14237d8ee6e1b783870ff844272394f8}\label{group___n_i_n_a-_b3_ga14237d8ee6e1b783870ff844272394f8}} 
+\mbox{\hyperlink{structlag__t}{lag\+\_\+t}} $\ast$ {\bfseries r\+\_\+lag}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga4b02d2664e46dd5a147deaacce7e6709}\label{group___n_i_n_a-_b3_ga4b02d2664e46dd5a147deaacce7e6709}} 
+\mbox{\hyperlink{structrudder__t}{rudder\+\_\+t}} $\ast$ {\bfseries r\+\_\+rudder}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga10ccee2ca0ec8eabfaeb30e2dc8707de}\label{group___n_i_n_a-_b3_ga10ccee2ca0ec8eabfaeb30e2dc8707de}} 
+\mbox{\hyperlink{structble__temp__charac__t}{ble\+\_\+temp\+\_\+charac\+\_\+t}} $\ast$ {\bfseries charac\+\_\+temporary}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga23f9a5e1984279cd021077851380f905}\label{group___n_i_n_a-_b3_ga23f9a5e1984279cd021077851380f905}} 
+\mbox{\hyperlink{structble__peer__t}{ble\+\_\+peer\+\_\+t}} $\ast$ {\bfseries peer}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga7dea49269ae317fb1300de4018fcdbde}\label{group___n_i_n_a-_b3_ga7dea49269ae317fb1300de4018fcdbde}} 
+static const Serial\+Config {\bfseries nina\+\_\+config} = \{ 115200, 0, U\+S\+A\+R\+T\+\_\+\+C\+R2\+\_\+\+S\+T\+O\+P1\+\_\+\+B\+I\+TS, 0 \}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gadf106c43f5c2013cee904e11754bd32d}\label{group___n_i_n_a-_b3_gadf106c43f5c2013cee904e11754bd32d}} 
+int8\+\_\+t {\bfseries addr} \mbox{[}13\mbox{]}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gae9db6cb1f91fcba9adc5e0dc4b0d88e8}\label{group___n_i_n_a-_b3_gae9db6cb1f91fcba9adc5e0dc4b0d88e8}} 
+uint8\+\_\+t {\bfseries is\+\_\+connected}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gabf915ed1befd23625c649f68dab25096}\label{group___n_i_n_a-_b3_gabf915ed1befd23625c649f68dab25096}} 
+uint8\+\_\+t {\bfseries conn\+\_\+handle}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga1d127017fb298b889f4ba24752d08b8e}\label{group___n_i_n_a-_b3_ga1d127017fb298b889f4ba24752d08b8e}} 
+uint8\+\_\+t {\bfseries type}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga61c5d051b6f79d08236fae6cf7019e75}\label{group___n_i_n_a-_b3_ga61c5d051b6f79d08236fae6cf7019e75}} 
+uint16\+\_\+t {\bfseries value\+\_\+handle}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga2c7796d4eb58c25a1a724bcd9d5bf183}\label{group___n_i_n_a-_b3_ga2c7796d4eb58c25a1a724bcd9d5bf183}} 
+uint16\+\_\+t {\bfseries cccd\+\_\+handle}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gaaa1ded1f77a9c12a196ed4ba2ce5f95d}\label{group___n_i_n_a-_b3_gaaa1ded1f77a9c12a196ed4ba2ce5f95d}} 
+uint16\+\_\+t {\bfseries uuid}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga01571c420f280137c16d319178731da5}\label{group___n_i_n_a-_b3_ga01571c420f280137c16d319178731da5}} 
+int32\+\_\+t {\bfseries value}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga9186ef511fa792a0dec18079d57071ef}\label{group___n_i_n_a-_b3_ga9186ef511fa792a0dec18079d57071ef}} 
+uint8\+\_\+t {\bfseries properties}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gac4bddcc0678db470e26541337d5df991}\label{group___n_i_n_a-_b3_gac4bddcc0678db470e26541337d5df991}} 
+uint8\+\_\+t {\bfseries security\+\_\+read}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga8063840c24ab1e04a33cfb594b017e56}\label{group___n_i_n_a-_b3_ga8063840c24ab1e04a33cfb594b017e56}} 
+uint8\+\_\+t {\bfseries security\+\_\+write}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga13069050fbd121e152c0e9b5c8d47725}\label{group___n_i_n_a-_b3_ga13069050fbd121e152c0e9b5c8d47725}} 
+uint8\+\_\+t {\bfseries read\+\_\+auth}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga511fbdbf33ec9d4f074933aef0fe50f9}\label{group___n_i_n_a-_b3_ga511fbdbf33ec9d4f074933aef0fe50f9}} 
+uint8\+\_\+t {\bfseries max\+\_\+lenth}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga0d5ffe38d68e48d81e61fc6a4999ae68}\label{group___n_i_n_a-_b3_ga0d5ffe38d68e48d81e61fc6a4999ae68}} 
+uint16\+\_\+t {\bfseries conn\+\_\+handle}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga7fefab98f8df818ca56a19aacaabfa05}\label{group___n_i_n_a-_b3_ga7fefab98f8df818ca56a19aacaabfa05}} 
+uint16\+\_\+t {\bfseries attr\+\_\+handle}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga28e2496e5871f973132c34feb28a3c54}\label{group___n_i_n_a-_b3_ga28e2496e5871f973132c34feb28a3c54}} 
+uint16\+\_\+t {\bfseries properties}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga61c5d051b6f79d08236fae6cf7019e75}\label{group___n_i_n_a-_b3_ga61c5d051b6f79d08236fae6cf7019e75}} 
+uint16\+\_\+t {\bfseries value\+\_\+handle}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gaaa1ded1f77a9c12a196ed4ba2ce5f95d}\label{group___n_i_n_a-_b3_gaaa1ded1f77a9c12a196ed4ba2ce5f95d}} 
+uint16\+\_\+t {\bfseries uuid}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga308bff27e6b9e931017f4ef23c6616e3}\label{group___n_i_n_a-_b3_ga308bff27e6b9e931017f4ef23c6616e3}} 
+\mbox{\hyperlink{structble__remote__charac__t}{ble\+\_\+remote\+\_\+charac\+\_\+t}} {\bfseries charac}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gae9db6cb1f91fcba9adc5e0dc4b0d88e8}\label{group___n_i_n_a-_b3_gae9db6cb1f91fcba9adc5e0dc4b0d88e8}} 
+uint8\+\_\+t {\bfseries is\+\_\+connected}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gaf886b78805270f41339a3231b92c4145}\label{group___n_i_n_a-_b3_gaf886b78805270f41339a3231b92c4145}} 
+uint8\+\_\+t {\bfseries is\+\_\+avalible}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga1d127017fb298b889f4ba24752d08b8e}\label{group___n_i_n_a-_b3_ga1d127017fb298b889f4ba24752d08b8e}} 
+uint8\+\_\+t {\bfseries type}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga0d5ffe38d68e48d81e61fc6a4999ae68}\label{group___n_i_n_a-_b3_ga0d5ffe38d68e48d81e61fc6a4999ae68}} 
+uint16\+\_\+t {\bfseries conn\+\_\+handle}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga308bff27e6b9e931017f4ef23c6616e3}\label{group___n_i_n_a-_b3_ga308bff27e6b9e931017f4ef23c6616e3}} 
+\mbox{\hyperlink{structble__remote__charac__t}{ble\+\_\+remote\+\_\+charac\+\_\+t}} {\bfseries charac}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga91553b72c9b4759ddb48feffd7f2ffb1}\label{group___n_i_n_a-_b3_ga91553b72c9b4759ddb48feffd7f2ffb1}} 
+uint8\+\_\+t {\bfseries connected}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga0cf3eda5925f565512321116daf28714}\label{group___n_i_n_a-_b3_ga0cf3eda5925f565512321116daf28714}} 
+uint8\+\_\+t {\bfseries avalible}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga7f7e030477abafb4d6776923b203c73b}\label{group___n_i_n_a-_b3_ga7f7e030477abafb4d6776923b203c73b}} 
+uint8\+\_\+t {\bfseries conn\+\_\+type}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gadf106c43f5c2013cee904e11754bd32d}\label{group___n_i_n_a-_b3_gadf106c43f5c2013cee904e11754bd32d}} 
+int8\+\_\+t {\bfseries addr} \mbox{[}13\mbox{]}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gab58889a30dc2869dffc0db604a653f26}\label{group___n_i_n_a-_b3_gab58889a30dc2869dffc0db604a653f26}} 
+int8\+\_\+t {\bfseries ascii\+\_\+name} \mbox{[}32\mbox{]}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga308bff27e6b9e931017f4ef23c6616e3}\label{group___n_i_n_a-_b3_ga308bff27e6b9e931017f4ef23c6616e3}} 
+\mbox{\hyperlink{structble__remote__charac__t}{ble\+\_\+remote\+\_\+charac\+\_\+t}} {\bfseries charac}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga91553b72c9b4759ddb48feffd7f2ffb1}\label{group___n_i_n_a-_b3_ga91553b72c9b4759ddb48feffd7f2ffb1}} 
+uint8\+\_\+t {\bfseries connected}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga0cf3eda5925f565512321116daf28714}\label{group___n_i_n_a-_b3_ga0cf3eda5925f565512321116daf28714}} 
+uint8\+\_\+t {\bfseries avalible}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gace8b85a2a77b6b95bdd30d52574f4092}\label{group___n_i_n_a-_b3_gace8b85a2a77b6b95bdd30d52574f4092}} 
+uint8\+\_\+t {\bfseries dev\+\_\+type}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga7f7e030477abafb4d6776923b203c73b}\label{group___n_i_n_a-_b3_ga7f7e030477abafb4d6776923b203c73b}} 
+uint8\+\_\+t {\bfseries conn\+\_\+type}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gadf106c43f5c2013cee904e11754bd32d}\label{group___n_i_n_a-_b3_gadf106c43f5c2013cee904e11754bd32d}} 
+int8\+\_\+t {\bfseries addr} \mbox{[}13\mbox{]}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gab58889a30dc2869dffc0db604a653f26}\label{group___n_i_n_a-_b3_gab58889a30dc2869dffc0db604a653f26}} 
+int8\+\_\+t {\bfseries ascii\+\_\+name} \mbox{[}32\mbox{]}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga61c5d051b6f79d08236fae6cf7019e75}\label{group___n_i_n_a-_b3_ga61c5d051b6f79d08236fae6cf7019e75}} 
+uint16\+\_\+t {\bfseries value\+\_\+handle}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga2c7796d4eb58c25a1a724bcd9d5bf183}\label{group___n_i_n_a-_b3_ga2c7796d4eb58c25a1a724bcd9d5bf183}} 
+uint16\+\_\+t {\bfseries cccd\+\_\+handle}
+\item 
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga0a3f08fe6e5081d6b0d642adea5df479}\label{group___n_i_n_a-_b3_ga0a3f08fe6e5081d6b0d642adea5df479}} 
+uint8\+\_\+t {\bfseries parsed}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Ublox B\+LE module driver. 
+
+Detail will be writen soon \begin{DoxyPrecond}{Precondition}
+In order to use the B\+LE driver the {\ttfamily U\+S\+E\+\_\+\+U\+B\+L\+O\+X\+\_\+\+B\+L\+E\+\_\+\+M\+O\+D\+U\+LE} option must be enabled in {\ttfamily config.\+h}. 
+\end{DoxyPrecond}
+\hypertarget{group___n_i_n_a-_b3_ble_1}{}\doxysubsection{Stateflow}\label{group___n_i_n_a-_b3_ble_1}
+The drivers implementing this interface shall implement the following state machine internally. Not all the driver functionalities can be used in any moment, any transition not explicitly shown in the following diagram has to be considered an error and shall be captured by an assertion (if enabled). 
+\begin{DoxyImageNoCaption}
+  \mbox{\includegraphics[width=\textwidth,height=\textheight/2,keepaspectratio=true]{dot_inline_dotgraph_11}}
+\end{DoxyImageNoCaption}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga5b935f15817987ac93f0c94f698a762f}\label{group___n_i_n_a-_b3_ga5b935f15817987ac93f0c94f698a762f}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!ble\_data\_tx\_tim\_cb@{ble\_data\_tx\_tim\_cb}}
+\index{ble\_data\_tx\_tim\_cb@{ble\_data\_tx\_tim\_cb}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{ble\_data\_tx\_tim\_cb()}{ble\_data\_tx\_tim\_cb()}}
+{\footnotesize\ttfamily static void ble\+\_\+data\+\_\+tx\+\_\+tim\+\_\+cb (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structble__peer__t}{ble\+\_\+peer\+\_\+t}} $\ast$}]{peer\+\_\+1 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+B\+LE data sending virtual timer callback. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em peer\+\_\+1} & Peer to which data will be send \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga353b8e224b9e6631db9a61f39aa6c25f}\label{group___n_i_n_a-_b3_ga353b8e224b9e6631db9a61f39aa6c25f}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!ble\_observe\_tim\_cb@{ble\_observe\_tim\_cb}}
+\index{ble\_observe\_tim\_cb@{ble\_observe\_tim\_cb}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{ble\_observe\_tim\_cb()}{ble\_observe\_tim\_cb()}}
+{\footnotesize\ttfamily static void ble\+\_\+observe\+\_\+tim\+\_\+cb (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+B\+LE observe virtual timer callback. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gafb5584863bc39e9e49ada4c14cc457e6}\label{group___n_i_n_a-_b3_gafb5584863bc39e9e49ada4c14cc457e6}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!copy\_to\_ble@{copy\_to\_ble}}
+\index{copy\_to\_ble@{copy\_to\_ble}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{copy\_to\_ble()}{copy\_to\_ble()}}
+{\footnotesize\ttfamily void copy\+\_\+to\+\_\+ble (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Copy sensors data to B\+LE struct, depends on device type \mbox{\Hypertarget{group___n_i_n_a-_b3_ga2d62b1825af7b60c2bdb7dcbc1a4fc3e}\label{group___n_i_n_a-_b3_ga2d62b1825af7b60c2bdb7dcbc1a4fc3e}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_add\_charac@{nina\_add\_charac}}
+\index{nina\_add\_charac@{nina\_add\_charac}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_add\_charac()}{nina\_add\_charac()}}
+{\footnotesize\ttfamily uint8\+\_\+t nina\+\_\+add\+\_\+charac (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structble__charac__t}{ble\+\_\+charac\+\_\+t}} $\ast$}]{charac,  }\item[{uint16\+\_\+t}]{uuid,  }\item[{uint8\+\_\+t}]{properties,  }\item[{uint8\+\_\+t}]{sec\+\_\+read,  }\item[{uint8\+\_\+t}]{sec\+\_\+write,  }\item[{uint32\+\_\+t}]{def\+\_\+val,  }\item[{uint8\+\_\+t}]{read\+\_\+auth,  }\item[{uint8\+\_\+t}]{max\+\_\+len }\end{DoxyParamCaption})}
+
+
+
+Create characteristic for device in server mode. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em charac} & Characteristic hex number \\
+\hline
+{\em uuid} & U\+U\+ID \\
+\hline
+{\em properties} & Charac properties \\
+\hline
+{\em sec\+\_\+read} & Secure read \\
+\hline
+{\em sec\+\_\+write} & Secure write \\
+\hline
+{\em def\+\_\+val} & Default value \\
+\hline
+{\em read\+\_\+auth} & Reading autorization \\
+\hline
+{\em max\+\_\+len} & Max lenth \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga6a2104cf103f6dcc564b7c2a0eb7b71e}\label{group___n_i_n_a-_b3_ga6a2104cf103f6dcc564b7c2a0eb7b71e}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_compare\_founded\_dev@{nina\_compare\_founded\_dev}}
+\index{nina\_compare\_founded\_dev@{nina\_compare\_founded\_dev}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_compare\_founded\_dev()}{nina\_compare\_founded\_dev()}}
+{\footnotesize\ttfamily int8\+\_\+t nina\+\_\+compare\+\_\+founded\+\_\+dev (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{strp,  }\item[{\mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} $\ast$}]{devlist }\end{DoxyParamCaption})}
+
+Compare discovered device address with device list 
+\begin{DoxyParams}{Parameters}
+{\em strp} & A\+S\+C\+II address representation \\
+\hline
+{\em devlist} & Device list struct pointer \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga5cbdc2b1d4bc417426ad9cf2c34516f6}\label{group___n_i_n_a-_b3_ga5cbdc2b1d4bc417426ad9cf2c34516f6}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_connect@{nina\_connect}}
+\index{nina\_connect@{nina\_connect}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_connect()}{nina\_connect()}}
+{\footnotesize\ttfamily void nina\+\_\+connect (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{addr,  }\item[{uint8\+\_\+t}]{type }\end{DoxyParamCaption})}
+
+
+
+Connecting request to remote device. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em addr} & Device address string pointer \\
+\hline
+{\em type} & Connection type (0 -\/ default)\\
+\hline
+\end{DoxyParams}
+Connect to remote device 
+\begin{DoxyParams}{Parameters}
+{\em addr} & Device address \\
+\hline
+{\em type} & Connection type \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga5a2ebc11db1ec63e9001baa15a9b9a74}\label{group___n_i_n_a-_b3_ga5a2ebc11db1ec63e9001baa15a9b9a74}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_fill\_memory@{nina\_fill\_memory}}
+\index{nina\_fill\_memory@{nina\_fill\_memory}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_fill\_memory()}{nina\_fill\_memory()}}
+{\footnotesize\ttfamily void nina\+\_\+fill\+\_\+memory (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Allocate memory for B\+LE structs. 
+
+Allocate memory for B\+LE structs Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=301pt]{group___n_i_n_a-_b3_ga5a2ebc11db1ec63e9001baa15a9b9a74_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gacb0ec93387bb4c605d7fb0bce3f4e894}\label{group___n_i_n_a-_b3_gacb0ec93387bb4c605d7fb0bce3f4e894}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_get\_remote\_characs@{nina\_get\_remote\_characs}}
+\index{nina\_get\_remote\_characs@{nina\_get\_remote\_characs}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_get\_remote\_characs()}{nina\_get\_remote\_characs()}}
+{\footnotesize\ttfamily void nina\+\_\+get\+\_\+remote\+\_\+characs (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{handle,  }\item[{uint16\+\_\+t}]{uuid }\end{DoxyParamCaption})}
+
+
+
+Request remote device characteristics. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em handle} & Connection handler \\
+\hline
+{\em uuid} & -\/\\
+\hline
+\end{DoxyParams}
+Request characteristics from remote dev 
+\begin{DoxyParams}{Parameters}
+{\em handle} & \\
+\hline
+{\em uuid} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga6823bc17be2aa9d10cdb13c9bc89f811}\label{group___n_i_n_a-_b3_ga6823bc17be2aa9d10cdb13c9bc89f811}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_init\_devices@{nina\_init\_devices}}
+\index{nina\_init\_devices@{nina\_init\_devices}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_init\_devices()}{nina\_init\_devices()}}
+{\footnotesize\ttfamily int8\+\_\+t nina\+\_\+init\+\_\+devices (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} $\ast$}]{devlist }\end{DoxyParamCaption})}
+
+Fill B\+LE devise list struct 
+\begin{DoxyParams}{Parameters}
+{\em devlist} & Device list struct pointer \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga1f16f27f701f5594ec60ea9569512fea}\label{group___n_i_n_a-_b3_ga1f16f27f701f5594ec60ea9569512fea}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_init\_module@{nina\_init\_module}}
+\index{nina\_init\_module@{nina\_init\_module}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_init\_module()}{nina\_init\_module()}}
+{\footnotesize\ttfamily void nina\+\_\+init\+\_\+module (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Init B\+LE module, depends on device type (trainer, sportsman, sensor box) Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=300pt]{group___n_i_n_a-_b3_ga1f16f27f701f5594ec60ea9569512fea_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga2185f3750c2428c9362a7754e31fdc52}\label{group___n_i_n_a-_b3_ga2185f3750c2428c9362a7754e31fdc52}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_init\_services@{nina\_init\_services}}
+\index{nina\_init\_services@{nina\_init\_services}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_init\_services()}{nina\_init\_services()}}
+{\footnotesize\ttfamily uint8\+\_\+t nina\+\_\+init\+\_\+services (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Initialize B\+LE services, depends on device type \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=300pt]{group___n_i_n_a-_b3_ga2185f3750c2428c9362a7754e31fdc52_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga9977a7c0f6e1804f237f5e7a182a2055}\label{group___n_i_n_a-_b3_ga9977a7c0f6e1804f237f5e7a182a2055}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_notify@{nina\_notify}}
+\index{nina\_notify@{nina\_notify}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_notify()}{nina\_notify()}}
+{\footnotesize\ttfamily void nina\+\_\+notify (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structble__charac__t}{ble\+\_\+charac\+\_\+t}} $\ast$}]{ble\+\_\+rudder,  }\item[{int32\+\_\+t}]{val }\end{DoxyParamCaption})}
+
+
+
+Send notification to client device. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ble\+\_\+rudder} & \\
+\hline
+{\em val} & Send notification to peer \\
+\hline
+{\em ble\+\_\+rudder} & \\
+\hline
+{\em val} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga0bda1f1b07299b3a12d87329519f3bc2}\label{group___n_i_n_a-_b3_ga0bda1f1b07299b3a12d87329519f3bc2}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_parse\_command@{nina\_parse\_command}}
+\index{nina\_parse\_command@{nina\_parse\_command}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_parse\_command()}{nina\_parse\_command()}}
+{\footnotesize\ttfamily uint8\+\_\+t nina\+\_\+parse\+\_\+command (\begin{DoxyParamCaption}\item[{int8\+\_\+t $\ast$}]{strp }\end{DoxyParamCaption})}
+
+
+
+Parsing strings from Nina\textquotesingle{}s U\+S\+A\+RT iface. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em strp} & Null-\/ended string pointer \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+Parse command from shell 
+\begin{DoxyParams}{Parameters}
+{\em strp} & String pointer \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga7277e1cf415320f033a8a5bed82f0a2f}\label{group___n_i_n_a-_b3_ga7277e1cf415320f033a8a5bed82f0a2f}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_parse\_notification@{nina\_parse\_notification}}
+\index{nina\_parse\_notification@{nina\_parse\_notification}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_parse\_notification()}{nina\_parse\_notification()}}
+{\footnotesize\ttfamily void nina\+\_\+parse\+\_\+notification (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{conn\+\_\+handle,  }\item[{uint8\+\_\+t}]{val\+\_\+handle,  }\item[{uint32\+\_\+t}]{value }\end{DoxyParamCaption})}
+
+
+
+Parsing notification. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn\+\_\+handle} & \\
+\hline
+{\em val\+\_\+handle} & \\
+\hline
+{\em value} & Parse incoming notification \\
+\hline
+{\em conn\+\_\+handle} & Connection handler \\
+\hline
+{\em val\+\_\+handle} & Value handler \\
+\hline
+{\em value} & Value \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga2bdddcb86a068bf37dbb17563f551fac}\label{group___n_i_n_a-_b3_ga2bdddcb86a068bf37dbb17563f551fac}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_register\_peer@{nina\_register\_peer}}
+\index{nina\_register\_peer@{nina\_register\_peer}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_register\_peer()}{nina\_register\_peer()}}
+{\footnotesize\ttfamily void nina\+\_\+register\+\_\+peer (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{conn\+\_\+handle,  }\item[{uint8\+\_\+t}]{type,  }\item[{int8\+\_\+t $\ast$}]{addr }\end{DoxyParamCaption})}
+
+
+
+Register new peer connection. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn\+\_\+handle} & Peer connection handle \\
+\hline
+{\em type} & Connection type \\
+\hline
+{\em addr} & Peer\textquotesingle{}s address\\
+\hline
+\end{DoxyParams}
+Catch incoming peer connection 
+\begin{DoxyParams}{Parameters}
+{\em conn\+\_\+handle} & \\
+\hline
+{\em type} & \\
+\hline
+{\em addr} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gad06cb57ca45f03352a21883de42fa2a3}\label{group___n_i_n_a-_b3_gad06cb57ca45f03352a21883de42fa2a3}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_register\_remote\_dev@{nina\_register\_remote\_dev}}
+\index{nina\_register\_remote\_dev@{nina\_register\_remote\_dev}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_register\_remote\_dev()}{nina\_register\_remote\_dev()}}
+{\footnotesize\ttfamily void nina\+\_\+register\+\_\+remote\+\_\+dev (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} $\ast$}]{devlist,  }\item[{uint8\+\_\+t}]{conn\+\_\+handle,  }\item[{uint8\+\_\+t}]{type,  }\item[{int8\+\_\+t $\ast$}]{addr }\end{DoxyParamCaption})}
+
+
+
+Register new connection. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em devlist} & Device list struct pointer \\
+\hline
+{\em conn\+\_\+handle} & Connection handler \\
+\hline
+{\em type} & Connection type \\
+\hline
+{\em addr} & Device address\\
+\hline
+\end{DoxyParams}
+Register connection to remote device 
+\begin{DoxyParams}{Parameters}
+{\em devlist} & Remote device list struct pointer \\
+\hline
+{\em conn\+\_\+handle} & Connection handler \\
+\hline
+{\em type} & Connection type \\
+\hline
+{\em addr} & Remote device address \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga029f182f3676638abcccbc9b8a126082}\label{group___n_i_n_a-_b3_ga029f182f3676638abcccbc9b8a126082}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_send\_all@{nina\_send\_all}}
+\index{nina\_send\_all@{nina\_send\_all}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_send\_all()}{nina\_send\_all()}}
+{\footnotesize\ttfamily void nina\+\_\+send\+\_\+all (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structble__peer__t}{ble\+\_\+peer\+\_\+t}} $\ast$}]{peer }\end{DoxyParamCaption})}
+
+
+
+Sends all data to peer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em peer} & Send all sensors data to peer device \\
+\hline
+{\em peer} & Peer struct pointer \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gacf5434f105b931b30ceb0895abccf5a4}\label{group___n_i_n_a-_b3_gacf5434f105b931b30ceb0895abccf5a4}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_unregister\_peer@{nina\_unregister\_peer}}
+\index{nina\_unregister\_peer@{nina\_unregister\_peer}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_unregister\_peer()}{nina\_unregister\_peer()}}
+{\footnotesize\ttfamily void nina\+\_\+unregister\+\_\+peer (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structble__remote__dev__t}{ble\+\_\+remote\+\_\+dev\+\_\+t}} $\ast$}]{devlist,  }\item[{uint8\+\_\+t}]{conn\+\_\+handle }\end{DoxyParamCaption})}
+
+
+
+Process peer disconnection event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em devlist} & Device list struct pointer \\
+\hline
+{\em conn\+\_\+handle} & Connection handler\\
+\hline
+\end{DoxyParams}
+Unregister disconnected peer 
+\begin{DoxyParams}{Parameters}
+{\em devlist} & Remote device list struct pointer \\
+\hline
+{\em conn\+\_\+handle} & Connection handler \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga800caba0d2760d163adacdfad82a8ab5}\label{group___n_i_n_a-_b3_ga800caba0d2760d163adacdfad82a8ab5}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_unregister\_remote\_dev@{nina\_unregister\_remote\_dev}}
+\index{nina\_unregister\_remote\_dev@{nina\_unregister\_remote\_dev}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_unregister\_remote\_dev()}{nina\_unregister\_remote\_dev()}}
+{\footnotesize\ttfamily void nina\+\_\+unregister\+\_\+remote\+\_\+dev (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{conn\+\_\+handle }\end{DoxyParamCaption})}
+
+Unregister connection to remote device 
+\begin{DoxyParams}{Parameters}
+{\em conn\+\_\+handle} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga7eb0abc29b3ab97ed10ea0b79239421b}\label{group___n_i_n_a-_b3_ga7eb0abc29b3ab97ed10ea0b79239421b}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_wait\_charac\_handlers@{nina\_wait\_charac\_handlers}}
+\index{nina\_wait\_charac\_handlers@{nina\_wait\_charac\_handlers}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_wait\_charac\_handlers()}{nina\_wait\_charac\_handlers()}}
+{\footnotesize\ttfamily void nina\+\_\+wait\+\_\+charac\+\_\+handlers (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structble__charac__t}{ble\+\_\+charac\+\_\+t}} $\ast$}]{charac }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em charac} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_gad7a5cfeff7bbe72aba0e7b4a21c0d574}\label{group___n_i_n_a-_b3_gad7a5cfeff7bbe72aba0e7b4a21c0d574}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!nina\_wait\_response@{nina\_wait\_response}}
+\index{nina\_wait\_response@{nina\_wait\_response}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{nina\_wait\_response()}{nina\_wait\_response()}}
+{\footnotesize\ttfamily uint8\+\_\+t nina\+\_\+wait\+\_\+response (\begin{DoxyParamCaption}\item[{int8\+\_\+t $\ast$}]{at\+\_\+command }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em at\+\_\+command} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{group___n_i_n_a-_b3_ga192383caa2b3b61fa0d348083a6d655a}\label{group___n_i_n_a-_b3_ga192383caa2b3b61fa0d348083a6d655a}} 
+\index{Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}!start\_ble\_module@{start\_ble\_module}}
+\index{start\_ble\_module@{start\_ble\_module}!Ublox NINA-\/B3 Device@{Ublox NINA-\/B3 Device}}
+\doxysubsubsection{\texorpdfstring{start\_ble\_module()}{start\_ble\_module()}}
+{\footnotesize\ttfamily void start\+\_\+ble\+\_\+module (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Start B\+LE threads 

@@ -43,11 +43,9 @@
  * @date   13 Mar 2019
  * @version 3.7.7
  * @brief
- *
  */
 
 /*!
- * @defgroup bmi160
  * @brief
  * @{*/
 

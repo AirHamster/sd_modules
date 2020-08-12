@@ -1,5 +1,5 @@
-/** \mainpage
-*
+/** 
+* 
 ****************************************************************************
 * Copyright (C) 2015 - 2016 Bosch Sensortec GmbH
 *
@@ -53,7 +53,8 @@
 * patent rights of the copyright holder.
 **************************************************************************/
 /*! \file bno055.h
-    \brief BNO055 Sensor Driver Support Header File */
+    \brief BNO055 Sensor Driver Support Header File 
+     */
 
 #ifndef __BNO055_H__
 #define __BNO055_H__

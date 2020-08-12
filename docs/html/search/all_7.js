@@ -1,0 +1,23 @@
+var searchData=
+[
+  ['get_5faccel_5fdata_1227',['get_accel_data',['../bmi160_8c.html#a9a45bdba352749b974886c547f8853bd',1,'bmi160.c']]],
+  ['get_5faccel_5fgyro_5fdata_1228',['get_accel_gyro_data',['../bmi160_8c.html#a64af5bda307bd78b2be8b48c58dee5bc',1,'bmi160.c']]],
+  ['get_5faccel_5flen_5fto_5fparse_1229',['get_accel_len_to_parse',['../bmi160_8c.html#aacab2b5f8143b8c0163b51df02c1fb42',1,'bmi160.c']]],
+  ['get_5faux_5flen_5fto_5fparse_1230',['get_aux_len_to_parse',['../bmi160_8c.html#a89d53f835a9315bdf19c624abcf9a7fe',1,'bmi160.c']]],
+  ['get_5ffifo_5fbyte_5fcounter_1231',['get_fifo_byte_counter',['../bmi160_8c.html#afeeefaea1ce62a0a339249c53dcdbe0f',1,'bmi160.c']]],
+  ['get_5ffoc_5fstatus_1232',['get_foc_status',['../bmi160_8c.html#a45e9f801872abf33ea6e7ebd995b5589',1,'bmi160.c']]],
+  ['get_5fgyro_5fdata_1233',['get_gyro_data',['../bmi160_8c.html#a4eb539e3355431e191500f01ef618c6f',1,'bmi160.c']]],
+  ['get_5fgyro_5flen_5fto_5fparse_1234',['get_gyro_len_to_parse',['../bmi160_8c.html#afa13a0b7694d1b2aac4e8e82d61c4b14',1,'bmi160.c']]],
+  ['getmedianm_1235',['getMedianM',['../group___m_a_t_h.html#gaafd23c2556a2e90814b6f999c3edecb1',1,'filters.h']]],
+  ['gpout_5ffunction_1236',['gpout_function',['../group___f_u_e_l___g_a_u_g_e.html#ga44912811ea7b78f6bfd3162117b47e79',1,'bq27441.h']]],
+  ['gyro_1237',['gyro',['../structts___h_wsensor_switch_list.html#ab5a0fcfd61cffc024b98562926181e7b',1,'ts_HWsensorSwitchList::gyro()'],['../structlibraryinput__t.html#abf71c8e7527d1e673c56a98c9a791513',1,'libraryinput_t::gyro()']]],
+  ['gyro_5fbyte_5fstart_5fidx_1238',['gyro_byte_start_idx',['../structbmi160__fifo__frame.html#a682831c8ba0b189ea5e62562e5b54065',1,'bmi160_fifo_frame']]],
+  ['gyro_5fcfg_1239',['gyro_cfg',['../structbmi160__dev.html#afcc10745957c7d02cfb97386cbe55041',1,'bmi160_dev']]],
+  ['gyro_5foff_5fen_1240',['gyro_off_en',['../structbmi160__foc__conf.html#a7d26b28d2bf18dfc5e5666a6a8945cc8',1,'bmi160_foc_conf']]],
+  ['gyro_5fpmu_5fstatus_1241',['gyro_pmu_status',['../structbmi160__pmu__status.html#aca8b178ff307d5fbbab91c0a3c9a0c54',1,'bmi160_pmu_status']]],
+  ['gyro_5frev_5fid_1242',['gyro_rev_id',['../structbno055__t.html#a14c0c993793f4d1fffc3c66cca491140',1,'bno055_t']]],
+  ['gyrocalib_1243',['gyrocalib',['../structts__callflag.html#a93a40ee5fa5daf1ef5439d0cf53bde8d',1,'ts_callflag']]],
+  ['gyroscopesensitivity_1244',['gyroscopeSensitivity',['../group___b_m_x160.html#ga4757aa7cfb35f2c81dcc78bcb7670a30',1,'bmx160_i2c.c']]],
+  ['gyrospec_1245',['gyrospec',['../structinit_param__t.html#aac107f28e006df05b79c2eb48b8e1f1c',1,'initParam_t']]],
+  ['gyrospec_5fstatus_1246',['gyrospec_status',['../structinit_param__t.html#a385a3d59e44335fcc3075a602184f485',1,'initParam_t']]]
+];

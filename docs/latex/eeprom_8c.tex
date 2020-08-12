@@ -1,0 +1,41 @@
+\hypertarget{eeprom_8c}{}\doxysection{eeprom/eeprom.c File Reference}
+\label{eeprom_8c}\index{eeprom/eeprom.c@{eeprom/eeprom.c}}
+
+
+E\+E\+P\+R\+OM Driver funcs.  
+
+
+{\ttfamily \#include \char`\"{}eeprom.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+Include dependency graph for eeprom.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{eeprom_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___e_e_p_r_o_m_ga2b9a65fc523f9fb8921433e1c185774c}{eeprom\+\_\+write}} (uint16\+\_\+t byte\+\_\+addr, const uint8\+\_\+t $\ast$txbuf, uint8\+\_\+t txbytes)
+\item 
+int8\+\_\+t \mbox{\hyperlink{group___e_e_p_r_o_m_gad2e6d3e940139a145b31fbca836749dc}{eeprom\+\_\+read}} (uint16\+\_\+t byte\+\_\+addr, uint8\+\_\+t $\ast$rxbuf, uint8\+\_\+t rxbytes)
+\item 
+void \mbox{\hyperlink{group___e_e_p_r_o_m_ga4c7d24e41a412567c2660b6861f47a0f}{start\+\_\+eeprom\+\_\+module}} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+uint8\+\_\+t {\bfseries eeprom\+\_\+buff} \mbox{[}32\mbox{]}
+\item 
+uint8\+\_\+t {\bfseries eeprom\+\_\+buff\+\_\+rx} \mbox{[}32\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+E\+E\+P\+R\+OM Driver funcs. 
+

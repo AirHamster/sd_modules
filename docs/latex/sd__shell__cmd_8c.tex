@@ -1,0 +1,93 @@
+\hypertarget{sd__shell__cmd_8c}{}\doxysection{sd\+\_\+shell\+\_\+cmd/sd\+\_\+shell\+\_\+cmd.c File Reference}
+\label{sd__shell__cmd_8c}\index{sd\_shell\_cmd/sd\_shell\_cmd.c@{sd\_shell\_cmd/sd\_shell\_cmd.c}}
+
+
+Shell driver funcs.  
+
+
+{\ttfamily \#include \char`\"{}config.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}sd\+\_\+shell\+\_\+cmds.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$hal.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}shellconf.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}math.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$shell.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+Include dependency graph for sd\+\_\+shell\+\_\+cmd.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{sd__shell__cmd_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void {\bfseries send\+\_\+json} (void)
+\item 
+static {\bfseries T\+H\+D\+\_\+\+W\+O\+R\+K\+I\+N\+G\+\_\+\+A\+R\+EA} (output\+\_\+thread\+\_\+wa, 1024 $\ast$4)
+\item 
+static {\bfseries T\+H\+D\+\_\+\+F\+U\+N\+C\+T\+I\+ON} (output\+\_\+thread, arg)
+\item 
+thread\+\_\+t $\ast$ {\bfseries cmd\+\_\+init} (void)
+\item 
+void \mbox{\hyperlink{group___s_h_e_l_l_ga94adf30e56c9e48af192da843e45100c}{start\+\_\+json\+\_\+module}} (void)
+\begin{DoxyCompactList}\small\item\em Starting shell thread. \end{DoxyCompactList}\item 
+void {\bfseries output\+\_\+gyro\+\_\+raw} (void)
+\item 
+int32\+\_\+t {\bfseries convert\+\_\+to\+\_\+ble\+\_\+type} (float value)
+\item 
+void \mbox{\hyperlink{group___s_h_e_l_l_ga9e20c4341610023bd94c4009b98fdd27}{cmd\+\_\+start}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Start json output. \end{DoxyCompactList}\item 
+void {\bfseries cmd\+\_\+terminate} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+void \mbox{\hyperlink{group___s_h_e_l_l_ga7fddb571c4babbb16f844c2d31c7f1be}{cmd\+\_\+c}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Cancel json output. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___s_h_e_l_l_ga988e8ac97747e7f2ea4dc4fc550a4109}{cmd\+\_\+reset}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Reboot system. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___s_h_e_l_l_gac5718d423018c8d7b464f6f164c1f70a}{cmd\+\_\+boot}} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Enter bootloader. \end{DoxyCompactList}\item 
+void {\bfseries cmd\+\_\+ublox} (Base\+Sequential\+Stream $\ast$chp, int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\item 
+void {\bfseries toggle\+\_\+test\+\_\+output} (void)
+\item 
+void {\bfseries toggle\+\_\+ble\+\_\+output} (void)
+\item 
+void {\bfseries toggle\+\_\+gps\+\_\+output} (void)
+\item 
+void {\bfseries toggle\+\_\+ypr\+\_\+output} (void)
+\item 
+void {\bfseries toggle\+\_\+gyro\+\_\+output} (void)
+\item 
+void {\bfseries toggle\+\_\+raw\+\_\+output} (uint8\+\_\+t sensor)
+\item 
+void {\bfseries stop\+\_\+all\+\_\+tests} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+thread\+\_\+t $\ast$ {\bfseries charger\+\_\+trp}
+\item 
+struct ch\+\_\+semaphore {\bfseries usart1\+\_\+semaph}
+\item 
+uint32\+\_\+t {\bfseries \+\_\+\+\_\+ram0\+\_\+end\+\_\+\+\_\+}
+\item 
+\mbox{\hyperlink{structoutput__t}{output\+\_\+t}} $\ast$ {\bfseries output}
+\item 
+char $\ast$ {\bfseries complete\+\_\+buffer} \mbox{[}16\mbox{]}
+\item 
+char {\bfseries history\+\_\+buffer} \mbox{[}128\mbox{]}
+\item 
+const int {\bfseries history\+\_\+size} = 128
+\item 
+thread\+\_\+reference\+\_\+t {\bfseries output\+\_\+trp} = N\+U\+LL
+\item 
+static const Shell\+Command {\bfseries commands} \mbox{[}$\,$\mbox{]}
+\item 
+static const Shell\+Config {\bfseries shell\+\_\+cfg1}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Shell driver funcs. 
+

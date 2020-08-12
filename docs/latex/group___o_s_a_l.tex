@@ -1,0 +1,52 @@
+\hypertarget{group___o_s_a_l}{}\doxysection{O\+S\+AL}
+\label{group___o_s_a_l}\index{OSAL@{OSAL}}
+
+
+Operating System Abstraction Layer.  
+
+
+Collaboration diagram for O\+S\+AL\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=251pt]{group___o_s_a_l}
+\end{center}
+\end{figure}
+Operating System Abstraction Layer. 
+
+\doxysubsubsection*{The O\+S\+AL}
+
+The O\+S\+AL is the link between Chibi\+O\+S/\+H\+AL and services provided by operating systems like\+:
+\begin{DoxyItemize}
+\item Critical Zones handling.
+\item Interrupts handling.
+\item Runtime Errors management.
+\item Inter-\/task synchronization.
+\item Task-\/\+I\+SR synchronization.
+\item Time management.
+\item Events.
+\end{DoxyItemize}Chibi\+O\+S/\+H\+AL is designed to tightly integrate with the underlying R\+T\+OS in order to provide the best experience to developers and minimize integration issues.~\newline
+ This section describes the A\+PI that O\+S\+A\+Ls are expected to expose to the H\+AL.
+
+\doxysubsubsection*{R\+T\+OS Requirements}
+
+The O\+S\+AL A\+PI closely resembles the Chibi\+O\+S/\+RT A\+PI, for obvious reasons, however an O\+S\+AL module can be implemented for any reasonably complete R\+T\+OS or even a R\+T\+O\+S-\/less bare metal machine, if required.~\newline
+ In order to be able to support an H\+AL an R\+T\+OS should support the following minimal set of features\+:
+\begin{DoxyItemize}
+\item Task-\/level critical zones A\+PI.
+\item I\+S\+R-\/level critical zones A\+PI, only required on those C\+PU architectures supporting preemptable I\+S\+Rs like Cortex-\/\+Mx cores.
+\item Ability to invoke A\+PI functions from inside a task critical zone. Functions that are required to support this feature are marked with an \char`\"{}\+I\char`\"{} or \char`\"{}\+S\char`\"{} letter at the end of the name.
+\item Ability to invoke A\+PI functions from inside an I\+SR critical zone. Functions that are required to support this feature are marked with an \char`\"{}\+I\char`\"{} letter at the end of the name.
+\item Tasks Queues or Counting Semaphores with Timeout capability.
+\item Ability to suspend a task and wakeup it from I\+SR with Timeout capability.
+\item Event flags, the mechanism can be simulated using callbacks in case the R\+T\+OS does not support it.
+\item Mutual Exclusion mechanism like Semaphores or Mutexes.
+\end{DoxyItemize}All the above requirements can be satisfied even on naked HW with a very think SW layer. In case that the H\+AL is required to work without an R\+T\+OS.
+
+\doxysubsubsection*{Supported R\+T\+O\+Ses}
+
+The R\+T\+O\+Ses supported out of the box are\+:
+\begin{DoxyItemize}
+\item Chibi\+O\+S/\+RT
+\item Chibi\+O\+S/\+N\+IL
+\end{DoxyItemize}Implementations have also been successfully created on R\+T\+O\+Ses not belonging to the Chibi\+OS products family but are not supported as a core feature of Chibi\+O\+S/\+H\+AL. 

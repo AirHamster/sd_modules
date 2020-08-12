@@ -5,6 +5,13 @@
  *      Author: a-h
  */
 
+/**
+ * @file    pwr_mgmt_l4.c
+ * @brief   Power management driver funcs.
+ *
+ * @addtogroup PWR
+ * @{
+ */
 
 #include "config.h"
 #include <hal.h>
@@ -30,6 +37,11 @@ static event_source_t button_released_event;
 static event_source_t charger_int_low_event;
 static event_source_t charger_int_high_event;
 extern event_source_t power_state_change_event;
+
+/**
+ * @brief Power button callback
+ * @param arg
+ */
 static void button_cb(void *arg) {
 
 	(void) arg;
@@ -46,9 +58,12 @@ if (deepsleep == 1) {
 		chEvtBroadcastI(&button_released_event);
 	}
 	chSysUnlockFromISR();
-	//chprintf(SHELL_IFACE, "Event!");
 }
 
+/**
+ * @brief Charger interrupt callback
+ * @param arg
+ */
 static void charger_int_cb(void *arg) {
 	(void) arg;
 	chSysLockFromISR();
@@ -63,13 +78,13 @@ static void charger_int_cb(void *arg) {
 		chEvtBroadcastI(&charger_int_high_event);
 	}
 	chSysUnlockFromISR();
-	//chprintf(SHELL_IFACE, "Event!");
-
 }
 
+/**
+ * @brief Main power management thread
+ */
 static THD_WORKING_AREA(pwr_mgmt_thread_wa, 512);
 static THD_FUNCTION( pwr_mgmt_thread, p) {
-	//(void) arg;
 
 		chRegSetThreadName("Pwr butt");
 		event_listener_t el0, el1;
@@ -118,20 +133,17 @@ static THD_FUNCTION( pwr_mgmt_thread, p) {
 			}
 			if (events & EVENT_MASK(1)) {	//event for releasing
 
-			//	chThdSleepMilliseconds(2000);
-				/*
-				 if (palReadLine(LINE_POWER_BUTTON) == PAL_LOW) {
-				 palClearLine(LINE_RED_LED);
-				 device_power_state = 0;
-				 }
-				 */
 			}
 		}
 }
 
+/**
+ * @brief Starting power management thread
+ */
 void start_power_management_module(void){
 	chThdCreateStatic(pwr_mgmt_thread_wa, sizeof(pwr_mgmt_thread_wa), NORMALPRIO + 3, pwr_mgmt_thread, NULL);
 }
+
 
 void enter_stop_mode(void) {
 if (deepsleep == 1){
@@ -141,11 +153,9 @@ if (deepsleep == 1){
 
 }
 
-void leave_stop_mode(void) {
-
-
-}
-
+/**
+ * @brief Switch to power state
+ */
 void activate_clocks(void){
 	//switch off HSI16
 		RCC->CR |= RCC_CR_HSION;
@@ -183,6 +193,9 @@ void activate_clocks(void){
 		//i2cStart(&CHARGER_IF, &charger_if_cfg);
 }
 
+/**
+ * @brief Switch to deep sleep state
+ */
 void deactivate_clocks(void){
 
 	// change main clock source to MSI
@@ -261,26 +274,5 @@ static void pwr_pins_to_work_state(void){
 	palSetLineMode(LINE_USART2_TX, PAL_MODE_ALTERNATE(4));
 	palSetLineMode(LINE_USART2_RX, PAL_MODE_ALTERNATE(4));
 */
-
-}
-
-static void pwr_terminate_threads(){
-
-
-}
-
-static void pwr_restart_threads(){
-
-}
-
-void pwr_switch_dc_dc(dcdc_enum dcdc, dcdc_enum state){
-
-}
-
-void pwr_start_threads(void){
-
-}
-
-void pwr_stop_threads(void){
 
 }

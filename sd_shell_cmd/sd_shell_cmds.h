@@ -1,6 +1,12 @@
 #ifndef _SHELL_CMDS_H_
 #define _SHELL_CMDS_H_
-
+/**
+ * @file    sd_shell_cmds.h
+ * @brief   Shell driver funcs.
+ *
+ * @addtogroup SHELL
+ * @{
+ */
 #include <ch.h>
 #include "hal.h"
 #include "chprintf.h"
